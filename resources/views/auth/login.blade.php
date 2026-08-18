@@ -4,110 +4,263 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
-    <title>Login - InventoryDiskom</title>
+    <title>Login - Inventory IT Assets</title>
 
     <style>
         * {
+            margin: 0;
+            padding: 0;
             box-sizing: border-box;
+            font-family: Arial, Helvetica, sans-serif;
         }
 
         body {
-            margin: 0;
             min-height: 100vh;
+            overflow: hidden;
+        }
+
+        .login-page {
+            min-height: 100vh;
+            width: 100%;
+            background-image:
+                linear-gradient(
+                    rgba(255, 255, 255, 0.08),
+                    rgba(255, 255, 255, 0.08)
+                ),
+                url('{{ asset("images/bekasiBGlogin.png") }}');
+
+            background-size: cover;
+            background-position: center;
+            display: flex;
+            align-items: center;
+            justify-content: flex-end;
+            padding-right: 8%;
+        }
+
+        .login-card {
+            width: 420px;
+            padding: 45px 40px;
+            border-radius: 18px;
+
+            background: rgba(255, 255, 255, 0.72);
+            backdrop-filter: blur(0,50px);
+            -webkit-backdrop-filter: blur(0,50px);
+
+            box-shadow: 0 10px 40px rgba(0, 0, 0, 0.12);
+        }
+
+        .logos {
             display: flex;
             justify-content: center;
             align-items: center;
-            font-family: Arial, sans-serif;
-            background: #f5f6fa;
+            gap: 20px;
+            margin-bottom: 20px;
         }
 
-        .login-box {
-            width: 400px;
-            padding: 35px;
-            background: white;
-            border-radius: 12px;
-            box-shadow: 0 5px 20px rgba(0, 0, 0, 0.1);
+        .logos img {
+            width: 65px;
+            height: 65px;
+            object-fit: contain;
         }
 
-        .login-box h2 {
-            margin-bottom: 5px;
+        .title {
+            text-align: center;
+            color: #050567;
+            font-size: 32px;
+            font-weight: 700;
+            margin-bottom: 8px;
         }
 
-        .login-box p {
-            color: #777;
-            margin-bottom: 25px;
+        .subtitle {
+            text-align: center;
+            color: #555;
+            font-size: 13px;
+            line-height: 1.5;
+            margin-bottom: 28px;
         }
 
         .form-group {
             margin-bottom: 18px;
         }
 
-        label {
+        .form-group label {
             display: block;
+            font-size: 13px;
+            color: #555;
             margin-bottom: 7px;
-            font-weight: bold;
         }
 
-        input {
-            width: 100%;
-            padding: 12px;
-            border: 1px solid #ddd;
-            border-radius: 6px;
+        .input-wrapper {
+            position: relative;
         }
 
-        button {
+        .input-wrapper input {
             width: 100%;
-            padding: 12px;
+            height: 45px;
+            padding: 0 15px 0 42px;
+
+            border: 1px solid rgba(0, 0, 0, 0.12);
+            border-radius: 8px;
+
+            background: rgba(255, 255, 255, 0.9);
+
+            outline: none;
+            font-size: 14px;
+        }
+
+        .input-wrapper input:focus {
+            border-color: #050567;
+            box-shadow: 0 0 0 2px rgba(5, 5, 103, 0.08);
+        }
+
+        .input-icon {
+            position: absolute;
+            left: 14px;
+            top: 50%;
+            transform: translateY(-50%);
+            color: #999;
+            font-size: 14px;
+        }
+
+        .remember {
+            display: flex;
+            align-items: center;
+            gap: 7px;
+            font-size: 12px;
+            color: #666;
+            margin: 5px 0 22px;
+        }
+
+        .remember input {
+            accent-color: #050567;
+        }
+
+        .login-button {
+            width: 100%;
+            height: 45px;
             border: none;
-            border-radius: 6px;
-            background: #1f2937;
+            border-radius: 8px;
+
+            background: #050567;
             color: white;
+
+            font-size: 14px;
+            font-weight: 600;
+
             cursor: pointer;
+            transition: 0.2s;
         }
 
-        button:hover {
-            background: #374151;
+        .login-button:hover {
+            background: #08089a;
+        }
+
+        .error {
+            color: #d32f2f;
+            font-size: 12px;
+            margin-top: 5px;
+        }
+
+        @media (max-width: 768px) {
+            .login-page {
+                justify-content: center;
+                padding: 20px;
+            }
+
+            .login-card {
+                width: 100%;
+                max-width: 420px;
+            }
         }
     </style>
 </head>
 
 <body>
 
-    <div class="login-box">
+<div class="login-page">
 
-        <h2>InventoryDiskom</h2>
-        <p>Silakan login untuk melanjutkan</p>
+    <div class="login-card">
 
-        <form action="/login" method="POST">
+        {{-- Logo --}}
+        <div class="logos">
+            <img src="{{ asset('images/logo-diskominfo.png') }}"
+                 alt="Logo Diskominfo">
+
+            <img src="{{ asset('images/logo-pemkot.png') }}"
+                 alt="Logo Pemerintah Kota">
+        </div>
+
+        {{-- Title --}}
+        <h1 class="title">
+            Selamat Datang
+        </h1>
+
+        <p class="subtitle">
+            Silakan masuk untuk mengelola dan memantau
+            data inventori IT aset secara terintegrasi.
+        </p>
+
+        {{-- Login Form --}}
+        <form method="POST" action="{{ route('login') }}">
             @csrf
 
+            {{-- Email --}}
             <div class="form-group">
-                <label>Username</label>
-                <input
-                    type="text"
-                    name="username"
-                    placeholder="Masukkan username"
-                    required
-                >
+                <label for="Username">
+                    Username
+                </label>
+
+                <div class="input-wrapper">
+                    <span class="input-icon">✉</span>
+
+                    <input
+                        type="text"
+                        id="uname"
+                        name="Username"
+                        value="{{ old('Username') }}"
+                        placeholder="Username"
+                        required
+                        autofocus
+                    >
+                </div>
+
+                @error('Username')
+                    <div class="error">{{ $message }}</div>
+                @enderror
             </div>
 
+            {{-- Password --}}
             <div class="form-group">
-                <label>Password</label>
-                <input
-                    type="password"
-                    name="password"
-                    placeholder="Masukkan password"
-                    required
-                >
-            </div>
+                <label for="password">
+                    Password
+                </label>
 
-            <button type="submit">
-                Login
+                <div class="input-wrapper">
+                    <span class="input-icon">🔑</span>
+
+                    <input
+                        type="password"
+                        id="password"
+                        name="password"
+                        placeholder="Password"
+                        required
+                    >
+                </div>
+
+                @error('password')
+                    <div class="error">{{ $message }}</div>
+                @enderror
+            </div>
+            {{-- Button --}}
+            <button type="submit" class="login-button">
+                Masuk
             </button>
 
         </form>
 
     </div>
+
+</div>
 
 </body>
 </html>
