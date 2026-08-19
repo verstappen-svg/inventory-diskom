@@ -2,21 +2,11 @@
 
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\AuthController;
+use App\Http\Controllers\SDMController;
 
 Route::get('/login', [AuthController::class, 'showLogin'])
     ->name('login');
-
-Route::post('/login', [AuthController::class, 'login'])
-    ->name('login.process');
-
-Route::post('/logout', [AuthController::class, 'logout'])
-    ->name('logout');
-
-
-Route::middleware('auth')->group(function () {
-
-    Route::get('/dashboard', function () {
-        return view('dashboard');
-    })->name('dashboard');
-
-});
+Route::get('/sdm', [SDMController::class, 'index'])->name('sdm.index');
+Route::post('/sdm', [SDMController::class, 'store'])->name('sdm.store');
+Route::put('/sdm/{sdm}', [SDMController::class, 'update'])->name('sdm.update');
+Route::delete('/sdm/{sdm}', [SDMController::class, 'destroy'])->name('sdm.destroy');
