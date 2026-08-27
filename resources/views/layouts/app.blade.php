@@ -12,6 +12,7 @@
         @yield('title', 'Inventory IT Assets')
     </title>
 
+
     {{-- =====================================================
          BOOTSTRAP ICONS
     ====================================================== --}}
@@ -20,199 +21,202 @@
           href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css">
 
 
+    {{-- =====================================================
+         VITE
+    ====================================================== --}}
+
+    @vite(['resources/css/app.css', 'resources/js/app.js'])
+
+
+    {{-- =====================================================
+         STYLE LAYOUT
+    ====================================================== --}}
+
     <style>
+
+        /* =====================================================
+           RESET
+        ===================================================== */
 
         * {
             box-sizing: border-box;
         }
 
-
         html,
         body {
             margin: 0;
             padding: 0;
+            width: 100%;
             min-height: 100%;
         }
 
-
         body {
-
             font-family: Arial, sans-serif;
-
             background: #eef4fc;
-
             color: #1f2937;
-
         }
 
 
         /* =====================================================
            APP LAYOUT
-        ====================================================== */
+        ===================================================== */
 
         .app-layout {
-
+            width: 100%;
             min-height: 100vh;
-
         }
 
 
-        /*
-        |--------------------------------------------------------------------------
-        | SIDEBAR
-        |--------------------------------------------------------------------------
-        | JANGAN DIUBAH.
-        | Sidebar tetap menggunakan file milik teman.
-        */
+        /* =====================================================
+           MAIN AREA
+           Sidebar = 270px
+        ===================================================== */
 
         .main-area {
-
             margin-left: 270px;
-
             width: calc(100% - 270px);
-
+            min-width: 0;
             min-height: 100vh;
-
+            box-sizing: border-box;
         }
 
 
         /* =====================================================
            TOP HEADER
-        ====================================================== */
+        ===================================================== */
 
         .top-header {
-
-            height: 104px;
+            width: 100%;
+            height: 75px;
 
             background: #ffffff;
 
             border-bottom: 1px solid #e5e7eb;
 
-            padding: 0 28px 10px;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+
+            padding: 0 30px;
 
             position: sticky;
-
             top: 0;
 
             z-index: 900;
-
         }
 
 
         /* =====================================================
-           BRAND / SYSTEM TITLE
-        ====================================================== */
+           HEADER LEFT
+        ===================================================== */
 
-        .header-brand {
-
-            height: 34px;
-
+        .header-left {
             display: flex;
-
             align-items: center;
+            gap: 25px;
 
-            justify-content: center;
-
+            min-width: 0;
         }
 
 
-        .header-brand-title {
+        /* =====================================================
+           PAGE TITLE
+        ===================================================== */
 
+        .page-title {
             margin: 0;
 
-            font-size: 11px;
-
+            font-size: 20px;
             font-weight: 700;
 
             letter-spacing: 0.3px;
 
             color: #111827;
 
-            text-transform: uppercase;
-
+            white-space: nowrap;
         }
 
 
         /* =====================================================
-           PAGE HEADER BAR
-        ====================================================== */
+           HEADER SEARCH
+        ===================================================== */
 
-        .page-header-bar {
+        .search-box {
+            width: 300px;
+            height: 40px;
 
-            height: 52px;
+            flex-shrink: 0;
 
-            width: 100%;
-
-            background: #e5e7eb;
+            background: #f5f6fa;
 
             border-radius: 12px;
 
             display: flex;
-
             align-items: center;
 
-            justify-content: space-between;
-
             padding: 0 15px 0 18px;
-
         }
 
 
-        /* =====================================================
-           PAGE TITLE
-        ====================================================== */
-
-        .page-title {
-
-            margin: 0;
-
+        .search-box i {
             font-size: 16px;
+            color: #6b7280;
 
-            font-weight: 700;
+            margin-right: 10px;
+        }
 
-            color: #111827;
 
-            text-transform: uppercase;
+        .search-box input {
+            width: 100%;
 
+            border: none;
+            outline: none;
+
+            background: transparent;
+
+            font-size: 13px;
+
+            color: #374151;
+        }
+
+
+        .search-box input::placeholder {
+            color: #9ca3af;
         }
 
 
         /* =====================================================
            HEADER RIGHT
-        ====================================================== */
+        ===================================================== */
 
         .header-right {
-
             display: flex;
-
             align-items: center;
 
             gap: 14px;
 
+            flex-shrink: 0;
         }
 
 
         /* =====================================================
            NOTIFICATION
-        ====================================================== */
+        ===================================================== */
 
         .notification-wrapper {
-
             position: relative;
 
+            width: 40px;
+            height: 40px;
+
             display: flex;
-
             align-items: center;
-
             justify-content: center;
-
         }
 
 
         .notification-button {
-
             width: 32px;
-
             height: 32px;
 
             border: none;
@@ -222,9 +226,7 @@
             color: #374151;
 
             display: flex;
-
             align-items: center;
-
             justify-content: center;
 
             cursor: pointer;
@@ -232,51 +234,41 @@
             border-radius: 7px;
 
             transition: 0.2s ease;
-
         }
 
 
         .notification-button:hover {
-
-            background: rgba(255,255,255,0.6);
-
+            background: #f3f4f6;
         }
 
 
         .notification-button i {
-
             font-size: 15px;
-
         }
 
 
         .notification-badge {
-
             position: absolute;
 
-            top: 6px;
+            top: 5px;
+            right: 4px;
 
-            right: 5px;
-
-            width: 6px;
-
-            height: 6px;
+            width: 8px;
+            height: 8px;
 
             background: #ef4444;
 
             border-radius: 50%;
 
             border: 1px solid white;
-
         }
 
 
         /* =====================================================
            USER PROFILE
-        ====================================================== */
+        ===================================================== */
 
         .user-info {
-
             display: flex;
 
             align-items: center;
@@ -286,15 +278,12 @@
             padding-left: 12px;
 
             border-left: 1px solid #d1d5db;
-
         }
 
 
         .user-avatar {
-
-            width: 32px;
-
-            height: 32px;
+            width: 38px;
+            height: 38px;
 
             flex-shrink: 0;
 
@@ -305,20 +294,16 @@
             color: #ffffff;
 
             display: flex;
-
             align-items: center;
-
             justify-content: center;
 
-            font-size: 12px;
+            font-size: 15px;
 
-            font-weight: 700;
-
+            font-weight: bold;
         }
 
 
         .user-text {
-
             display: flex;
 
             flex-direction: column;
@@ -326,12 +311,10 @@
             gap: 2px;
 
             min-width: 75px;
-
         }
 
 
         .user-name {
-
             font-size: 10px;
 
             font-weight: 700;
@@ -339,60 +322,103 @@
             color: #374151;
 
             line-height: 1.2;
-
         }
 
 
         .user-role {
-
             font-size: 8px;
 
             color: #9ca3af;
 
             line-height: 1.2;
-
         }
 
 
         /* =====================================================
            MAIN CONTENT
-        ====================================================== */
+        ===================================================== */
 
         .main-content {
+            width: 100%;
 
-            padding: 27px 28px 35px;
+            min-width: 0;
 
-            min-height: calc(100vh - 104px);
+            min-height: calc(100vh - 75px);
 
+            padding: 30px;
+
+            box-sizing: border-box;
+        }
+
+
+        /* =====================================================
+           HARDWARE PAGE
+           Supaya tabel Hardware tidak ikut menciut
+        ===================================================== */
+
+        .hardware-page {
+            width: 100% !important;
+
+            max-width: none !important;
+
+            min-width: 0;
+
+            box-sizing: border-box;
+        }
+
+
+        .hardware-table-container {
+            width: 100% !important;
+
+            max-width: none !important;
+
+            min-width: 0;
+
+            box-sizing: border-box;
         }
 
 
         /* =====================================================
            RESPONSIVE
-        ====================================================== */
+        ===================================================== */
+
+        @media (max-width: 1200px) {
+
+            .main-area {
+                margin-left: 270px;
+
+                width: calc(100% - 270px);
+            }
+
+            .search-box {
+                width: 240px;
+            }
+
+        }
+
 
         @media (max-width: 900px) {
 
             .main-area {
-
                 margin-left: 0;
 
                 width: 100%;
-
             }
 
             .top-header {
+                padding: 0 20px;
+            }
 
-                padding-left: 20px;
+            .header-left {
+                gap: 15px;
+            }
 
-                padding-right: 20px;
-
+            .search-box {
+                width: 240px;
             }
 
             .main-content {
-
                 padding: 22px 20px 30px;
-
             }
 
         }
@@ -401,45 +427,40 @@
         @media (max-width: 600px) {
 
             .top-header {
-
                 height: 90px;
-
-            }
-
-            .header-brand {
-
-                height: 29px;
-
-            }
-
-            .page-header-bar {
-
-                height: 46px;
-
             }
 
             .page-title {
+                font-size: 16px;
+            }
 
-                font-size: 13px;
-
+            .search-box {
+                width: 200px;
             }
 
             .user-text {
-
                 display: none;
-
             }
 
             .user-info {
-
                 padding-left: 8px;
-
             }
 
             .main-content {
-
                 padding: 18px 15px 25px;
+            }
 
+        }
+
+
+        @media (max-width: 500px) {
+
+            .search-box {
+                width: 160px;
+            }
+
+            .main-content {
+                padding: 15px;
             }
 
         }
@@ -460,7 +481,6 @@
 
     {{-- =================================================
          SIDEBAR
-         TIDAK DIUBAH
     ================================================== --}}
 
     @include('sidebar')
@@ -481,104 +501,109 @@
 
 
             {{-- =================================================
-                 INVENTORY IT ASSETS
+                 HEADER LEFT
             ================================================== --}}
 
-            <div class="header-brand">
+            <div class="header-left">
 
-                <h1 class="header-brand-title">
+                <h1 class="page-title">
 
-                    INVENTORY IT ASSETS
+                    @yield('page-title', 'Dashboard')
 
                 </h1>
+
+
+                {{-- SEARCH --}}
+
+                @hasSection('search')
+
+                    @yield('search')
+
+                @else
+
+                    <div class="search-box">
+
+                        <i class="bi bi-search"></i>
+
+                        <input
+                            type="text"
+                            placeholder="Search..."
+                        >
+
+                    </div>
+
+                @endif
 
             </div>
 
 
             {{-- =================================================
-                 PAGE HEADER BAR
+                 HEADER RIGHT
             ================================================== --}}
 
-            <div class="page-header-bar">
+            <div class="header-right">
 
 
-                {{-- PAGE TITLE --}}
+                {{-- NOTIFICATION --}}
 
-                <h2 class="page-title">
+                <div class="notification-wrapper">
 
-                    @yield('page-title', 'Dashboard')
+                    <button
+                        type="button"
+                        class="notification-button"
+                        title="Notifikasi"
+                    >
 
-                </h2>
+                        <i class="bi bi-bell"></i>
+
+                        <span class="notification-badge"></span>
+
+                    </button>
+
+                </div>
 
 
-                {{-- RIGHT SIDE --}}
+                {{-- USER --}}
 
-                <div class="header-right">
+                <div class="user-info">
 
 
-                    {{-- NOTIFICATION --}}
+                    {{-- AVATAR --}}
 
-                    <div class="notification-wrapper">
+                    <div class="user-avatar">
 
-                        <button
-                            type="button"
-                            class="notification-button"
-                            title="Notifikasi"
-                        >
-
-                            <i class="bi bi-bell"></i>
-
-                            <span class="notification-badge"></span>
-
-                        </button>
+                        {{ strtoupper(
+                            substr(
+                                auth()->user()->name ?? 'U',
+                                0,
+                                1
+                            )
+                        ) }}
 
                     </div>
 
 
-                    {{-- USER --}}
+                    {{-- USER NAME + ROLE --}}
 
-                    <div class="user-info">
+                    <div class="user-text">
 
+                        <span class="user-name">
 
-                        {{-- AVATAR --}}
+                            {{ auth()->user()->name ?? 'User' }}
 
-                        <div class="user-avatar">
+                        </span>
 
-                            {{ strtoupper(
-                                substr(
-                                    auth()->user()->name ?? 'U',
-                                    0,
-                                    1
+                        <span class="user-role">
+
+                            {{ ucwords(
+                                str_replace(
+                                    '_',
+                                    ' ',
+                                    auth()->user()->role ?? 'User'
                                 )
                             ) }}
 
-                        </div>
-
-
-                        {{-- USER NAME + ROLE --}}
-
-                        <div class="user-text">
-
-                            <span class="user-name">
-
-                                {{ auth()->user()->name ?? 'User' }}
-
-                            </span>
-
-                            <span class="user-role">
-
-                                {{ ucwords(
-                                    str_replace(
-                                        '_',
-                                        ' ',
-                                        auth()->user()->role ?? 'User'
-                                    )
-                                ) }}
-
-                            </span>
-
-                        </div>
-
+                        </span>
 
                     </div>
 
@@ -609,7 +634,6 @@
 
 
 @stack('scripts')
-
 
 </body>
 
