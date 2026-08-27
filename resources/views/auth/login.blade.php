@@ -204,30 +204,30 @@
         <form method="POST" action="{{ route('login') }}">
             @csrf
 
-            {{-- Email --}}
-            <div class="form-group">
-                <label for="Username">
-                    Username
-                </label>
+            {{-- Username --}}
+<div class="form-group">
+    <label for="username">
+        Username
+    </label>
 
-                <div class="input-wrapper">
-                    <span class="input-icon">✉</span>
+    <div class="input-wrapper">
+        <span class="input-icon">✉</span>
 
-                    <input
-                        type="text"
-                        id="uname"
-                        name="Username"
-                        value="{{ old('Username') }}"
-                        placeholder="Username"
-                        required
-                        autofocus
-                    >
-                </div>
+        <input
+            type="text"
+            id="username"
+            name="username"
+            value="{{ old('username') }}"
+            placeholder="Username"
+            required
+            autofocus
+        >
+    </div>
 
-                @error('Username')
-                    <div class="error">{{ $message }}</div>
-                @enderror
-            </div>
+    @error('username')
+        <div class="error">{{ $message }}</div>
+    @enderror
+</div>
 
             {{-- Password --}}
             <div class="form-group">

@@ -1,10 +1,14 @@
 <?php
 
 use Illuminate\Support\Facades\Route;
+use App\Http\Controllers\SDMController;
 use App\Http\Controllers\AuthController;
 use App\Http\Controllers\JaringanController;
 use App\Http\Controllers\DataCenterController;
 use App\Http\Controllers\SplpController;
+use App\Http\Controllers\HardwareController;
+use App\Http\Controllers\SoftwareController;
+use App\Http\Controllers\DataController;
 
 
 /*
@@ -13,15 +17,12 @@ use App\Http\Controllers\SplpController;
 |--------------------------------------------------------------------------
 */
 
-// Halaman login
 Route::get('/login', [AuthController::class, 'showLogin'])
     ->name('login');
 
-// Proses login
 Route::post('/login', [AuthController::class, 'login'])
     ->name('login.process');
 
-// Logout
 Route::post('/logout', [AuthController::class, 'logout'])
     ->name('logout');
 
@@ -41,7 +42,23 @@ Route::middleware('auth')->group(function () {
     */
 
     Route::get('/dashboard', function () {
-        return view('dashboard.index');
+
+        $role = auth()->user()->role;
+
+        return match ($role) {
+
+            'super_admin' => view('dashboard.super-admin'),
+
+            'operator' => view('dashboard.operator'),
+
+            'verifikator' => view('dashboard.verifikator'),
+
+            'pimpinan' => view('dashboard.pimpinan'),
+
+            default => abort(403, 'Role pengguna tidak valid.'),
+
+        };
+
     })->name('dashboard');
 
 
@@ -51,9 +68,17 @@ Route::middleware('auth')->group(function () {
     |--------------------------------------------------------------------------
     */
 
-    Route::get('/hardware', function () {
-        return view('hardware.index');
-    })->name('hardware.index');
+    Route::get('/hardware', [HardwareController::class, 'index'])
+        ->name('hardware.index');
+
+    Route::post('/hardware', [HardwareController::class, 'store'])
+        ->name('hardware.store');
+
+    Route::put('/hardware/{hardware}', [HardwareController::class, 'update'])
+        ->name('hardware.update');
+
+    Route::delete('/hardware/{hardware}', [HardwareController::class, 'destroy'])
+        ->name('hardware.destroy');
 
 
     /*
@@ -62,34 +87,22 @@ Route::middleware('auth')->group(function () {
     |--------------------------------------------------------------------------
     */
 
-    Route::get('/software', function () {
-        return view('software.index');
-    })->name('software.index');
+    Route::resource('software', SoftwareController::class)
+        ->except(['show']);
 
 
     /*
     |--------------------------------------------------------------------------
     | INFRASTRUKTUR
     |--------------------------------------------------------------------------
-    */
-
-
-    /*
+    | JARINGAN
     |--------------------------------------------------------------------------
-    | JARINGAN - CRUD
-    |--------------------------------------------------------------------------
-    |
-    | GET     /infrastruktur/jaringan
-    | POST    /infrastruktur/jaringan
-    | GET     /infrastruktur/jaringan/{jaringan}/edit
-    | PUT     /infrastruktur/jaringan/{jaringan}
-    | DELETE  /infrastruktur/jaringan/{jaringan}
-    |
     */
 
     Route::resource(
-        'infrastruktur/jaringan', JaringanController::class)
-    ->names([
+        'infrastruktur/jaringan',
+        JaringanController::class
+    )->names([
         'index'   => 'jaringan.index',
         'create'  => 'jaringan.create',
         'store'   => 'jaringan.store',
@@ -97,13 +110,12 @@ Route::middleware('auth')->group(function () {
         'edit'    => 'jaringan.edit',
         'update'  => 'jaringan.update',
         'destroy' => 'jaringan.destroy',
-    ])
-    ->except(['show']);
+    ])->except(['show']);
 
 
     /*
     |--------------------------------------------------------------------------
-    | DATA CENTER - CRUD
+    | DATA CENTER
     |--------------------------------------------------------------------------
     */
 
@@ -123,7 +135,7 @@ Route::middleware('auth')->group(function () {
 
     /*
     |--------------------------------------------------------------------------
-    | SPLP - CRUD
+    | SPLP
     |--------------------------------------------------------------------------
     */
 
@@ -147,9 +159,23 @@ Route::middleware('auth')->group(function () {
     |--------------------------------------------------------------------------
     */
 
-    Route::get('/data', function () {
-        return view('data.index');
-    })->name('data.index');
+    Route::get('/data', [DataController::class, 'index'])
+        ->name('data.index');
+
+    Route::post('/data', [DataController::class, 'store'])
+        ->name('data.store');
+
+    Route::get('/data/{id}/preview', [DataController::class, 'preview'])
+        ->name('data.preview');
+
+    Route::get('/data/{id}/edit', [DataController::class, 'edit'])
+        ->name('data.edit');
+
+    Route::put('/data/{id}', [DataController::class, 'update'])
+        ->name('data.update');
+
+    Route::delete('/data/{id}', [DataController::class, 'destroy'])
+        ->name('data.destroy');
 
 
     /*
@@ -158,9 +184,23 @@ Route::middleware('auth')->group(function () {
     |--------------------------------------------------------------------------
     */
 
-    Route::get('/sdm', function () {
-        return view('sdm.index');
-    })->name('sdm.index');
+    Route::get('/sdm', [SDMController::class, 'index'])
+        ->name('sdm.index');
+
+    Route::post('/sdm', [SDMController::class, 'store'])
+        ->name('sdm.store');
+
+    Route::put('/sdm/{sdm}', [SDMController::class, 'update'])
+        ->name('sdm.update');
+
+    Route::delete('/sdm/{sdm}', [SDMController::class, 'destroy'])
+        ->name('sdm.destroy');
+
+    Route::post('/sdm/{sdm}/approve', [SDMController::class, 'approve'])
+        ->name('sdm.approve');
+
+    Route::post('/sdm/{sdm}/reject', [SDMController::class, 'reject'])
+        ->name('sdm.reject');
 
 
     /*

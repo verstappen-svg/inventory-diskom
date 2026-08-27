@@ -12,10 +12,20 @@
         <div class="logo-box">
 
             <img src="{{ asset('images/logo-diskominfo.png') }}"
+<<<<<<< HEAD
+=======
+<<<<<<< HEAD
+>>>>>>> 6169ebcf4cdae25d56b05bc747c66aaa5fc790ba
                  alt="Logo Diskom">
 
             <img src="{{ asset('images/logo-pemkot.png') }}"
                  alt="Logo Kota Bekasi">
+=======
+                alt="Logo Diskominfo">
+
+            <img src="{{ asset('images/logo-pemkot.png') }}"
+                alt="Logo Kota Bekasi">
+>>>>>>> c312f5b16b5e652a59efe8b8a431ce069767414e
 
         </div>
 

@@ -14,27 +14,27 @@ class AuthController extends Controller
 
     public function login(Request $request)
     {
+        // Validasi sekaligus menyimpan credentials
         $credentials = $request->validate([
-            'Username' => ['required'],
+            'username' => ['required'],
             'password' => ['required'],
         ], [
-            'Username.required' => 'Username wajib diisi.',
-            'Username.Username' => 'Format Username tidak valid.',
+            'username.required' => 'Username wajib diisi.',
             'password.required' => 'Password wajib diisi.',
         ]);
 
+        // Coba autentikasi pengguna
         if (Auth::attempt($credentials)) {
+            $request->session()->regenerate();
 
-        $request->session()->regenerate();
-
-        return redirect()->intended('/dashboard');
+            return redirect()->intended(route('dashboard'));
         }
 
         return back()
             ->withErrors([
-                'Username' => 'Username atau password salah.',
+                'username' => 'Username atau password salah.',
             ])
-            ->onlyInput('Username');
+            ->onlyInput('username');
     }
 
     public function logout(Request $request)
@@ -44,6 +44,6 @@ class AuthController extends Controller
         $request->session()->invalidate();
         $request->session()->regenerateToken();
 
-        return redirect('/login');
+        return redirect()->route('login');
     }
 }
