@@ -6,6 +6,1010 @@
 @source '../**/*.js';
 
 @theme {
-    --font-sans: 'Instrument Sans', ui-sans-serif, system-ui, sans-serif, 'Apple Color Emoji', 'Segoe UI Emoji',
-        'Segoe UI Symbol', 'Noto Color Emoji';
+    --font-sans: 'Instrument Sans', ui-sans-serif, system-ui, sans-serif,
+        'Apple Color Emoji', 'Segoe UI Emoji', 'Segoe UI Symbol',
+        'Noto Color Emoji';
+}
+
+
+/* =========================================================
+   HARDWARE PAGE
+========================================================= */
+
+.hardware-page {
+    width: 100% !important;
+    max-width: none !important;
+    min-width: 0 !important;
+    box-sizing: border-box;
+    display: block;
+}
+
+
+/* =========================================================
+   SUMMARY CARDS
+========================================================= */
+
+.summary-cards {
+    width: 100%;
+    display: grid;
+    grid-template-columns: repeat(5, minmax(0, 1fr));
+    gap: 16px;
+    margin-bottom: 24px;
+    box-sizing: border-box;
+}
+
+.summary-card {
+    min-width: 0;
+    box-sizing: border-box;
+
+    background: #ffffff;
+    border: 1px solid #e5e7eb;
+    border-radius: 12px;
+
+    padding: 18px 20px;
+    min-height: 100px;
+
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    gap: 8px;
+
+    box-shadow: 0 1px 2px rgba(0, 0, 0, 0.02);
+}
+
+.summary-title {
+    font-size: 12px;
+    font-weight: 500;
+    color: #6b7280;
+}
+
+.summary-card strong {
+    font-size: 24px;
+    font-weight: 700;
+    color: #111827;
+}
+
+
+/* =========================================================
+   PERLU PERBAIKAN
+========================================================= */
+
+.summary-card.warning {
+    border-left: 4px solid #f59e0b;
+}
+
+.summary-card.warning strong {
+    color: #d97706;
+}
+
+
+/* =========================================================
+   RUSAK
+========================================================= */
+
+.summary-card.danger {
+    border-left: 4px solid #ef4444;
+}
+
+.summary-card.danger strong {
+    color: #dc2626;
+}
+
+
+/* =========================================================
+   TABLE CONTAINER
+========================================================= */
+
+.hardware-table-container {
+    width: 100% !important;
+    max-width: none !important;
+    min-width: 0 !important;
+
+    box-sizing: border-box;
+
+    margin-top: 24px;
+
+    background: #ffffff;
+    border: 1px solid #e5e7eb;
+    border-radius: 12px;
+
+    overflow: hidden;
+
+    display: block !important;
+
+    flex: 1 1 100% !important;
+    align-self: stretch !important;
+}
+
+
+/* =========================================================
+   TOOLBAR
+========================================================= */
+
+.table-toolbar {
+    width: 100%;
+    box-sizing: border-box;
+
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+
+    padding: 18px 20px;
+
+    border-bottom: 1px solid #e5e7eb;
+
+    gap: 15px;
+}
+
+.search-box {
+    display: flex;
+    align-items: center;
+
+    gap: 9px;
+
+    width: 260px;
+    min-width: 200px;
+
+    height: 38px;
+
+    padding: 0 12px;
+
+    border: 1px solid #d1d5db;
+    border-radius: 7px;
+
+    color: #9ca3af;
+
+    box-sizing: border-box;
+}
+
+.search-box input {
+    width: 100%;
+
+    border: none;
+    outline: none;
+
+    font-size: 13px;
+
+    color: #374151;
+
+    background: transparent;
+}
+
+.search-box input::placeholder {
+    color: #9ca3af;
+}
+
+
+/* =========================================================
+   TABLE ACTIONS
+========================================================= */
+
+.table-actions {
+    display: flex;
+    align-items: center;
+
+    gap: 10px;
+
+    flex-shrink: 0;
+}
+
+
+/* =========================================================
+   FILTER & ADD BUTTON
+========================================================= */
+
+.filter-btn,
+.add-btn {
+    height: 38px;
+
+    padding: 0 14px;
+
+    border-radius: 7px;
+
+    display: flex;
+    align-items: center;
+
+    gap: 7px;
+
+    font-size: 13px;
+    font-weight: 500;
+
+    cursor: pointer;
+
+    white-space: nowrap;
+}
+
+.filter-btn {
+    background: #ffffff;
+
+    border: 1px solid #d1d5db;
+
+    color: #374151;
+}
+
+.filter-btn:hover {
+    background: #f9fafb;
+}
+
+.add-btn {
+    border: none;
+
+    background: #2563eb;
+
+    color: #ffffff;
+}
+
+.add-btn:hover {
+    background: #1d4ed8;
+}
+
+.add-icon {
+    font-size: 18px;
+    line-height: 1;
+}
+
+
+/* =========================================================
+   TABLE WRAPPER
+========================================================= */
+
+.table-wrapper {
+    width: 100% !important;
+    max-width: 100% !important;
+    min-width: 0 !important;
+
+    box-sizing: border-box;
+
+    display: block;
+
+    overflow-x: auto;
+    overflow-y: hidden;
+}
+
+
+/* =========================================================
+   HARDWARE TABLE
+========================================================= */
+
+.hardware-table {
+    width: 100%;
+
+    /*
+     * Tabel minimal 1250px.
+     * Kalau layar lebih kecil, tabel bisa
+     * di-scroll horizontal.
+     */
+    min-width: 1250px;
+
+    border-collapse: collapse;
+
+    table-layout: fixed;
+}
+
+
+/* =========================================================
+   LEBAR KOLOM
+========================================================= */
+
+/* ASSET ID */
+.hardware-table th:nth-child(1),
+.hardware-table td:nth-child(1) {
+    width: 130px;
+}
+
+
+/* SPESIFIKASI */
+.hardware-table th:nth-child(2),
+.hardware-table td:nth-child(2) {
+    width: 320px;
+}
+
+
+/* JENIS BARANG */
+.hardware-table th:nth-child(3),
+.hardware-table td:nth-child(3) {
+    width: 150px;
+}
+
+
+/* TAHUN PEMBELIAN */
+.hardware-table th:nth-child(4),
+.hardware-table td:nth-child(4) {
+    width: 160px;
+}
+
+
+/* HARGA */
+.hardware-table th:nth-child(5),
+.hardware-table td:nth-child(5) {
+    width: 170px;
+}
+
+
+/* KONDISI */
+.hardware-table th:nth-child(6),
+.hardware-table td:nth-child(6) {
+    width: 150px;
+}
+
+
+/* VERIFIKASI */
+.hardware-table th:nth-child(7),
+.hardware-table td:nth-child(7) {
+    width: 190px;
+    min-width: 190px;
+
+    text-align: center;
+}
+
+
+/* AKSI */
+.hardware-table th:nth-child(8),
+.hardware-table td:nth-child(8) {
+    width: 100px;
+    min-width: 100px;
+
+    text-align: center;
+}
+
+
+/* =========================================================
+   TABLE HEADER
+========================================================= */
+
+.hardware-table thead {
+    background: #f8fafc;
+}
+
+.hardware-table th {
+    padding: 13px 18px;
+
+    text-align: left;
+
+    font-size: 11px;
+    font-weight: 600;
+
+    color: #6b7280;
+
+    letter-spacing: 0.03em;
+
+    white-space: nowrap;
+
+    border-bottom: 1px solid #e5e7eb;
+
+    box-sizing: border-box;
+}
+
+
+/* =========================================================
+   TABLE BODY
+========================================================= */
+
+.hardware-table td {
+    padding: 15px 18px;
+
+    font-size: 13px;
+
+    color: #374151;
+
+    border-bottom: 1px solid #f1f5f9;
+
+    vertical-align: middle;
+
+    box-sizing: border-box;
+}
+
+.hardware-table tbody tr:last-child td {
+    border-bottom: none;
+}
+
+.hardware-table tbody tr:hover {
+    background: #f8fafc;
+}
+
+
+/* =========================================================
+   ASSET ID
+========================================================= */
+
+.hardware-table td:first-child {
+    font-weight: 600;
+
+    color: #374151;
+
+    white-space: nowrap;
+}
+
+
+/* =========================================================
+   SPESIFIKASI
+========================================================= */
+
+.specification {
+    display: flex;
+    flex-direction: column;
+
+    gap: 4px;
+
+    width: 100%;
+    min-width: 0;
+}
+
+.specification strong {
+    font-size: 13px;
+
+    font-weight: 600;
+
+    color: #111827;
+
+    white-space: nowrap;
+
+    overflow: hidden;
+    text-overflow: ellipsis;
+}
+
+.specification small {
+    font-size: 12px;
+
+    color: #9ca3af;
+
+    white-space: nowrap;
+
+    overflow: hidden;
+
+    text-overflow: ellipsis;
+}
+
+
+/* =========================================================
+   TAHUN & HARGA
+========================================================= */
+
+.hardware-table td:nth-child(3),
+.hardware-table td:nth-child(4),
+.hardware-table td:nth-child(5),
+.hardware-table td:nth-child(6),
+.hardware-table td:nth-child(7),
+.hardware-table td:nth-child(8) {
+    white-space: nowrap;
+}
+
+
+/* =========================================================
+   CONDITION BADGE
+========================================================= */
+
+.condition {
+    display: inline-flex;
+
+    align-items: center;
+    justify-content: center;
+
+    min-width: 80px;
+
+    padding: 6px 10px;
+
+    border-radius: 20px;
+
+    font-size: 11px;
+    font-weight: 600;
+
+    line-height: 1.2;
+
+    text-align: center;
+
+    box-sizing: border-box;
+}
+
+
+/* Baik */
+
+.condition.good {
+    background: #ecfdf3;
+
+    color: #16a34a;
+}
+
+
+/* Perlu Perbaikan */
+
+.condition.repair {
+    background: #fff7ed;
+
+    color: #ea580c;
+}
+
+
+/* Rusak */
+
+.condition.damaged {
+    background: #fef2f2;
+
+    color: #dc2626;
+}
+
+
+/* =========================================================
+   VERIFICATION BADGE
+========================================================= */
+
+.verification-column {
+    min-width: 190px;
+
+    text-align: center;
+}
+
+.verification {
+    display: inline-flex;
+
+    align-items: center;
+    justify-content: center;
+
+    min-width: 155px;
+
+    padding: 6px 12px;
+
+    border-radius: 20px;
+
+    font-size: 11px;
+    font-weight: 600;
+
+    line-height: 1.2;
+
+    white-space: nowrap;
+
+    box-sizing: border-box;
+}
+
+
+/* =========================================================
+   MENUNGGU PERSETUJUAN
+   Warna kuning/oranye seperti Perlu Perbaikan
+========================================================= */
+
+.verification.pending {
+    background: #fff7ed;
+
+    color: #ea580c;
+}
+
+
+/* =========================================================
+   DISETUJUI
+   Warna hijau seperti Baik
+========================================================= */
+
+.verification.approved {
+    background: #ecfdf3;
+
+    color: #16a34a;
+}
+
+
+/* =========================================================
+   DITOLAK
+   Warna merah seperti Rusak
+========================================================= */
+
+.verification.rejected {
+    background: #fef2f2;
+
+    color: #dc2626;
+}
+
+
+/* =========================================================
+   ACTION BUTTONS
+========================================================= */
+
+.action-buttons {
+    display: flex;
+
+    align-items: center;
+    justify-content: center;
+
+    gap: 6px;
+
+    white-space: nowrap;
+}
+
+.edit-action,
+.delete-action {
+    width: 32px;
+    height: 32px;
+
+    display: flex;
+
+    align-items: center;
+    justify-content: center;
+
+    border-radius: 6px;
+
+    cursor: pointer;
+
+    font-size: 16px;
+}
+
+.edit-action {
+    border: 1px solid #dbeafe;
+
+    background: #eff6ff;
+
+    color: #2563eb;
+}
+
+.edit-action:hover {
+    background: #dbeafe;
+}
+
+.delete-action {
+    border: 1px solid #fee2e2;
+
+    background: #fef2f2;
+
+    color: #dc2626;
+}
+
+.delete-action:hover {
+    background: #fee2e2;
+}
+
+
+/* =========================================================
+   TABLE FOOTER
+========================================================= */
+
+.table-footer {
+    width: 100%;
+
+    box-sizing: border-box;
+
+    display: flex;
+
+    align-items: center;
+
+    justify-content: space-between;
+
+    padding: 16px 20px;
+
+    border-top: 1px solid #e5e7eb;
+
+    gap: 15px;
+}
+
+.showing-text {
+    font-size: 12px;
+
+    color: #6b7280;
+}
+
+.pagination {
+    display: flex;
+
+    align-items: center;
+
+    gap: 4px;
+
+    flex-shrink: 0;
+}
+
+.page-arrow,
+.page-number {
+    width: 32px;
+    height: 32px;
+
+    display: flex;
+
+    align-items: center;
+    justify-content: center;
+
+    border: 1px solid #e5e7eb;
+
+    background: #ffffff;
+
+    color: #6b7280;
+
+    border-radius: 6px;
+
+    font-size: 13px;
+
+    cursor: pointer;
+}
+
+.page-number.active {
+    background: #2563eb;
+
+    border-color: #2563eb;
+
+    color: #ffffff;
+}
+
+.page-arrow:hover,
+.page-number:hover {
+    background: #f3f4f6;
+}
+
+.page-number.active:hover {
+    background: #1d4ed8;
+}
+
+
+/* =========================================================
+   FORM TAMBAH / EDIT HARDWARE
+========================================================= */
+
+.hardware-form-overlay {
+    display: none;
+
+    position: fixed;
+
+    inset: 0;
+
+    background: rgba(0, 0, 0, 0.45);
+
+    align-items: center;
+    justify-content: center;
+
+    padding: 20px;
+
+    z-index: 9999;
+
+    overflow-y: auto;
+}
+
+.hardware-form-overlay.active {
+    display: flex;
+}
+
+
+/* =========================================================
+   MODAL
+========================================================= */
+
+.hardware-form-modal {
+    width: 680px;
+
+    max-width: 100%;
+
+    background: #ffffff;
+
+    border-radius: 12px;
+
+    overflow: hidden;
+
+    margin: auto;
+}
+
+
+/* =========================================================
+   FORM HEADER
+========================================================= */
+
+.hardware-form-header {
+    display: flex;
+
+    align-items: flex-start;
+
+    justify-content: space-between;
+
+    padding: 16px 30px 12px;
+}
+
+.hardware-form-header h2 {
+    margin: 0;
+
+    font-size: 22px;
+
+    font-weight: 700;
+
+    color: #111111;
+}
+
+.hardware-form-header p {
+    margin: 3px 0 0;
+
+    font-size: 12px;
+
+    color: #333333;
+}
+
+.hardware-form-close {
+    border: none;
+
+    background: transparent;
+
+    font-size: 30px;
+
+    line-height: 1;
+
+    color: #555555;
+
+    cursor: pointer;
+}
+
+
+/* =========================================================
+   FORM BODY
+========================================================= */
+
+.hardware-form-body {
+    background: #d3d3d3;
+
+    padding: 23px 30px 18px;
+
+    max-height: 60vh;
+
+    overflow-y: auto;
+}
+
+.hardware-form-group {
+    margin-bottom: 14px;
+}
+
+.hardware-form-group label {
+    display: block;
+
+    margin-bottom: 6px;
+
+    font-size: 12px;
+
+    color: #333333;
+}
+
+.hardware-form-group input,
+.hardware-form-group select {
+    width: 100%;
+
+    height: 40px;
+
+    padding: 0 12px;
+
+    border: none;
+
+    border-radius: 8px;
+
+    background: #ffffff;
+
+    box-sizing: border-box;
+
+    font-size: 13px;
+
+    color: #333333;
+}
+
+.hardware-form-group input::placeholder {
+    color: #bdbdbd;
+}
+
+.hardware-form-group input:focus,
+.hardware-form-group select:focus {
+    outline: 2px solid #100d7c;
+}
+
+
+/* =========================================================
+   TAHUN + HARGA
+========================================================= */
+
+.hardware-form-row {
+    display: grid;
+
+    grid-template-columns: 1fr 1fr;
+
+    gap: 30px;
+}
+
+
+/* =========================================================
+   FORM FOOTER
+========================================================= */
+
+.hardware-form-footer {
+    display: flex;
+
+    justify-content: flex-end;
+
+    align-items: center;
+
+    gap: 18px;
+
+    padding: 12px 25px;
+
+    background: #ffffff;
+}
+
+.hardware-btn-batal,
+.hardware-btn-simpan {
+    height: 40px;
+
+    padding: 0 25px;
+
+    border-radius: 8px;
+
+    font-size: 13px;
+
+    font-weight: 600;
+
+    cursor: pointer;
+}
+
+.hardware-btn-batal {
+    background: #ffffff;
+
+    border: 1px solid #d3d3e5;
+
+    color: #111111;
+}
+
+.hardware-btn-simpan {
+    background: #0b087c;
+
+    border: 1px solid #0b087c;
+
+    color: #ffffff;
+}
+
+
+/* =========================================================
+   RESPONSIVE
+========================================================= */
+
+@media (max-width: 1100px) {
+
+    .summary-cards {
+        grid-template-columns: repeat(3, minmax(0, 1fr));
+    }
+
+}
+
+
+@media (max-width: 700px) {
+
+    .summary-cards {
+        grid-template-columns: repeat(2, minmax(0, 1fr));
+    }
+
+    .table-toolbar {
+        align-items: stretch;
+
+        flex-direction: column;
+    }
+
+    .search-box {
+        width: 100%;
+    }
+
+    .table-actions {
+        justify-content: flex-end;
+    }
+
+}
+
+
+@media (max-width: 600px) {
+
+    .summary-cards {
+        grid-template-columns: 1fr;
+    }
+
+    .hardware-form-modal {
+        width: 100%;
+    }
+
+    .hardware-form-body {
+        padding: 20px;
+    }
+
+    .hardware-form-row {
+        grid-template-columns: 1fr;
+
+        gap: 0;
+    }
+
+    .table-footer {
+        align-items: flex-start;
+
+        flex-direction: column;
+    }
+
 }
