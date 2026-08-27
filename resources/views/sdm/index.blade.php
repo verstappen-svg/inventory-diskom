@@ -1,49 +1,20 @@
-<!DOCTYPE html>
-<html lang="id">
-<head>
-<meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Inventory IT Assets - Human Resource Management</title>
+@extends('layouts.app')
+
+@section('title', 'SDM - Inventory IT Assets')
+@section('page-title', 'Human Resource Management')
+
+@section('content')
+
 <style>
   :root{
     --blue-dark:#0b2b52;
-    --blue-mid:#123a6b;
     --blue-active:#0e63c9;
-    --bg:#eef2f7;
-    --card-bg:#ffffff;
-    --text-dark:#16243a;
     --border:#e3e8ef;
     --green:#22b573;
     --red:#e6483f;
     --radius:14px;
     --shadow:0 2px 10px rgba(16,40,80,.06);
   }
-  *{box-sizing:border-box;}
-  body{
-    margin:0;
-    font-family:'Segoe UI', Roboto, Arial, sans-serif;
-    background:var(--bg);
-    color:var(--text-dark);
-  }
-  .app{display:flex;min-height:100vh;}
-  .main{flex:1;padding:22px 30px;}
-
-  .topbar{
-    text-align:center;background:#f3f5f8;border-radius:12px;
-    padding:14px 20px;display:flex;align-items:center;justify-content:center;
-    position:relative;margin-bottom:22px;
-  }
-  .topbar h1{font-size:19px;margin:0;font-weight:700;color:#1c2c47;}
-  .top-right{
-    position:absolute;right:18px;top:50%;transform:translateY(-50%);
-    display:flex;align-items:center;gap:14px;
-  }
-  .bell{font-size:17px;color:#5b6b84;cursor:pointer;}
-  .profile{display:flex;align-items:center;gap:8px;}
-  .profile img{width:32px;height:32px;border-radius:50%;object-fit:cover;}
-  .profile .name{font-size:12px;color:#1c2c47;line-height:1.1;}
-  .profile .role{font-size:10px;color:#8a97ab;}
-
   .stats{display:grid;grid-template-columns:repeat(3,1fr);gap:18px;margin-bottom:22px;}
   .stat-card{border-radius:var(--radius);padding:18px 20px;box-shadow:var(--shadow);}
   .stat-card .label{font-size:12.5px;font-weight:600;margin-bottom:8px;}
@@ -53,7 +24,7 @@
   .stat-3{background:#eafaf0;} .stat-3 .label{color:#1fb673;}
 
   .panel{
-    background:var(--card-bg);border-radius:var(--radius);
+    background:#fff;border-radius:var(--radius);
     box-shadow:var(--shadow);padding:18px 20px 10px;
   }
   .panel-top{display:flex;align-items:center;gap:12px;margin-bottom:16px;}
@@ -104,11 +75,19 @@
 
   table{width:100%;border-collapse:collapse;font-size:13px;}
   thead th{
-    text-align:left;color:#8a97ab;font-weight:600;font-size:11.5px;
-    text-transform:uppercase;letter-spacing:.4px;padding:10px 12px;
-    border-bottom:1px solid var(--border);
+    text-align:left;
+    color:#8a97ab;
+    font-weight:600;
+    font-size:11.5px;
+    text-transform:uppercase;
+    letter-spacing:.4px;
+    padding:14px 16px;
+    border-bottom:2px solid var(--border);
+    white-space:nowrap;
   }
-  tbody td{padding:14px 12px;border-bottom:1px solid var(--border);color:#2b3a54;vertical-align:middle;}
+  tbody td{padding:18px 16px;border-bottom:1px solid var(--border);color:#2b3a54;vertical-align:middle;line-height:1.5;}
+  tbody tr{transition:background 0.15s;}
+  tbody tr:last-child td{border-bottom:none;}
   tbody tr:hover{background:#fafbfd;}
   .nip{font-weight:600;}
   .nip small{display:block;font-weight:400;color:#8a97ab;font-size:11px;}
@@ -125,6 +104,16 @@
   }
   .icon-btn.edit{background:var(--green);}
   .icon-btn.delete{background:var(--red);}
+  .icon-btn.approve{background:#22c55e;}
+  .icon-btn.reject{background:#f59e0b;}
+
+  .badge{
+  display:inline-block;padding:5px 12px;border-radius:20px;
+  font-size:11px;font-weight:700;
+  }
+  .badge-pending{background:#fef3c7;color:#d97706;}
+  .badge-approved{background:#dcfce7;color:#16a34a;}
+  .badge-rejected{background:#fee2e2;color:#dc2626;}
   .table-footer{
     display:flex;justify-content:space-between;align-items:center;
     padding:14px 4px 16px;font-size:12px;color:#8a97ab;
@@ -132,7 +121,7 @@
 
   .overlay{
     position:fixed;inset:0;background:rgba(10,20,40,.55);
-    display:none;align-items:center;justify-content:center;z-index:100;
+    display:none;align-items:center;justify-content:center;z-index:1100;
   }
   .overlay.show{display:flex;}
   .modal{
@@ -152,7 +141,6 @@
   .field input[type="file"]{padding:8px 10px;}
   .field input:focus{border-color:var(--blue-active);}
   .field small{color:#8a97ab;display:block;margin-top:4px;font-size:11px;}
-  .field small.error{color:var(--red);}
   .modal-actions{display:flex;justify-content:flex-end;gap:10px;}
   .btn-cancel{background:#fff;border:1px solid var(--border);color:#3b4b63;padding:10px 20px;border-radius:9px;font-size:13px;font-weight:600;cursor:pointer;}
   .btn-save{background:var(--blue-dark);color:#fff;padding:10px 22px;border-radius:9px;font-size:13px;font-weight:600;border:none;cursor:pointer;}
@@ -171,134 +159,141 @@
     table{font-size:12px;}
   }
 </style>
-</head>
-<body>
-<div class="app">
-  <main class="main">
-    <div class="topbar">
-      <h1>HUMAN RESOURCE MANAGEMENT</h1>
-      <div class="top-right">
-        <div class="bell">🔔</div>
-        <div class="profile">
-          <img src="https://api.iconify.design/mdi/account-circle.svg?color=%230e63c9" alt="avatar">
-          <div>
-            <div class="name">Jamaludin</div>
-            <div class="role">Operator</div>
-          </div>
+
+@if(session('success'))
+  <div class="alert">{{ session('success') }}</div>
+@endif
+
+@if($errors->any())
+  <div class="alert-error">
+    Gagal menyimpan data:
+    <ul style="margin:6px 0 0 18px;padding:0;">
+      @foreach($errors->all() as $error)
+        <li>{{ $error }}</li>
+      @endforeach
+    </ul>
+  </div>
+@endif
+
+<div class="stats">
+  <div class="stat-card stat-1">
+    <div class="label">Total Personel</div>
+    <div class="value">{{ $sdm->total() ?? $sdm->count() }}</div>
+  </div>
+  <div class="stat-card stat-2">
+    <div class="label">Sertifikasi Aktif</div>
+    <div class="value">{{ $aktif ?? 0 }}</div>
+  </div>
+  <div class="stat-card stat-3">
+    <div class="label">Sertifikasi Berakhir</div>
+    <div class="value">{{ $berakhir ?? 0 }}</div>
+  </div>
+</div>
+
+<div class="panel">
+  <div class="panel-top">
+    <div class="search-box">
+      🔍 <input id="searchInput" type="text" placeholder="Search...">
+    </div>
+
+    <div class="filter-wrapper">
+      <button class="btn btn-outline" id="filterBtn" type="button">☰ Filter</button>
+      <div class="filter-dropdown" id="filterDropdown">
+        <div class="filter-dropdown-title">Filter berdasarkan Jabatan</div>
+        @php
+          $jabatanList = $sdm->pluck('jabatan')->unique()->sort()->values();
+        @endphp
+        @foreach($jabatanList as $jab)
+          <label class="filter-checkbox">
+            <input type="checkbox" class="jabatan-filter" value="{{ $jab }}">
+            {{ $jab }}
+          </label>
+        @endforeach
+        <div class="filter-actions">
+          <button type="button" class="filter-reset" id="filterReset">Reset</button>
+          <button type="button" class="filter-apply" id="filterApply">Terapkan</button>
         </div>
       </div>
     </div>
 
-    @if(session('success'))
-      <div class="alert">{{ session('success') }}</div>
-    @endif
+    <button class="btn btn-primary" id="openModalBtn" type="button">+ Add</button>
+  </div>
 
-    @if($errors->any())
-      <div class="alert-error">
-        Gagal menyimpan data:
-        <ul style="margin:6px 0 0 18px;padding:0;">
-          @foreach($errors->all() as $error)
-            <li>{{ $error }}</li>
-          @endforeach
-        </ul>
-      </div>
-    @endif
+  <table>
+    <thead>
+      <tr>
+        <th>NIP / ID</th>
+        <th>NAMA</th>
+        <th>JABATAN</th>
+        <th>JENIS KOMPETENSI</th>
+        <th>MASA BERLAKU</th>
+        <th>DOKUMEN</th>
+        <th>VERIFIKASI</th>
+        <th>KOMENTAR</th>
+        <th>AKSI</th>
+      </tr>
+    </thead>
+    <tbody id="tableBody">
+      @forelse($sdm as $row)
+      <tr data-jabatan="{{ $row->jabatan }}">
+        <td class="nip">{{ $row->nip }}<small>{{ $row->kode_dk }}</small></td>
+        <td>{{ $row->nama }}</td>
+        <td>{{ $row->jabatan }}</td>
+        <td>{{ $row->kompetensi }}</td>
+        <td>{{ \Carbon\Carbon::parse($row->masa_berlaku)->translatedFormat('d F Y') }}</td>
+        <td>
+          @if($row->dokumen)
+            <a class="file-btn" href="{{ Storage::url($row->dokumen) }}" target="_blank" rel="noopener">Lihat File</a>
+          @else
+            <span class="file-btn" style="opacity:.5">Tidak ada</span>
+          @endif
+        </td>
+        <td>
+          @if($row->status_verifikasi == 'disetujui')
+            <span class="badge badge-approved">Disetujui</span>
+          @elseif($row->status_verifikasi == 'ditolak')
+            <span class="badge badge-rejected">Ditolak</span>
+          @else
+            <span class="badge badge-pending">Menunggu Disetujui</span>
+          @endif
+        </td>
+        <td>
+          @if($row->catatan_verifikasi)
+            <span style="font-size:12px;color:#6b7280;">{{ $row->catatan_verifikasi }}</span>
+          @else
+            <span style="font-size:12px;color:#c1c7d0;">-</span>
+          @endif
+        </td>
+        <td class="actions">
+          <button type="button" class="icon-btn edit" title="Edit"
+            onclick="openEditModal({{ $row->id }}, '{{ $row->nip }}', '{{ addslashes($row->nama) }}', '{{ addslashes($row->jabatan) }}', '{{ addslashes($row->kompetensi) }}', '{{ $row->masa_berlaku }}', {{ $row->dokumen ? 'true' : 'false' }})">✎</button>
+          <form action="{{ route('sdm.destroy', $row->id) }}" method="POST" onsubmit="return confirm('Hapus data ini?')" style="display:inline">
+          @csrf
+          @method('DELETE')
+          <button type="submit" class="icon-btn delete" title="Hapus">🗑</button>
+          </form>
+        </td>
+      </tr>
+      @empty
+      <tr>
+        <td colspan="7" style="text-align:center;color:#8a97ab;padding:24px;">Belum ada data SDM.</td>
+      </tr>
+      @endforelse
+    </tbody>
+  </table>
 
-    <div class="stats">
-      <div class="stat-card stat-1">
-        <div class="label">Total Personel</div>
-        <div class="value">{{ $sdm->total() ?? $sdm->count() }}</div>
-      </div>
-      <div class="stat-card stat-2">
-        <div class="label">Sertifikasi Aktif</div>
-        <div class="value">{{ $aktif ?? 0 }}</div>
-      </div>
-      <div class="stat-card stat-3">
-        <div class="label">Sertifikasi Berakhir</div>
-        <div class="value">{{ $berakhir ?? 0 }}</div>
-      </div>
-    </div>
-
-    <div class="panel">
-      <div class="panel-top">
-        <div class="search-box">
-          🔍 <input id="searchInput" type="text" placeholder="Search...">
-        </div>
-
-        <div class="filter-wrapper">
-          <button class="btn btn-outline" id="filterBtn" type="button">☰ Filter</button>
-          <div class="filter-dropdown" id="filterDropdown">
-            <div class="filter-dropdown-title">Filter berdasarkan Jabatan</div>
-            @php
-              $jabatanList = $sdm->pluck('jabatan')->unique()->sort()->values();
-            @endphp
-            @foreach($jabatanList as $jab)
-              <label class="filter-checkbox">
-                <input type="checkbox" class="jabatan-filter" value="{{ $jab }}">
-                {{ $jab }}
-              </label>
-            @endforeach
-            <div class="filter-actions">
-              <button type="button" class="filter-reset" id="filterReset">Reset</button>
-              <button type="button" class="filter-apply" id="filterApply">Terapkan</button>
-            </div>
-          </div>
-        </div>
-
-        <button class="btn btn-primary" id="openModalBtn" type="button">+ Add</button>
-      </div>
-
-      <table>
-        <thead>
-          <tr>
-            <th>NIP / ID</th>
-            <th>NAMA</th>
-            <th>JABATAN</th>
-            <th>JENIS KOMPETENSI</th>
-            <th>MASA BERLAKU</th>
-            <th>DOKUMEN</th>
-            <th>AKSI</th>
-          </tr>
-        </thead>
-        <tbody id="tableBody">
-          @forelse($sdm as $row)
-          <tr data-jabatan="{{ $row->jabatan }}">
-            <td class="nip">{{ $row->nip }}<small>{{ $row->kode_dk }}</small></td>
-            <td>{{ $row->nama }}</td>
-            <td>{{ $row->jabatan }}</td>
-            <td>{{ $row->kompetensi }}</td>
-            <td>{{ \Carbon\Carbon::parse($row->masa_berlaku)->translatedFormat('d F Y') }}</td>
-            <td>
-              @if($row->dokumen)
-                <a class="file-btn" href="{{ Storage::url($row->dokumen) }}" target="_blank" rel="noopener">Lihat File</a>
-              @else
-                <span class="file-btn" style="opacity:.5">Tidak ada</span>
-              @endif
-            </td>
-            <td class="actions">
-              <button type="button" class="icon-btn edit" title="Edit"
-                onclick="openEditModal({{ $row->id }}, '{{ $row->nip }}', '{{ addslashes($row->nama) }}', '{{ addslashes($row->jabatan) }}', '{{ addslashes($row->kompetensi) }}', '{{ $row->masa_berlaku }}', {{ $row->dokumen ? 'true' : 'false' }})">✎</button>
-              <form action="{{ route('sdm.destroy', $row->id) }}" method="POST" onsubmit="return confirm('Hapus data ini?')" style="display:inline">
-                @csrf
-                @method('DELETE')
-                <button type="submit" class="icon-btn delete" title="Hapus">🗑</button>
-              </form>
-            </td>
-          </tr>
-          @empty
-          <tr>
-            <td colspan="7" style="text-align:center;color:#8a97ab;padding:24px;">Belum ada data SDM.</td>
-          </tr>
-          @endforelse
-        </tbody>
-      </table>
-
-      <div class="table-footer">
-        <span>Showing {{ $sdm->count() }} of {{ $sdm->total() ?? $sdm->count() }} entries</span>
-        <div>{{ $sdm->links() ?? '' }}</div>
-      </div>
-    </div>
-  </main>
+  <div class="table-footer">
+  <span>Showing {{ $sdm->count() }} of {{ $sdm->total() ?? $sdm->count() }} entries</span>
+  <div style="display:flex;gap:6px;">
+    @for($i = 1; $i <= $sdm->lastPage(); $i++)
+      <a href="{{ $sdm->url($i) }}"
+         style="width:26px;height:26px;border-radius:6px;display:flex;align-items:center;justify-content:center;
+         border:1px solid #e3e8ef;color:#3b4b63;text-decoration:none;font-size:12px;font-weight:600;
+         {{ $sdm->currentPage() == $i ? 'background:#0e63c9;color:#fff;border-color:#0e63c9;' : '' }}">
+        {{ $i }}
+      </a>
+    @endfor
+  </div>
 </div>
 
 <!-- MODAL: Edit Data SDM -->
@@ -399,8 +394,10 @@
   </div>
 </div>
 
+@endsection
+
+@push('scripts')
 <script>
-  // ===== Search + Filter Jabatan (digabung) =====
   function applyFilters(){
     const checked = Array.from(document.querySelectorAll('.jabatan-filter:checked')).map(cb => cb.value);
     const searchQuery = document.getElementById('searchInput').value.toLowerCase();
@@ -435,14 +432,12 @@
     applyFilters();
   });
 
-  // ===== Modal Tambah =====
   const overlay = document.getElementById('overlay');
   document.getElementById('openModalBtn').addEventListener('click', ()=> overlay.classList.add('show'));
   document.getElementById('closeModalBtn').addEventListener('click', ()=> overlay.classList.remove('show'));
   document.getElementById('cancelBtn').addEventListener('click', ()=> overlay.classList.remove('show'));
   overlay.addEventListener('click', (e)=>{ if(e.target === overlay) overlay.classList.remove('show'); });
 
-  // ===== Modal Edit =====
   const overlayEdit = document.getElementById('overlayEdit');
   const editForm = document.getElementById('editForm');
 
@@ -463,10 +458,8 @@
   document.getElementById('cancelEditBtn').addEventListener('click', ()=> overlayEdit.classList.remove('show'));
   overlayEdit.addEventListener('click', (e)=>{ if(e.target === overlayEdit) overlayEdit.classList.remove('show'); });
 
-  // Kalau ada error validasi saat tambah, buka lagi modal Tambah otomatis
   @if($errors->any() && old('nip'))
     overlay.classList.add('show');
   @endif
 </script>
-</body>
-</html>
+@endpush

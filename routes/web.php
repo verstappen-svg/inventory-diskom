@@ -26,9 +26,9 @@ Route::post('/logout', [AuthController::class, 'logout'])->name('logout');
 Route::middleware('auth')->group(function () {
 
     // Dashboard
-    Route::get('/dashboard', function () {
-        return view('dashboard.index');
-    })->name('dashboard');
+Route::get('/dashboard', function () {
+    return view('dashboard.index');
+})->name('dashboard');
 
     // Hardware
     Route::get('/hardware', [HardwareController::class, 'index'])->name('hardware.index');
@@ -62,6 +62,8 @@ Route::middleware('auth')->group(function () {
     Route::post('/sdm', [SDMController::class, 'store'])->name('sdm.store');
     Route::put('/sdm/{sdm}', [SDMController::class, 'update'])->name('sdm.update');
     Route::delete('/sdm/{sdm}', [SDMController::class, 'destroy'])->name('sdm.destroy');
+    Route::post('/sdm/{sdm}/approve', [SDMController::class, 'approve'])->name('sdm.approve');
+    Route::post('/sdm/{sdm}/reject', [SDMController::class, 'reject'])->name('sdm.reject');
 
     // Laporan
     Route::get('/laporan', function () {

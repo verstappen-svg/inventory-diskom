@@ -97,4 +97,16 @@ class SDMController extends Controller
 
         return redirect()->route('sdm.index')->with('success', 'Data SDM berhasil dihapus.');
     }
+
+    public function approve(Sdm $sdm)
+    {
+        $sdm->update(['status_verifikasi' => 'disetujui']);
+        return redirect()->route('sdm.index')->with('success', 'Data berhasil disetujui.');
+    }
+
+    public function reject(Sdm $sdm)
+    {
+        $sdm->update(['status_verifikasi' => 'ditolak']);
+        return redirect()->route('sdm.index')->with('success', 'Data ditolak.');
+    }
 }
