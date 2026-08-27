@@ -40,7 +40,16 @@ Route::middleware('auth')->group(function () {
 
     // Hardware
     Route::get('/hardware', [HardwareController::class, 'index'])
-        ->name('hardware.index');
+    ->name('hardware.index');
+
+    Route::post('/hardware', [HardwareController::class, 'store'])
+    ->name('hardware.store');
+
+    Route::put('/hardware/{hardware}', [HardwareController::class, 'update'])
+    ->name('hardware.update');
+
+    Route::delete('/hardware/{hardware}', [HardwareController::class, 'destroy'])
+    ->name('hardware.destroy');
 
 
     // Software
