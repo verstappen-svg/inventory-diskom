@@ -61,9 +61,7 @@
         ====================================================== */
 
         .app-layout {
-
             min-height: 100vh;
-
         }
 
 
@@ -72,13 +70,11 @@
         ====================================================== */
 
         .main-area {
-
             margin-left: 270px;
 
             min-height: 100vh;
 
             width: calc(100% - 270px);
-
         }
 
 
@@ -87,7 +83,6 @@
         ====================================================== */
 
         .top-header {
-
             height: 75px;
 
             background: white;
@@ -107,7 +102,6 @@
             top: 0;
 
             z-index: 900;
-
         }
 
 
@@ -116,18 +110,15 @@
         ====================================================== */
 
         .header-left {
-
             display: flex;
 
             align-items: center;
 
             gap: 20px;
-
         }
 
 
         .page-title {
-
             font-size: 20px;
 
             font-weight: 700;
@@ -135,16 +126,28 @@
             color: #075985;
 
             margin: 0;
+        }
 
+
+        /* =====================================================
+           HEADER RIGHT
+        ====================================================== */
+
+        .header-right {
+            display: flex;
+
+            align-items: center;
+
+            gap: 20px;
         }
 
 
         /* =====================================================
            SEARCH
+           HANYA MUNCUL DI DASHBOARD
         ====================================================== */
 
         .search-box {
-
             width: 300px;
 
             height: 40px;
@@ -160,23 +163,19 @@
             align-items: center;
 
             padding: 0 15px;
-
         }
 
 
         .search-box i {
-
             font-size: 16px;
 
             color: #9ca3af;
 
             margin-right: 9px;
-
         }
 
 
         .search-box input {
-
             width: 100%;
 
             border: none;
@@ -188,29 +187,11 @@
             font-size: 13px;
 
             color: #374151;
-
         }
 
 
         .search-box input::placeholder {
-
             color: #9ca3af;
-
-        }
-
-
-        /* =====================================================
-           HEADER RIGHT
-        ====================================================== */
-
-        .header-right {
-
-            display: flex;
-
-            align-items: center;
-
-            gap: 20px;
-
         }
 
 
@@ -219,7 +200,6 @@
         ====================================================== */
 
         .notification-button {
-
             width: 40px;
 
             height: 40px;
@@ -239,19 +219,15 @@
             cursor: pointer;
 
             color: #075985;
-
         }
 
 
         .notification-button i {
-
             font-size: 21px;
-
         }
 
 
         .notification-badge {
-
             position: absolute;
 
             top: 5px;
@@ -267,7 +243,6 @@
             border-radius: 50%;
 
             border: 2px solid white;
-
         }
 
 
@@ -276,18 +251,15 @@
         ====================================================== */
 
         .user-info {
-
             display: flex;
 
             align-items: center;
 
             gap: 10px;
-
         }
 
 
         .user-avatar {
-
             width: 38px;
 
             height: 38px;
@@ -307,38 +279,31 @@
             font-size: 15px;
 
             font-weight: bold;
-
         }
 
 
         .user-text {
-
             display: flex;
 
             flex-direction: column;
 
             gap: 2px;
-
         }
 
 
         .user-name {
-
             font-size: 13px;
 
             font-weight: 700;
 
             color: #374151;
-
         }
 
 
         .user-role {
-
             font-size: 11px;
 
             color: #9ca3af;
-
         }
 
 
@@ -347,11 +312,9 @@
         ====================================================== */
 
         .main-content {
-
             padding: 30px;
 
             min-height: calc(100vh - 75px);
-
         }
 
 
@@ -359,46 +322,50 @@
            RESPONSIVE
         ====================================================== */
 
-        @media (max-width: 900px) {
+        @media (max-width: 1000px) {
 
             .main-area {
-
                 margin-left: 0;
 
                 width: 100%;
-
             }
 
 
             .search-box {
-
-                width: 220px;
-
+                width: 230px;
             }
 
         }
 
 
-        @media (max-width: 700px) {
-
-            .page-title {
-
-                display: none;
-
-            }
-
+        @media (max-width: 750px) {
 
             .search-box {
-
                 width: 200px;
-
             }
 
 
             .user-text {
-
                 display: none;
+            }
 
+        }
+
+
+        @media (max-width: 600px) {
+
+            .page-title {
+                font-size: 17px;
+            }
+
+
+            .search-box {
+                width: 170px;
+            }
+
+
+            .header-right {
+                gap: 5px;
             }
 
         }
@@ -431,14 +398,16 @@
         <div class="main-area">
 
 
-            {{-- =============================================
+            {{-- =================================================
                  HEADER
-            ============================================== --}}
+            ================================================== --}}
 
             <header class="top-header">
 
 
-                {{-- HEADER LEFT --}}
+                {{-- =============================================
+                     JUDUL HALAMAN
+                ============================================== --}}
 
                 <div class="header-left">
 
@@ -448,14 +417,22 @@
 
                     </h1>
 
+                </div>
 
-                    {{-- SEARCH --}}
 
-                    @hasSection('search')
+                {{-- =============================================
+                     HEADER RIGHT
+                ============================================== --}}
 
-                        @yield('search')
+                <div class="header-right">
 
-                    @else
+
+                    {{-- =========================================
+                         SEARCH
+                         HANYA DASHBOARD
+                    ========================================== --}}
+
+                    @if(request()->routeIs('dashboard'))
 
                         <div class="search-box">
 
@@ -470,17 +447,14 @@
 
                     @endif
 
-                </div>
 
+                    {{-- =========================================
+                         NOTIFICATION
+                    ========================================== --}}
 
-                {{-- HEADER RIGHT --}}
-
-                <div class="header-right">
-
-
-                    {{-- NOTIFICATION --}}
-
-                    <button class="notification-button">
+                    <button
+                        type="button"
+                        class="notification-button">
 
                         <i class="bi bi-bell"></i>
 
@@ -489,7 +463,9 @@
                     </button>
 
 
-                    {{-- USER --}}
+                    {{-- =========================================
+                         USER
+                    ========================================== --}}
 
                     <div class="user-info">
 
@@ -512,14 +488,15 @@
 
                     </div>
 
+
                 </div>
 
             </header>
 
 
-            {{-- =============================================
+            {{-- =================================================
                  CONTENT
-            ============================================== --}}
+            ================================================== --}}
 
             <main class="main-content">
 
@@ -534,6 +511,7 @@
 
 
     @stack('scripts')
+
 
 </body>
 
