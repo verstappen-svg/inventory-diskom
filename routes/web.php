@@ -2,6 +2,7 @@
 
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\AuthController;
+use App\Http\Controllers\SoftwareController;
 
 
 /*
@@ -31,25 +32,60 @@ Route::post('/logout', [AuthController::class, 'logout'])
 
 Route::middleware('auth')->group(function () {
 
-    // Dashboard
+    /*
+    |--------------------------------------------------------------------------
+    | DASHBOARD
+    |--------------------------------------------------------------------------
+    */
+
     Route::get('/dashboard', function () {
-        return view('dashboard.index');
+
+        $role = auth()->user()->role;
+
+        return match ($role) {
+
+            'super_admin' => view('dashboard.super-admin'),
+
+            'operator' => view('dashboard.operator'),
+
+            'verifikator' => view('dashboard.verifikator'),
+
+            'pimpinan' => view('dashboard.pimpinan'),
+
+            default => abort(403, 'Role pengguna tidak valid.'),
+
+        };
+
     })->name('dashboard');
 
 
-    // Hardware
+    /*
+    |--------------------------------------------------------------------------
+    | HARDWARE
+    |--------------------------------------------------------------------------
+    */
+
     Route::get('/hardware', function () {
         return view('hardware.index');
     });
 
 
-    // Software
-    Route::get('/software', function () {
-        return view('software.index');
-    });
+    /*
+    |--------------------------------------------------------------------------
+    | SOFTWARE
+    |--------------------------------------------------------------------------
+    */
+
+    Route::resource('software', SoftwareController::class)
+        ->except(['show']);
 
 
-    // Infrastruktur
+    /*
+    |--------------------------------------------------------------------------
+    | INFRASTRUKTUR
+    |--------------------------------------------------------------------------
+    */
+
     Route::get('/infrastruktur/jaringan', function () {
         return view('infrastruktur.jaringan');
     });
@@ -63,19 +99,34 @@ Route::middleware('auth')->group(function () {
     });
 
 
-    // Data
+    /*
+    |--------------------------------------------------------------------------
+    | DATA
+    |--------------------------------------------------------------------------
+    */
+
     Route::get('/data', function () {
         return view('data.index');
     });
 
 
-    // SDM
+    /*
+    |--------------------------------------------------------------------------
+    | SDM
+    |--------------------------------------------------------------------------
+    */
+
     Route::get('/sdm', function () {
         return view('sdm.index');
     });
 
 
-    // Laporan
+    /*
+    |--------------------------------------------------------------------------
+    | LAPORAN
+    |--------------------------------------------------------------------------
+    */
+
     Route::get('/laporan', function () {
         return view('laporan.index');
     });

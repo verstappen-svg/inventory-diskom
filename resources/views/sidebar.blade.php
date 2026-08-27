@@ -11,11 +11,11 @@
 
         <div class="logo-box">
 
-            <img src="{{ asset('storage/images/logo-diskom.png') }}"
-                 alt="Logo Diskom">
+            <img src="{{ asset('images/logo-diskominfo.png') }}"
+                alt="Logo Diskominfo">
 
-            <img src="{{ asset('storage/images/logo-kotabekasi.png') }}"
-                 alt="Logo Kota Bekasi">
+            <img src="{{ asset('images/logo-pemkot.png') }}"
+                alt="Logo Kota Bekasi">
 
         </div>
 
