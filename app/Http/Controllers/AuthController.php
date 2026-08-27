@@ -14,17 +14,37 @@ class AuthController extends Controller
 
     public function login(Request $request)
     {
+<<<<<<< HEAD
         $credentials = $request->validate([
             'username' => ['required'],
             'password' => ['required'],
         ], [
             'username.required' => 'Username wajib diisi.',
+=======
+        $request->validate([
+            'Username' => ['required'],
+            'password' => ['required'],
+        ], [
+            'Username.required' => 'Username wajib diisi.',
+>>>>>>> c312f5b16b5e652a59efe8b8a431ce069767414e
             'password.required' => 'Password wajib diisi.',
         ]);
 
+        $credentials = [
+            'username' => $request->Username,
+            'password' => $request->password,
+        ];
+
         if (Auth::attempt($credentials)) {
+<<<<<<< HEAD
             $request->session()->regenerate();
             return redirect()->intended('/dashboard');
+=======
+
+            $request->session()->regenerate();
+
+            return redirect()->intended(route('dashboard'));
+>>>>>>> c312f5b16b5e652a59efe8b8a431ce069767414e
         }
 
         return back()
@@ -41,6 +61,6 @@ class AuthController extends Controller
         $request->session()->invalidate();
         $request->session()->regenerateToken();
 
-        return redirect('/login');
+        return redirect()->route('login');
     }
 }

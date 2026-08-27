@@ -3,7 +3,11 @@
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\SDMController;
 use App\Http\Controllers\AuthController;
+<<<<<<< HEAD
 use App\Http\Controllers\HardwareController;
+=======
+use App\Http\Controllers\SoftwareController;
+>>>>>>> c312f5b16b5e652a59efe8b8a431ce069767414e
 
 
 /*
@@ -25,6 +29,7 @@ Route::post('/logout', [AuthController::class, 'logout'])->name('logout');
 
 Route::middleware('auth')->group(function () {
 
+<<<<<<< HEAD
     // Dashboard
 Route::get('/dashboard', function () {
     return view('dashboard.index');
@@ -35,13 +40,66 @@ Route::get('/dashboard', function () {
     Route::post('/hardware', [HardwareController::class, 'store'])->name('hardware.store');
     Route::put('/hardware/{hardware}', [HardwareController::class, 'update'])->name('hardware.update');
     Route::delete('/hardware/{hardware}', [HardwareController::class, 'destroy'])->name('hardware.destroy');
+=======
+    /*
+    |--------------------------------------------------------------------------
+    | DASHBOARD
+    |--------------------------------------------------------------------------
+    */
 
-    // Software
-    Route::get('/software', function () {
-        return view('software.index');
+    Route::get('/dashboard', function () {
+
+        $role = auth()->user()->role;
+
+        return match ($role) {
+
+            'super_admin' => view('dashboard.super-admin'),
+
+            'operator' => view('dashboard.operator'),
+
+            'verifikator' => view('dashboard.verifikator'),
+
+            'pimpinan' => view('dashboard.pimpinan'),
+
+            default => abort(403, 'Role pengguna tidak valid.'),
+
+        };
+
+    })->name('dashboard');
+
+
+    /*
+    |--------------------------------------------------------------------------
+    | HARDWARE
+    |--------------------------------------------------------------------------
+    */
+
+    Route::get('/hardware', function () {
+        return view('hardware.index');
     });
 
+>>>>>>> c312f5b16b5e652a59efe8b8a431ce069767414e
+
+    /*
+    |--------------------------------------------------------------------------
+    | SOFTWARE
+    |--------------------------------------------------------------------------
+    */
+
+    Route::resource('software', SoftwareController::class)
+        ->except(['show']);
+
+<<<<<<< HEAD
     // Infrastruktur
+=======
+
+    /*
+    |--------------------------------------------------------------------------
+    | INFRASTRUKTUR
+    |--------------------------------------------------------------------------
+    */
+
+>>>>>>> c312f5b16b5e652a59efe8b8a431ce069767414e
     Route::get('/infrastruktur/jaringan', function () {
         return view('infrastruktur.jaringan');
     });
@@ -52,11 +110,22 @@ Route::get('/dashboard', function () {
         return view('infrastruktur.splp');
     });
 
+<<<<<<< HEAD
     // Data
+=======
+
+    /*
+    |--------------------------------------------------------------------------
+    | DATA
+    |--------------------------------------------------------------------------
+    */
+
+>>>>>>> c312f5b16b5e652a59efe8b8a431ce069767414e
     Route::get('/data', function () {
         return view('data.index');
     });
 
+<<<<<<< HEAD
     // SDM
     Route::get('/sdm', [SDMController::class, 'index'])->name('sdm.index');
     Route::post('/sdm', [SDMController::class, 'store'])->name('sdm.store');
@@ -64,8 +133,26 @@ Route::get('/dashboard', function () {
     Route::delete('/sdm/{sdm}', [SDMController::class, 'destroy'])->name('sdm.destroy');
     Route::post('/sdm/{sdm}/approve', [SDMController::class, 'approve'])->name('sdm.approve');
     Route::post('/sdm/{sdm}/reject', [SDMController::class, 'reject'])->name('sdm.reject');
+=======
 
-    // Laporan
+    /*
+    |--------------------------------------------------------------------------
+    | SDM
+    |--------------------------------------------------------------------------
+    */
+
+    Route::get('/sdm', function () {
+        return view('sdm.index');
+    });
+
+>>>>>>> c312f5b16b5e652a59efe8b8a431ce069767414e
+
+    /*
+    |--------------------------------------------------------------------------
+    | LAPORAN
+    |--------------------------------------------------------------------------
+    */
+
     Route::get('/laporan', function () {
         return view('laporan.index');
     });
