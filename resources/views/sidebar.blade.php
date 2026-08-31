@@ -12,17 +12,10 @@
         <div class="logo-box">
 
             <img src="{{ asset('images/logo-diskominfo.png') }}"
-<<<<<<< HEAD
-                 alt="Logo Diskom">
+                 alt="Logo Diskominfo">
 
             <img src="{{ asset('images/logo-pemkot.png') }}"
                  alt="Logo Kota Bekasi">
-=======
-                alt="Logo Diskominfo">
-
-            <img src="{{ asset('images/logo-pemkot.png') }}"
-                alt="Logo Kota Bekasi">
->>>>>>> c312f5b16b5e652a59efe8b8a431ce069767414e
 
         </div>
 
@@ -39,16 +32,16 @@
 
     <nav class="menu">
 
-         {{-- DASHBOARD --}}
+        {{-- DASHBOARD --}}
         <a href="/dashboard"
-            class="menu-item {{ request()->is('dashboard') ? 'active' : '' }}">
+           class="menu-item {{ request()->is('dashboard') ? 'active' : '' }}">
 
             <i class="bi bi-grid-fill"></i>
 
             <span>Dashboard</span>
 
         </a>
-        
+
 
         {{-- HARDWARE --}}
         <a href="/hardware"
@@ -76,10 +69,7 @@
              INFRASTRUKTUR
         ================================================== --}}
 
-        
-
         <div class="infrastructure">
-            
 
             <button type="button"
                     id="infrastructure-button"
