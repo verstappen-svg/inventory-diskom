@@ -5,56 +5,77 @@
 @section('page-title', 'Hardware Management')
 
 @section('content')
+
 <div class="hardware-page">
 
-    {{-- SUMMARY CARDS --}}
+    {{-- =========================================================
+         SUMMARY CARDS
+    ========================================================= --}}
+
     <div class="summary-cards">
 
         <div class="summary-card">
-    <span class="summary-title">Jumlah Barang</span>
-    <strong>{{ $jumlahBarang }}</strong>
-</div>
+            <span class="summary-title">Jumlah Barang</span>
+            <strong>{{ $jumlahBarang }}</strong>
+        </div>
 
-<div class="summary-card">
-    <span class="summary-title">Harga Barang</span>
-    <strong>
-        Rp. {{ number_format($hargaBarang, 0, ',', '.') }}
-    </strong>
-</div>
+        <div class="summary-card">
+            <span class="summary-title">Harga Barang</span>
+            <strong>
+                Rp. {{ number_format($hargaBarang, 0, ',', '.') }}
+            </strong>
+        </div>
 
-<div class="summary-card warning">
-    <span class="summary-title">Perlu Perbaikan</span>
-    <strong>{{ $perluPerbaikan }}</strong>
-</div>
+        <div class="summary-card warning">
+            <span class="summary-title">Perlu Perbaikan</span>
+            <strong>{{ $perluPerbaikan }}</strong>
+        </div>
 
-<div class="summary-card danger">
-    <span class="summary-title">Rusak</span>
-    <strong>{{ $rusak }}</strong>
-</div>
+        <div class="summary-card danger">
+            <span class="summary-title">Rusak</span>
+            <strong>{{ $rusak }}</strong>
+        </div>
 
-<div class="summary-card">
-    <span class="summary-title">Tersedia</span>
-    <strong>{{ $tersedia }}</strong>
-</div>
-</div>
+        <div class="summary-card">
+            <span class="summary-title">Tersedia</span>
+            <strong>{{ $tersedia }}</strong>
+        </div>
+
+    </div>
 
 
-    {{-- TABLE CONTAINER --}}
+    {{-- =========================================================
+         TABLE CONTAINER
+    ========================================================= --}}
+
     <div class="hardware-table-container">
 
-        {{-- TABLE TOOLBAR --}}
+        {{-- =====================================================
+             TABLE TOOLBAR
+        ===================================================== --}}
+
         <div class="table-toolbar">
 
             {{-- SEARCH --}}
             <div class="search-box">
+
                 <svg width="17" height="17" viewBox="0 0 24 24" fill="none">
-                    <circle cx="11" cy="11" r="6.5"
-                            stroke="currentColor"
-                            stroke-width="1.8"/>
-                    <path d="M16 16L21 21"
-                          stroke="currentColor"
-                          stroke-width="1.8"
-                          stroke-linecap="round"/>
+
+                    <circle
+                        cx="11"
+                        cy="11"
+                        r="6.5"
+                        stroke="currentColor"
+                        stroke-width="1.8"
+                    />
+
+                    <path
+                        d="M16 16L21 21"
+                        stroke="currentColor"
+                        stroke-width="1.8"
+                        stroke-linecap="round"
+                    />
+
                 </svg>
 
                 <input
@@ -62,31 +83,46 @@
                     id="hardwareSearch"
                     placeholder="Search..."
                 >
+
             </div>
 
 
             {{-- ACTION BUTTONS --}}
             <div class="table-actions">
 
-                <button class="filter-btn" type="button">
+                {{-- FILTER --}}
+                <button
+                    class="filter-btn"
+                    type="button"
+                >
+
                     <svg width="16" height="16" viewBox="0 0 24 24" fill="none">
-                        <path d="M4 6H20"
-                              stroke="currentColor"
-                              stroke-width="1.7"
-                              stroke-linecap="round"/>
 
-                        <path d="M7 12H17"
-                              stroke="currentColor"
-                              stroke-width="1.7"
-                              stroke-linecap="round"/>
+                        <path
+                            d="M4 6H20"
+                            stroke="currentColor"
+                            stroke-width="1.7"
+                            stroke-linecap="round"
+                        />
 
-                        <path d="M10 18H14"
-                              stroke="currentColor"
-                              stroke-width="1.7"
-                              stroke-linecap="round"/>
+                        <path
+                            d="M7 12H17"
+                            stroke="currentColor"
+                            stroke-width="1.7"
+                            stroke-linecap="round"
+                        />
+
+                        <path
+                            d="M10 18H14"
+                            stroke="currentColor"
+                            stroke-width="1.7"
+                            stroke-linecap="round"
+                        />
+
                     </svg>
 
                     Filter
+
                 </button>
 
 
@@ -96,8 +132,11 @@
                     type="button"
                     onclick="openHardwareForm()"
                 >
+
                     <span class="add-icon">+</span>
+
                     Add
+
                 </button>
 
             </div>
@@ -105,22 +144,44 @@
         </div>
 
 
-        {{-- TABLE --}}
+        {{-- =====================================================
+             TABLE
+        ===================================================== --}}
+
         <div class="table-wrapper">
 
             <table class="hardware-table">
 
                 <thead>
+
                     <tr>
+
                         <th>ASSET ID</th>
+
                         <th>SPESIFIKASI</th>
+
                         <th>JENIS BARANG</th>
+
                         <th>TAHUN PEMBELIAN</th>
+
                         <th>HARGA</th>
+
                         <th>KONDISI</th>
-                        <th class="verification-column">VERIFIKASI</th>
-                        <th class="action-column">AKSI</th>
+
+                        <th class="verification-column">
+                            VERIFIKASI
+                        </th>
+
+                        <th class="comment-column">
+                            KOMENTAR
+                        </th>
+
+                        <th class="action-column">
+                            AKSI
+                        </th>
+
                     </tr>
+
                 </thead>
 
 
@@ -130,14 +191,21 @@
 
                         <tr>
 
-                            {{-- ASSET ID --}}
+                            {{-- =================================================
+                                 ASSET ID
+                            ================================================== --}}
+
                             <td>
                                 {{ $hardware->asset_id }}
                             </td>
 
 
-                            {{-- SPESIFIKASI --}}
+                            {{-- =================================================
+                                 SPESIFIKASI
+                            ================================================== --}}
+
                             <td>
+
                                 <div class="specification">
 
                                     <strong>
@@ -149,28 +217,42 @@
                                     </small>
 
                                 </div>
+
                             </td>
 
 
-                            {{-- JENIS BARANG --}}
+                            {{-- =================================================
+                                 JENIS BARANG
+                            ================================================== --}}
+
                             <td>
                                 {{ $hardware->jenis_barang }}
                             </td>
 
 
-                            {{-- TAHUN PEMBELIAN --}}
+                            {{-- =================================================
+                                 TAHUN PEMBELIAN
+                            ================================================== --}}
+
                             <td>
                                 {{ $hardware->tahun_pembelian }}
                             </td>
 
 
-                            {{-- HARGA --}}
+                            {{-- =================================================
+                                 HARGA
+                            ================================================== --}}
+
                             <td>
-                                Rp. {{ number_format($hardware->harga, 0, ',', '.') }}
+                                Rp.
+                                {{ number_format($hardware->harga, 0, ',', '.') }}
                             </td>
 
 
-                            {{-- KONDISI --}}
+                            {{-- =================================================
+                                 KONDISI
+                            ================================================== --}}
+
                             <td>
 
                                 @if($hardware->kondisi === 'Baik')
@@ -182,7 +264,8 @@
                                 @elseif($hardware->kondisi === 'Perlu Perbaikan')
 
                                     <span class="condition repair">
-                                        Perlu<br>Perbaikan
+                                        Perlu<br>
+                                        Perbaikan
                                     </span>
 
                                 @elseif($hardware->kondisi === 'Rusak')
@@ -195,35 +278,82 @@
 
                             </td>
 
-                            {{-- VERIFIKASI --}}
-<td class="verification-column">
-    @if($hardware->verifikasi)
 
-        @if($hardware->verifikasi->status === 'Menunggu Persetujuan')
-            <span class="verification pending">
-                Menunggu Disetujui
-            </span>
+                            {{-- =================================================
+                                 VERIFIKASI
+                            ================================================== --}}
 
-        @elseif($hardware->verifikasi->status === 'Disetujui')
-            <span class="verification approved">
-                Disetujui
-            </span>
+                            <td class="verification-column">
 
-        @elseif($hardware->verifikasi->status === 'Ditolak')
-            <span class="verification rejected">
-                Ditolak
-            </span>
-        @endif
+                                @if($hardware->verifikasi)
 
-    @else
-        <span class="verification pending">
-            Belum Diverifikasi
-        </span>
-    @endif
-</td>
+                                    @if($hardware->verifikasi->status === 'Menunggu Persetujuan')
+
+                                        <span class="verification pending">
+                                            Menunggu Disetujui
+                                        </span>
+
+                                    @elseif($hardware->verifikasi->status === 'Disetujui')
+
+                                        <span class="verification approved">
+                                            Disetujui
+                                        </span>
+
+                                    @elseif($hardware->verifikasi->status === 'Ditolak')
+
+                                        <span class="verification rejected">
+                                            Ditolak
+                                        </span>
+
+                                    @endif
+
+                                @else
+
+                                    <span class="verification pending">
+                                        Belum Diverifikasi
+                                    </span>
+
+                                @endif
+
+                            </td>
 
 
-                            {{-- AKSI --}}
+                            {{-- =================================================
+                                 KOMENTAR
+                            ================================================== --}}
+
+                            <td class="comment-column">
+
+                                @if(
+                                    $hardware->verifikasi &&
+                                    $hardware->verifikasi->status === 'Ditolak' &&
+                                    $hardware->verifikasi->catatan
+                                )
+
+                                    <button
+                                        type="button"
+                                        class="comment-button"
+                                        onclick="showComment(@js($hardware->verifikasi->catatan))"
+                                        title="Lihat komentar"
+                                    >
+                                        💬
+                                    </button>
+
+                                @else
+
+                                    <span class="no-comment">
+                                        -
+                                    </span>
+
+                                @endif
+
+                            </td>
+
+
+                            {{-- =================================================
+                                 AKSI
+                            ================================================== --}}
+
                             <td>
 
                                 <div class="action-buttons">
@@ -248,6 +378,7 @@
                                     >
 
                                         @csrf
+
                                         @method('DELETE')
 
                                         <button
@@ -266,12 +397,18 @@
 
                         </tr>
 
+
                     @empty
 
                         <tr>
-                            <td colspan="7" style="text-align: center;">
+
+                            <td
+                                colspan="9"
+                                style="text-align: center;"
+                            >
                                 Belum ada data hardware.
                             </td>
+
                         </tr>
 
                     @endforelse
@@ -283,7 +420,70 @@
         </div>
 
 
-        {{-- TABLE FOOTER --}}
+        {{-- =========================================================
+             MODAL KOMENTAR
+             SATU SAJA, DI LUAR TABLE
+        ========================================================= --}}
+
+        <div
+            id="commentModal"
+            class="comment-modal-overlay"
+        >
+
+            <div class="comment-modal">
+
+                {{-- HEADER MODAL --}}
+                <div class="comment-modal-header">
+
+                    <h3>
+                        Komentar Verifikator
+                    </h3>
+
+                    <button
+                        type="button"
+                        class="comment-modal-close"
+                        onclick="closeCommentModal()"
+                    >
+                        ×
+                    </button>
+
+                </div>
+
+
+                {{-- BODY MODAL --}}
+                <div class="comment-modal-body">
+
+                    <div class="comment-box">
+
+                        <p id="commentText"></p>
+
+                    </div>
+
+                </div>
+
+
+                {{-- FOOTER MODAL --}}
+                <div class="comment-modal-footer">
+
+                    <button
+                        type="button"
+                        class="comment-close-btn"
+                        onclick="closeCommentModal()"
+                    >
+                        Tutup
+                    </button>
+
+                </div>
+
+            </div>
+
+        </div>
+
+
+        {{-- =========================================================
+             TABLE FOOTER
+        ========================================================= --}}
+
         <div class="table-footer">
 
             <span class="showing-text">
@@ -321,14 +521,16 @@
 </div>
 
 
-{{-- ========================================================= --}}
-{{-- FORM TAMBAH / EDIT HARDWARE --}}
-{{-- ========================================================= --}}
+{{-- =========================================================
+     FORM TAMBAH / EDIT HARDWARE
+========================================================= --}}
 
-<div id="hardwareFormOverlay" class="hardware-form-overlay">
+<div
+    id="hardwareFormOverlay"
+    class="hardware-form-overlay"
+>
 
     <div class="hardware-form-modal">
-
 
         {{-- HEADER FORM --}}
         <div class="hardware-form-header">
@@ -366,7 +568,6 @@
 
             @csrf
 
-            {{-- METHOD POST / PUT --}}
             <input
                 type="hidden"
                 name="_method"
@@ -375,11 +576,11 @@
             >
 
 
-            {{-- ISI FORM --}}
+            {{-- FORM BODY --}}
             <div class="hardware-form-body">
 
 
-                {{-- Nama Barang --}}
+                {{-- NAMA BARANG --}}
                 <div class="hardware-form-group">
 
                     <label for="nama_barang">
@@ -396,7 +597,7 @@
                 </div>
 
 
-                {{-- Spesifikasi --}}
+                {{-- SPESIFIKASI --}}
                 <div class="hardware-form-group">
 
                     <label for="spesifikasi">
@@ -412,7 +613,7 @@
                 </div>
 
 
-                {{-- Jenis Barang --}}
+                {{-- JENIS BARANG --}}
                 <div class="hardware-form-group">
 
                     <label for="jenis_barang">
@@ -424,7 +625,11 @@
                         name="jenis_barang"
                     >
 
-                        <option value="" selected disabled>
+                        <option
+                            value=""
+                            selected
+                            disabled
+                        >
                             Pilih jenis barang
                         </option>
 
@@ -461,11 +666,9 @@
                 </div>
 
 
-                {{-- Tahun + Harga --}}
+                {{-- TAHUN + HARGA --}}
                 <div class="hardware-form-row">
 
-
-                    {{-- Tahun Pembelian --}}
                     <div class="hardware-form-group">
 
                         <label for="tahun_pembelian">
@@ -482,7 +685,6 @@
                     </div>
 
 
-                    {{-- Harga --}}
                     <div class="hardware-form-group">
 
                         <label for="harga">
@@ -501,7 +703,7 @@
                 </div>
 
 
-                {{-- Kondisi --}}
+                {{-- KONDISI --}}
                 <div class="hardware-form-group">
 
                     <label for="kondisi">
@@ -513,7 +715,11 @@
                         name="kondisi"
                     >
 
-                        <option value="" selected disabled>
+                        <option
+                            value=""
+                            selected
+                            disabled
+                        >
                             Pilih kondisi
                         </option>
 
@@ -536,7 +742,7 @@
             </div>
 
 
-            {{-- FOOTER FORM --}}
+            {{-- FORM FOOTER --}}
             <div class="hardware-form-footer">
 
                 <button
@@ -563,67 +769,117 @@
 </div>
 
 
+{{-- =========================================================
+     JAVASCRIPT
+========================================================= --}}
+
 @push('scripts')
 
 <script>
 
 document.addEventListener('DOMContentLoaded', function () {
 
-
     /* =====================================================
        SEARCH HARDWARE
     ===================================================== */
 
-    const searchInput = document.getElementById('hardwareSearch');
+    const searchInput =
+        document.getElementById('hardwareSearch');
 
-    const rows = document.querySelectorAll(
-        '#hardwareTableBody tr'
-    );
-
-
-    searchInput.addEventListener('keyup', function () {
-
-        const searchValue = this.value.toLowerCase();
+    const rows =
+        document.querySelectorAll(
+            '#hardwareTableBody tr'
+        );
 
 
-        rows.forEach(function (row) {
+    if (searchInput) {
 
-            const rowText = row.textContent.toLowerCase();
+        searchInput.addEventListener(
+            'keyup',
+            function () {
+
+                const searchValue =
+                    this.value.toLowerCase();
 
 
-            if (rowText.includes(searchValue)) {
+                rows.forEach(function (row) {
 
-                row.style.display = '';
+                    const rowText =
+                        row.textContent.toLowerCase();
 
-            } else {
 
-                row.style.display = 'none';
+                    if (rowText.includes(searchValue)) {
+
+                        row.style.display = '';
+
+                    } else {
+
+                        row.style.display = 'none';
+
+                    }
+
+                });
 
             }
+        );
 
-        });
-
-    });
+    }
 
 
     /* =====================================================
-       TUTUP MODAL KLIK LUAR
+       TUTUP FORM KLIK DI LUAR
     ===================================================== */
 
-    const overlay = document.getElementById(
-        'hardwareFormOverlay'
-    );
+    const hardwareOverlay =
+        document.getElementById(
+            'hardwareFormOverlay'
+        );
 
 
-    overlay.addEventListener('click', function (event) {
+    if (hardwareOverlay) {
 
-        if (event.target === overlay) {
+        hardwareOverlay.addEventListener(
+            'click',
+            function (event) {
 
-            closeHardwareForm();
+                if (event.target === hardwareOverlay) {
 
-        }
+                    closeHardwareForm();
 
-    });
+                }
+
+            }
+        );
+
+    }
+
+
+    /* =====================================================
+       TUTUP MODAL KOMENTAR KLIK DI LUAR
+    ===================================================== */
+
+    const commentModal =
+        document.getElementById(
+            'commentModal'
+        );
+
+
+    if (commentModal) {
+
+        commentModal.addEventListener(
+            'click',
+            function (event) {
+
+                if (event.target === commentModal) {
+
+                    closeCommentModal();
+
+                }
+
+            }
+        );
+
+    }
 
 });
 
@@ -635,14 +891,14 @@ document.addEventListener('DOMContentLoaded', function () {
 function openHardwareForm()
 {
 
-    const form = document.getElementById(
-        'hardwareForm'
-    );
+    const form =
+        document.getElementById(
+            'hardwareForm'
+        );
 
 
-    /* Kembalikan ke mode TAMBAH */
-
-    form.action = "{{ route('hardware.store') }}";
+    form.action =
+        "{{ route('hardware.store') }}";
 
 
     document.getElementById(
@@ -650,11 +906,10 @@ function openHardwareForm()
     ).value = 'POST';
 
 
-    /* Judul */
-
     document.getElementById(
         'hardwareFormTitle'
-    ).textContent = 'Tambah Data Hardware';
+    ).textContent =
+        'Tambah Data Hardware';
 
 
     document.getElementById(
@@ -663,12 +918,8 @@ function openHardwareForm()
         'Masukan detail aset data hardware baru ke dalam sistem.';
 
 
-    /* Kosongkan form */
-
     form.reset();
 
-
-    /* Buka modal */
 
     document.getElementById(
         'hardwareFormOverlay'
@@ -678,48 +929,41 @@ function openHardwareForm()
 
 
 /* =========================================================
-   BUKA FORM EDIT
+   EDIT HARDWARE
 ========================================================= */
 
 function editHardware(id)
 {
 
-    /*
-     * Ambil semua data hardware
-     * yang dikirim dari Controller
-     */
-
-    const hardwares = @json($hardwares);
+    const hardwares =
+        @json($hardwares);
 
 
-    /*
-     * Cari data berdasarkan ID
-     */
-
-    const hardware = hardwares.find(
-        item => item.id === id
-    );
+    const hardware =
+        hardwares.find(
+            item => item.id === id
+        );
 
 
     if (!hardware) {
 
-        alert('Data hardware tidak ditemukan.');
+        alert(
+            'Data hardware tidak ditemukan.'
+        );
 
         return;
 
     }
 
 
-    const form = document.getElementById(
-        'hardwareForm'
-    );
+    const form =
+        document.getElementById(
+            'hardwareForm'
+        );
 
 
-    /* =====================================================
-       UBAH FORM MENJADI MODE EDIT
-    ===================================================== */
-
-    form.action = `/hardware/${id}`;
+    form.action =
+        `/hardware/${id}`;
 
 
     document.getElementById(
@@ -727,13 +971,10 @@ function editHardware(id)
     ).value = 'PUT';
 
 
-    /* =====================================================
-       UBAH JUDUL
-    ===================================================== */
-
     document.getElementById(
         'hardwareFormTitle'
-    ).textContent = 'Edit Data Hardware';
+    ).textContent =
+        'Edit Data Hardware';
 
 
     document.getElementById(
@@ -742,43 +983,41 @@ function editHardware(id)
         'Perbarui detail aset hardware yang dipilih.';
 
 
-    /* =====================================================
-       MASUKKAN DATA KE FORM
-    ===================================================== */
-
     document.getElementById(
         'nama_barang'
-    ).value = hardware.nama_barang;
+    ).value =
+        hardware.nama_barang;
 
 
     document.getElementById(
         'spesifikasi'
-    ).value = hardware.spesifikasi;
+    ).value =
+        hardware.spesifikasi;
 
 
     document.getElementById(
         'jenis_barang'
-    ).value = hardware.jenis_barang;
+    ).value =
+        hardware.jenis_barang;
 
 
     document.getElementById(
         'tahun_pembelian'
-    ).value = hardware.tahun_pembelian;
+    ).value =
+        hardware.tahun_pembelian;
 
 
     document.getElementById(
         'harga'
-    ).value = hardware.harga;
+    ).value =
+        hardware.harga;
 
 
     document.getElementById(
         'kondisi'
-    ).value = hardware.kondisi;
+    ).value =
+        hardware.kondisi;
 
-
-    /* =====================================================
-       BUKA MODAL
-    ===================================================== */
 
     document.getElementById(
         'hardwareFormOverlay'
@@ -796,6 +1035,36 @@ function closeHardwareForm()
 
     document.getElementById(
         'hardwareFormOverlay'
+    ).classList.remove('active');
+
+}
+
+
+/* =========================================================
+   MODAL KOMENTAR
+========================================================= */
+
+function showComment(comment)
+{
+
+    document.getElementById(
+        'commentText'
+    ).textContent =
+        comment;
+
+
+    document.getElementById(
+        'commentModal'
+    ).classList.add('active');
+
+}
+
+
+function closeCommentModal()
+{
+
+    document.getElementById(
+        'commentModal'
     ).classList.remove('active');
 
 }

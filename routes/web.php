@@ -1,8 +1,9 @@
 <?php
 
 use Illuminate\Support\Facades\Route;
-use App\Http\Controllers\HardwareController;
 use App\Http\Controllers\AuthController;
+use App\Http\Controllers\HardwareController;
+use App\Http\Controllers\VerifikasiHardwareController;
 
 
 /*
@@ -32,33 +33,65 @@ Route::post('/logout', [AuthController::class, 'logout'])
 
 Route::middleware('auth')->group(function () {
 
-    // Dashboard
+    /*
+    |--------------------------------------------------------------------------
+    | Dashboard
+    |--------------------------------------------------------------------------
+    */
+
     Route::get('/dashboard', function () {
         return view('dashboard.index');
     })->name('dashboard');
 
 
-    // Hardware
+    /*
+    |--------------------------------------------------------------------------
+    | Hardware
+    |--------------------------------------------------------------------------
+    */
+
     Route::get('/hardware', [HardwareController::class, 'index'])
-    ->name('hardware.index');
+        ->name('hardware.index');
 
     Route::post('/hardware', [HardwareController::class, 'store'])
-    ->name('hardware.store');
+        ->name('hardware.store');
 
     Route::put('/hardware/{hardware}', [HardwareController::class, 'update'])
-    ->name('hardware.update');
+        ->name('hardware.update');
 
     Route::delete('/hardware/{hardware}', [HardwareController::class, 'destroy'])
-    ->name('hardware.destroy');
+        ->name('hardware.destroy');
 
 
-    // Software
+    /*
+    |--------------------------------------------------------------------------
+    | Verifikasi Hardware
+    |--------------------------------------------------------------------------
+    */
+
+    Route::patch(
+        '/hardware/{hardware}/verifikasi',
+        [VerifikasiHardwareController::class, 'update']
+    )->name('hardware.verifikasi.update');
+
+
+    /*
+    |--------------------------------------------------------------------------
+    | Software
+    |--------------------------------------------------------------------------
+    */
+
     Route::get('/software', function () {
         return view('software.index');
     });
 
 
-    // Infrastruktur
+    /*
+    |--------------------------------------------------------------------------
+    | Infrastruktur
+    |--------------------------------------------------------------------------
+    */
+
     Route::get('/infrastruktur/jaringan', function () {
         return view('infrastruktur.jaringan');
     });
@@ -72,19 +105,34 @@ Route::middleware('auth')->group(function () {
     });
 
 
-    // Data
+    /*
+    |--------------------------------------------------------------------------
+    | Data
+    |--------------------------------------------------------------------------
+    */
+
     Route::get('/data', function () {
         return view('data.index');
     });
 
 
-    // SDM
+    /*
+    |--------------------------------------------------------------------------
+    | SDM
+    |--------------------------------------------------------------------------
+    */
+
     Route::get('/sdm', function () {
         return view('sdm.index');
     });
 
 
-    // Laporan
+    /*
+    |--------------------------------------------------------------------------
+    | Laporan
+    |--------------------------------------------------------------------------
+    */
+
     Route::get('/laporan', function () {
         return view('laporan.index');
     });
