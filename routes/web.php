@@ -6,6 +6,11 @@ use App\Http\Controllers\AuthController;
 use App\Http\Controllers\HardwareController;
 use App\Http\Controllers\SoftwareController;
 use App\Http\Controllers\DataController;
+use App\Http\Controllers\JaringanController;
+use App\Http\Controllers\SplpController;
+use App\Http\Controllers\DataCenterController;
+use App\Http\Controllers\LaporanController;
+
 
 /*
 |--------------------------------------------------------------------------
@@ -87,24 +92,52 @@ Route::middleware('auth')->group(function () {
         ->except(['show']);
 
 
-    /*
-    |--------------------------------------------------------------------------
-    | INFRASTRUKTUR
-    |--------------------------------------------------------------------------
-    */
+/*
+|--------------------------------------------------------------------------
+| INFRASTRUKTUR
+|--------------------------------------------------------------------------
+*/
 
-    Route::get('/infrastruktur/jaringan', function () {
-        return view('infrastruktur.jaringan');
-    });
+// Jaringan
+Route::get('/infrastruktur/jaringan', [JaringanController::class, 'index'])
+    ->name('jaringan.index');
 
-    Route::get('/infrastruktur/data-center', function () {
-        return view('infrastruktur.data-center');
-    });
+Route::post('/infrastruktur/jaringan', [JaringanController::class, 'store'])
+    ->name('jaringan.store');
 
-    Route::get('/infrastruktur/splp', function () {
-        return view('infrastruktur.splp');
-    });
+Route::put('/infrastruktur/jaringan/{id}', [JaringanController::class, 'update'])
+    ->name('jaringan.update');
 
+Route::delete('/infrastruktur/jaringan/{id}', [JaringanController::class, 'destroy'])
+    ->name('jaringan.destroy');
+
+
+// Data Center
+Route::get('/infrastruktur/data-center', [DataCenterController::class, 'index'])
+    ->name('data-center.index');
+
+Route::post('/infrastruktur/data-center', [DataCenterController::class, 'store'])
+    ->name('data-center.store');
+
+Route::put('/infrastruktur/data-center/{id}', [DataCenterController::class, 'update'])
+    ->name('data-center.update');
+
+Route::delete('/infrastruktur/data-center/{id}', [DataCenterController::class, 'destroy'])
+    ->name('data-center.destroy');
+
+
+// SPLP
+Route::get('/infrastruktur/splp', [SplpController::class, 'index'])
+    ->name('splp.index');
+
+Route::post('/infrastruktur/splp', [SplpController::class, 'store'])
+    ->name('splp.store');
+
+Route::put('/infrastruktur/splp/{id}', [SplpController::class, 'update'])
+    ->name('splp.update');
+
+Route::delete('/infrastruktur/splp/{id}', [SplpController::class, 'destroy'])
+    ->name('splp.destroy');
 
     /*
     |--------------------------------------------------------------------------
@@ -166,8 +199,9 @@ Route::middleware('auth')->group(function () {
     |--------------------------------------------------------------------------
     */
 
-    Route::get('/laporan', function () {
-        return view('laporan.index');
+    Route::get('/laporan', [LaporanController::class, 'index'])
+    ->name('laporan.index');
+
+
     });
 
-});

@@ -5,24 +5,33 @@
 
     <meta charset="UTF-8">
 
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="viewport"
+          content="width=device-width, initial-scale=1.0">
 
     <title>
         @yield('title', 'Inventory IT Assets')
     </title>
 
+
     {{-- =====================================================
          BOOTSTRAP ICONS
     ====================================================== --}}
+
     <link
         rel="stylesheet"
         href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css"
     >
 
+
     {{-- =====================================================
          VITE
     ====================================================== --}}
-    @vite(['resources/css/app.css', 'resources/js/app.js'])
+
+    @vite([
+        'resources/css/app.css',
+        'resources/js/app.js'
+    ])
+
 
     <style>
 
@@ -30,14 +39,16 @@
            RESET
         ===================================================== */
 
-        * {
+        *,
+        *::before,
+        *::after {
             box-sizing: border-box;
         }
 
         html,
         body {
-            margin: 0;
-            padding: 0;
+            margin: 0 !important;
+            padding: 0 !important;
             width: 100%;
             min-height: 100%;
         }
@@ -56,6 +67,9 @@
         .app-layout {
             width: 100%;
             min-height: 100vh;
+
+            margin: 0;
+            padding: 0;
         }
 
 
@@ -65,9 +79,15 @@
 
         .main-area {
             margin-left: 270px;
+
             width: calc(100% - 270px);
+
             min-width: 0;
             min-height: 100vh;
+
+            margin-top: 0;
+            padding-top: 0;
+
             box-sizing: border-box;
         }
 
@@ -82,6 +102,7 @@
 
             background: #ffffff;
 
+            border: none;
             border-bottom: 1px solid #e5e7eb;
 
             display: flex;
@@ -90,8 +111,11 @@
 
             padding: 0 30px;
 
+            margin: 0;
+
             position: sticky;
             top: 0;
+
             z-index: 900;
         }
 
@@ -103,13 +127,23 @@
         .header-left {
             display: flex;
             align-items: center;
+
             gap: 20px;
+
             min-width: 0;
+
+            height: 100%;
         }
 
 
+        /* =====================================================
+           PAGE TITLE
+        ===================================================== */
+
         .page-title {
             margin: 0;
+
+            padding: 0;
 
             font-size: 20px;
             font-weight: 700;
@@ -117,38 +151,41 @@
             color: #075985;
 
             white-space: nowrap;
+
+            line-height: 1;
         }
 
 
         /* =====================================================
            HEADER SEARCH
+           SEARCH HANYA UNTUK DASHBOARD
         ===================================================== */
 
         .top-header .search-box {
-            width: 300px;
-            height: 40px;
+            width: 340px;
+            height: 46px;
 
             flex-shrink: 0;
 
             background: #f5f6fa;
 
-            border: 1px solid #e5e7eb;
+            border: 1px solid #e1e5ec;
 
-            border-radius: 20px;
+            border-radius: 24px;
 
             display: flex;
             align-items: center;
 
-            padding: 0 15px;
+            padding: 0 16px;
         }
 
 
         .top-header .search-box i {
-            font-size: 16px;
+            font-size: 19px;
 
-            color: #9ca3af;
+            color: #8fa3bf;
 
-            margin-right: 9px;
+            margin-right: 12px;
         }
 
 
@@ -160,7 +197,7 @@
 
             background: transparent;
 
-            font-size: 13px;
+            font-size: 14px;
 
             color: #374151;
         }
@@ -182,6 +219,8 @@
             gap: 20px;
 
             flex-shrink: 0;
+
+            height: 100%;
         }
 
 
@@ -221,12 +260,12 @@
 
 
         .notification-button:hover {
-            background: rgba(255, 255, 255, 0.6);
+            background: #f3f4f6;
         }
 
 
         .notification-button i {
-            font-size: 15px;
+            font-size: 17px;
         }
 
 
@@ -243,7 +282,7 @@
 
             border-radius: 50%;
 
-            border: 1px solid white;
+            border: 1px solid #ffffff;
         }
 
 
@@ -327,6 +366,8 @@
 
             padding: 30px;
 
+            margin: 0;
+
             box-sizing: border-box;
         }
 
@@ -358,6 +399,21 @@
 
 
         /* =====================================================
+           LAPORAN PAGE
+        ===================================================== */
+
+        .laporan-page {
+            width: 100% !important;
+
+            max-width: none !important;
+
+            min-width: 0;
+
+            box-sizing: border-box;
+        }
+
+
+        /* =====================================================
            RESPONSIVE
         ===================================================== */
 
@@ -365,11 +421,12 @@
 
             .main-area {
                 margin-left: 270px;
+
                 width: calc(100% - 270px);
             }
 
             .top-header .search-box {
-                width: 240px;
+                width: 280px;
             }
 
         }
@@ -379,6 +436,7 @@
 
             .main-area {
                 margin-left: 0;
+
                 width: 100%;
             }
 
@@ -387,7 +445,7 @@
             }
 
             .top-header .search-box {
-                width: 220px;
+                width: 250px;
             }
 
             .main-content {
@@ -397,14 +455,42 @@
         }
 
 
-        @media (max-width: 600px) {
+        @media (max-width: 700px) {
 
             .top-header {
-                height: 90px;
+                height: 70px;
+
+                padding: 0 15px;
+            }
+
+            .header-left {
+                gap: 12px;
             }
 
             .page-title {
-                font-size: 13px;
+                font-size: 16px;
+            }
+
+            .top-header .search-box {
+                width: 210px;
+                height: 40px;
+            }
+
+            .header-right {
+                gap: 8px;
+            }
+
+        }
+
+
+        @media (max-width: 600px) {
+
+            .top-header {
+                height: 70px;
+            }
+
+            .page-title {
+                font-size: 14px;
             }
 
             .header-right {
@@ -415,12 +501,12 @@
                 padding-left: 8px;
             }
 
-            .top-header .search-box {
-                width: 200px;
-            }
-
             .user-text {
                 display: none;
+            }
+
+            .top-header .search-box {
+                width: 180px;
             }
 
             .main-content {
@@ -433,7 +519,7 @@
         @media (max-width: 500px) {
 
             .top-header .search-box {
-                width: 160px;
+                width: 150px;
             }
 
             .main-content {
@@ -444,6 +530,7 @@
 
     </style>
 
+
     @stack('styles')
 
 </head>
@@ -451,7 +538,9 @@
 
 <body>
 
+
 <div class="app-layout">
+
 
     {{-- =================================================
          SIDEBAR
@@ -468,41 +557,43 @@
 
 
         {{-- =================================================
-             HEADER
+             TOP HEADER
         ================================================== --}}
 
         <header class="top-header">
 
 
-            {{-- HEADER LEFT --}}
+            {{-- =================================================
+                 HEADER LEFT
+            ================================================== --}}
 
             <div class="header-left">
 
+
+                {{-- PAGE TITLE --}}
+
                 <h1 class="page-title">
-                    @yield('page-title', 'Dashboard')
+
+                    @yield(
+                        'page-title',
+                        'Dashboard'
+                    )
+
                 </h1>
 
 
-                {{-- SEARCH --}}
+                {{-- =================================================
+                     SEARCH HANYA DI DASHBOARD
+                ================================================== --}}
 
-                @hasSection('search')
+                @if(
+                    View::hasSection('dashboard-search')
+                )
 
-                    @yield('search')
-
-                @else
-
-                    <div class="search-box">
-
-                        <i class="bi bi-search"></i>
-
-                        <input
-                            type="text"
-                            placeholder="Search..."
-                        >
-
-                    </div>
+                    @yield('dashboard-search')
 
                 @endif
+
 
             </div>
 
@@ -514,7 +605,9 @@
             <div class="header-right">
 
 
-                {{-- NOTIFICATION --}}
+                {{-- =================================================
+                     NOTIFICATION
+                ================================================== --}}
 
                 <div class="notification-wrapper">
 
@@ -526,16 +619,23 @@
 
                         <i class="bi bi-bell"></i>
 
-                        <span class="notification-badge"></span>
+                        <span
+                            class="notification-badge">
+                        </span>
 
                     </button>
 
                 </div>
 
 
-                {{-- USER --}}
+                {{-- =================================================
+                     USER
+                ================================================== --}}
 
                 <div class="user-info">
+
+
+                    {{-- AVATAR --}}
 
                     <div class="user-avatar">
 
@@ -550,7 +650,10 @@
                     </div>
 
 
+                    {{-- USER TEXT --}}
+
                     <div class="user-text">
+
 
                         <span class="user-name">
 
@@ -571,17 +674,21 @@
 
                         </span>
 
+
                     </div>
+
 
                 </div>
 
+
             </div>
+
 
         </header>
 
 
         {{-- =================================================
-             CONTENT
+             MAIN CONTENT
         ================================================== --}}
 
         <main class="main-content">
@@ -593,10 +700,12 @@
 
     </div>
 
+
 </div>
 
 
 @stack('scripts')
+
 
 </body>
 
