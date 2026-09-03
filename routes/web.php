@@ -1,6 +1,8 @@
 <?php
 
 use Illuminate\Support\Facades\Route;
+
+use App\Http\Controllers\DashboardController;
 use App\Http\Controllers\SDMController;
 use App\Http\Controllers\AuthController;
 use App\Http\Controllers\JaringanController;
@@ -39,27 +41,19 @@ Route::middleware('auth')->group(function () {
     |--------------------------------------------------------------------------
     | DASHBOARD
     |--------------------------------------------------------------------------
+    |
+    | Semua dashboard sekarang diproses oleh DashboardController.
+    | Controller akan menentukan view berdasarkan role:
+    |
+    | super_admin  -> dashboard.super-admin
+    | operator     -> dashboard.operator
+    | verifikator  -> dashboard.verifikator
+    | pimpinan     -> dashboard.pimpinan
+    |
     */
 
-    Route::get('/dashboard', function () {
-
-        $role = auth()->user()->role;
-
-        return match ($role) {
-
-            'super_admin' => view('dashboard.super-admin'),
-
-            'operator' => view('dashboard.operator'),
-
-            'verifikator' => view('dashboard.verifikator'),
-
-            'pimpinan' => view('dashboard.pimpinan'),
-
-            default => abort(403, 'Role pengguna tidak valid.'),
-
-        };
-
-    })->name('dashboard');
+    Route::get('/dashboard', [DashboardController::class, 'index'])
+        ->name('dashboard');
 
 
     /*
@@ -94,6 +88,11 @@ Route::middleware('auth')->group(function () {
     /*
     |--------------------------------------------------------------------------
     | INFRASTRUKTUR
+    |--------------------------------------------------------------------------
+    */
+
+
+    /*
     |--------------------------------------------------------------------------
     | JARINGAN
     |--------------------------------------------------------------------------
