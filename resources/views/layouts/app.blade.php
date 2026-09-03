@@ -72,7 +72,6 @@
             padding: 0;
         }
 
-
         /* =====================================================
            MAIN AREA
         ===================================================== */
@@ -98,8 +97,7 @@
 
         .top-header {
             width: 100%;
-            height: 75px;
-
+            min-height: 75px;
             background: #ffffff;
 
             border: none;
@@ -127,29 +125,15 @@
         .header-left {
             display: flex;
             align-items: center;
-
             gap: 20px;
-
             min-width: 0;
-
-            height: 100%;
         }
-
-
-        /* =====================================================
-           PAGE TITLE
-        ===================================================== */
 
         .page-title {
             margin: 0;
-
-            padding: 0;
-
             font-size: 20px;
             font-weight: 700;
-
             color: #075985;
-
             white-space: nowrap;
 
             line-height: 1;
@@ -179,7 +163,6 @@
             padding: 0 16px;
         }
 
-
         .top-header .search-box i {
             font-size: 19px;
 
@@ -187,7 +170,6 @@
 
             margin-right: 12px;
         }
-
 
         .top-header .search-box input {
             width: 100%;
@@ -202,11 +184,9 @@
             color: #374151;
         }
 
-
         .top-header .search-box input::placeholder {
             color: #9ca3af;
         }
-
 
         /* =====================================================
            HEADER RIGHT
@@ -215,9 +195,7 @@
         .header-right {
             display: flex;
             align-items: center;
-
             gap: 20px;
-
             flex-shrink: 0;
 
             height: 100%;
@@ -230,12 +208,10 @@
 
         .notification-wrapper {
             position: relative;
-
             display: flex;
             align-items: center;
             justify-content: center;
         }
-
 
         .notification-button {
             width: 40px;
@@ -301,7 +277,6 @@
             border-left: 1px solid #d1d5db;
         }
 
-
         .user-avatar {
             width: 38px;
             height: 38px;
@@ -359,18 +334,14 @@
 
         .main-content {
             width: 100%;
-
             min-width: 0;
 
             min-height: calc(100vh - 75px);
 
             padding: 30px;
 
-            margin: 0;
-
             box-sizing: border-box;
         }
-
 
         /* =====================================================
            HARDWARE PAGE
@@ -378,22 +349,15 @@
 
         .hardware-page {
             width: 100% !important;
-
             max-width: none !important;
-
             min-width: 0;
-
             box-sizing: border-box;
         }
 
-
         .hardware-table-container {
             width: 100% !important;
-
             max-width: none !important;
-
             min-width: 0;
-
             box-sizing: border-box;
         }
 
@@ -421,7 +385,6 @@
 
             .main-area {
                 margin-left: 270px;
-
                 width: calc(100% - 270px);
             }
 
@@ -430,7 +393,6 @@
             }
 
         }
-
 
         @media (max-width: 900px) {
 
@@ -471,28 +433,6 @@
                 font-size: 16px;
             }
 
-            .top-header .search-box {
-                width: 210px;
-                height: 40px;
-            }
-
-            .header-right {
-                gap: 8px;
-            }
-
-        }
-
-
-        @media (max-width: 600px) {
-
-            .top-header {
-                height: 70px;
-            }
-
-            .page-title {
-                font-size: 14px;
-            }
-
             .header-right {
                 gap: 5px;
             }
@@ -515,18 +455,23 @@
 
         }
 
+        }
 
         @media (max-width: 500px) {
 
             .top-header .search-box {
+<<<<<<< HEAD
                 width: 150px;
+=======
+                width: 160px;
+>>>>>>> origin/infrastruktur
             }
 
             .main-content {
                 padding: 15px;
             }
 
-        }
+        
 
     </style>
 
@@ -555,13 +500,11 @@
 
     <div class="main-area">
 
-
         {{-- =================================================
              TOP HEADER
         ================================================== --}}
 
         <header class="top-header">
-
 
             {{-- =================================================
                  HEADER LEFT
@@ -604,10 +547,14 @@
 
             <div class="header-right">
 
+<<<<<<< HEAD
 
                 {{-- =================================================
                      NOTIFICATION
                 ================================================== --}}
+=======
+                {{-- NOTIFICATION --}}
+>>>>>>> origin/infrastruktur
 
                 <div class="notification-wrapper">
 
@@ -619,11 +566,58 @@
 
                         <i class="bi bi-bell"></i>
 
+<<<<<<< HEAD
                         <span
                             class="notification-badge">
                         </span>
 
                     </button>
+=======
+                        <span class="notification-badge"></span>
+
+                    </button>
+
+                </div>
+
+
+                {{-- USER --}}
+
+                <div class="user-info">
+
+                    <div class="user-avatar">
+
+                        {{ strtoupper(
+                            substr(
+                                auth()->user()->name ?? 'U',
+                                0,
+                                1
+                            )
+                        ) }}
+
+                    </div>
+
+                    <div class="user-text">
+
+                        <span class="user-name">
+
+                            {{ auth()->user()->name ?? 'User' }}
+
+                        </span>
+
+                        <span class="user-role">
+
+                            {{ ucwords(
+                                str_replace(
+                                    '_',
+                                    ' ',
+                                    auth()->user()->role ?? 'User'
+                                )
+                            ) }}
+
+                        </span>
+
+                    </div>
+>>>>>>> origin/infrastruktur
 
                 </div>
 
@@ -682,7 +676,10 @@
 
 
             </div>
+<<<<<<< HEAD
 
+=======
+>>>>>>> origin/infrastruktur
 
         </header>
 
@@ -697,16 +694,25 @@
 
         </main>
 
+<<<<<<< HEAD
 
+=======
+>>>>>>> origin/infrastruktur
     </div>
 
 
 </div>
 
+<<<<<<< HEAD
 
+=======
+>>>>>>> origin/infrastruktur
 @stack('scripts')
 
 
 </body>
+<<<<<<< HEAD
 
+=======
+>>>>>>> origin/infrastruktur
 </html>

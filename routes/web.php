@@ -36,31 +36,9 @@ Route::post('/logout', [AuthController::class, 'logout'])
 
 Route::middleware('auth')->group(function () {
 
-    /*
-    |--------------------------------------------------------------------------
-    | DASHBOARD
-    |--------------------------------------------------------------------------
-    */
 
-    Route::get('/dashboard', function () {
-
-        $role = auth()->user()->role;
-
-        return match ($role) {
-
-            'super_admin' => view('dashboard.super-admin'),
-
-            'operator' => view('dashboard.operator'),
-
-            'verifikator' => view('dashboard.verifikator'),
-
-            'pimpinan' => view('dashboard.pimpinan'),
-
-            default => abort(403, 'Role pengguna tidak valid.'),
-
-        };
-
-    })->name('dashboard');
+    Route::get('/dashboard', [DashboardController::class, 'index'])
+        ->name('dashboard');
 
 
     /*
@@ -92,11 +70,18 @@ Route::middleware('auth')->group(function () {
         ->except(['show']);
 
 
-/*
-|--------------------------------------------------------------------------
-| INFRASTRUKTUR
-|--------------------------------------------------------------------------
-*/
+    /*
+    |--------------------------------------------------------------------------
+    | INFRASTRUKTUR
+    |--------------------------------------------------------------------------
+    */
+
+
+    /*
+    |--------------------------------------------------------------------------
+    | JARINGAN
+    |--------------------------------------------------------------------------
+    */
 
 // Jaringan
 Route::get('/infrastruktur/jaringan', [JaringanController::class, 'index'])

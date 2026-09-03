@@ -499,7 +499,7 @@ $lastDataCenter = DataCenter::where(
         */
 
         return redirect()
-            ->route('datacenter.index')
+            ->route('data-center.index')
             ->with(
                 'success',
                 'Data datacenter berhasil diajukan dan menunggu disetujui verifikator.'
@@ -642,7 +642,7 @@ $lastDataCenter = DataCenter::where(
         */
 
         return redirect()
-            ->route('datacenter.index')
+            ->route('data-center.index')
             ->with(
                 'success',
                 'Perubahan data datacenter berhasil diajukan dan menunggu disetujui verifikator.'
@@ -680,7 +680,7 @@ $lastDataCenter = DataCenter::where(
         */
 
         return redirect()
-            ->route('datacenter.index')
+            ->route('data-center.index')
             ->with(
                 'success',
                 'Permintaan penghapusan data berhasil diajukan dan menunggu disetujui verifikator.'

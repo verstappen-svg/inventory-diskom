@@ -11,7 +11,7 @@ return new class extends Migration
         Schema::create('splps', function (Blueprint $table) {
 
             // ID
-            $table->string('id', 10)->primary();
+            $table->string('id', 20)->primary();
 
 
             // =====================================================
