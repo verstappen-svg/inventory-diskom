@@ -9,41 +9,48 @@ class RolePermissionSeeder extends Seeder
 {
     public function run(): void
     {
-        // key, label, supports_add, supports_delete, extra_label, sort
         $menus = [
-            ['dashboard', 'Dashboard', false, false, null, 0],
-            ['hardware', 'Hardware', true, true, null, 1],
-            ['software', 'Software', true, true, null, 2],
-            ['infrastruktur.jaringan', 'Jaringan', true, true, null, 3],
-            ['infrastruktur.data-center', 'Data Center', true, true, null, 4],
-            ['infrastruktur.splp', 'SPLP', true, true, null, 5],
-            ['data', 'Data', true, true, null, 6],
-            ['sdm', 'SDM', true, true, null, 7],
-            ['pengajuan', 'Pengajuan', true, true, 'Diajukan', 8],
-            ['verifikasi', 'Verifikasi', false, false, null, 9],
-            ['laporan', 'Laporan', false, false, 'Cetak', 10],
+            ['dashboard', 'Dashboard', null, 0],
+            ['hardware', 'Hardware', null, 1],
+            ['software', 'Software', null, 2],
+            ['infrastruktur.jaringan', 'Jaringan', 'sub', 3],
+            ['infrastruktur.data-center', 'Data Center', 'sub', 4],
+            ['infrastruktur.splp', 'SPLP', 'sub', 5],
+            ['data', 'Data', null, 6],
+            ['sdm', 'SDM', null, 7],
+            ['pengajuan', 'Pengajuan', null, 8],
+            ['verifikasi', 'Verifikasi', null, 9],
+            ['laporan', 'Laporan', null, 10],
         ];
 
         $roles = ['super_admin', 'operator', 'verifikator', 'pimpinan'];
 
         foreach ($roles as $role) {
-            foreach ($menus as [$key, $label, $supportsAdd, $supportsDelete, $extraLabel, $sort]) {
+            foreach ($menus as [$key, $label, $type, $sort]) {
 
-                $isSuperAdmin = $role === 'super_admin';
-                $isOperator   = $role === 'operator';
-                $isPimpinan   = $role === 'pimpinan';
+                $isSuperAdmin  = $role === 'super_admin';
+                $isOperator    = $role === 'operator';
+                $isPimpinan    = $role === 'pimpinan';
 
                 $canView = true;
-                $canAdd  = $supportsAdd && ($isSuperAdmin || $isOperator);
-                $canDelete = $supportsDelete && ($isSuperAdmin || $isOperator);
+                $canAdd  = $isSuperAdmin || $isOperator;
+                $canDelete = $isSuperAdmin || $isOperator;
+                $extraLabel = null;
                 $extraChecked = false;
 
                 if ($key === 'pengajuan') {
+                    $extraLabel = 'Diajukan';
                     $extraChecked = $isOperator || $isSuperAdmin;
                 }
 
                 if ($key === 'laporan') {
+                    $extraLabel = 'Cetak';
                     $extraChecked = $isSuperAdmin || $isPimpinan;
+                }
+
+                if ($key === 'verifikasi') {
+                    $canAdd = false;
+                    $canDelete = false;
                 }
 
                 if ($isPimpinan) {
@@ -58,8 +65,6 @@ class RolePermissionSeeder extends Seeder
                         'can_view' => $canView,
                         'can_add' => $canAdd,
                         'can_delete' => $canDelete,
-                        'supports_add' => $supportsAdd,
-                        'supports_delete' => $supportsDelete,
                         'extra_action_label' => $extraLabel,
                         'extra_action_checked' => $extraChecked,
                         'sort' => $sort,
