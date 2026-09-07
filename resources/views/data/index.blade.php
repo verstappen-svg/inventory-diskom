@@ -1,11 +1,10 @@
 @extends('layouts.app')
 
-@section('title', 'Data - Inventory IT Assets')
+@section('title', 'Data')
 
-@section('page-title', 'DATA')
+@section('page-title', 'Data')
 
-
-@push('styles')
+@section('content')
 
 <style>
 
@@ -15,6 +14,29 @@
 
 .data-page {
     width: 100%;
+    padding-bottom: 30px;
+    font-family: Arial, sans-serif;
+}
+
+.data-header {
+    display: flex;
+    align-items: flex-start;
+    justify-content: space-between;
+    gap: 20px;
+    margin-bottom: 22px;
+}
+
+.data-title {
+    margin: 0;
+    color: #1f2937;
+    font-size: 25px;
+    font-weight: 700;
+}
+
+.data-subtitle {
+    margin: 6px 0 0;
+    color: #6b7280;
+    font-size: 13px;
 }
 
 
@@ -22,78 +44,113 @@
    ALERT
 ========================================================= */
 
-.alert-success,
-.alert-error {
-    display: flex;
-    align-items: flex-start;
-    gap: 10px;
-    padding: 14px 18px;
-    border-radius: 8px;
-    margin-bottom: 20px;
-    font-size: 14px;
+.data-alert {
+    padding: 12px 15px;
+    border-radius: 10px;
+    margin-bottom: 18px;
+    font-size: 12px;
+    font-weight: 600;
 }
 
-.alert-success {
-    background: #ecfdf3;
-    color: #15803d;
+.data-alert-success {
+    background: #dcfce7;
+    color: #166534;
     border: 1px solid #bbf7d0;
 }
 
-.alert-error {
-    background: #fef2f2;
-    color: #dc2626;
+.data-alert-error {
+    background: #fee2e2;
+    color: #991b1b;
     border: 1px solid #fecaca;
 }
 
-.alert-error ul {
-    margin: 6px 0 0 20px;
-    padding: 0;
-}
-
 
 /* =========================================================
-   SUMMARY CARD
+   STATISTICS
 ========================================================= */
 
-.summary-cards {
+.data-stats {
     display: grid;
     grid-template-columns: repeat(3, 1fr);
-    gap: 20px;
-    margin-bottom: 25px;
+    gap: 16px;
+    margin-bottom: 20px;
 }
 
-.summary-card {
+.data-stat-card {
     background: #ffffff;
-    border-radius: 12px;
-    padding: 22px 24px;
     border: 1px solid #e5e7eb;
-    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.04);
+    border-radius: 13px;
+    padding: 17px;
+    display: flex;
+    align-items: center;
+    gap: 14px;
+    box-shadow: 0 2px 8px rgba(15, 23, 42, 0.04);
 }
 
-.summary-label {
-    font-size: 13px;
-    font-weight: 600;
+.data-stat-icon {
+    width: 43px;
+    height: 43px;
+    border-radius: 11px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    flex-shrink: 0;
+    font-size: 19px;
+}
+
+.data-stat-icon.blue {
+    background: #e0f2fe;
+    color: #0369a1;
+}
+
+.data-stat-icon.green {
+    background: #dcfce7;
+    color: #15803d;
+}
+
+.data-stat-icon.orange {
+    background: #fef3c7;
+    color: #b45309;
+}
+
+.data-stat-content {
+    min-width: 0;
+}
+
+.data-stat-label {
+    display: block;
     color: #6b7280;
-    margin-bottom: 8px;
+    font-size: 10px;
+    font-weight: 600;
+    margin-bottom: 3px;
 }
 
-.summary-value {
-    font-size: 28px;
+.data-stat-value {
+    display: block;
+    color: #1f2937;
+    font-size: 22px;
+    line-height: 1.1;
     font-weight: 700;
-    color: #111827;
+}
+
+.data-stat-description {
+    display: block;
+    margin-top: 4px;
+    color: #9ca3af;
+    font-size: 10px;
 }
 
 
 /* =========================================================
-   TABLE CONTAINER
+   MAIN CARD
 ========================================================= */
 
-.data-table-container {
+.data-card {
     background: #ffffff;
-    border-radius: 12px;
     border: 1px solid #e5e7eb;
-    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.04);
-    overflow: hidden;
+    border-radius: 14px;
+    overflow: visible;
+    box-shadow: 0 2px 10px rgba(15, 23, 42, 0.04);
 }
 
 
@@ -101,79 +158,95 @@
    TOOLBAR
 ========================================================= */
 
-.table-toolbar {
+.data-toolbar {
+    padding: 17px 18px;
     display: flex;
+    align-items: center;
     justify-content: space-between;
-    align-items: center;
-    padding: 18px 20px;
-    border-bottom: 1px solid #e5e7eb;
+    gap: 15px;
+    border-bottom: 1px solid #edf0f3;
 }
 
-.table-toolbar-left {
-    display: flex;
-    align-items: center;
-}
-
-.table-search {
-    width: 280px;
-    height: 40px;
-    display: flex;
-    align-items: center;
-    gap: 9px;
-    padding: 0 13px;
-    border: 1px solid #d1d5db;
-    border-radius: 7px;
-    background: #ffffff;
-}
-
-.table-search i {
-    color: #9ca3af;
-}
-
-.table-search input {
-    width: 100%;
-    border: none;
-    outline: none;
-    font-size: 14px;
-}
-
-.table-actions {
+.data-toolbar-left {
     display: flex;
     align-items: center;
     gap: 10px;
 }
 
-.filter-button,
-.add-button {
-    height: 40px;
-    padding: 0 15px;
-    border-radius: 7px;
+.data-toolbar-title {
+    color: #1f2937;
     font-size: 14px;
-    font-weight: 600;
-    cursor: pointer;
+    font-weight: 700;
+}
+
+.data-toolbar-right {
     display: flex;
     align-items: center;
-    gap: 7px;
+    gap: 9px;
 }
 
-.filter-button {
-    background: #ffffff;
-    color: #374151;
+
+/* =========================================================
+   SEARCH
+========================================================= */
+
+.data-search {
+    position: relative;
+    width: 235px;
+}
+
+.data-search i {
+    position: absolute;
+    left: 11px;
+    top: 50%;
+    transform: translateY(-50%);
+    color: #9ca3af;
+    font-size: 13px;
+    pointer-events: none;
+}
+
+.data-search input {
+    width: 100%;
+    height: 37px;
+    padding: 0 12px 0 33px;
     border: 1px solid #d1d5db;
+    border-radius: 9px;
+    outline: none;
+    color: #374151;
+    font-size: 11px;
+    background: #ffffff;
+    box-sizing: border-box;
 }
 
-.filter-button:hover {
-    background: #f9fafb;
+.data-search input:focus {
+    border-color: #079bd8;
+    box-shadow: 0 0 0 3px rgba(7, 155, 216, 0.08);
 }
 
-.add-button {
-    background: #2563eb;
-    color: #ffffff;
+
+/* =========================================================
+   BUTTON
+========================================================= */
+
+.data-add-button {
+    height: 37px;
+    padding: 0 14px;
     border: none;
+    border-radius: 9px;
+    background: #071b88;
+    color: #ffffff;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    gap: 7px;
+    font-size: 11px;
+    font-weight: 600;
+    cursor: pointer;
+    transition: 0.2s ease;
 }
 
-.add-button:hover {
-    background: #1d4ed8;
+.data-add-button:hover {
+    background: #050f63;
 }
 
 
@@ -181,70 +254,88 @@
    FILTER
 ========================================================= */
 
-.filter-box {
-    display: none;
-    padding: 18px 20px;
-    background: #f9fafb;
-    border-bottom: 1px solid #e5e7eb;
+.data-filter-wrap {
+    position: relative;
 }
 
-.filter-box.show {
+.data-filter-button {
+    height: 37px;
+    padding: 0 12px;
+    border: 1px solid #d1d5db;
+    border-radius: 9px;
+    background: #ffffff;
+    color: #4b5563;
+    display: inline-flex;
+    align-items: center;
+    gap: 7px;
+    font-size: 11px;
+    font-weight: 600;
+    cursor: pointer;
+}
+
+.data-filter-button:hover {
+    background: #f8fafc;
+}
+
+.data-filter-dropdown {
+    position: absolute;
+    top: calc(100% + 7px);
+    right: 0;
+    width: 255px;
+    background: #ffffff;
+    border: 1px solid #e5e7eb;
+    border-radius: 11px;
+    padding: 14px;
+    box-shadow: 0 10px 30px rgba(15, 23, 42, 0.13);
+    z-index: 50;
+    display: none;
+}
+
+.data-filter-dropdown.show {
     display: block;
 }
 
-.filter-form {
-    display: flex;
-    align-items: flex-end;
-    gap: 15px;
-    flex-wrap: wrap;
+.data-filter-group {
+    margin-bottom: 11px;
 }
 
-.filter-group {
-    display: flex;
-    flex-direction: column;
-    gap: 6px;
+.data-filter-group:last-child {
+    margin-bottom: 0;
 }
 
-.filter-group label {
-    font-size: 12px;
-    font-weight: 600;
-    color: #374151;
+.data-filter-label {
+    display: block;
+    margin-bottom: 5px;
+    color: #475569;
+    font-size: 10px;
+    font-weight: 700;
 }
 
-.filter-group select {
-    min-width: 180px;
-    height: 38px;
-    padding: 0 10px;
+.data-filter-group select {
+    width: 100%;
+    height: 34px;
+    padding: 0 9px;
     border: 1px solid #d1d5db;
-    border-radius: 6px;
+    border-radius: 7px;
     background: #ffffff;
+    color: #374151;
     outline: none;
+    font-size: 11px;
 }
 
-.filter-submit,
-.filter-reset {
-    height: 38px;
-    padding: 0 14px;
-    border-radius: 6px;
-    font-size: 13px;
-    font-weight: 600;
+.data-filter-actions {
     display: flex;
-    align-items: center;
-    gap: 6px;
-    cursor: pointer;
-    text-decoration: none;
+    justify-content: flex-end;
+    margin-top: 13px;
 }
 
-.filter-submit {
+.data-reset-filter {
     border: none;
-    background: #2563eb;
-    color: #ffffff;
-}
-
-.filter-reset {
-    border: 1px solid #d1d5db;
-    background: #ffffff;
-    color: #374151;
+    background: transparent;
+    color: #075985;
+    font-size: 10px;
+    font-weight: 600;
+    cursor: pointer;
 }
 
 
@@ -259,62 +350,84 @@
 
 .data-table {
     width: 100%;
+    min-width: 1050px;
     border-collapse: collapse;
-    min-width: 1100px;
 }
 
 .data-table th {
-    background: #f9fafb;
-    color: #374151;
-    font-size: 12px;
+    padding: 13px 14px;
+    background: #f8fafc;
+    border-bottom: 1px solid #e5e7eb;
+    color: #475569;
+    font-size: 10px;
     font-weight: 700;
     text-align: left;
-    padding: 14px 15px;
-    border-bottom: 1px solid #e5e7eb;
     white-space: nowrap;
 }
 
 .data-table td {
-    padding: 15px;
-    font-size: 13px;
-    color: #374151;
+    padding: 13px 14px;
     border-bottom: 1px solid #f1f5f9;
+    color: #374151;
+    font-size: 11px;
     vertical-align: middle;
 }
 
 .data-table tbody tr:hover {
-    background: #fafafa;
+    background: #f8fafc;
+}
+
+.data-table tbody tr:last-child td {
+    border-bottom: none;
 }
 
 
 /* =========================================================
-   VERIFIKASI
+   DATA NAME
 ========================================================= */
 
-.verifikasi {
-    display: inline-flex;
-    align-items: center;
-    gap: 6px;
-    padding: 6px 10px;
-    border-radius: 20px;
-    font-size: 11px;
+.data-name {
+    display: block;
+    max-width: 230px;
+    color: #1f2937;
     font-weight: 600;
+    line-height: 1.35;
+}
+
+.data-type {
+    display: block;
+    margin-top: 3px;
+    color: #9ca3af;
+    font-size: 10px;
+    max-width: 230px;
+}
+
+
+/* =========================================================
+   YEAR
+========================================================= */
+
+.data-year {
+    font-weight: 600;
+    color: #374151;
     white-space: nowrap;
 }
 
-.verifikasi-approved {
-    background: #dcfce7;
-    color: #15803d;
-}
 
-.verifikasi-pending {
-    background: #fef3c7;
-    color: #b45309;
-}
+/* =========================================================
+   CATEGORY
+========================================================= */
 
-.verifikasi-rejected {
-    background: #fee2e2;
-    color: #dc2626;
+.data-category-badge {
+    display: inline-flex;
+    align-items: center;
+    padding: 5px 9px;
+    border-radius: 20px;
+    background: #e0f2fe;
+    color: #075985;
+    font-size: 10px;
+    font-weight: 600;
+    white-space: nowrap;
 }
 
 
@@ -322,55 +435,68 @@
    FILE
 ========================================================= */
 
-.file-button {
+.data-file {
     display: inline-flex;
     align-items: center;
     gap: 6px;
-    padding: 6px 10px;
-    border-radius: 6px;
-    background: #eff6ff;
-    color: #2563eb;
+    max-width: 180px;
+    color: #475569;
     text-decoration: none;
-    font-size: 12px;
+    font-size: 10px;
     font-weight: 600;
-    white-space: nowrap;
 }
 
-.file-button:hover {
-    background: #dbeafe;
+.data-file:hover {
+    color: #075985;
 }
 
-.no-file {
+.data-file i {
+    color: #dc2626;
+    font-size: 13px;
+}
+
+.data-no-file {
     color: #9ca3af;
-    font-size: 12px;
-    white-space: nowrap;
 }
 
 
 /* =========================================================
-   COMMENT
+   VERIFICATION
 ========================================================= */
 
-.comment-button {
-    border: none;
-    background: transparent;
-    color: #2563eb;
-    font-size: 12px;
-    font-weight: 600;
-    cursor: pointer;
-    padding: 0;
+.data-verification {
     display: inline-flex;
     align-items: center;
-    gap: 5px;
+    padding: 5px 9px;
+    border-radius: 20px;
+    font-size: 10px;
+    font-weight: 600;
+    white-space: nowrap;
 }
 
-.comment-button:hover {
-    text-decoration: underline;
+.data-verification.pending {
+    background: #fef3c7;
+    color: #92400e;
 }
 
-.no-comment {
-    color: #9ca3af;
-    font-size: 12px;
+.data-verification.approved {
+    background: #dcfce7;
+    color: #166534;
+}
+
+.data-verification.rejected {
+    background: #fee2e2;
+    color: #991b1b;
+}
+
+
+/* =========================================================
+   DATE
+========================================================= */
+
+.data-date {
+    color: #4b5563;
+    white-space: nowrap;
 }
 
 
@@ -378,123 +504,133 @@
    ACTION
 ========================================================= */
 
-.action-buttons {
+.data-action-buttons {
     display: flex;
     align-items: center;
-    gap: 7px;
+    gap: 6px;
 }
 
-.action-buttons form {
-    margin: 0;
-}
-
-.action-button {
-    width: 32px;
-    height: 32px;
-    border-radius: 6px;
-    border: none;
-    display: flex;
+.data-action-button {
+    width: 29px;
+    height: 29px;
+    border-radius: 7px;
+    display: inline-flex;
     align-items: center;
     justify-content: center;
+    border: none;
     cursor: pointer;
-    text-decoration: none;
+    transition: 0.2s ease;
+    font-size: 11px;
 }
 
-.action-button.edit {
-    background: #eff6ff;
-    color: #2563eb;
+.data-edit-button {
+    background: #e0f2fe;
+    color: #0369a1;
 }
 
-.action-button.edit:hover {
-    background: #dbeafe;
+.data-edit-button:hover {
+    background: #bae6fd;
 }
 
-.action-button.delete {
-    background: #fef2f2;
+.data-delete-button {
+    background: #fee2e2;
     color: #dc2626;
 }
 
-.action-button.delete:hover {
-    background: #fee2e2;
+.data-delete-button:hover {
+    background: #fecaca;
 }
 
 
 /* =========================================================
-   EMPTY
+   EMPTY STATE
 ========================================================= */
 
-.empty-data {
-    text-align: center !important;
-    padding: 50px !important;
-    color: #9ca3af !important;
+.data-empty {
+    padding: 55px 20px;
+    text-align: center;
 }
 
-.empty-data i {
-    display: block;
-    font-size: 35px;
-    margin-bottom: 10px;
-}
-
-
-/* =========================================================
-   FOOTER
-========================================================= */
-
-.table-footer {
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-    padding: 15px 20px;
-    font-size: 12px;
-    color: #6b7280;
-}
-
-.show-data {
+.data-empty-icon {
+    width: 54px;
+    height: 54px;
+    margin: 0 auto 12px;
+    border-radius: 14px;
+    background: #e0f2fe;
+    color: #0284c7;
     display: flex;
     align-items: center;
-    gap: 7px;
-}
-
-.show-data form {
-    margin: 0;
-}
-
-.show-data select {
-    height: 32px;
-    border: 1px solid #d1d5db;
-    border-radius: 5px;
-    padding: 0 8px;
-    outline: none;
-}
-
-.pagination {
-    display: flex;
-    align-items: center;
-    gap: 4px;
-}
-
-.page-link {
-    min-width: 30px;
-    height: 30px;
-    padding: 0 8px;
-    display: flex;
     justify-content: center;
-    align-items: center;
-    border: 1px solid #e5e7eb;
-    border-radius: 5px;
+    font-size: 22px;
+}
+
+.data-empty h3 {
+    margin: 0 0 5px;
     color: #374151;
-    text-decoration: none;
+    font-size: 14px;
+}
+
+.data-empty p {
+    margin: 0;
+    color: #9ca3af;
+    font-size: 11px;
+}
+
+
+/* =========================================================
+   FOOTER / PAGINATION
+========================================================= */
+
+.data-table-footer {
+    min-height: 59px;
+    padding: 12px 17px;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 15px;
+    border-top: 1px solid #edf0f3;
+}
+
+.data-showing-text {
+    color: #9ca3af;
+    font-size: 10px;
+}
+
+.data-pagination {
+    display: flex;
+    align-items: center;
+    gap: 5px;
+}
+
+.data-page-link {
+    min-width: 29px;
+    height: 29px;
+    padding: 0 7px;
+    border: 1px solid #e5e7eb;
+    border-radius: 7px;
     background: #ffffff;
+    color: #64748b;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    text-decoration: none;
+    font-size: 10px;
+    font-weight: 600;
 }
 
-.page-link:hover {
-    background: #f3f4f6;
+.data-page-link:hover {
+    background: #f8fafc;
 }
 
-.page-link.active {
-    background: #2563eb;
+.data-page-link.active {
+    background: #071b88;
+    border-color: #071b88;
     color: #ffffff;
-    border-color: #2563eb;
+}
+
+.data-page-link.disabled {
+    opacity: 0.45;
+    pointer-events: none;
 }
 
 
@@ -502,242 +638,233 @@
    MODAL
 ========================================================= */
 
-.data-modal {
-    display: none;
+.data-modal-overlay {
     position: fixed;
-    z-index: 9999;
     inset: 0;
-    background: rgba(0, 0, 0, 0.45);
+    background: rgba(15, 23, 42, 0.58);
+    display: none;
     align-items: center;
     justify-content: center;
-    padding: 20px;
-}
-
-.data-modal.show {
-    display: flex;
-}
-
-.data-modal-content {
-    width: 100%;
-    max-width: 520px;
-    max-height: 90vh;
-    overflow-y: auto;
-    background: #ffffff;
-    border-radius: 12px;
-    box-shadow: 0 15px 40px rgba(0, 0, 0, 0.2);
-}
-
-.comment-modal-content {
-    max-width: 500px;
-}
-
-.data-modal-header {
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-    padding: 20px;
-    border-bottom: 1px solid #e5e7eb;
-}
-
-.data-modal-header h2 {
-    margin: 0;
-    font-size: 19px;
-    color: #111827;
-}
-
-.modal-close {
-    width: 32px;
-    height: 32px;
-    border: none;
-    background: transparent;
-    font-size: 25px;
-    color: #6b7280;
-    cursor: pointer;
-    border-radius: 5px;
-}
-
-.modal-close:hover {
-    background: #f3f4f6;
-}
-
-
-/* =========================================================
-   FORM
-========================================================= */
-
-.data-modal-content form {
-    padding: 20px;
-}
-
-.form-group {
-    margin-bottom: 18px;
-}
-
-.form-group label {
-    display: block;
-    margin-bottom: 7px;
-    font-size: 13px;
-    font-weight: 600;
-    color: #374151;
-}
-
-.form-control-data {
-    width: 100%;
-    height: 42px;
-    padding: 0 12px;
-    border: 1px solid #d1d5db;
-    border-radius: 7px;
-    outline: none;
-    font-size: 13px;
+    padding: 25px;
+    z-index: 9999;
     box-sizing: border-box;
 }
 
-.form-control-data:focus {
-    border-color: #2563eb;
-    box-shadow: 0 0 0 2px rgba(37, 99, 235, 0.1);
-}
-
-input[type="file"].form-control-data {
-    height: auto;
-    padding: 9px 10px;
-    cursor: pointer;
-}
-
-.form-help {
-    display: block;
-    margin-top: 6px;
-    color: #6b7280;
-    font-size: 11px;
-}
-
-
-/* =========================================================
-   STATUS INFO
-========================================================= */
-
-.status-info {
+.data-modal-overlay.show {
     display: flex;
-    align-items: flex-start;
-    gap: 9px;
-    padding: 12px;
-    background: #eff6ff;
-    border: 1px solid #dbeafe;
-    border-radius: 7px;
-    color: #1d4ed8;
-    font-size: 12px;
-    line-height: 1.5;
-    margin-bottom: 20px;
 }
 
-.status-info i {
-    margin-top: 2px;
+body.data-modal-open {
+    overflow: hidden;
 }
 
-
-/* =========================================================
-   FORM ACTION
-========================================================= */
-
-.form-actions {
-    display: flex;
-    justify-content: flex-end;
-    gap: 10px;
-    padding-top: 5px;
-}
-
-.cancel-btn,
-.save-btn {
-    height: 40px;
-    padding: 0 16px;
-    border-radius: 7px;
-    font-size: 13px;
-    font-weight: 600;
-    cursor: pointer;
-}
-
-.cancel-btn {
-    border: 1px solid #d1d5db;
+.data-modal {
+    width: min(760px, 100%);
+    max-height: 90vh;
     background: #ffffff;
-    color: #374151;
-}
-
-.cancel-btn:hover {
-    background: #f9fafb;
-}
-
-.save-btn {
-    border: none;
-    background: #2563eb;
-    color: #ffffff;
-}
-
-.save-btn:hover {
-    background: #1d4ed8;
-}
-
-
-/* =========================================================
-   COMMENT MODAL
-========================================================= */
-
-.comment-box {
-    margin: 20px;
-    padding: 16px;
-    border-radius: 8px;
-    background: #f9fafb;
-    border: 1px solid #e5e7eb;
+    border-radius: 15px;
+    box-shadow: 0 25px 70px rgba(0, 0, 0, 0.25);
+    overflow: hidden;
     display: flex;
-    align-items: flex-start;
-    gap: 10px;
-}
-
-.comment-box i {
-    color: #2563eb;
-    margin-top: 3px;
-}
-
-.comment-box p {
-    margin: 0;
-    color: #374151;
-    font-size: 13px;
-    line-height: 1.6;
-    white-space: pre-wrap;
-}
-
-.comment-modal-content .form-actions {
-    padding: 0 20px 20px;
+    flex-direction: column;
 }
 
 
 /* =========================================================
-   CURRENT FILE
+   MODAL HEADER
 ========================================================= */
 
-.current-file {
+.data-modal-header {
+    flex-shrink: 0;
+    padding: 19px 21px;
+    border-bottom: 1px solid #edf0f3;
     display: flex;
     align-items: center;
-    gap: 8px;
-    margin-bottom: 8px;
-    padding: 9px 11px;
-    background: #f9fafb;
-    border: 1px solid #e5e7eb;
-    border-radius: 7px;
-    font-size: 12px;
+    justify-content: space-between;
+    gap: 15px;
+}
+
+.data-modal-header-left {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+}
+
+.data-modal-icon {
+    width: 40px;
+    height: 40px;
+    border-radius: 10px;
+    background: #e0f2fe;
+    color: #0369a1;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 17px;
+    flex-shrink: 0;
+}
+
+.data-modal-title {
+    margin: 0;
+    color: #1f2937;
+    font-size: 17px;
+    font-weight: 700;
+}
+
+.data-modal-subtitle {
+    margin: 4px 0 0;
+    color: #9ca3af;
+    font-size: 10px;
+}
+
+.data-modal-close {
+    width: 32px;
+    height: 32px;
+    border: none;
+    border-radius: 8px;
+    background: #f8fafc;
+    color: #64748b;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.data-modal-close:hover {
+    background: #fee2e2;
+    color: #dc2626;
+}
+
+
+/* =========================================================
+   MODAL BODY
+========================================================= */
+
+.data-modal-body {
+    padding: 19px 21px;
+    overflow-y: auto;
+}
+
+.data-modal-body::-webkit-scrollbar {
+    width: 5px;
+}
+
+.data-modal-body::-webkit-scrollbar-thumb {
+    background: #cbd5e1;
+    border-radius: 10px;
+}
+
+.data-form-grid {
+    display: grid;
+    grid-template-columns: repeat(2, 1fr);
+    gap: 16px;
+}
+
+.data-form-group {
+    display: flex;
+    flex-direction: column;
+}
+
+.data-form-group.full {
+    grid-column: 1 / -1;
+}
+
+.data-form-label {
+    margin-bottom: 6px;
     color: #374151;
+    font-size: 11px;
+    font-weight: 700;
 }
 
-.current-file i {
-    color: #2563eb;
+.data-form-label span {
+    color: #ef4444;
 }
 
-.current-file a {
-    color: #2563eb;
+.data-form-control {
+    width: 100%;
+    min-height: 39px;
+    padding: 9px 11px;
+    border: 1px solid #d1d5db;
+    border-radius: 8px;
+    outline: none;
+    background: #ffffff;
+    color: #374151;
+    font-family: inherit;
+    font-size: 11px;
+    box-sizing: border-box;
+}
+
+.data-form-control:focus {
+    border-color: #079bd8;
+    box-shadow: 0 0 0 3px rgba(7, 155, 216, 0.08);
+}
+
+textarea.data-form-control {
+    min-height: 85px;
+    resize: vertical;
+}
+
+.data-file-input {
+    padding: 7px 9px;
+}
+
+.data-form-help {
+    margin-top: 5px;
+    color: #9ca3af;
+    font-size: 9px;
+}
+
+.data-error {
+    margin-top: 5px;
+    color: #dc2626;
+    font-size: 9px;
+}
+
+
+/* =========================================================
+   MODAL FOOTER
+========================================================= */
+
+.data-modal-footer {
+    flex-shrink: 0;
+    padding: 13px 21px;
+    border-top: 1px solid #edf0f3;
+    background: #ffffff;
+    display: flex;
+    align-items: center;
+    justify-content: flex-end;
+    gap: 8px;
+}
+
+.data-modal-cancel {
+    height: 37px;
+    padding: 0 15px;
+    border: 1px solid #d1d5db;
+    border-radius: 8px;
+    background: #ffffff;
+    color: #4b5563;
+    font-size: 11px;
     font-weight: 600;
-    text-decoration: none;
+    cursor: pointer;
 }
 
-.current-file a:hover {
-    text-decoration: underline;
+.data-modal-cancel:hover {
+    background: #f8fafc;
+}
+
+.data-modal-save {
+    height: 37px;
+    padding: 0 16px;
+    border: none;
+    border-radius: 8px;
+    background: #071b88;
+    color: #ffffff;
+    font-size: 11px;
+    font-weight: 600;
+    cursor: pointer;
+}
+
+.data-modal-save:hover {
+    background: #050f63;
 }
 
 
@@ -745,377 +872,387 @@ input[type="file"].form-control-data {
    RESPONSIVE
 ========================================================= */
 
-@media (max-width: 900px) {
+@media (max-width: 1000px) {
 
-    .summary-cards {
-        grid-template-columns: 1fr;
+    .data-stats {
+        grid-template-columns: repeat(2, 1fr);
     }
 
-    .table-toolbar {
+    .data-toolbar {
         flex-direction: column;
         align-items: stretch;
-        gap: 15px;
     }
 
-    .table-search {
+    .data-toolbar-left,
+    .data-toolbar-right {
         width: 100%;
     }
 
-    .table-actions {
+    .data-toolbar-right {
         justify-content: flex-end;
     }
+}
 
-    .table-footer {
-        flex-wrap: wrap;
-        gap: 15px;
+@media (max-width: 700px) {
+
+    .data-stats {
+        grid-template-columns: 1fr;
     }
 
+    .data-toolbar-right {
+        flex-wrap: wrap;
+    }
+
+    .data-search {
+        width: 100%;
+    }
+
+    .data-form-grid {
+        grid-template-columns: 1fr;
+    }
+
+    .data-form-group.full {
+        grid-column: auto;
+    }
+
+    .data-modal-overlay {
+        padding: 10px;
+    }
+
+    .data-modal {
+        max-height: 94vh;
+    }
+
+    .data-table-footer {
+        flex-direction: column;
+        align-items: flex-start;
+    }
 }
 
 </style>
 
-@endpush
-
-
-@section('content')
 
 <div class="data-page">
 
+    {{-- =====================================================
+         HEADER
+    ====================================================== --}}
 
-    {{-- =================================================
-         ALERT SUCCESS
-    ================================================== --}}
+    <div class="data-header">
 
-    @if(session('success'))
+        <div>
+            <h1 class="data-title">
+                Data
+            </h1>
 
-        <div class="alert-success">
-
-            <i class="bi bi-check-circle"></i>
-
-            <span>
-                {{ session('success') }}
-            </span>
-
+            <p class="data-subtitle">
+                Kelola dataset dan informasi data yang tersimpan dalam inventory.
+            </p>
         </div>
-
-    @endif
-
-
-    {{-- =================================================
-         ALERT ERROR
-    ================================================== --}}
-
-    @if(session('error'))
-
-        <div class="alert-error">
-
-            <i class="bi bi-exclamation-circle"></i>
-
-            <span>
-                {{ session('error') }}
-            </span>
-
-        </div>
-
-    @endif
-
-
-    {{-- =================================================
-         VALIDATION ERROR
-    ================================================== --}}
-
-    @if($errors->any())
-
-        <div class="alert-error">
-
-            <i class="bi bi-exclamation-circle"></i>
-
-            <div>
-
-                <strong>
-                    Data gagal disimpan.
-                </strong>
-
-                <ul>
-
-                    @foreach($errors->all() as $error)
-
-                        <li>
-                            {{ $error }}
-                        </li>
-
-                    @endforeach
-
-                </ul>
-
-            </div>
-
-        </div>
-
-    @endif
-
-
-    {{-- =================================================
-         SUMMARY
-    ================================================== --}}
-
-    <div class="summary-cards">
-
-
-        <div class="summary-card">
-
-            <div class="summary-label">
-                TOTAL DATASET
-            </div>
-
-            <div class="summary-value">
-                {{ $totalData }}
-            </div>
-
-        </div>
-
-
-        <div class="summary-card">
-
-            <div class="summary-label">
-                JENIS DATA
-            </div>
-
-            <div class="summary-value">
-                {{ $totalJenis }}
-            </div>
-
-        </div>
-
-
-        <div class="summary-card">
-
-            <div class="summary-label">
-                MENUNGGU DISETUJUI
-            </div>
-
-            <div class="summary-value">
-                {{ $totalPending }}
-            </div>
-
-        </div>
-
 
     </div>
 
 
-    {{-- =================================================
-         TABLE
-    ================================================== --}}
+    {{-- =====================================================
+         ALERT
+    ====================================================== --}}
 
-    <div class="data-table-container">
+    @if(session('success'))
+        <div class="data-alert data-alert-success">
+            <i class="bi bi-check-circle-fill"></i>
+            {{ session('success') }}
+        </div>
+    @endif
+
+    @if(session('error'))
+        <div class="data-alert data-alert-error">
+            <i class="bi bi-exclamation-circle-fill"></i>
+            {{ session('error') }}
+        </div>
+    @endif
 
 
-        {{-- TOOLBAR --}}
+    {{-- =====================================================
+         STATISTICS
+    ====================================================== --}}
 
-        <div class="table-toolbar">
+    <div class="data-stats">
 
+        <div class="data-stat-card">
 
-            <div class="table-toolbar-left">
-
-                <form
-                    method="GET"
-                    action="{{ route('data.index') }}">
-
-                    <div class="table-search">
-
-                        <i class="bi bi-search"></i>
-
-                        <input
-                            type="text"
-                            name="search"
-                            value="{{ request('search') }}"
-                            placeholder="Search..."
-                            autocomplete="off">
-
-                    </div>
-
-                </form>
-
+            <div class="data-stat-icon blue">
+                <i class="bi bi-database-fill"></i>
             </div>
 
+            <div class="data-stat-content">
 
-            <div class="table-actions">
+                <span class="data-stat-label">
+                    Total Data
+                </span>
 
+                <span class="data-stat-value">
+                    {{ $totalData ?? ($data->total() ?? $data->count()) }}
+                </span>
 
-                <button
-                    type="button"
-                    class="filter-button"
-                    onclick="toggleFilter()">
-
-                    <i class="bi bi-filter"></i>
-
-                    Filter
-
-                </button>
-
-
-                <button
-                    type="button"
-                    class="add-button"
-                    onclick="openAddModal()">
-
-                    <i class="bi bi-plus-lg"></i>
-
-                    Ajukan Data
-
-                </button>
-
+                <span class="data-stat-description">
+                    Dataset terdaftar
+                </span>
 
             </div>
 
         </div>
 
 
-        {{-- =================================================
-             FILTER
-        ================================================== --}}
+        <div class="data-stat-card">
 
-        <div
-            class="filter-box
-            {{ request('jenis_data') || request('tahun') || request('verifikasi') ? 'show' : '' }}"
-            id="filterBox">
+            <div class="data-stat-icon green">
+                <i class="bi bi-check-circle-fill"></i>
+            </div>
+
+            <div class="data-stat-content">
+
+                <span class="data-stat-label">
+                    Disetujui
+                </span>
+
+                <span class="data-stat-value">
+                    {{ $disetujui ?? 0 }}
+                </span>
+
+                <span class="data-stat-description">
+                    Data telah diverifikasi
+                </span>
+
+            </div>
+
+        </div>
 
 
-            <form
-                method="GET"
-                action="{{ route('data.index') }}"
-                class="filter-form">
+        <div class="data-stat-card">
+
+            <div class="data-stat-icon orange">
+                <i class="bi bi-clock-history"></i>
+            </div>
+
+            <div class="data-stat-content">
+
+                <span class="data-stat-label">
+                    Menunggu
+                </span>
+
+                <span class="data-stat-value">
+                    {{ $menunggu ?? 0 }}
+                </span>
+
+                <span class="data-stat-description">
+                    Menunggu verifikasi
+                </span>
+
+            </div>
+
+        </div>
+
+    </div>
 
 
-                <input
-                    type="hidden"
-                    name="search"
-                    value="{{ request('search') }}">
+    {{-- =====================================================
+         MAIN CARD
+    ====================================================== --}}
+
+    <div class="data-card">
+
+        {{-- TOOLBAR --}}
+
+        <div class="data-toolbar">
+
+            <div class="data-toolbar-left">
+
+                <span class="data-toolbar-title">
+                    Daftar Data
+                </span>
+
+            </div>
 
 
-                <div class="filter-group">
+            <div class="data-toolbar-right">
 
-                    <label>
-                        Jenis Data
-                    </label>
+                {{-- SEARCH --}}
 
-                    <select name="jenis_data">
+                <form
+                    method="GET"
+                    action="{{ route('data.index') }}"
+                    class="data-search"
+                >
 
-                        <option value="">
-                            Semua Jenis Data
-                        </option>
+                    <i class="bi bi-search"></i>
 
-                        @foreach($jenisData as $jenis)
+                    <input
+                        type="text"
+                        name="search"
+                        value="{{ request('search') }}"
+                        placeholder="Cari dataset..."
+                    >
 
-                            <option
-                                value="{{ $jenis }}"
-                                {{ request('jenis_data') == $jenis ? 'selected' : '' }}>
+                </form>
 
-                                {{ $jenis }}
 
-                            </option>
+                {{-- FILTER --}}
 
-                        @endforeach
+                <div class="data-filter-wrap">
 
-                    </select>
+                    <button
+                        type="button"
+                        class="data-filter-button"
+                        onclick="toggleDataFilter(event)"
+                    >
+                        <i class="bi bi-funnel-fill"></i>
+                        Filter
+                    </button>
+
+
+                    <div
+                        id="dataFilterDropdown"
+                        class="data-filter-dropdown"
+                    >
+
+                        <form
+                            method="GET"
+                            action="{{ route('data.index') }}"
+                        >
+
+                            <input
+                                type="hidden"
+                                name="search"
+                                value="{{ request('search') }}"
+                            >
+
+                            <div class="data-filter-group">
+
+                                <label class="data-filter-label">
+                                    Jenis Data
+                                </label>
+
+                                <select name="jenis_data">
+
+                                    <option value="">
+                                        Semua Jenis
+                                    </option>
+
+                                    @foreach(($jenisDataList ?? collect()) as $jenis)
+                                        <option
+                                            value="{{ $jenis }}"
+                                            {{ request('jenis_data') == $jenis ? 'selected' : '' }}
+                                        >
+                                            {{ $jenis }}
+                                        </option>
+                                    @endforeach
+
+                                </select>
+
+                            </div>
+
+
+                            <div class="data-filter-group">
+
+                                <label class="data-filter-label">
+                                    Status Verifikasi
+                                </label>
+
+                                <select name="verifikasi">
+
+                                    <option value="">
+                                        Semua Status
+                                    </option>
+
+                                    <option
+                                        value="menunggu"
+                                        {{ request('verifikasi') == 'menunggu' ? 'selected' : '' }}
+                                    >
+                                        Menunggu
+                                    </option>
+
+                                    <option
+                                        value="disetujui"
+                                        {{ request('verifikasi') == 'disetujui' ? 'selected' : '' }}
+                                    >
+                                        Disetujui
+                                    </option>
+
+                                    <option
+                                        value="ditolak"
+                                        {{ request('verifikasi') == 'ditolak' ? 'selected' : '' }}
+                                    >
+                                        Ditolak
+                                    </option>
+
+                                </select>
+
+                            </div>
+
+
+                            <div class="data-filter-group">
+
+                                <label class="data-filter-label">
+                                    Tampilkan
+                                </label>
+
+                                <select name="show">
+
+                                    @foreach([10,25,50,100] as $jumlah)
+
+                                        <option
+                                            value="{{ $jumlah }}"
+                                            {{ request('show', 10) == $jumlah ? 'selected' : '' }}
+                                        >
+                                            {{ $jumlah }} data
+                                        </option>
+
+                                    @endforeach
+
+                                </select>
+
+                            </div>
+
+
+                            <div class="data-filter-actions">
+
+                                <button
+                                    type="button"
+                                    class="data-reset-filter"
+                                    onclick="resetDataFilter()"
+                                >
+                                    Reset
+                                </button>
+
+                                <button
+                                    type="submit"
+                                    class="data-reset-filter"
+                                    style="margin-left:10px;"
+                                >
+                                    Terapkan
+                                </button>
+
+                            </div>
+
+                        </form>
+
+                    </div>
 
                 </div>
 
 
-                <div class="filter-group">
-
-                    <label>
-                        Tahun
-                    </label>
-
-                    <select name="tahun">
-
-                        <option value="">
-                            Semua Tahun
-                        </option>
-
-                        @foreach($tahunData as $tahun)
-
-                            <option
-                                value="{{ $tahun }}"
-                                {{ request('tahun') == $tahun ? 'selected' : '' }}>
-
-                                {{ $tahun }}
-
-                            </option>
-
-                        @endforeach
-
-                    </select>
-
-                </div>
-
-
-                <div class="filter-group">
-
-                    <label>
-                        Status Verifikasi
-                    </label>
-
-                    <select name="verifikasi">
-
-                        <option value="">
-                            Semua Status
-                        </option>
-
-                        <option
-                            value="Menunggu Disetujui"
-                            {{ request('verifikasi') == 'Menunggu Disetujui' ? 'selected' : '' }}>
-
-                            Menunggu Disetujui
-
-                        </option>
-
-                        <option
-                            value="Disetujui"
-                            {{ request('verifikasi') == 'Disetujui' ? 'selected' : '' }}>
-
-                            Disetujui
-
-                        </option>
-
-                        <option
-                            value="Ditolak"
-                            {{ request('verifikasi') == 'Ditolak' ? 'selected' : '' }}>
-
-                            Ditolak
-
-                        </option>
-
-                    </select>
-
-                </div>
-
+                {{-- ADD --}}
 
                 <button
-                    type="submit"
-                    class="filter-submit">
-
-                    <i class="bi bi-check-lg"></i>
-
-                    Terapkan
-
+                    type="button"
+                    class="data-add-button"
+                    onclick="openDataModal()"
+                >
+                    <i class="bi bi-plus-lg"></i>
+                    Tambah Data
                 </button>
 
-
-                <a
-                    href="{{ route('data.index') }}"
-                    class="filter-reset">
-
-                    <i class="bi bi-arrow-counterclockwise"></i>
-
-                    Reset
-
-                </a>
-
-
-            </form>
+            </div>
 
         </div>
 
@@ -1126,316 +1263,240 @@ input[type="file"].form-control-data {
 
         <div class="data-table-wrapper">
 
-            <table class="data-table">
+            @if($data->count() > 0)
 
-                <thead>
+                <table class="data-table">
 
-                    <tr>
-
-                        <th width="7%">
-                            ID
-                        </th>
-
-                        <th width="18%">
-                            NAMA DATASET
-                        </th>
-
-                        <th width="14%">
-                            JENIS DATA
-                        </th>
-
-                        <th width="8%">
-                            TAHUN
-                        </th>
-
-                        <th width="13%">
-                            TANGGAL PENGAJUAN
-                        </th>
-
-                        <th width="13%">
-                            FILE DATA
-                        </th>
-
-                        <th width="13%">
-                            VERIFIKASI
-                        </th>
-
-                        <th width="14%">
-                            KOMENTAR
-                        </th>
-
-                        <th width="10%">
-                            AKSI
-                        </th>
-
-                    </tr>
-
-                </thead>
-
-
-                <tbody>
-
-
-                    @forelse($data as $item)
+                    <thead>
 
                         <tr>
 
+                            <th>No</th>
+                            <th>Nama Dataset</th>
+                            <th>Jenis Data</th>
+                            <th>Tahun</th>
+                            <th>File</th>
+                            <th>Tanggal Pengajuan</th>
+                            <th>Verifikasi</th>
+                            <th>Aksi</th>
 
-                            <td>
+                        </tr>
 
-                                DS-{{
-                                    str_pad(
-                                        $item->id,
-                                        3,
-                                        '0',
-                                        STR_PAD_LEFT
-                                    )
-                                }}
-
-                            </td>
-
-
-                            <td>
-
-                                {{ $item->nama_dataset }}
-
-                            </td>
+                    </thead>
 
 
-                            <td>
+                    <tbody>
 
-                                {{ $item->jenis_data }}
+                        @foreach($data as $row)
 
-                            </td>
+                            @php
+
+                                $verifikasi = strtolower(
+                                    $row->verifikasi ?? 'menunggu'
+                                );
+
+                                $verificationClass = match($verifikasi) {
+
+                                    'disetujui' => 'approved',
+
+                                    'ditolak' => 'rejected',
+
+                                    default => 'pending',
+
+                                };
+
+                                $verificationLabel = match($verifikasi) {
+
+                                    'disetujui' => 'Disetujui',
+
+                                    'ditolak' => 'Ditolak',
+
+                                    default => 'Menunggu',
+
+                                };
+
+                            @endphp
 
 
-                            <td>
+                            <tr>
 
-                                {{ $item->tahun }}
+                                {{-- NO --}}
 
-                            </td>
-
-
-                            <td>
-
-                                @if($item->tanggal_pengajuan)
-
-                                    {{ \Carbon\Carbon::parse(
-                                        $item->tanggal_pengajuan
-                                    )->format('d/m/Y H:i') }}
-
-                                @else
-
-                                    -
-
-                                @endif
-
-                            </td>
+                                <td>
+                                    {{ $data->firstItem() + $loop->index }}
+                                </td>
 
 
-                            {{-- FILE DATA --}}
+                                {{-- NAMA DATASET --}}
 
-                            <td>
+                                <td>
 
-                                @if($item->file_data)
+                                    <span class="data-name">
+                                        {{ $row->nama_dataset }}
+                                    </span>
 
-                                    <a
-                                        href="{{ asset('storage/' . $item->file_data) }}"
-                                        rel="noopener noreferrer"
-                                        class="file-button"> 
+                                </td>
 
-                                        <i class="bi bi-eye"></i>
 
-                                        Lihat File
+                                {{-- JENIS DATA --}}
 
-                                    </a>
+                                <td>
 
-                                @else
+                                    <span class="data-category-badge">
+                                        {{ $row->jenis_data ?: '-' }}
+                                    </span>
 
-                                    <span class="no-file">
+                                </td>
 
-                                        <i class="bi bi-file-earmark-x"></i>
 
-                                        Tidak ada file
+                                {{-- TAHUN --}}
+
+                                <td>
+
+                                    <span class="data-year">
+                                        {{ $row->tahun ?: '-' }}
+                                    </span>
+
+                                </td>
+
+
+                                {{-- FILE --}}
+
+                                <td>
+
+                                    @if($row->file_data)
+
+                                        <a
+                                            href="{{ asset('storage/' . $row->file_data) }}"
+                                            target="_blank"
+                                            class="data-file"
+                                            title="Buka file"
+                                        >
+                                            <i class="bi bi-file-earmark-text-fill"></i>
+
+                                            {{ basename($row->file_data) }}
+                                        </a>
+
+                                    @else
+
+                                        <span class="data-no-file">
+                                            -
+                                        </span>
+
+                                    @endif
+
+                                </td>
+
+
+                                {{-- TANGGAL --}}
+
+                                <td>
+
+                                    <span class="data-date">
+
+                                        @if($row->tanggal_pengajuan)
+
+                                            {{ \Carbon\Carbon::parse($row->tanggal_pengajuan)->format('d/m/Y') }}
+
+                                        @else
+
+                                            -
+
+                                        @endif
 
                                     </span>
 
-                                @endif
-
-                            </td>
+                                </td>
 
 
-                            {{-- VERIFIKASI --}}
+                                {{-- VERIFIKASI --}}
 
-                            <td>
+                                <td>
 
-                                @if($item->verifikasi == 'Disetujui')
+                                    <span class="data-verification {{ $verificationClass }}">
 
-                                    <span class="verifikasi verifikasi-approved">
-
-                                        <i class="bi bi-check-circle"></i>
-
-                                        Disetujui
+                                        {{ $verificationLabel }}
 
                                     </span>
 
-                                @elseif($item->verifikasi == 'Menunggu Disetujui')
-
-                                    <span class="verifikasi verifikasi-pending">
-
-                                        <i class="bi bi-clock"></i>
-
-                                        Menunggu Disetujui
-
-                                    </span>
-
-                                @elseif($item->verifikasi == 'Ditolak')
-
-                                    <span class="verifikasi verifikasi-rejected">
-
-                                        <i class="bi bi-x-circle"></i>
-
-                                        Ditolak
-
-                                    </span>
-
-                                @else
-
-                                    <span class="verifikasi">
-
-                                        -
-
-                                    </span>
-
-                                @endif
-
-                            </td>
+                                </td>
 
 
-                            {{-- KOMENTAR --}}
+                                {{-- AKSI --}}
 
-                            <td>
+                                <td>
 
-                                @if(
-                                    $item->verifikasi == 'Ditolak' &&
-                                    $item->komentar_verifikasi
-                                )
-
-                                    <button
-                                        type="button"
-                                        class="comment-button"
-                                        onclick="showComment(
-                                            @js($item->komentar_verifikasi)
-                                        )">
-
-                                        <i class="bi bi-chat-left-text"></i>
-
-                                        Lihat Komentar
-
-                                    </button>
-
-                                @elseif($item->verifikasi == 'Ditolak')
-
-                                    <span class="no-comment">
-
-                                        Tidak ada komentar
-
-                                    </span>
-
-                                @else
-
-                                    <span class="no-comment">
-
-                                        -
-
-                                    </span>
-
-                                @endif
-
-                            </td>
-
-
-                            {{-- AKSI --}}
-
-                            <td>
-
-                                <div class="action-buttons">
-
-
-                                    {{-- EDIT POPUP --}}
-
-                                    <button
-                                        type="button"
-                                        class="action-button edit"
-                                        title="Edit"
-                                        onclick='openEditModal(
-                                            @json($item->id),
-                                            @json($item->nama_dataset),
-                                            @json($item->jenis_data),
-                                            @json($item->tahun),
-                                            @json($item->file_data)
-                                        )'>
-
-                                        <i class="bi bi-pencil-fill"></i>
-
-                                    </button>
-
-
-                                    {{-- DELETE --}}
-
-                                    <form
-                                        action="{{ route('data.destroy', $item->id) }}"
-                                        method="POST"
-                                        onsubmit="return confirm(
-                                            'Yakin ingin menghapus data ini?'
-                                        )">
-
-                                        @csrf
-
-                                        @method('DELETE')
+                                    <div class="data-action-buttons">
 
                                         <button
-                                            type="submit"
-                                            class="action-button delete"
-                                            title="Hapus">
-
-                                            <i class="bi bi-trash-fill"></i>
-
+                                            type="button"
+                                            class="data-action-button data-edit-button"
+                                            title="Edit"
+                                            onclick="openEditDataModal({{ $row->id }})"
+                                        >
+                                            <i class="bi bi-pencil-fill"></i>
                                         </button>
 
-                                    </form>
 
+                                        <form
+                                            action="{{ route('data.destroy', $row->id) }}"
+                                            method="POST"
+                                            onsubmit="return confirm('Yakin ingin menghapus data ini?');"
+                                            style="display:inline;"
+                                        >
 
-                                </div>
+                                            @csrf
+                                            @method('DELETE')
 
-                            </td>
+                                            <button
+                                                type="submit"
+                                                class="data-action-button data-delete-button"
+                                                title="Hapus"
+                                            >
+                                                <i class="bi bi-trash-fill"></i>
+                                            </button>
 
+                                        </form>
 
-                        </tr>
+                                    </div>
 
+                                </td>
 
-                    @empty
+                            </tr>
 
-                        <tr>
+                        @endforeach
 
-                            <td
-                                colspan="9"
-                                class="empty-data">
+                    </tbody>
 
-                                <i class="bi bi-database-x"></i>
+                </table>
 
-                                Tidak ada data ditemukan.
+            @else
 
-                            </td>
+                <div class="data-empty">
 
-                        </tr>
+                    <div class="data-empty-icon">
+                        <i class="bi bi-database"></i>
+                    </div>
 
-                    @endforelse
+                    <h3>
+                        @if(request('search') || request('jenis_data') || request('verifikasi'))
+                            Data tidak ditemukan
+                        @else
+                            Belum ada data
+                        @endif
+                    </h3>
 
+                    <p>
+                        @if(request('search') || request('jenis_data') || request('verifikasi'))
+                            Coba ubah kata pencarian atau filter.
+                        @else
+                            Belum ada dataset yang tersimpan.
+                        @endif
+                    </p>
 
-                </tbody>
+                </div>
 
-            </table>
+            @endif
 
         </div>
 
@@ -1444,585 +1505,349 @@ input[type="file"].form-control-data {
              FOOTER
         ================================================== --}}
 
-        <div class="table-footer">
+        @if($data->total() > 0)
 
+            <div class="data-table-footer">
 
-            <div class="show-data">
+                <span class="data-showing-text">
 
-                <span>
-                    Show
-                </span>
-
-                <form
-                    method="GET"
-                    action="{{ route('data.index') }}"
-                    id="showForm">
-
-                    <input
-                        type="hidden"
-                        name="search"
-                        value="{{ request('search') }}">
-
-                    <input
-                        type="hidden"
-                        name="jenis_data"
-                        value="{{ request('jenis_data') }}">
-
-                    <input
-                        type="hidden"
-                        name="tahun"
-                        value="{{ request('tahun') }}">
-
-                    <input
-                        type="hidden"
-                        name="verifikasi"
-                        value="{{ request('verifikasi') }}">
-
-                    <select
-                        name="show"
-                        onchange="
-                            document
-                            .getElementById('showForm')
-                            .submit()
-                        ">
-
-                        <option
-                            value="10"
-                            {{ request('show', 10) == 10 ? 'selected' : '' }}>
-
-                            10
-
-                        </option>
-
-                        <option
-                            value="25"
-                            {{ request('show') == 25 ? 'selected' : '' }}>
-
-                            25
-
-                        </option>
-
-                        <option
-                            value="50"
-                            {{ request('show') == 50 ? 'selected' : '' }}>
-
-                            50
-
-                        </option>
-
-                        <option
-                            value="100"
-                            {{ request('show') == 100 ? 'selected' : '' }}>
-
-                            100
-
-                        </option>
-
-                    </select>
-
-                </form>
-
-                <span>
+                    Showing
+                    {{ $data->firstItem() }}
+                    to
+                    {{ $data->lastItem() }}
+                    of
+                    {{ $data->total() }}
                     entries
+
                 </span>
 
-            </div>
 
+                <div class="data-pagination">
 
-            <span>
+                    @if($data->onFirstPage())
 
-                Showing
-
-                {{ $data->firstItem() ?? 0 }}
-
-                to
-
-                {{ $data->lastItem() ?? 0 }}
-
-                of
-
-                {{ $data->total() }}
-
-                entries
-
-            </span>
-
-
-            <div class="pagination">
-
-                @if($data->onFirstPage())
-
-                    <span class="page-link">
-
-                        <i class="bi bi-chevron-left"></i>
-
-                    </span>
-
-                @else
-
-                    <a
-                        href="{{ $data->previousPageUrl() }}"
-                        class="page-link">
-
-                        <i class="bi bi-chevron-left"></i>
-
-                    </a>
-
-                @endif
-
-
-                @foreach(
-                    $data->getUrlRange(
-                        1,
-                        $data->lastPage()
-                    )
-                    as $page => $url
-                )
-
-                    @if($page == $data->currentPage())
-
-                        <span class="page-link active">
-
-                            {{ $page }}
-
+                        <span class="data-page-link disabled">
+                            <i class="bi bi-chevron-left"></i>
                         </span>
 
                     @else
 
                         <a
-                            href="{{ $url }}"
-                            class="page-link">
-
-                            {{ $page }}
-
+                            href="{{ $data->previousPageUrl() }}"
+                            class="data-page-link"
+                        >
+                            <i class="bi bi-chevron-left"></i>
                         </a>
 
                     @endif
 
-                @endforeach
 
+                    @foreach($data->getUrlRange(
+                        max(1, $data->currentPage() - 2),
+                        min($data->lastPage(), $data->currentPage() + 2)
+                    ) as $page => $url)
 
-                @if($data->hasMorePages())
+                        <a
+                            href="{{ $url }}"
+                            class="data-page-link {{ $page == $data->currentPage() ? 'active' : '' }}"
+                        >
+                            {{ $page }}
+                        </a>
 
-                    <a
-                        href="{{ $data->nextPageUrl() }}"
-                        class="page-link">
+                    @endforeach
 
-                        <i class="bi bi-chevron-right"></i>
 
-                    </a>
+                    @if($data->hasMorePages())
 
-                @else
+                        <a
+                            href="{{ $data->nextPageUrl() }}"
+                            class="data-page-link"
+                        >
+                            <i class="bi bi-chevron-right"></i>
+                        </a>
 
-                    <span class="page-link">
+                    @else
 
-                        <i class="bi bi-chevron-right"></i>
+                        <span class="data-page-link disabled">
+                            <i class="bi bi-chevron-right"></i>
+                        </span>
 
-                    </span>
-
-                @endif
-
-            </div>
-
-
-        </div>
-
-
-    </div>
-
-
-</div>
-
-
-
-{{-- =========================================================
-     MODAL AJUKAN DATA
-========================================================= --}}
-
-<div
-    class="data-modal"
-    id="addDataModal">
-
-    <div class="data-modal-content">
-
-
-        <div class="data-modal-header">
-
-            <h2>
-                Ajukan Data
-            </h2>
-
-            <button
-                type="button"
-                class="modal-close"
-                onclick="closeAddModal()">
-
-                &times;
-
-            </button>
-
-        </div>
-
-
-        <form
-            action="{{ route('data.store') }}"
-            method="POST"
-            enctype="multipart/form-data">
-
-            @csrf
-
-
-            <div class="form-group">
-
-                <label>
-                    Nama Dataset
-                </label>
-
-                <input
-                    type="text"
-                    name="nama_dataset"
-                    class="form-control-data"
-                    value="{{ old('nama_dataset') }}"
-                    placeholder="Masukkan nama dataset"
-                    required>
-
-            </div>
-
-
-            <div class="form-group">
-
-                <label>
-                    Jenis Data
-                </label>
-
-                <input
-                    type="text"
-                    name="jenis_data"
-                    class="form-control-data"
-                    value="{{ old('jenis_data') }}"
-                    placeholder="Contoh: Data Kepegawaian"
-                    required>
-
-            </div>
-
-
-            <div class="form-group">
-
-                <label>
-                    Tahun
-                </label>
-
-                <select
-                    name="tahun"
-                    class="form-control-data"
-                    required>
-
-                    <option value="">
-                        Pilih Tahun
-                    </option>
-
-                    @for(
-                        $tahun = date('Y');
-                        $tahun >= 1900;
-                        $tahun--
-                    )
-
-                        <option
-                            value="{{ $tahun }}"
-                            {{ old('tahun') == $tahun ? 'selected' : '' }}>
-
-                            {{ $tahun }}
-
-                        </option>
-
-                    @endfor
-
-                </select>
-
-            </div>
-
-
-            <div class="form-group">
-
-                <label>
-                    File Data
-                </label>
-
-                <input
-                    type="file"
-                    name="file_data"
-                    class="form-control-data"
-                    accept=".csv,.xls,.xlsx,.pdf,.zip"
-                    required>
-
-                <small class="form-help">
-
-                    Format file: CSV, XLS, XLSX, PDF, ZIP.
-                    Maksimal 10 MB.
-
-                </small>
-
-            </div>
-
-
-            <div class="status-info">
-
-                <i class="bi bi-info-circle"></i>
-
-                <span>
-
-                    Setelah dikirim, data akan otomatis berstatus
-
-                    <strong>
-                        Menunggu Disetujui
-                    </strong>
-
-                    dan akan diperiksa oleh Verifikator.
-
-                </span>
-
-            </div>
-
-
-            <div class="form-actions">
-
-                <button
-                    type="button"
-                    class="cancel-btn"
-                    onclick="closeAddModal()">
-
-                    Batal
-
-                </button>
-
-                <button
-                    type="submit"
-                    class="save-btn">
-
-                    <i class="bi bi-send"></i>
-
-                    Ajukan Data
-
-                </button>
-
-            </div>
-
-
-        </form>
-
-    </div>
-
-</div>
-
-
-
-{{-- =========================================================
-     MODAL EDIT DATA
-========================================================= --}}
-
-<div
-    class="data-modal"
-    id="editDataModal">
-
-    <div class="data-modal-content">
-
-
-        <div class="data-modal-header">
-
-            <h2>
-                Edit Data
-            </h2>
-
-            <button
-                type="button"
-                class="modal-close"
-                onclick="closeEditModal()">
-
-                &times;
-
-            </button>
-
-        </div>
-
-
-        <form
-            id="editDataForm"
-            method="POST"
-            enctype="multipart/form-data">
-
-            @csrf
-
-            @method('PUT')
-
-
-            {{-- NAMA DATASET --}}
-
-            <div class="form-group">
-
-                <label>
-                    Nama Dataset
-                </label>
-
-                <input
-                    type="text"
-                    id="edit_nama_dataset"
-                    name="nama_dataset"
-                    class="form-control-data"
-                    required>
-
-            </div>
-
-
-            {{-- JENIS DATA --}}
-
-            <div class="form-group">
-
-                <label>
-                    Jenis Data
-                </label>
-
-                <input
-                    type="text"
-                    id="edit_jenis_data"
-                    name="jenis_data"
-                    class="form-control-data"
-                    required>
-
-            </div>
-
-
-            {{-- TAHUN --}}
-
-            <div class="form-group">
-
-                <label>
-                    Tahun
-                </label>
-
-                <select
-                    id="edit_tahun"
-                    name="tahun"
-                    class="form-control-data"
-                    required>
-
-                    <option value="">
-                        Pilih Tahun
-                    </option>
-
-                    @for(
-                        $tahun = date('Y');
-                        $tahun >= 1900;
-                        $tahun--
-                    )
-
-                        <option value="{{ $tahun }}">
-                            {{ $tahun }}
-                        </option>
-
-                    @endfor
-
-                </select>
-
-            </div>
-
-
-            {{-- FILE DATA --}}
-
-            <div class="form-group">
-
-                <label>
-                    File Data
-                </label>
-
-
-                <div
-                    id="edit_current_file"
-                    class="current-file"
-                    style="display:none;">
-
-                    <i class="bi bi-file-earmark"></i>
-
-                    <span>
-                        File saat ini:
-                    </span>
-
-                    <a
-                        id="edit_file_link"
-                        href="#"
-                        target="_blank">
-
-                        Lihat File
-
-                    </a>
+                    @endif
 
                 </div>
 
+            </div>
 
-                <input
-                    type="file"
-                    name="file_data"
-                    class="form-control-data"
-                    accept=".csv,.xls,.xlsx,.pdf,.zip">
+        @endif
+
+    </div>
+
+</div>
 
 
-                <small class="form-help">
+{{-- =========================================================
+     MODAL TAMBAH / EDIT DATA
+========================================================= --}}
 
-                    Kosongkan jika tidak ingin mengganti file.
-                    Format: CSV, XLS, XLSX, PDF, ZIP. Maksimal 10 MB.
+<div
+    id="dataModal"
+    class="data-modal-overlay"
+    aria-hidden="true"
+>
 
-                </small>
+    <div
+        class="data-modal"
+        onclick="event.stopPropagation()"
+    >
+
+        {{-- HEADER --}}
+
+        <div class="data-modal-header">
+
+            <div class="data-modal-header-left">
+
+                <div class="data-modal-icon">
+                    <i class="bi bi-database-fill"></i>
+                </div>
+
+                <div>
+
+                    <h2
+                        id="dataModalTitle"
+                        class="data-modal-title"
+                    >
+                        Tambah Data
+                    </h2>
+
+                    <p
+                        id="dataModalSubtitle"
+                        class="data-modal-subtitle"
+                    >
+                        Tambahkan dataset baru ke dalam sistem.
+                    </p>
+
+                </div>
 
             </div>
 
 
-            {{-- INFO --}}
+            <button
+                type="button"
+                class="data-modal-close"
+                onclick="closeDataModal()"
+                title="Tutup"
+            >
+                <i class="bi bi-x-lg"></i>
+            </button>
 
-            <div class="status-info">
+        </div>
 
-                <i class="bi bi-info-circle"></i>
 
-                <span>
+        {{-- FORM --}}
 
-                    Data yang sudah ada akan diperbarui.
-                    Status verifikasi tetap
+        <form
+            id="dataForm"
+            action="{{ route('data.store') }}"
+            method="POST"
+            enctype="multipart/form-data"
+        >
 
-                    <strong>
-                        Menunggu Disetujui
-                    </strong>
+            @csrf
 
-                    jika masih dalam proses pengajuan.
+            <input
+                type="hidden"
+                name="_method"
+                id="dataMethod"
+                value="POST"
+            >
 
-                </span>
+
+            {{-- BODY --}}
+
+            <div class="data-modal-body">
+
+                <div class="data-form-grid">
+
+
+                    {{-- NAMA DATASET --}}
+
+                    <div class="data-form-group full">
+
+                        <label
+                            for="data_nama_dataset"
+                            class="data-form-label"
+                        >
+                            Nama Dataset
+                            <span>*</span>
+                        </label>
+
+                        <input
+                            type="text"
+                            id="data_nama_dataset"
+                            name="nama_dataset"
+                            class="data-form-control"
+                            value="{{ old('nama_dataset') }}"
+                            placeholder="Contoh: Data Penduduk Kabupaten Bekasi"
+                            required
+                        >
+
+                        @error('nama_dataset')
+                            <small class="data-error">
+                                {{ $message }}
+                            </small>
+                        @enderror
+
+                    </div>
+
+
+                    {{-- JENIS DATA --}}
+
+                    <div class="data-form-group">
+
+                        <label
+                            for="data_jenis_data"
+                            class="data-form-label"
+                        >
+                            Jenis Data
+                            <span>*</span>
+                        </label>
+
+                        <input
+                            type="text"
+                            id="data_jenis_data"
+                            name="jenis_data"
+                            class="data-form-control"
+                            value="{{ old('jenis_data') }}"
+                            placeholder="Contoh: Kependudukan"
+                            required
+                        >
+
+                        @error('jenis_data')
+                            <small class="data-error">
+                                {{ $message }}
+                            </small>
+                        @enderror
+
+                    </div>
+
+
+                    {{-- TAHUN --}}
+
+                    <div class="data-form-group">
+
+                        <label
+                            for="data_tahun"
+                            class="data-form-label"
+                        >
+                            Tahun
+                            <span>*</span>
+                        </label>
+
+                        <input
+                            type="number"
+                            id="data_tahun"
+                            name="tahun"
+                            class="data-form-control"
+                            value="{{ old('tahun') }}"
+                            min="1900"
+                            max="2100"
+                            placeholder="Contoh: 2026"
+                            required
+                        >
+
+                        @error('tahun')
+                            <small class="data-error">
+                                {{ $message }}
+                            </small>
+                        @enderror
+
+                    </div>
+
+
+                    {{-- FILE --}}
+
+                    <div class="data-form-group full">
+
+                        <label
+                            for="data_file_data"
+                            class="data-form-label"
+                        >
+                            File Data
+                        </label>
+
+                        <input
+                            type="file"
+                            id="data_file_data"
+                            name="file_data"
+                            class="data-form-control data-file-input"
+                        >
+
+                        <small class="data-form-help">
+                            Upload file dataset jika tersedia.
+                        </small>
+
+                        @error('file_data')
+                            <small class="data-error">
+                                {{ $message }}
+                            </small>
+                        @enderror
+
+                    </div>
+
+
+                    {{-- KOMENTAR --}}
+
+                    <div class="data-form-group full">
+
+                        <label
+                            for="data_komentar_verifikasi"
+                            class="data-form-label"
+                        >
+                            Keterangan
+                        </label>
+
+                        <textarea
+                            id="data_komentar_verifikasi"
+                            name="komentar_verifikasi"
+                            class="data-form-control"
+                            placeholder="Tambahkan keterangan jika diperlukan..."
+                        >{{ old('komentar_verifikasi') }}</textarea>
+
+                        @error('komentar_verifikasi')
+                            <small class="data-error">
+                                {{ $message }}
+                            </small>
+                        @enderror
+
+                    </div>
+
+                </div>
 
             </div>
 
 
-            {{-- BUTTON --}}
+            {{-- FOOTER --}}
 
-            <div class="form-actions">
+            <div class="data-modal-footer">
 
                 <button
                     type="button"
-                    class="cancel-btn"
-                    onclick="closeEditModal()">
-
+                    class="data-modal-cancel"
+                    onclick="closeDataModal()"
+                >
                     Batal
-
                 </button>
-
 
                 <button
                     type="submit"
-                    class="save-btn">
-
-                    <i class="bi bi-save"></i>
-
-                    Simpan Perubahan
-
+                    class="data-modal-save"
+                    id="dataSaveButton"
+                >
+                    <i class="bi bi-check-lg"></i>
+                    Simpan Data
                 </button>
 
             </div>
-
 
         </form>
 
@@ -2031,331 +1856,268 @@ input[type="file"].form-control-data {
 </div>
 
 
-
-{{-- =========================================================
-     MODAL KOMENTAR
-========================================================= --}}
-
-<div
-    class="data-modal"
-    id="commentModal">
-
-    <div class="data-modal-content comment-modal-content">
-
-
-        <div class="data-modal-header">
-
-            <h2>
-                Komentar Verifikator
-            </h2>
-
-            <button
-                type="button"
-                class="modal-close"
-                onclick="closeCommentModal()">
-
-                &times;
-
-            </button>
-
-        </div>
-
-
-        <div class="comment-box">
-
-            <i class="bi bi-chat-left-text"></i>
-
-            <p id="commentText"></p>
-
-        </div>
-
-
-        <div class="form-actions">
-
-            <button
-                type="button"
-                class="cancel-btn"
-                onclick="closeCommentModal()">
-
-                Tutup
-
-            </button>
-
-        </div>
-
-
-    </div>
-
-</div>
-
-
-@endsection
-
-
-
-@push('scripts')
-
 <script>
+
+const dataRecords = @json($data->items());
+
 
 /* =========================================================
    FILTER
 ========================================================= */
 
-function toggleFilter()
+function toggleDataFilter(event)
 {
-    const filterBox =
-        document.getElementById('filterBox');
+    if (event) {
+        event.stopPropagation();
+    }
 
-    filterBox.classList.toggle('show');
+    const dropdown =
+        document.getElementById('dataFilterDropdown');
+
+    if (!dropdown) {
+        return;
+    }
+
+    dropdown.classList.toggle('show');
 }
+
+
+function resetDataFilter()
+{
+    window.location.href =
+        "{{ route('data.index') }}";
+}
+
+
+document.addEventListener('click', function(event)
+{
+    const wrap =
+        document.querySelector('.data-filter-wrap');
+
+    const dropdown =
+        document.getElementById('dataFilterDropdown');
+
+    if (
+        dropdown &&
+        wrap &&
+        !wrap.contains(event.target)
+    ) {
+        dropdown.classList.remove('show');
+    }
+});
 
 
 /* =========================================================
-   ADD MODAL
+   OPEN ADD
 ========================================================= */
 
-function openAddModal()
+function openDataModal()
 {
     const modal =
-        document.getElementById('addDataModal');
-
-    modal.classList.add('show');
-
-    document.body.style.overflow = 'hidden';
-}
-
-
-function closeAddModal()
-{
-    const modal =
-        document.getElementById('addDataModal');
-
-    modal.classList.remove('show');
-
-    document.body.style.overflow = '';
-}
-
-
-/* =========================================================
-   EDIT MODAL
-========================================================= */
-
-function openEditModal(
-    id,
-    namaDataset,
-    jenisData,
-    tahun,
-    fileData
-)
-{
-
-    const modal =
-        document.getElementById('editDataModal');
-
+        document.getElementById('dataModal');
 
     const form =
-        document.getElementById('editDataForm');
+        document.getElementById('dataForm');
 
-
-    const nama =
-        document.getElementById('edit_nama_dataset');
-
-
-    const jenis =
-        document.getElementById('edit_jenis_data');
-
-
-    const tahunInput =
-        document.getElementById('edit_tahun');
-
-
-    const currentFile =
-        document.getElementById('edit_current_file');
-
-
-    const fileLink =
-        document.getElementById('edit_file_link');
-
-
-    /*
-     * ROUTE UPDATE
-     *
-     * Karena form edit berada di index,
-     * action dibuat menggunakan URL data/{id}
-     */
+    if (!modal || !form) {
+        return;
+    }
 
     form.action =
-        "{{ url('/data') }}/" + id;
+        "{{ route('data.store') }}";
+
+    document.getElementById('dataMethod').value =
+        'POST';
+
+    document.getElementById('dataModalTitle').textContent =
+        'Tambah Data';
+
+    document.getElementById('dataModalSubtitle').textContent =
+        'Tambahkan dataset baru ke dalam sistem.';
+
+    document.getElementById('dataSaveButton').innerHTML =
+        '<i class="bi bi-check-lg"></i> Simpan Data';
+
+    form.reset();
+
+    modal.classList.add('show');
+
+    modal.setAttribute(
+        'aria-hidden',
+        'false'
+    );
+
+    document.body.classList.add(
+        'data-modal-open'
+    );
+}
 
 
-    nama.value =
-        namaDataset;
+/* =========================================================
+   OPEN EDIT
+========================================================= */
 
+function openEditDataModal(id)
+{
+    const data =
+        dataRecords.find(function(item)
+        {
+            return String(item.id) === String(id);
+        });
 
-    jenis.value =
-        jenisData;
+    if (!data) {
 
+        alert(
+            'Data tidak ditemukan pada halaman ini.'
+        );
 
-    tahunInput.value =
-        tahun;
-
-
-    /*
-     * FILE LAMA
-     */
-
-    if(fileData)
-    {
-
-        currentFile.style.display =
-            'flex';
-
-
-        fileLink.href =
-            "{{ asset('storage') }}/" + fileData;
-
+        return;
     }
-    else
-    {
 
-        currentFile.style.display =
-            'none';
 
-        fileLink.href =
-            '#';
+    const modal =
+        document.getElementById('dataModal');
 
+    const form =
+        document.getElementById('dataForm');
+
+    if (!modal || !form) {
+        return;
+    }
+
+
+    form.action =
+        `/data/${id}`;
+
+    document.getElementById('dataMethod').value =
+        'PUT';
+
+    document.getElementById('dataModalTitle').textContent =
+        'Edit Data';
+
+    document.getElementById('dataModalSubtitle').textContent =
+        'Perbarui dataset yang dipilih.';
+
+    document.getElementById('dataSaveButton').innerHTML =
+        '<i class="bi bi-check-lg"></i> Simpan Perubahan';
+
+
+    document.getElementById('data_nama_dataset').value =
+        data.nama_dataset ?? '';
+
+    document.getElementById('data_jenis_data').value =
+        data.jenis_data ?? '';
+
+    document.getElementById('data_tahun').value =
+        data.tahun ?? '';
+
+    document.getElementById('data_komentar_verifikasi').value =
+        data.komentar_verifikasi ?? '';
+
+
+    const fileInput =
+        document.getElementById('data_file_data');
+
+    if (fileInput) {
+        fileInput.value = '';
     }
 
 
     modal.classList.add('show');
 
-    document.body.style.overflow =
-        'hidden';
-}
+    modal.setAttribute(
+        'aria-hidden',
+        'false'
+    );
 
-
-function closeEditModal()
-{
-    const modal =
-        document.getElementById('editDataModal');
-
-    modal.classList.remove('show');
-
-    document.body.style.overflow = '';
+    document.body.classList.add(
+        'data-modal-open'
+    );
 }
 
 
 /* =========================================================
-   COMMENT
+   CLOSE
 ========================================================= */
 
-function showComment(comment)
+function closeDataModal()
 {
-
     const modal =
-        document.getElementById('commentModal');
+        document.getElementById('dataModal');
 
-
-    const text =
-        document.getElementById('commentText');
-
-
-    text.textContent =
-        comment;
-
-
-    modal.classList.add('show');
-
-    document.body.style.overflow =
-        'hidden';
-}
-
-
-function closeCommentModal()
-{
-
-    const modal =
-        document.getElementById('commentModal');
-
-
-    modal.classList.remove('show');
-
-    document.body.style.overflow =
-        '';
-}
-
-
-/* =========================================================
-   CLICK OUTSIDE MODAL
-========================================================= */
-
-window.addEventListener(
-    'click',
-    function(event)
-    {
-
-        const addModal =
-            document.getElementById('addDataModal');
-
-
-        const editModal =
-            document.getElementById('editDataModal');
-
-
-        const commentModal =
-            document.getElementById('commentModal');
-
-
-        if(event.target === addModal)
-        {
-
-            closeAddModal();
-
-        }
-
-
-        if(event.target === editModal)
-        {
-
-            closeEditModal();
-
-        }
-
-
-        if(event.target === commentModal)
-        {
-
-            closeCommentModal();
-
-        }
-
+    if (!modal) {
+        return;
     }
-);
+
+    modal.classList.remove('show');
+
+    modal.setAttribute(
+        'aria-hidden',
+        'true'
+    );
+
+    document.body.classList.remove(
+        'data-modal-open'
+    );
+}
 
 
 /* =========================================================
-   ESC
+   BACKDROP
 ========================================================= */
 
-window.addEventListener(
+document.getElementById('dataModal')
+    ?.addEventListener(
+        'click',
+        function(event)
+        {
+            if (event.target === this) {
+                closeDataModal();
+            }
+        }
+    );
+
+
+/* =========================================================
+   ESCAPE
+========================================================= */
+
+document.addEventListener(
     'keydown',
     function(event)
     {
+        if (event.key === 'Escape') {
 
-        if(event.key === 'Escape')
-        {
+            const modal =
+                document.getElementById('dataModal');
 
-            closeAddModal();
-
-            closeEditModal();
-
-            closeCommentModal();
-
+            if (
+                modal &&
+                modal.classList.contains('show')
+            ) {
+                closeDataModal();
+            }
         }
-
     }
 );
 
+
+/* =========================================================
+   AUTO OPEN VALIDATION ERROR
+========================================================= */
+
+@if($errors->any())
+
+document.addEventListener(
+    'DOMContentLoaded',
+    function()
+    {
+        openDataModal();
+    }
+);
+
+@endif
+
 </script>
 
-@endpush
+@endsection

@@ -4,172 +4,225 @@
 
 @section('page-title', 'SPLP')
 
-@section('header')
-
-    <div class="custom-header">
-
-        <div class="header-breadcrumb">
-
-            <span class="breadcrumb-main">
-                INFRASTRUKTUR
-            </span>
-
-            <i class="bi bi-chevron-right"></i>
-
-            <span class="breadcrumb-active">
-                SPLP
-            </span>
-
-        </div>
-
-    </div>
-
-@endsection
-
-
 @section('content')
 
 <style>
 
 /* =========================================================
-   PAGE
+   SPLP PAGE
 ========================================================= */
 
-.infrastruktur-page {
+.splp-page {
     width: 100%;
 }
 
 
 /* =========================================================
-   CUSTOM HEADER
+   HEADER
 ========================================================= */
 
-.custom-header {
+.splp-header {
     display: flex;
+    justify-content: space-between;
     align-items: center;
-    height: 100%;
+    margin-bottom: 24px;
 }
 
-.header-breadcrumb {
-    display: flex;
-    align-items: center;
-    gap: 10px;
-    font-size: 14px;
+.splp-heading h2 {
+    margin: 0;
+    font-size: 24px;
     font-weight: 700;
     color: #1f2937;
 }
 
-.header-breadcrumb i {
+.splp-heading p {
+    margin: 6px 0 0;
+    font-size: 13px;
+    color: #6b7280;
+}
+
+.add-splp-button {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    gap: 8px;
+
+    padding: 11px 18px;
+
+    border: none;
+    border-radius: 10px;
+
+    background: #071b88;
+    color: white;
+
+    text-decoration: none;
+
+    font-size: 13px;
+    font-weight: 600;
+
+    cursor: pointer;
+
+    transition: 0.2s ease;
+}
+
+.add-splp-button:hover {
+    background: #050f63;
+    color: white;
+    transform: translateY(-1px);
+}
+
+.add-splp-button i {
+    font-size: 16px;
+}
+
+
+/* =========================================================
+   ALERT
+========================================================= */
+
+.alert-success,
+.alert-error {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+
+    padding: 12px 15px;
+
+    border-radius: 9px;
+
+    margin-bottom: 20px;
+
+    font-size: 13px;
+}
+
+.alert-success {
+    background: #ecfdf5;
+    border: 1px solid #a7f3d0;
+    color: #047857;
+}
+
+.alert-error {
+    background: #fef2f2;
+    border: 1px solid #fecaca;
+    color: #b91c1c;
+}
+
+.alert-success i,
+.alert-error i {
+    font-size: 17px;
+}
+
+
+/* =========================================================
+   STATISTIC CARDS
+========================================================= */
+
+.splp-stats {
+    display: grid;
+    grid-template-columns: repeat(4, minmax(0, 1fr));
+    gap: 18px;
+
+    margin-bottom: 25px;
+}
+
+.splp-stat-card {
+    min-height: 135px;
+
+    background: white;
+
+    border: 1px solid #e5e7eb;
+    border-radius: 14px;
+
+    padding: 20px;
+
+    display: flex;
+    align-items: flex-start;
+    gap: 15px;
+
+    box-shadow: 0 2px 6px rgba(0, 0, 0, 0.05);
+
+    transition: all 0.2s ease;
+}
+
+.splp-stat-card:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 5px 12px rgba(0, 0, 0, 0.08);
+}
+
+.splp-stat-icon {
+    width: 45px;
+    height: 45px;
+
+    flex-shrink: 0;
+
+    border-radius: 12px;
+
+    display: flex;
+    align-items: center;
+    justify-content: center;
+
+    font-size: 20px;
+}
+
+.splp-stat-icon.blue {
+    background: #e0f2fe;
+    color: #0284c7;
+}
+
+.splp-stat-icon.orange {
+    background: #ffedd5;
+    color: #ea580c;
+}
+
+.splp-stat-icon.green {
+    background: #dcfce7;
+    color: #16a34a;
+}
+
+.splp-stat-icon.red {
+    background: #fee2e2;
+    color: #dc2626;
+}
+
+.splp-stat-content {
+    display: flex;
+    flex-direction: column;
+    min-width: 0;
+}
+
+.splp-stat-label {
+    font-size: 12px;
+    color: #6b7280;
+    margin-bottom: 5px;
+}
+
+.splp-stat-value {
+    font-size: 23px;
+    font-weight: 700;
+    color: #075985;
+    line-height: 1.2;
+}
+
+.splp-stat-description {
+    margin-top: 7px;
     font-size: 10px;
     color: #9ca3af;
 }
 
-.breadcrumb-main,
-.breadcrumb-active {
-    color: #1f2937;
-    letter-spacing: 0.2px;
-}
-
 
 /* =========================================================
-   MESSAGE
+   TABLE CARD
 ========================================================= */
 
-.success-message {
-    margin-bottom: 20px;
-    padding: 12px 15px;
-    background: #eff9e9;
-    border: 1px solid #c9e6ca;
-    border-radius: 8px;
-    color: #397542;
-    font-size: 12px;
-}
-
-.error-message {
-    margin-bottom: 20px;
-    padding: 12px 15px;
-    background: #fff1f2;
-    border: 1px solid #fecdd3;
-    border-radius: 8px;
-    color: #b42318;
-    font-size: 12px;
-}
-
-
-/* =========================================================
-   STATISTICS
-========================================================= */
-
-.statistics {
-    display: grid;
-    grid-template-columns: repeat(3, 1fr);
-    gap: 20px;
-    margin-bottom: 25px;
-}
-
-.stat-card {
+.splp-table-card {
     background: white;
-    border-radius: 15px;
-    padding: 20px;
-    min-height: 80px;
-    display: flex;
-    flex-direction: column;
-    justify-content: center;
-    border: 1px solid #eef0f4;
-    box-shadow: 0 3px 10px rgba(0, 0, 0, 0.06);
-    box-sizing: border-box;
-}
 
-.stat-card:nth-child(1) {
-    background: #eef4ff;
-}
+    border: 1px solid #e5e7eb;
+    border-radius: 14px;
 
-.stat-card:nth-child(2) {
-    background: #fff8e7;
-}
-
-.stat-card:nth-child(3) {
-    background: #eff9e9;
-}
-
-.stat-title {
-    font-size: 11px;
-    font-weight: 600;
-    margin-bottom: 7px;
-    letter-spacing: 0.4px;
-    text-transform: uppercase;
-}
-
-.stat-card:nth-child(1) .stat-title {
-    color: #4f7da7;
-}
-
-.stat-card:nth-child(2) .stat-title {
-    color: #c38a19;
-}
-
-.stat-card:nth-child(3) .stat-title {
-    color: #4f8a5a;
-}
-
-.stat-value {
-    font-size: 24px;
-    line-height: 1;
-    font-weight: 700;
-    color: #1f2937;
-}
-
-
-/* =========================================================
-   TABLE CONTAINER
-========================================================= */
-
-.table-container {
-    background: white;
-    border-radius: 15px;
-    border: 1px solid #eef0f4;
     overflow: hidden;
-    box-shadow: 0 3px 10px rgba(0, 0, 0, 0.06);
+
+    box-shadow: 0 2px 7px rgba(0, 0, 0, 0.04);
 }
 
 
@@ -177,235 +230,110 @@
    TABLE HEADER
 ========================================================= */
 
-.table-header {
-    display: flex;
-    flex-direction: column;
-    gap: 12px;
-    padding: 18px 20px;
-}
+.splp-table-header {
+    padding: 20px 22px;
 
-.top-tools {
     display: flex;
-    align-items: center;
     justify-content: space-between;
-    gap: 15px;
-}
-
-.left-tools,
-.right-tools {
-    display: flex;
     align-items: center;
+    gap: 20px;
+
+    border-bottom: 1px solid #e5e7eb;
 }
 
-.right-tools {
-    gap: 10px;
-}
-
-
-/* =========================================================
-   SEARCH
-========================================================= */
-
-.search-box {
-    position: relative;
-    width: 210px;
-    height: 36px;
-}
-
-.search-box i {
-    position: absolute;
-    left: 13px;
-    top: 50%;
-    transform: translateY(-50%);
-    color: #6b7280;
-    font-size: 13px;
-    z-index: 2;
-    pointer-events: none;
-}
-
-.search-box input {
-    width: 100%;
-    height: 36px;
-    display: block;
-    background: #f3f4f6;
-    border: 1px solid #eef0f4;
-    outline: none;
-    border-radius: 18px;
-    padding: 0 14px 0 36px;
-    font-size: 11px;
-    color: #374151;
-    box-sizing: border-box;
-}
-
-.search-box input:focus {
-    border-color: #d1d5db;
-    background: #f9fafb;
-}
-
-.search-box input::placeholder {
-    color: #9ca3af;
-    opacity: 1;
-}
-
-
-/* =========================================================
-   FILTER
-========================================================= */
-
-.filter-wrapper {
-    position: relative;
-    display: flex;
-    align-items: center;
-}
-
-.filter-btn {
-    height: 36px;
-    padding: 0 13px;
-    background: white;
-    border: 1px solid #d9dee7;
-    border-radius: 8px;
-    color: #374151;
-    cursor: pointer;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    gap: 6px;
-    font-size: 11px;
-    font-weight: 600;
-    text-decoration: none;
-    box-sizing: border-box;
-}
-
-.filter-btn:hover {
-    background: #f8fafc;
-}
-
-.filter-panel {
-    display: none;
-    width: 100%;
-    padding: 15px 0 3px;
-    border-top: 1px solid #eef0f4;
-    margin-top: 2px;
-}
-
-.filter-panel.show {
-    display: block;
-}
-
-.filter-form {
-    display: flex;
-    align-items: flex-end;
-    gap: 12px;
-    width: 100%;
-}
-
-.filter-group {
-    flex: 1;
-    min-width: 150px;
-}
-
-.filter-label {
-    display: block;
-    margin-bottom: 6px;
-    font-size: 10px;
-    font-weight: 600;
-    color: #374151;
-}
-
-.filter-select {
-    width: 100%;
-    height: 35px;
-    padding: 0 10px;
-    border: 1px solid #d9dee7;
-    border-radius: 7px;
-    background: white;
-    color: #374151;
-    font-size: 10px;
-    outline: none;
-    cursor: pointer;
-    box-sizing: border-box;
-}
-
-.filter-select:focus {
-    border-color: #17146b;
-    box-shadow: 0 0 0 2px rgba(23, 20, 107, 0.06);
-}
-
-.filter-actions {
+.splp-table-header-left {
     display: flex;
     align-items: center;
     gap: 8px;
-    padding-bottom: 0;
 }
 
-.filter-apply {
-    height: 35px;
-    padding: 0 14px;
-    border: none;
-    border-radius: 7px;
-    background: #17146b;
-    color: white;
-    font-size: 10px;
-    font-weight: 600;
-    cursor: pointer;
-    white-space: nowrap;
+.splp-table-title {
+    margin: 0;
+
+    font-size: 16px;
+    font-weight: 700;
+
+    color: #1f2937;
 }
 
-.filter-apply:hover {
-    background: #100e58;
-}
-
-.filter-reset {
-    height: 35px;
-    padding: 0 14px;
-    border: 1px solid #d9dee7;
-    border-radius: 7px;
-    background: white;
-    color: #374151;
-    font-size: 10px;
-    font-weight: 600;
-    text-decoration: none;
-    display: inline-flex;
-    align-items: center;
-    justify-content: center;
-    box-sizing: border-box;
-    white-space: nowrap;
-}
-
-.filter-reset:hover {
-    background: #f8fafc;
-}
-
-.filter-btn.active {
-    background: #f4f3ff;
-    border-color: #17146b;
-    color: #17146b;
+.splp-table-count {
+    font-size: 12px;
+    color: #6b7280;
 }
 
 
 /* =========================================================
-   ADD BUTTON
+   TOOLBAR
 ========================================================= */
 
-.add-btn {
-    height: 36px;
-    padding: 0 15px;
-    border: none;
-    border-radius: 8px;
-    background: #17146b;
-    color: white;
-    cursor: pointer;
+.splp-toolbar {
     display: flex;
     align-items: center;
-    justify-content: center;
-    gap: 6px;
-    font-size: 11px;
-    font-weight: 600;
-    box-shadow: 0 3px 7px rgba(23, 20, 107, 0.20);
+    gap: 9px;
 }
 
-.add-btn:hover {
-    background: #100e58;
+.splp-search {
+    position: relative;
+}
+
+.splp-search i {
+    position: absolute;
+
+    left: 12px;
+    top: 50%;
+
+    transform: translateY(-50%);
+
+    color: #94a3b8;
+
+    font-size: 14px;
+}
+
+.splp-search input {
+    width: 220px;
+    height: 38px;
+
+    padding: 0 12px 0 35px;
+
+    border: 1px solid #d1d5db;
+    border-radius: 8px;
+
+    outline: none;
+
+    font-size: 12px;
+    color: #374151;
+
+    background: white;
+
+    transition: 0.2s ease;
+}
+
+.splp-search input:focus {
+    border-color: #079bd8;
+    box-shadow: 0 0 0 3px rgba(7, 155, 216, 0.10);
+}
+
+.splp-filter-select {
+    height: 38px;
+
+    padding: 0 32px 0 12px;
+
+    border: 1px solid #d1d5db;
+    border-radius: 8px;
+
+    background: white;
+
+    color: #374151;
+
+    font-size: 12px;
+
+    outline: none;
+
+    cursor: pointer;
+}
+
+.splp-filter-select:focus {
+    border-color: #079bd8;
 }
 
 
@@ -413,53 +341,145 @@
    TABLE
 ========================================================= */
 
-.table-wrapper {
+.splp-table-wrapper {
+    width: 100%;
     overflow-x: auto;
 }
 
 .splp-table {
     width: 100%;
-    min-width: 1250px;
+
     border-collapse: collapse;
+
+    min-width: 1150px;
 }
 
 .splp-table th {
-    background: #f8f9fb;
-    color: #4b5563;
-    font-size: 10px;
-    font-weight: 700;
-    text-align: center;
-    padding: 13px 10px;
-    border-top: 1px solid #eef0f4;
+    padding: 14px 16px;
+
+    background: #f8fafc;
+
     border-bottom: 1px solid #e5e7eb;
+
+    color: #475569;
+
+    font-size: 12px;
+    font-weight: 700;
+
+    text-align: left;
+
     white-space: nowrap;
-    letter-spacing: 0.2px;
 }
 
 .splp-table td {
-    height: 50px;
-    padding: 8px 10px;
-    border-bottom: 1px solid #f0f1f3;
-    font-size: 10px;
-    color: #4b5563;
-    white-space: nowrap;
-    text-align: center;
+    padding: 15px 16px;
+
+    border-bottom: 1px solid #f1f5f9;
+
+    color: #374151;
+
+    font-size: 13px;
+
+    vertical-align: middle;
+}
+
+.splp-table tbody tr {
+    transition: 0.15s ease;
 }
 
 .splp-table tbody tr:hover {
-    background: #fafafa;
+    background: #f8fafc;
 }
 
-.splp-table td:nth-child(2),
-.splp-table td:nth-child(3) {
-    max-width: 180px;
-    overflow: hidden;
-    text-overflow: ellipsis;
+.splp-table tbody tr:last-child td {
+    border-bottom: none;
 }
 
-.id {
+
+/* =========================================================
+   ID
+========================================================= */
+
+.splp-code {
+    font-weight: 700;
+    color: #075985;
+
+    white-space: nowrap;
+}
+
+
+/* =========================================================
+   NAME
+========================================================= */
+
+.splp-name {
     font-weight: 600;
+    color: #1f2937;
+}
+
+.splp-spec {
+    margin-top: 3px;
+
+    font-size: 11px;
+    color: #9ca3af;
+
+    max-width: 230px;
+}
+
+
+/* =========================================================
+   PROCUREMENT
+========================================================= */
+
+.procurement-badge {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+
+    padding: 5px 10px;
+
+    border-radius: 20px;
+
+    font-size: 11px;
+    font-weight: 600;
+
+    white-space: nowrap;
+}
+
+.procurement-sewa {
+    background: #fef3c7;
+    color: #92400e;
+}
+
+.procurement-beli {
+    background: #dcfce7;
+    color: #166534;
+}
+
+
+/* =========================================================
+   PRICE
+========================================================= */
+
+.splp-price {
+    font-weight: 600;
+    color: #374151;
+
+    white-space: nowrap;
+}
+
+
+/* =========================================================
+   DATE
+========================================================= */
+
+.splp-date {
+    white-space: nowrap;
     color: #4b5563;
+}
+
+.splp-date-empty {
+    color: #9ca3af;
 }
 
 
@@ -467,43 +487,40 @@
    STATUS
 ========================================================= */
 
-.status {
+.splp-status-badge {
     display: inline-flex;
+
     align-items: center;
     justify-content: center;
-    min-width: 75px;
-    padding: 7px 14px;
+
+    padding: 5px 10px;
+
     border-radius: 20px;
-    font-size: 10px;
+
+    font-size: 11px;
     font-weight: 600;
-    line-height: 1;
+
     white-space: nowrap;
-    box-sizing: border-box;
 }
 
-.status-tersedia {
-    background: #d9f8e5;
-    color: #247a47;
+.status-active {
+    background: #dcfce7;
+    color: #166534;
 }
 
-.status-digunakan {
-    background: #dce9ff;
-    color: #315ea8;
-}
-
-.status-akan-habis {
-    background: #ffeb91;
-    color: #966315;
+.status-warning {
+    background: #fef3c7;
+    color: #92400e;
 }
 
 .status-expired {
-    background: #ffe0e0;
-    color: #b42318;
+    background: #fee2e2;
+    color: #991b1b;
 }
 
-.status-default {
-    background: #e5e7eb;
-    color: #4b5563;
+.status-perpetual {
+    background: #e0f2fe;
+    color: #075985;
 }
 
 
@@ -511,47 +528,35 @@
    VERIFIKASI
 ========================================================= */
 
-.verifikasi {
+.verifikasi-badge {
     display: inline-flex;
+
     align-items: center;
     justify-content: center;
-    min-width: 110px;
-    padding: 6px 10px;
-    border-radius: 15px;
-    font-size: 9px;
+
+    padding: 5px 10px;
+
+    border-radius: 20px;
+
+    font-size: 11px;
     font-weight: 600;
-    line-height: 1.2;
+
     white-space: nowrap;
 }
 
 .verifikasi-menunggu {
-    background: #fff4cc;
-    color: #946200;
+    background: #fef3c7;
+    color: #92400e;
 }
 
 .verifikasi-disetujui {
-    background: #d9f8e5;
-    color: #247a47;
+    background: #dcfce7;
+    color: #166534;
 }
 
 .verifikasi-ditolak {
-    background: #ffe0e0;
-    color: #b42318;
-}
-
-
-/* =========================================================
-   KOMENTAR
-========================================================= */
-
-.komentar-cell {
-    max-width: 180px;
-    overflow: hidden;
-    text-overflow: ellipsis;
-}
-
-.komentar-cell.empty {
-    color: #9ca3af;
+    background: #fee2e2;
+    color: #991b1b;
 }
 
 
@@ -559,104 +564,151 @@
    ACTION
 ========================================================= */
 
-.action {
+.splp-action-buttons {
     display: flex;
-    justify-content: center;
     align-items: center;
-    gap: 10px;
+    gap: 7px;
 }
 
-.action button {
-    width: 20px;
-    height: 20px;
-    padding: 0;
+.splp-action-button {
+    width: 32px;
+    height: 32px;
+
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+
+    border-radius: 7px;
+
     border: none;
-    background: transparent;
+
+    text-decoration: none;
+
     cursor: pointer;
+
+    transition: 0.2s ease;
+}
+
+.splp-edit-button {
+    background: #e0f2fe;
+    color: #075985;
+}
+
+.splp-edit-button:hover {
+    background: #bae6fd;
+    color: #075985;
+}
+
+.splp-delete-button {
+    background: #fee2e2;
+    color: #dc2626;
+}
+
+.splp-delete-button:hover {
+    background: #fecaca;
+    color: #dc2626;
+}
+
+.splp-action-button i {
+    font-size: 14px;
+}
+
+.splp-delete-form {
+    display: inline;
+}
+
+
+/* =========================================================
+   EMPTY STATE
+========================================================= */
+
+.splp-empty-state {
+    padding: 55px 20px;
+
+    text-align: center;
+}
+
+.splp-empty-icon {
+    width: 60px;
+    height: 60px;
+
+    margin: 0 auto 15px;
+
+    border-radius: 50%;
+
     display: flex;
     align-items: center;
     justify-content: center;
+
+    background: #f1f5f9;
+    color: #94a3b8;
+}
+
+.splp-empty-icon i {
+    font-size: 27px;
+}
+
+.splp-empty-state h3 {
+    margin: 0 0 6px;
+
+    font-size: 15px;
+    color: #374151;
+}
+
+.splp-empty-state p {
+    margin: 0;
+
     font-size: 12px;
-    transition: 0.15s ease;
-}
-
-.edit-btn {
-    color: #198754;
-}
-
-.edit-btn:hover {
-    color: #146c43;
-    transform: scale(1.08);
-}
-
-.delete-btn {
-    color: #dc3545;
-}
-
-.delete-btn:hover {
-    color: #b02a37;
-    transform: scale(1.08);
+    color: #9ca3af;
 }
 
 
 /* =========================================================
-   EMPTY DATA
+   PAGINATION
 ========================================================= */
 
-.empty-data {
-    text-align: center !important;
-    padding: 40px !important;
-    color: #6b7280 !important;
-    font-size: 11px !important;
-}
-
-
-/* =========================================================
-   TABLE FOOTER
-========================================================= */
-
-.table-footer {
+.splp-table-footer {
     display: flex;
+
     justify-content: space-between;
     align-items: center;
-    padding: 13px 20px;
-    min-height: 35px;
-    border-top: 1px solid #eef0f4;
+
+    padding: 15px 20px;
+
+    border-top: 1px solid #e5e7eb;
 }
 
-.showing-info {
-    font-size: 10px;
+.splp-showing-text {
+    font-size: 11px;
     color: #6b7280;
 }
 
-.pagination {
-    display: flex;
-    align-items: center;
-    gap: 4px;
-}
 
-.page-btn {
-    width: 25px;
-    height: 25px;
-    border: 1px solid #e1e5eb;
-    background: white;
-    color: #8b95a1;
-    border-radius: 5px;
-    font-size: 9px;
-    cursor: pointer;
-    display: flex;
+/* =========================================================
+   MODAL OVERLAY
+========================================================= */
+
+.splp-modal-overlay {
+    position: fixed;
+
+    inset: 0;
+
+    z-index: 9999;
+
+    display: none;
+
     align-items: center;
     justify-content: center;
+
+    padding: 30px;
+
+    background: rgba(15, 23, 42, 0.55);
+
+    overflow-y: auto;
 }
 
-.page-btn:hover {
-    background: #f5f6f8;
-}
-
-.page-btn.active {
-    background: #17146b;
-    border-color: #17146b;
-    color: white;
+.splp-modal-overlay.show {
+    display: flex;
 }
 
 
@@ -664,204 +716,334 @@
    MODAL
 ========================================================= */
 
-.modal {
-    display: none;
-    position: fixed;
-    z-index: 9999;
-    inset: 0;
-    background: rgba(0, 0, 0, 0.78);
-    align-items: center;
-    justify-content: center;
-    padding: 20px;
-    box-sizing: border-box;
-    overflow: hidden;
-}
+.splp-modal {
+    width: 100%;
+    max-width: 1050px;
 
-.modal-content {
-    width: 780px;
-    max-width: 100%;
-    max-height: 92vh;
+    height: min(720px, calc(100vh - 60px));
+    max-height: calc(100vh - 60px);
+
     background: white;
-    border-radius: 14px;
-    box-shadow: 0 10px 40px rgba(0, 0, 0, 0.18);
+
+    border-radius: 16px;
+
+    box-shadow:
+        0 25px 60px rgba(15, 23, 42, 0.25);
+
+    overflow: hidden;
+
     display: flex;
     flex-direction: column;
-    overflow: hidden;
-}
 
-.modal-header {
-    flex-shrink: 0;
-    display: flex;
-    align-items: flex-start;
-    justify-content: space-between;
-    padding: 18px 30px 15px;
-    border-bottom: 1px solid #e5e7eb;
-    background: white;
-}
-
-.modal-title-wrapper {
-    display: flex;
-    flex-direction: column;
-    gap: 4px;
-}
-
-.modal-header h2 {
-    margin: 0;
-    font-size: 22px;
-    line-height: 1.2;
-    font-weight: 700;
-    color: #111111;
-}
-
-.modal-subtitle {
-    margin: 0;
-    font-size: 11px;
-    line-height: 1.4;
-    color: #374151;
-}
-
-.close {
-    flex-shrink: 0;
-    border: none;
-    background: transparent;
-    font-size: 27px;
-    line-height: 1;
-    cursor: pointer;
-    color: #555555;
-    padding: 0;
-    width: 25px;
-    height: 25px;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    transition: 0.2s ease;
-}
-
-.close:hover {
-    color: #111111;
-    transform: scale(1.05);
-}
-
-.modal-body {
-    flex: 1;
     min-height: 0;
-    padding: 28px 30px 20px;
-    overflow-y: auto;
-    overflow-x: hidden;
-    box-sizing: border-box;
-    scrollbar-width: thin;
-    scrollbar-color: #c7cbd4 transparent;
+
+    animation: splpModalIn 0.18s ease;
 }
 
-.modal-body::-webkit-scrollbar {
-    width: 7px;
-}
+@keyframes splpModalIn {
+    from {
+        opacity: 0;
+        transform: translateY(10px) scale(0.99);
+    }
 
-.modal-body::-webkit-scrollbar-track {
-    background: transparent;
-}
-
-.modal-body::-webkit-scrollbar-thumb {
-    background: #c7cbd4;
-    border-radius: 10px;
-}
-
-.modal-body::-webkit-scrollbar-thumb:hover {
-    background: #aeb4bf;
+    to {
+        opacity: 1;
+        transform: translateY(0) scale(1);
+    }
 }
 
 
 /* =========================================================
-   FORM
+   MODAL HEADER
 ========================================================= */
 
-.form-group {
-    margin-bottom: 20px;
+.splp-modal-header {
+    min-height: 78px;
+
+    padding: 18px 22px;
+
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+
+    border-bottom: 1px solid #e5e7eb;
+
+    flex-shrink: 0;
 }
 
-.form-group label {
-    display: block;
-    margin-bottom: 8px;
+.splp-modal-header-left {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+}
+
+.splp-modal-icon {
+    width: 40px;
+    height: 40px;
+
+    border-radius: 10px;
+
+    display: flex;
+    align-items: center;
+    justify-content: center;
+
+    background: #e0f2fe;
+    color: #075985;
+
+    flex-shrink: 0;
+}
+
+.splp-modal-icon i {
+    font-size: 18px;
+}
+
+.splp-modal-header-text h2 {
+    margin: 0;
+
+    font-size: 17px;
+    font-weight: 700;
+
+    color: #1f2937;
+}
+
+.splp-modal-header-text p {
+    margin: 4px 0 0;
+
     font-size: 11px;
-    font-weight: 500;
-    color: #374151;
+    color: #6b7280;
 }
 
-.form-group label span {
-    color: #ef4444;
+.splp-modal-close {
+    width: 34px;
+    height: 34px;
+
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+
+    border: none;
+
+    border-radius: 8px;
+
+    background: #f1f5f9;
+    color: #64748b;
+
+    cursor: pointer;
+
+    transition: 0.2s ease;
 }
 
-.form-group input,
-.form-group textarea,
-.form-group select {
-    width: 100%;
-    height: 39px;
-    padding: 0 11px;
-    border: 1px solid #e5e7eb;
-    border-radius: 7px;
-    outline: none;
-    font-family: inherit;
-    font-size: 11px;
-    color: #374151;
+.splp-modal-close:hover {
+    background: #e2e8f0;
+    color: #1f2937;
+}
+
+
+/* =========================================================
+   MODAL FORM
+========================================================= */
+
+#splpForm {
+    display: flex;
+    flex-direction: column;
+
+    flex: 1 1 auto;
+
+    min-height: 0;
+
+    height: 100%;
+
+    overflow: hidden;
+}
+
+.splp-modal-body {
+    padding: 24px;
+
+    flex: 1 1 0%;
+
+    min-height: 0;
+
+    height: 0;
+
+    overflow-y: scroll;
+    overflow-x: hidden;
+
+    -webkit-overflow-scrolling: touch;
+}
+
+
+/* =========================================================
+   FORM CARD
+========================================================= */
+
+.splp-form-card {
     background: white;
-    box-sizing: border-box;
-    transition:
-        border-color 0.2s ease,
-        box-shadow 0.2s ease;
+
+    border: 1px solid #e5e7eb;
+
+    border-radius: 14px;
+
+    padding: 24px;
+
+    margin-bottom: 18px;
+
+    box-shadow: 0 2px 7px rgba(0, 0, 0, 0.03);
 }
 
-.form-group input::placeholder,
-.form-group textarea::placeholder {
-    color: #d1d5db;
-    opacity: 1;
-}
-
-.form-group input:focus,
-.form-group textarea:focus,
-.form-group select:focus {
-    border-color: #17146b;
-    box-shadow: 0 0 0 2px rgba(23, 20, 107, 0.06);
-}
-
-.form-group textarea {
-    height: 87px;
-    padding: 10px 11px;
-    resize: vertical;
-    min-height: 87px;
-}
-
-.form-row {
-    display: grid;
-    grid-template-columns: 1fr 1fr 1fr;
-    gap: 20px;
+.splp-form-card:last-child {
     margin-bottom: 0;
 }
 
-.form-row .form-group {
+.splp-form-card-header {
+    display: flex;
+    align-items: center;
+    gap: 9px;
+
+    padding-bottom: 13px;
+
     margin-bottom: 20px;
+
+    border-bottom: 1px solid #e5e7eb;
 }
 
-.date-input {
+.splp-form-card-header i {
+    color: #075985;
+    font-size: 16px;
+}
+
+.splp-form-card-header h3 {
+    margin: 0;
+
+    font-size: 14px;
+    font-weight: 700;
+
+    color: #1f2937;
+}
+
+
+/* =========================================================
+   FORM GRID
+========================================================= */
+
+.splp-form-grid {
+    display: grid;
+
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+
+    gap: 20px;
+}
+
+.splp-form-group {
+    display: flex;
+    flex-direction: column;
+}
+
+.splp-form-group.full {
+    grid-column: 1 / -1;
+}
+
+.splp-form-group label {
+    margin-bottom: 7px;
+
+    font-size: 12px;
+    font-weight: 600;
+
+    color: #374151;
+}
+
+.splp-form-group label span {
+    color: #dc2626;
+}
+
+.splp-form-group input,
+.splp-form-group select,
+.splp-form-group textarea {
+    width: 100%;
+
+    box-sizing: border-box;
+
+    border: 1px solid #d1d5db;
+
+    border-radius: 8px;
+
+    background: white;
+
+    color: #374151;
+
+    outline: none;
+
+    font-family: inherit;
+
+    font-size: 12px;
+
+    transition: 0.2s ease;
+}
+
+.splp-form-group input,
+.splp-form-group select {
+    height: 40px;
+
+    padding: 0 12px;
+}
+
+.splp-form-group textarea {
+    min-height: 85px;
+
+    padding: 10px 12px;
+
+    resize: vertical;
+}
+
+.splp-form-group input:focus,
+.splp-form-group select:focus,
+.splp-form-group textarea:focus {
+    border-color: #079bd8;
+
+    box-shadow:
+        0 0 0 3px rgba(7, 155, 216, 0.10);
+}
+
+.splp-form-group input[readonly] {
+    background: #f8fafc;
+    color: #64748b;
+    cursor: not-allowed;
+}
+
+.splp-form-error {
+    margin-top: 5px;
+
+    font-size: 10px;
+
+    color: #dc2626;
+}
+
+
+/* =========================================================
+   PRICE
+========================================================= */
+
+.splp-price-input {
     position: relative;
 }
 
-.date-input i {
+.splp-price-prefix {
     position: absolute;
-    left: 11px;
+
+    left: 12px;
     top: 50%;
+
     transform: translateY(-50%);
-    color: #6b7280;
+
     font-size: 12px;
+    font-weight: 600;
+
+    color: #64748b;
+
     pointer-events: none;
-    z-index: 2;
 }
 
-.date-input input {
-    padding-left: 32px;
-}
-
-.date-readonly {
-    background: #f8f9fb !important;
+.splp-price-input input {
+    padding-left: 38px;
 }
 
 
@@ -869,95 +1051,145 @@
    SEWA
 ========================================================= */
 
-.sewa-section {
+#splpSewaSection {
     display: none;
-    margin-top: 0;
-    padding-top: 0;
+
+    margin-top: 20px;
+
+    padding: 18px;
+
+    background: #f8fafc;
+
+    border: 1px solid #e2e8f0;
+
+    border-radius: 10px;
 }
 
-.sewa-section.show {
+#splpSewaSection.show {
     display: block;
 }
 
-.custom-period {
-    display: none;
-    grid-template-columns: 1fr 1fr;
-    gap: 20px;
-    margin-top: 2px;
+.splp-sewa-title {
+    margin-bottom: 15px;
+
+    font-size: 12px;
+    font-weight: 700;
+
+    color: #075985;
 }
 
-.custom-period.show {
+.splp-sewa-grid {
     display: grid;
-}
 
-.form-info {
-    display: block;
-    margin-top: 5px;
-    font-size: 9px;
-    color: #6b7280;
-    line-height: 1.4;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+
+    gap: 16px;
 }
 
 
 /* =========================================================
-   EDIT ID
+   CUSTOM PERIOD
 ========================================================= */
 
-#editId {
-    background: #f8f9fb;
-    color: #6b7280;
-    cursor: not-allowed;
+#splpCustomPeriod {
+    display: none;
+
+    margin-top: 16px;
+}
+
+#splpCustomPeriod.show {
+    display: grid;
+
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+
+    gap: 16px;
 }
 
 
 /* =========================================================
-   FORM FOOTER
+   INFO
 ========================================================= */
 
-.form-actions {
+.splp-form-info {
+    margin-top: 6px;
+
+    font-size: 10px;
+
+    line-height: 1.5;
+
+    color: #9ca3af;
+}
+
+.splp-form-info i {
+    margin-right: 3px;
+}
+
+
+/* =========================================================
+   MODAL FOOTER
+========================================================= */
+
+.splp-modal-footer {
     display: flex;
+
     justify-content: flex-end;
+
     align-items: center;
-    gap: 15px;
-    padding: 14px 0 4px;
-    margin-top: 8px;
+
+    gap: 10px;
+
+    padding: 16px 24px;
+
     border-top: 1px solid #e5e7eb;
+
     background: white;
+
+    flex-shrink: 0;
 }
 
-.cancel-btn {
-    height: 39px;
-    min-width: 79px;
+.splp-btn-batal,
+.splp-btn-simpan {
+    height: 40px;
+
     padding: 0 18px;
-    border: 1px solid #d6dbea;
-    background: white;
-    color: #111111;
-    border-radius: 7px;
-    cursor: pointer;
-    font-size: 11px;
+
+    border-radius: 8px;
+
+    font-size: 12px;
+
     font-weight: 600;
+
+    cursor: pointer;
+
+    transition: 0.2s ease;
 }
 
-.cancel-btn:hover {
-    background: #f8f9fb;
+.splp-btn-batal {
+    border: 1px solid #d1d5db;
+
+    background: white;
+
+    color: #4b5563;
 }
 
-.save-btn {
-    height: 39px;
-    min-width: 79px;
-    padding: 0 18px;
+.splp-btn-batal:hover {
+    background: #f8fafc;
+}
+
+.splp-btn-simpan {
     border: none;
-    background: #17146b;
+
+    background: #079bd8;
+
     color: white;
-    border-radius: 7px;
-    cursor: pointer;
-    font-size: 11px;
-    font-weight: 600;
-    box-shadow: 0 2px 5px rgba(23, 20, 107, 0.20);
 }
 
-.save-btn:hover {
-    background: #100e58;
+.splp-btn-simpan:hover {
+    background: #075985;
+}
+
+.splp-btn-simpan i {
+    margin-right: 5px;
 }
 
 
@@ -965,135 +1197,215 @@
    RESPONSIVE
 ========================================================= */
 
-@media (max-width: 1100px) {
+@media (max-width: 1200px) {
 
-    .filter-form {
-        flex-wrap: wrap;
-    }
-
-    .filter-group {
-        flex: 1 1 calc(50% - 12px);
-    }
-
-    .filter-actions {
-        width: 100%;
-        justify-content: flex-end;
+    .splp-stats {
+        grid-template-columns: repeat(3, 1fr);
     }
 
 }
 
 @media (max-width: 900px) {
 
-    .statistics {
-        grid-template-columns: 1fr;
+    .splp-header {
+        align-items: flex-start;
+        flex-direction: column;
+        gap: 15px;
     }
 
-    .top-tools {
-        flex-wrap: wrap;
+    .add-splp-button {
+        width: 100%;
     }
 
-    .modal-content {
-        width: 760px;
+    .splp-stats {
+        grid-template-columns: repeat(2, 1fr);
+    }
+
+    .splp-table-header {
+        align-items: flex-start;
+        flex-direction: column;
+    }
+
+    .splp-toolbar {
+        width: 100%;
+    }
+
+    .splp-search {
+        flex: 1;
+    }
+
+    .splp-search input {
+        width: 100%;
     }
 
 }
 
 @media (max-width: 700px) {
 
-    .modal {
-        padding: 12px;
+    .splp-modal-overlay {
+        padding: 15px;
     }
 
-    .modal-content {
-        width: 100%;
-        max-height: 94vh;
-        border-radius: 12px;
+    .splp-modal {
+        height: calc(100vh - 30px);
+        max-height: calc(100vh - 30px);
     }
 
-    .modal-header {
-        padding: 16px 20px 12px;
+    .splp-modal-body {
+        padding: 15px;
     }
 
-    .modal-body {
-        padding: 25px 20px 10px;
+    .splp-form-card {
+        padding: 18px;
     }
 
-    .form-row {
+    .splp-form-grid,
+    .splp-sewa-grid {
         grid-template-columns: 1fr;
-        gap: 0;
+        gap: 15px;
     }
 
-    .form-row .form-group {
-        margin-bottom: 20px;
-    }
-
-    .custom-period {
+    #splpCustomPeriod.show {
         grid-template-columns: 1fr;
-        gap: 0;
     }
 
-    .filter-group {
-        flex: 1 1 100%;
+    .splp-modal-footer {
+        padding: 14px 15px;
     }
 
 }
 
-@media (max-width: 600px) {
+@media (max-width: 500px) {
 
-    .top-tools {
+    .splp-stats {
+        grid-template-columns: 1fr;
+    }
+
+    .splp-toolbar {
         flex-direction: column;
         align-items: stretch;
     }
 
-    .left-tools,
-    .right-tools {
+    .splp-filter-select {
         width: 100%;
     }
 
-    .search-box {
-        width: 100%;
+    .splp-modal-header {
+        padding: 15px;
     }
 
-    .right-tools {
-        justify-content: flex-end;
-    }
+}
 
+
+/* =========================================================
+   BODY LOCK
+========================================================= */
+
+body.splp-modal-open {
+    overflow: hidden;
 }
 
 </style>
 
 
-<div class="infrastruktur-page">
+<div class="splp-page">
 
 
     {{-- =====================================================
-         SUCCESS MESSAGE
+         HEADER
     ====================================================== --}}
 
-    @if (session('success'))
+    <div class="splp-header">
 
-        <div class="success-message">
-            {{ session('success') }}
+        <div class="splp-heading">
+
+            <h2>
+                SPLP
+            </h2>
+
+            <p>
+                Kelola data infrastruktur Sistem Pemerintahan Berbasis Elektronik (SPBE).
+            </p>
+
+        </div>
+
+
+        <button
+            type="button"
+            class="add-splp-button"
+            onclick="openAddSplpModal()"
+        >
+
+            <i class="bi bi-plus-lg"></i>
+
+            <span>
+                Tambah SPLP
+            </span>
+
+        </button>
+
+    </div>
+
+
+    {{-- =====================================================
+         SUCCESS
+    ====================================================== --}}
+
+    @if(session('success'))
+
+        <div class="alert-success">
+
+            <i class="bi bi-check-circle-fill"></i>
+
+            <span>
+                {{ session('success') }}
+            </span>
+
         </div>
 
     @endif
 
 
     {{-- =====================================================
-         ERROR MESSAGE
+         ERROR
     ====================================================== --}}
 
-    @if ($errors->any())
+    @if(session('error'))
 
-        <div class="error-message">
+        <div class="alert-error">
 
-            @foreach ($errors->all() as $error)
+            <i class="bi bi-exclamation-circle-fill"></i>
 
-                <div>
-                    {{ $error }}
+            <span>
+                {{ session('error') }}
+            </span>
+
+        </div>
+
+    @endif
+
+
+    {{-- =====================================================
+         VALIDATION ERROR
+    ====================================================== --}}
+
+    @if($errors->any())
+
+        <div class="alert-error">
+
+            <i class="bi bi-exclamation-triangle-fill"></i>
+
+            <div>
+
+                <strong>
+                    Data belum dapat disimpan.
+                </strong>
+
+                <div style="margin-top:3px;">
+                    Silakan periksa kembali isian form.
                 </div>
 
-            @endforeach
+            </div>
 
         </div>
 
@@ -1104,53 +1416,145 @@
          STATISTICS
     ====================================================== --}}
 
-    <div class="statistics">
+    @php
 
-        <div class="stat-card">
+        $splpCollection = method_exists($splps, 'getCollection')
+            ? $splps->getCollection()
+            : collect($splps);
 
-            <div class="stat-title">
-                JUMLAH SPLP
+        $totalSplpValue =
+            $totalSplp
+            ?? $splpCollection->count();
+
+        $akanHabisValue =
+            $akanHabis
+            ?? $akanBerakhir
+            ?? 0;
+
+        $tidakBerakhirValue =
+            $tidakBerakhir
+            ?? 0;
+
+        $expiredValue =
+            $expired
+            ?? 0;
+
+    @endphp
+
+
+    <div class="splp-stats">
+
+
+        {{-- TOTAL --}}
+
+        <div class="splp-stat-card">
+
+            <div class="splp-stat-icon blue">
+
+                <i class="bi bi-diagram-3-fill"></i>
+
             </div>
 
-            <div class="stat-value">
-                {{ $totalSplp }}
+            <div class="splp-stat-content">
+
+                <span class="splp-stat-label">
+                    Total SPLP
+                </span>
+
+                <span class="splp-stat-value">
+                    {{ $totalSplpValue }}
+                </span>
+
+                <span class="splp-stat-description">
+                    Infrastruktur SPLP terdaftar
+                </span>
+
             </div>
 
         </div>
 
 
-        <div class="stat-card">
+        {{-- AKAN HABIS --}}
 
-            <div class="stat-title">
-                AKAN HABIS
+        <div class="splp-stat-card">
+
+            <div class="splp-stat-icon orange">
+
+                <i class="bi bi-clock-history"></i>
+
             </div>
 
-            <div class="stat-value">
-                {{ $akanHabis }}
+            <div class="splp-stat-content">
+
+                <span class="splp-stat-label">
+                    Akan Habis
+                </span>
+
+                <span class="splp-stat-value">
+                    {{ $akanHabisValue }}
+                </span>
+
+                <span class="splp-stat-description">
+                    Berakhir dalam 30 hari
+                </span>
+
             </div>
 
         </div>
 
 
-        <div class="stat-card">
+        {{-- TIDAK BERAKHIR --}}
 
-            <div class="stat-title">
+        <div class="splp-stat-card">
 
-                @if (request('tahun'))
+            <div class="splp-stat-icon green">
 
-                    PENGELUARAN {{ request('tahun') }}
-
-                @else
-
-                    PENGELUARAN TAHUNAN
-
-                @endif
+                <i class="bi bi-infinity"></i>
 
             </div>
 
-            <div class="stat-value">
+            <div class="splp-stat-content">
 
-                Rp {{ number_format($splps->sum('harga'), 0, ',', '.') }}
+                <span class="splp-stat-label">
+                    Tidak Berakhir
+                </span>
+
+                <span class="splp-stat-value">
+                    {{ $tidakBerakhirValue }}
+                </span>
+
+                <span class="splp-stat-description">
+                    SPLP tanpa tanggal berakhir
+                </span>
+
+            </div>
+
+        </div>
+
+
+        {{-- EXPIRED --}}
+
+        <div class="splp-stat-card">
+
+            <div class="splp-stat-icon red">
+
+                <i class="bi bi-x-circle-fill"></i>
+
+            </div>
+
+            <div class="splp-stat-content">
+
+                <span class="splp-stat-label">
+                    Expired
+                </span>
+
+                <span class="splp-stat-value">
+                    {{ $expiredValue }}
+                </span>
+
+                <span class="splp-stat-description">
+                    SPLP sudah berakhir
+                </span>
 
             </div>
 
@@ -1163,275 +1567,107 @@
          TABLE
     ====================================================== --}}
 
-    <div class="table-container">
+    <div class="splp-table-card">
 
 
-        <div class="table-header">
+        {{-- TABLE HEADER --}}
 
+        <div class="splp-table-header">
 
-            <div class="top-tools">
+            <div class="splp-table-header-left">
 
+                <h3 class="splp-table-title">
+                    Data SPLP
+                </h3>
 
-                <div class="left-tools">
-
-                    <div class="search-box">
-
-                        <i class="bi bi-search"></i>
-
-                        <input
-                            type="text"
-                            id="searchInput"
-                            placeholder="Search..."
-                        >
-
-                    </div>
-
-                </div>
-
-
-                <div class="right-tools">
-
-
-                    <div class="filter-wrapper">
-
-                        <button
-                            type="button"
-                            class="filter-btn"
-                            id="filterButton"
-                            onclick="toggleFilter()"
-                        >
-
-                            <i class="bi bi-funnel"></i>
-
-                            Filter
-
-                            <i
-                                class="bi bi-chevron-down"
-                                id="filterArrow"
-                            ></i>
-
-                        </button>
-
-                    </div>
-
-
-                    <button
-                        type="button"
-                        class="add-btn"
-                        onclick="openAddModal()"
-                    >
-
-                        <i class="bi bi-plus-lg"></i>
-
-                        Add
-
-                    </button>
-
-                </div>
+                <span class="splp-table-count">
+                    ({{ $splpCollection->count() }} data)
+                </span>
 
             </div>
 
 
-            {{-- =================================================
-                 FILTER PANEL
-            ================================================== --}}
+            <div class="splp-toolbar">
 
-            <div
-                class="filter-panel"
-                id="filterPanel"
-            >
 
-                <form
-                    action="{{ route('splp.index') }}"
-                    method="GET"
-                    class="filter-form"
+                {{-- SEARCH --}}
+
+                <div class="splp-search">
+
+                    <i class="bi bi-search"></i>
+
+                    <input
+                        type="text"
+                        id="splpSearch"
+                        placeholder="Cari SPLP..."
+                    >
+
+                </div>
+
+
+                {{-- STATUS --}}
+
+                <select
+                    id="splpStatusFilter"
+                    class="splp-filter-select"
                 >
 
+                    <option value="">
+                        Semua Status
+                    </option>
 
-                    <div class="filter-group">
+                    <option value="tidak berakhir">
+                        Tidak Berakhir
+                    </option>
 
-                        <label class="filter-label">
-                            Status
-                        </label>
+                    <option value="akan habis">
+                        Akan Habis
+                    </option>
 
-                        <select
-                            name="status"
-                            class="filter-select"
-                        >
+                    <option value="digunakan">
+                        Digunakan
+                    </option>
 
-                            <option value="">
-                                Semua Status
-                            </option>
+                    <option value="expired">
+                        Expired
+                    </option>
 
-                            <option
-                                value="Tersedia"
-                                {{ request('status') == 'Tersedia' ? 'selected' : '' }}
-                            >
-                                Tersedia
-                            </option>
-
-                            <option
-                                value="Digunakan"
-                                {{ request('status') == 'Digunakan' ? 'selected' : '' }}
-                            >
-                                Digunakan
-                            </option>
-
-                            <option
-                                value="Akan Habis"
-                                {{ request('status') == 'Akan Habis' ? 'selected' : '' }}
-                            >
-                                Akan Habis
-                            </option>
-
-                            <option
-                                value="Expired"
-                                {{ request('status') == 'Expired' ? 'selected' : '' }}
-                            >
-                                Expired
-                            </option>
-
-                        </select>
-
-                    </div>
+                </select>
 
 
-                    <div class="filter-group">
+                {{-- VERIFIKASI --}}
 
-                        <label class="filter-label">
-                            Pengadaan
-                        </label>
+                <select
+                    id="splpVerifikasiFilter"
+                    class="splp-filter-select"
+                >
 
-                        <select
-                            name="pengadaan"
-                            class="filter-select"
-                        >
+                    <option value="">
+                        Semua Verifikasi
+                    </option>
 
-                            <option value="">
-                                Semua Pengadaan
-                            </option>
+                    <option value="menunggu">
+                        Menunggu
+                    </option>
 
-                            <option
-                                value="Beli"
-                                {{ request('pengadaan') == 'Beli' ? 'selected' : '' }}
-                            >
-                                Beli
-                            </option>
+                    <option value="disetujui">
+                        Disetujui
+                    </option>
 
-                            <option
-                                value="Sewa"
-                                {{ request('pengadaan') == 'Sewa' ? 'selected' : '' }}
-                            >
-                                Sewa
-                            </option>
+                    <option value="ditolak">
+                        Ditolak
+                    </option>
 
-                        </select>
-
-                    </div>
-
-
-                    <div class="filter-group">
-
-                        <label class="filter-label">
-                            Verifikasi
-                        </label>
-
-                        <select
-                            name="verifikasi"
-                            class="filter-select"
-                        >
-
-                            <option value="">
-                                Semua Verifikasi
-                            </option>
-
-                            <option
-                                value="Menunggu disetujui"
-                                {{ request('verifikasi') == 'Menunggu disetujui' ? 'selected' : '' }}
-                            >
-                                Menunggu disetujui
-                            </option>
-
-                            <option
-                                value="Disetujui"
-                                {{ request('verifikasi') == 'Disetujui' ? 'selected' : '' }}
-                            >
-                                Disetujui
-                            </option>
-
-                            <option
-                                value="Ditolak"
-                                {{ request('verifikasi') == 'Ditolak' ? 'selected' : '' }}
-                            >
-                                Ditolak
-                            </option>
-
-                        </select>
-
-                    </div>
-
-
-                    <div class="filter-group">
-
-                        <label class="filter-label">
-                            Tahun
-                        </label>
-
-                        <select
-                            name="tahun"
-                            class="filter-select"
-                        >
-
-                            <option value="">
-                                Semua Tahun
-                            </option>
-
-                            @foreach ($tahuns as $item)
-
-                                <option
-                                    value="{{ $item }}"
-                                    {{ request('tahun') == $item ? 'selected' : '' }}
-                                >
-                                    {{ $item }}
-                                </option>
-
-                            @endforeach
-
-                        </select>
-
-                    </div>
-
-
-                    <div class="filter-actions">
-
-                        <a
-                            href="{{ route('splp.index') }}"
-                            class="filter-reset"
-                        >
-                            Reset
-                        </a>
-
-                        <button
-                            type="submit"
-                            class="filter-apply"
-                        >
-                            Terapkan
-                        </button>
-
-                    </div>
-
-                </form>
+                </select>
 
             </div>
 
         </div>
 
 
-        {{-- =================================================
-             TABLE
-        ================================================== --}}
+        {{-- TABLE --}}
 
-        <div class="table-wrapper">
+        <div class="splp-table-wrapper">
 
             <table class="splp-table">
 
@@ -1439,49 +1675,44 @@
 
                     <tr>
 
-                        <th>ID</th>
-
                         <th>
-                            NAMA<br>
-                            INFRASTRUKTUR
+                            No
                         </th>
 
                         <th>
-                            SPESIFIKASI
+                            ID
                         </th>
 
                         <th>
-                            PENGADAAN
+                            Nama Infrastruktur
                         </th>
 
                         <th>
-                            TGL.<br>
-                            PENGADAAN
+                            Pengadaan
                         </th>
 
                         <th>
-                            TGL.<br>
-                            BERAKHIR
+                            Harga
                         </th>
 
                         <th>
-                            HARGA
+                            Tanggal Pengadaan
                         </th>
 
                         <th>
-                            STATUS
+                            Tanggal Berakhir
                         </th>
 
                         <th>
-                            VERIFIKASI
+                            Status
                         </th>
 
                         <th>
-                            KOMENTAR
+                            Verifikasi
                         </th>
 
                         <th>
-                            AKSI
+                            Aksi
                         </th>
 
                     </tr>
@@ -1489,201 +1720,312 @@
                 </thead>
 
 
-                <tbody id="splpTable">
+                <tbody id="splpTableBody">
 
 
-                    @forelse ($splps as $splp)
+                    @forelse($splpCollection as $splp)
 
                         @php
 
-                            $statusValue =
-                                $splp->status_otomatis
-                                ?? $splp->status
-                                ?? 'Tersedia';
+                            /*
+                            |--------------------------------------------------------------------------
+                            | STATUS OTOMATIS
+                            |--------------------------------------------------------------------------
+                            */
+
+                            $statusLabel = 'Tidak Berakhir';
+
+                            $statusClass = 'status-perpetual';
 
 
-                            $statusClass = match (
-                                strtolower(trim($statusValue))
+                            if (
+                                strtolower($splp->pengadaan ?? '') === 'sewa'
+                                && $splp->tanggal_berakhir
                             ) {
 
-                                'tersedia' =>
-                                    'status-tersedia',
+                                $today =
+                                    now()
+                                        ->startOfDay();
 
-                                'digunakan' =>
-                                    'status-digunakan',
+                                $endDate =
+                                    \Carbon\Carbon::parse(
+                                        $splp->tanggal_berakhir
+                                    )->startOfDay();
 
-                                'akan habis' =>
-                                    'status-akan-habis',
-
-                                'expired' =>
-                                    'status-expired',
-
-                                default =>
-                                    'status-default',
-
-                            };
+                                $daysLeft =
+                                    $today->diffInDays(
+                                        $endDate,
+                                        false
+                                    );
 
 
-                            $verifikasiValue =
-                                $splp->verifikasi
-                                ?? 'Menunggu disetujui';
+                                if ($daysLeft < 0) {
+
+                                    $statusLabel =
+                                        'Expired';
+
+                                    $statusClass =
+                                        'status-expired';
+
+                                } elseif ($daysLeft <= 30) {
+
+                                    $statusLabel =
+                                        'Akan Habis';
+
+                                    $statusClass =
+                                        'status-warning';
+
+                                } else {
+
+                                    $statusLabel =
+                                        'Digunakan';
+
+                                    $statusClass =
+                                        'status-active';
+
+                                }
+
+                            }
 
 
-                            $verifikasiClass = match (
-                                strtolower(trim($verifikasiValue))
-                            ) {
+                            /*
+                            |--------------------------------------------------------------------------
+                            | VERIFIKASI
+                            |--------------------------------------------------------------------------
+                            */
 
-                                'menunggu disetujui' =>
-                                    'verifikasi-menunggu',
+                            $verifikasi =
+                                strtolower(
+                                    $splp->verifikasi
+                                    ?? 'menunggu'
+                                );
 
-                                'disetujui' =>
-                                    'verifikasi-disetujui',
 
-                                'ditolak' =>
-                                    'verifikasi-ditolak',
+                            $verifikasiLabel =
+                                match ($verifikasi) {
 
-                                default =>
-                                    'verifikasi-menunggu',
+                                    'disetujui',
+                                    'approved',
+                                    'approve'
+                                        => 'Disetujui',
 
-                            };
+                                    'ditolak',
+                                    'rejected',
+                                    'reject'
+                                        => 'Ditolak',
+
+                                    default
+                                        => 'Menunggu',
+
+                                };
+
+
+                            $verifikasiClass =
+                                match ($verifikasi) {
+
+                                    'disetujui',
+                                    'approved',
+                                    'approve'
+                                        => 'verifikasi-disetujui',
+
+                                    'ditolak',
+                                    'rejected',
+                                    'reject'
+                                        => 'verifikasi-ditolak',
+
+                                    default
+                                        => 'verifikasi-menunggu',
+
+                                };
 
                         @endphp
 
 
-                        <tr>
+                        <tr
+                            data-search="{{ strtolower(
+                                ($splp->id ?? '') . ' ' .
+                                ($splp->nama_infrastruktur ?? '') . ' ' .
+                                ($splp->spesifikasi ?? '') . ' ' .
+                                ($splp->pengadaan ?? '') . ' ' .
+                                ($statusLabel ?? '') . ' ' .
+                                ($verifikasiLabel ?? '')
+                            ) }}"
+                            data-status="{{ strtolower($statusLabel) }}"
+                            data-verifikasi="{{ strtolower($verifikasiLabel) }}"
+                        >
 
 
-                            <td class="id">
-                                {{ $splp->id }}
+                            {{-- NO --}}
+
+                            <td>
+                                {{ $loop->iteration }}
                             </td>
 
 
-                            <td
-                                title="{{ $splp->nama_infrastruktur }}"
-                            >
-                                {{ $splp->nama_infrastruktur }}
+                            {{-- ID --}}
+
+                            <td>
+
+                                <span class="splp-code">
+                                    {{ $splp->id }}
+                                </span>
+
                             </td>
 
 
-                            <td
-                                title="{{ $splp->spesifikasi }}"
-                            >
+                            {{-- NAMA --}}
 
-                                @if ($splp->spesifikasi)
+                            <td>
 
-                                    {{ $splp->spesifikasi }}
+                                <div class="splp-name">
+                                    {{ $splp->nama_infrastruktur }}
+                                </div>
 
-                                @else
+                                @if($splp->spesifikasi)
 
-                                    -
+                                    <div class="splp-spec">
+                                        {{ $splp->spesifikasi }}
+                                    </div>
 
                                 @endif
 
                             </td>
 
 
-                            <td>
-                                {{ $splp->pengadaan }}
-                            </td>
-
+                            {{-- PENGADAAN --}}
 
                             <td>
 
-                                @if ($splp->tanggal_pengadaan)
+                                @if(
+                                    strtolower(
+                                        $splp->pengadaan ?? ''
+                                    ) === 'sewa'
+                                )
 
-                                    {{ $splp->tanggal_pengadaan->format('d/m/Y') }}
+                                    <span class="procurement-badge procurement-sewa">
+                                        Sewa
+                                    </span>
 
                                 @else
 
-                                    -
+                                    <span class="procurement-badge procurement-beli">
+                                        Beli
+                                    </span>
 
                                 @endif
 
                             </td>
 
 
-                            <td>
-
-                                @if ($splp->tanggal_berakhir)
-
-                                    {{ $splp->tanggal_berakhir->format('d/m/Y') }}
-
-                                @else
-
-                                    -
-
-                                @endif
-
-                            </td>
-
+                            {{-- HARGA --}}
 
                             <td>
 
-                                Rp
-                                {{ number_format($splp->harga, 0, ',', '.') }}
+                                <span class="splp-price">
 
-                            </td>
-
-
-                            <td>
-
-                                <span class="status {{ $statusClass }}">
-
-                                    {{ $statusValue }}
+                                    Rp
+                                    {{ number_format(
+                                        (float) ($splp->harga ?? 0),
+                                        0,
+                                        ',',
+                                        '.'
+                                    ) }}
 
                                 </span>
 
                             </td>
 
 
+                            {{-- TANGGAL PENGADAAN --}}
+
                             <td>
 
-                                <span class="verifikasi {{ $verifikasiClass }}">
+                                @if($splp->tanggal_pengadaan)
 
-                                    {{ $verifikasiValue }}
+                                    <span class="splp-date">
 
-                                </span>
+                                        {{ \Carbon\Carbon::parse(
+                                            $splp->tanggal_pengadaan
+                                        )->format('d M Y') }}
 
-                            </td>
-
-
-                            <td
-                                class="komentar-cell {{ !$splp->komentar ? 'empty' : '' }}"
-                                title="{{ $splp->komentar ?? '' }}"
-                            >
-
-                                @if ($splp->komentar)
-
-                                    {{ $splp->komentar }}
+                                    </span>
 
                                 @else
 
-                                    -
+                                    <span class="splp-date-empty">
+                                        -
+                                    </span>
 
                                 @endif
 
                             </td>
 
 
+                            {{-- TANGGAL BERAKHIR --}}
+
                             <td>
 
-                                <div class="action">
+                                @if($splp->tanggal_berakhir)
 
+                                    <span class="splp-date">
+
+                                        {{ \Carbon\Carbon::parse(
+                                            $splp->tanggal_berakhir
+                                        )->format('d M Y') }}
+
+                                    </span>
+
+                                @else
+
+                                    <span class="splp-date-empty">
+                                        Tidak Berakhir
+                                    </span>
+
+                                @endif
+
+                            </td>
+
+
+                            {{-- STATUS --}}
+
+                            <td>
+
+                                <span
+                                    class="splp-status-badge {{ $statusClass }}"
+                                >
+                                    {{ $statusLabel }}
+                                </span>
+
+                            </td>
+
+
+                            {{-- VERIFIKASI --}}
+
+                            <td>
+
+                                <span
+                                    class="verifikasi-badge {{ $verifikasiClass }}"
+                                >
+                                    {{ $verifikasiLabel }}
+                                </span>
+
+                            </td>
+
+
+                            {{-- AKSI --}}
+
+                            <td>
+
+                                <div class="splp-action-buttons">
+
+
+                                    {{-- EDIT --}}
 
                                     <button
                                         type="button"
-                                        class="edit-btn"
+                                        class="splp-action-button splp-edit-button"
                                         title="Edit"
-                                        onclick='openEditModal(
-                                            @json($splp->id),
-                                            @json($splp->nama_infrastruktur),
-                                            @json($splp->spesifikasi),
-                                            @json($splp->pengadaan),
-                                            @json($splp->tanggal_pengadaan ? $splp->tanggal_pengadaan->format("Y-m-d") : ""),
-                                            @json($splp->tanggal_berakhir ? $splp->tanggal_berakhir->format("Y-m-d") : ""),
-                                            @json($splp->harga),
-                                            @json($splp->status)
-                                        )'
+                                        onclick="openEditSplpModal(@js($splp->id))"
                                     >
 
                                         <i class="bi bi-pencil-fill"></i>
@@ -1691,11 +2033,18 @@
                                     </button>
 
 
+                                    {{-- DELETE --}}
+
                                     <form
-                                        action="{{ route('splp.destroy', $splp->id) }}"
+                                        action="{{ route(
+                                            'splp.destroy',
+                                            $splp->id
+                                        ) }}"
                                         method="POST"
-                                        onsubmit="return confirm('Yakin ingin mengajukan penghapusan data ini?')"
-                                        style="display: inline;"
+                                        class="splp-delete-form"
+                                        onsubmit="return confirm(
+                                            'Yakin ingin mengajukan penghapusan data SPLP ini?'
+                                        );"
                                     >
 
                                         @csrf
@@ -1704,8 +2053,8 @@
 
                                         <button
                                             type="submit"
-                                            class="delete-btn"
-                                            title="Ajukan Penghapusan"
+                                            class="splp-action-button splp-delete-button"
+                                            title="Hapus"
                                         >
 
                                             <i class="bi bi-trash-fill"></i>
@@ -1714,40 +2063,45 @@
 
                                     </form>
 
-
                                 </div>
 
                             </td>
 
-
                         </tr>
+
 
                     @empty
 
                         <tr>
 
                             <td
-                                colspan="11"
-                                class="empty-data"
+                                colspan="10"
+                                style="padding:0;"
                             >
 
-                                @if (request('tahun'))
+                                <div class="splp-empty-state">
 
-                                    Tidak ada data SPLP untuk tahun
-                                    {{ request('tahun') }}.
+                                    <div class="splp-empty-icon">
 
-                                @else
+                                        <i class="bi bi-diagram-3"></i>
 
-                                    Belum ada data SPLP.
+                                    </div>
 
-                                @endif
+                                    <h3>
+                                        Belum ada data SPLP
+                                    </h3>
+
+                                    <p>
+                                        Data infrastruktur SPLP belum tersedia.
+                                    </p>
+
+                                </div>
 
                             </td>
 
                         </tr>
 
                     @endforelse
-
 
                 </tbody>
 
@@ -1756,68 +2110,35 @@
         </div>
 
 
-        {{-- =================================================
-             TABLE FOOTER
-        ================================================== --}}
+        {{-- FOOTER --}}
 
-        <div class="table-footer">
+        @if(
+            method_exists($splps, 'links')
+            &&
+            $splps->hasPages()
+        )
 
-            <div class="showing-info">
+            <div class="splp-table-footer">
 
-                Showing
-                {{ $splps->count() }}
-                entries
+                <span class="splp-showing-text">
 
-                @if (request('tahun'))
+                    Menampilkan
+                    {{ $splps->firstItem() }}
+                    -
+                    {{ $splps->lastItem() }}
+                    dari
+                    {{ $splps->total() }}
+                    data
 
-                    — Tahun {{ request('tahun') }}
+                </span>
 
-                @endif
-
-            </div>
-
-
-            <div class="pagination">
-
-                <button
-                    type="button"
-                    class="page-btn"
-                >
-                    <i class="bi bi-chevron-left"></i>
-                </button>
-
-                <button
-                    type="button"
-                    class="page-btn active"
-                >
-                    1
-                </button>
-
-                <button
-                    type="button"
-                    class="page-btn"
-                >
-                    2
-                </button>
-
-                <button
-                    type="button"
-                    class="page-btn"
-                >
-                    3
-                </button>
-
-                <button
-                    type="button"
-                    class="page-btn"
-                >
-                    <i class="bi bi-chevron-right"></i>
-                </button>
+                <div>
+                    {{ $splps->links() }}
+                </div>
 
             </div>
 
-        </div>
-
+        @endif
 
     </div>
 
@@ -1825,319 +2146,536 @@
 
 
 {{-- =========================================================
-     MODAL TAMBAH
+     MODAL TAMBAH / EDIT SPLP
 ========================================================= --}}
 
 <div
-    class="modal"
-    id="addModal"
+    id="splpModal"
+    class="splp-modal-overlay"
+    aria-hidden="true"
 >
 
-    <div class="modal-content">
+    <div
+        class="splp-modal"
+        role="dialog"
+        aria-modal="true"
+        aria-labelledby="splpModalTitle"
+    >
 
-        <div class="modal-header">
 
-            <div class="modal-title-wrapper">
+        {{-- MODAL HEADER --}}
 
-                <h2>
-                    Tambah Data SPLP
-                </h2>
+        <div class="splp-modal-header">
 
-                <p class="modal-subtitle">
-                    Masukan detail aset infrastruktur SPLP baru ke dalam sistem.
-                </p>
+            <div class="splp-modal-header-left">
+
+                <div class="splp-modal-icon">
+
+                    <i class="bi bi-diagram-3-fill"></i>
+
+                </div>
+
+                <div class="splp-modal-header-text">
+
+                    <h2 id="splpModalTitle">
+                        Tambah SPLP
+                    </h2>
+
+                    <p id="splpModalDescription">
+                        Masukan detail infrastruktur SPLP baru ke dalam sistem.
+                    </p>
+
+                </div>
 
             </div>
 
+
             <button
                 type="button"
-                class="close"
-                onclick="closeAddModal()"
+                class="splp-modal-close"
+                onclick="closeSplpModal()"
+                title="Tutup"
             >
 
-                &times;
+                <i class="bi bi-x-lg"></i>
 
             </button>
 
         </div>
 
 
-        <div class="modal-body">
+        {{-- FORM --}}
 
-            <form
-                action="{{ route('splp.store') }}"
-                method="POST"
-                id="addForm"
+        <form
+            id="splpForm"
+            method="POST"
+        >
+
+            @csrf
+
+            <input
+                type="hidden"
+                name="_method"
+                id="splpMethod"
+                value="POST"
             >
 
-                @csrf
+
+            {{-- MODAL BODY --}}
+
+            <div class="splp-modal-body">
 
 
-                <div class="form-group">
+                {{-- =================================================
+                     INFORMASI SPLP
+                ================================================== --}}
 
-                    <label>
-                        Nama Infrastruktur
-                        <span>*</span>
-                    </label>
+                <div class="splp-form-card">
 
-                    <input
-                        type="text"
-                        name="nama_infrastruktur"
-                        placeholder="SPLP"
-                        value="{{ old('nama_infrastruktur') }}"
-                        required
-                    >
+                    <div class="splp-form-card-header">
 
-                </div>
+                        <i class="bi bi-diagram-3-fill"></i>
 
-
-                <div class="form-group">
-
-                    <label>
-                        Spesifikasi
-                    </label>
-
-                    <textarea
-                        name="spesifikasi"
-                        placeholder="Masukkan spesifikasi"
-                    >{{ old('spesifikasi') }}</textarea>
-
-                    <small class="form-info">
-                        Spesifikasi dapat dikosongkan jika tidak tersedia.
-                    </small>
-
-                </div>
-
-
-                <div class="form-group">
-
-                    <label>
-                        Pengadaan
-                        <span>*</span>
-                    </label>
-
-                    <select
-                        id="pengadaan"
-                        name="pengadaan"
-                        required
-                    >
-
-                        <option value="">
-                            Pilih Jenis Pengadaan
-                        </option>
-
-                        <option
-                            value="Sewa"
-                            {{ old('pengadaan') === 'Sewa' ? 'selected' : '' }}
-                        >
-                            Sewa
-                        </option>
-
-                        <option
-                            value="Beli"
-                            {{ old('pengadaan') === 'Beli' ? 'selected' : '' }}
-                        >
-                            Beli
-                        </option>
-
-                    </select>
-
-                </div>
-
-
-                <div class="form-row">
-
-
-                    <div class="form-group">
-
-                        <label>
-                            Harga
-                            <span>*</span>
-                        </label>
-
-                        <input
-                            type="number"
-                            name="harga"
-                            placeholder="Rp"
-                            value="{{ old('harga', 0) }}"
-                            min="0"
-                            required
-                        >
+                        <h3>
+                            Informasi SPLP
+                        </h3>
 
                     </div>
 
 
-                    <div class="form-group">
+                    <div class="splp-form-grid">
 
-                        <label>
-                            Status
-                            <span>*</span>
-                        </label>
 
-                        <select
-                            name="status"
-                            id="addStatus"
-                            required
-                        >
+                        {{-- ID --}}
 
-                            <option value="">
-                                Pilih Status
-                            </option>
+                        <div class="splp-form-group">
 
-                            <option
-                                value="Tersedia"
-                                {{ old('status') === 'Tersedia' ? 'selected' : '' }}
+                            <label for="splp_id">
+                                ID SPLP
+                            </label>
+
+                            <input
+                                type="text"
+                                id="splp_id"
+                                value="{{ old('id') }}"
+                                placeholder="ID SPLP"
+                                readonly
                             >
-                                Tersedia
-                            </option>
 
-                            <option
-                                value="Digunakan"
-                                {{ old('status') === 'Digunakan' ? 'selected' : '' }}
+                            <small class="splp-form-info">
+
+                                <i class="bi bi-info-circle"></i>
+
+                                ID dibuat otomatis oleh sistem.
+
+                            </small>
+
+                        </div>
+
+
+                        {{-- NAMA --}}
+
+                        <div class="splp-form-group">
+
+                            <label for="splp_nama_infrastruktur">
+
+                                Nama Infrastruktur
+
+                                <span>*</span>
+
+                            </label>
+
+                            <input
+                                type="text"
+                                id="splp_nama_infrastruktur"
+                                name="nama_infrastruktur"
+                                value="{{ old('nama_infrastruktur') }}"
+                                placeholder="Masukkan nama infrastruktur SPLP"
+                                required
                             >
-                                Digunakan
-                            </option>
 
-                        </select>
+                            @error('nama_infrastruktur')
+
+                                <small class="splp-form-error">
+                                    {{ $message }}
+                                </small>
+
+                            @enderror
+
+                        </div>
+
+
+                        {{-- SPESIFIKASI --}}
+
+                        <div class="splp-form-group full">
+
+                            <label for="splp_spesifikasi">
+                                Spesifikasi
+                            </label>
+
+                            <textarea
+                                id="splp_spesifikasi"
+                                name="spesifikasi"
+                                placeholder="Masukkan spesifikasi SPLP"
+                            >{{ old('spesifikasi') }}</textarea>
+
+                            @error('spesifikasi')
+
+                                <small class="splp-form-error">
+                                    {{ $message }}
+                                </small>
+
+                            @enderror
+
+                        </div>
+
+
+                    </div>
+
+                </div>
+
+
+                {{-- =================================================
+                     PENGADAAN
+                ================================================== --}}
+
+                <div class="splp-form-card">
+
+                    <div class="splp-form-card-header">
+
+                        <i class="bi bi-receipt"></i>
+
+                        <h3>
+                            Pengadaan
+                        </h3>
 
                     </div>
 
 
-                    <div class="form-group">
+                    <div class="splp-form-grid">
 
-                        <label>
-                            Tanggal Pengadaan
-                        </label>
 
-                        <div class="date-input">
+                        {{-- PENGADAAN --}}
 
-                            <i class="bi bi-calendar3"></i>
+                        <div class="splp-form-group">
+
+                            <label for="splp_pengadaan">
+
+                                Pengadaan
+
+                                <span>*</span>
+
+                            </label>
+
+                            <select
+                                id="splp_pengadaan"
+                                name="pengadaan"
+                                onchange="updateSplpPengadaan()"
+                                required
+                            >
+
+                                <option value="">
+                                    Pilih pengadaan
+                                </option>
+
+                                <option
+                                    value="Beli"
+                                    {{ old('pengadaan') === 'Beli' ? 'selected' : '' }}
+                                >
+                                    Beli
+                                </option>
+
+                                <option
+                                    value="Sewa"
+                                    {{ old('pengadaan') === 'Sewa' ? 'selected' : '' }}
+                                >
+                                    Sewa
+                                </option>
+
+                            </select>
+
+                            @error('pengadaan')
+
+                                <small class="splp-form-error">
+                                    {{ $message }}
+                                </small>
+
+                            @enderror
+
+                        </div>
+
+
+                        {{-- HARGA --}}
+
+                        <div class="splp-form-group">
+
+                            <label for="splp_harga">
+
+                                Harga
+
+                                <span>*</span>
+
+                            </label>
+
+                            <div class="splp-price-input">
+
+                                <span class="splp-price-prefix">
+                                    Rp
+                                </span>
+
+                                <input
+                                    type="number"
+                                    id="splp_harga"
+                                    name="harga"
+                                    value="{{ old('harga') }}"
+                                    placeholder="0"
+                                    min="0"
+                                    step="0.01"
+                                    required
+                                >
+
+                            </div>
+
+                            @error('harga')
+
+                                <small class="splp-form-error">
+                                    {{ $message }}
+                                </small>
+
+                            @enderror
+
+                        </div>
+
+
+                        {{-- TANGGAL PENGADAAN --}}
+
+                        <div class="splp-form-group">
+
+                            <label for="splp_tanggal_pengadaan">
+
+                                Tanggal Pengadaan
+
+                                <span>*</span>
+
+                            </label>
 
                             <input
                                 type="date"
-                                id="tanggal_pengadaan"
+                                id="splp_tanggal_pengadaan"
                                 name="tanggal_pengadaan"
                                 value="{{ old('tanggal_pengadaan') }}"
+                                onchange="calculateSplpEndDate()"
                                 required
                             >
 
+                            @error('tanggal_pengadaan')
+
+                                <small class="splp-form-error">
+                                    {{ $message }}
+                                </small>
+
+                            @enderror
+
                         </div>
 
-                    </div>
 
+                        {{-- TANGGAL BERAKHIR --}}
 
-                </div>
+                        <div class="splp-form-group">
 
-
-                <div class="form-group">
-
-                    <label>
-                        Tanggal Berakhir
-                    </label>
-
-                    <div class="date-input">
-
-                        <i class="bi bi-calendar3"></i>
-
-                        <input
-                            type="date"
-                            id="tanggal_berakhir"
-                            name="tanggal_berakhir"
-                            value="{{ old('tanggal_berakhir') }}"
-                        >
-
-                    </div>
-
-                    <small
-                        id="tanggal-info"
-                        class="form-info"
-                    >
-                        Untuk pengadaan Beli, tanggal berakhir dapat dikosongkan.
-                    </small>
-
-                </div>
-
-
-                <div
-                    id="sewa-section"
-                    class="sewa-section"
-                >
-
-                    <div class="form-group">
-
-                        <label>
-                            Periode Sewa
-                        </label>
-
-                        <select id="periode_sewa">
-
-                            <option value="">
-                                Pilih Periode
-                            </option>
-
-                            <option value="1">
-                                1 Bulan
-                            </option>
-
-                            <option value="3">
-                                3 Bulan
-                            </option>
-
-                            <option value="6">
-                                6 Bulan
-                            </option>
-
-                            <option value="12">
-                                12 Bulan
-                            </option>
-
-                            <option value="custom">
-                                Lainnya
-                            </option>
-
-                        </select>
-
-                    </div>
-
-
-                    <div
-                        id="custom-period"
-                        class="custom-period"
-                    >
-
-                        <div class="form-group">
-
-                            <label>
-                                Jumlah
+                            <label for="splp_tanggal_berakhir">
+                                Tanggal Berakhir
                             </label>
 
                             <input
-                                type="number"
-                                id="custom_jumlah"
-                                min="1"
-                                placeholder="Contoh: 2"
+                                type="date"
+                                id="splp_tanggal_berakhir"
+                                name="tanggal_berakhir"
+                                value="{{ old('tanggal_berakhir') }}"
                             >
+
+                            <small class="splp-form-info">
+
+                                <i class="bi bi-info-circle"></i>
+
+                                Untuk pembelian, tanggal berakhir dikosongkan.
+                                Untuk sewa, tanggal berakhir digunakan untuk
+                                menentukan status otomatis.
+
+                            </small>
+
+                            @error('tanggal_berakhir')
+
+                                <small class="splp-form-error">
+                                    {{ $message }}
+                                </small>
+
+                            @enderror
+
+                        </div>
+
+                    </div>
+
+
+                    {{-- =================================================
+                         SEWA
+                    ================================================== --}}
+
+                    <div
+                        id="splpSewaSection"
+                        class="{{ old('pengadaan') === 'Sewa' ? 'show' : '' }}"
+                    >
+
+                        <div class="splp-sewa-title">
+                            Periode Sewa
+                        </div>
+
+
+                        <div class="splp-sewa-grid">
+
+
+                            {{-- PERIODE --}}
+
+                            <div class="splp-form-group">
+
+                                <label for="splp_periode_sewa">
+                                    Periode Pembayaran
+                                </label>
+
+                                <select
+                                    id="splp_periode_sewa"
+                                    name="periode_sewa"
+                                    onchange="
+                                        updateSplpCustomPeriod();
+                                        calculateSplpEndDate();
+                                    "
+                                >
+
+                                    <option value="">
+                                        Pilih periode
+                                    </option>
+
+                                    <option
+                                        value="Monthly"
+                                        {{ old('periode_sewa') === 'Monthly' ? 'selected' : '' }}
+                                    >
+                                        Monthly
+                                    </option>
+
+                                    <option
+                                        value="3 Months"
+                                        {{ old('periode_sewa') === '3 Months' ? 'selected' : '' }}
+                                    >
+                                        3 Months
+                                    </option>
+
+                                    <option
+                                        value="6 Months"
+                                        {{ old('periode_sewa') === '6 Months' ? 'selected' : '' }}
+                                    >
+                                        6 Months
+                                    </option>
+
+                                    <option
+                                        value="Yearly"
+                                        {{ old('periode_sewa') === 'Yearly' ? 'selected' : '' }}
+                                    >
+                                        Yearly
+                                    </option>
+
+                                    <option
+                                        value="Custom"
+                                        {{ old('periode_sewa') === 'Custom' ? 'selected' : '' }}
+                                    >
+                                        Custom
+                                    </option>
+
+                                </select>
+
+                            </div>
+
+
+                            {{-- KETERANGAN --}}
+
+                            <div class="splp-form-group">
+
+                                <label>
+                                    Keterangan
+                                </label>
+
+                                <div
+                                    class="splp-form-info"
+                                    style="margin-top:10px;"
+                                >
+
+                                    <i class="bi bi-info-circle"></i>
+
+                                    Pilih periode sesuai dengan kontrak atau pembayaran SPLP.
+
+                                </div>
+
+                            </div>
 
                         </div>
 
 
-                        <div class="form-group">
+                        {{-- CUSTOM --}}
 
-                            <label>
-                                Satuan
-                            </label>
+                        <div
+                            id="splpCustomPeriod"
+                            class="{{ old('periode_sewa') === 'Custom' ? 'show' : '' }}"
+                        >
 
-                            <select id="custom_satuan">
 
-                                <option value="months">
-                                    Bulan
-                                </option>
+                            <div class="splp-form-group">
 
-                                <option value="years">
-                                    Tahun
-                                </option>
+                                <label for="splp_durasi_sewa">
+                                    Durasi
+                                </label>
 
-                            </select>
+                                <input
+                                    type="number"
+                                    id="splp_durasi_sewa"
+                                    name="durasi_sewa"
+                                    value="{{ old('durasi_sewa') }}"
+                                    min="1"
+                                    placeholder="Contoh: 18"
+                                    onchange="calculateSplpEndDate()"
+                                >
+
+                            </div>
+
+
+                            <div class="splp-form-group">
+
+                                <label for="splp_satuan_sewa">
+                                    Satuan
+                                </label>
+
+                                <select
+                                    id="splp_satuan_sewa"
+                                    name="satuan_sewa"
+                                    onchange="calculateSplpEndDate()"
+                                >
+
+                                    <option
+                                        value="Months"
+                                        {{ old('satuan_sewa', 'Months') === 'Months' ? 'selected' : '' }}
+                                    >
+                                        Bulan
+                                    </option>
+
+                                    <option
+                                        value="Years"
+                                        {{ old('satuan_sewa') === 'Years' ? 'selected' : '' }}
+                                    >
+                                        Tahun
+                                    </option>
+
+                                </select>
+
+                            </div>
+
 
                         </div>
 
@@ -2145,30 +2683,37 @@
 
                 </div>
 
-
-                <div class="form-actions">
-
-                    <button
-                        type="button"
-                        class="cancel-btn"
-                        onclick="closeAddModal()"
-                    >
-                        Batal
-                    </button>
-
-                    <button
-                        type="submit"
-                        class="save-btn"
-                    >
-                        Simpan
-                    </button>
-
-                </div>
+            </div>
 
 
-            </form>
+            {{-- FOOTER --}}
 
-        </div>
+            <div class="splp-modal-footer">
+
+                <button
+                    type="button"
+                    class="splp-btn-batal"
+                    onclick="closeSplpModal()"
+                >
+                    Batal
+                </button>
+
+
+                <button
+                    type="submit"
+                    class="splp-btn-simpan"
+                    id="splpSaveButton"
+                >
+
+                    <i class="bi bi-check-lg"></i>
+
+                    Simpan SPLP
+
+                </button>
+
+            </div>
+
+        </form>
 
     </div>
 
@@ -2176,912 +2721,524 @@
 
 
 {{-- =========================================================
-     MODAL EDIT
+     JAVASCRIPT
 ========================================================= --}}
 
-<div
-    class="modal"
-    id="editModal"
->
-
-    <div class="modal-content">
-
-        <div class="modal-header">
-
-            <div class="modal-title-wrapper">
-
-                <h2>
-                    Edit Data SPLP
-                </h2>
-
-                <p class="modal-subtitle">
-                    Ubah detail aset infrastruktur SPLP yang sudah tersimpan.
-                </p>
-
-            </div>
-
-            <button
-                type="button"
-                class="close"
-                onclick="closeEditModal()"
-            >
-
-                &times;
-
-            </button>
-
-        </div>
-
-
-        <div class="modal-body">
-
-            <form
-                id="editForm"
-                method="POST"
-            >
-
-                @csrf
-
-                @method('PUT')
-
-
-                <div class="form-group">
-
-                    <label>
-                        ID SPLP
-                    </label>
-
-                    <input
-                        type="text"
-                        id="editId"
-                        readonly
-                    >
-
-                </div>
-
-
-                <div class="form-group">
-
-                    <label>
-                        Nama Infrastruktur
-                        <span>*</span>
-                    </label>
-
-                    <input
-                        type="text"
-                        name="nama_infrastruktur"
-                        id="editNama"
-                        required
-                    >
-
-                </div>
-
-
-                <div class="form-group">
-
-                    <label>
-                        Spesifikasi
-                    </label>
-
-                    <textarea
-                        name="spesifikasi"
-                        id="editSpesifikasi"
-                    ></textarea>
-
-                    <small class="form-info">
-                        Spesifikasi dapat dikosongkan jika tidak tersedia.
-                    </small>
-
-                </div>
-
-
-                <div class="form-group">
-
-                    <label>
-                        Pengadaan
-                        <span>*</span>
-                    </label>
-
-                    <select
-                        name="pengadaan"
-                        id="editPengadaan"
-                        required
-                    >
-
-                        <option value="Sewa">
-                            Sewa
-                        </option>
-
-                        <option value="Beli">
-                            Beli
-                        </option>
-
-                    </select>
-
-                </div>
-
-
-                <div class="form-row">
-
-
-                    <div class="form-group">
-
-                        <label>
-                            Harga
-                            <span>*</span>
-                        </label>
-
-                        <input
-                            type="number"
-                            name="harga"
-                            id="editHarga"
-                            min="0"
-                            required
-                        >
-
-                    </div>
-
-
-                    <div class="form-group">
-
-                        <label>
-                            Status
-                            <span>*</span>
-                        </label>
-
-                        <select
-                            name="status"
-                            id="editStatus"
-                            required
-                        >
-
-                            <option value="Tersedia">
-                                Tersedia
-                            </option>
-
-                            <option value="Digunakan">
-                                Digunakan
-                            </option>
-
-                        </select>
-
-                    </div>
-
-
-                    <div class="form-group">
-
-                        <label>
-                            Tanggal Pengadaan
-                        </label>
-
-                        <div class="date-input">
-
-                            <i class="bi bi-calendar3"></i>
-
-                            <input
-                                type="date"
-                                name="tanggal_pengadaan"
-                                id="editTanggalPengadaan"
-                                required
-                            >
-
-                        </div>
-
-                    </div>
-
-
-                </div>
-
-
-                <div class="form-group">
-
-                    <label>
-                        Tanggal Berakhir
-                    </label>
-
-                    <div class="date-input">
-
-                        <i class="bi bi-calendar3"></i>
-
-                        <input
-                            type="date"
-                            name="tanggal_berakhir"
-                            id="editTanggalBerakhir"
-                        >
-
-                    </div>
-
-                    <small
-                        id="editTanggalInfo"
-                        class="form-info"
-                    >
-                        Untuk pengadaan Beli, tanggal berakhir dapat dikosongkan.
-                    </small>
-
-                </div>
-
-
-                <div
-                    id="editSewaSection"
-                    class="sewa-section"
-                >
-
-                    <div class="form-group">
-
-                        <label>
-                            Periode Sewa
-                        </label>
-
-                        <select id="editPeriodeSewa">
-
-                            <option value="">
-                                Tidak mengubah periode
-                            </option>
-
-                            <option value="1">
-                                1 Bulan
-                            </option>
-
-                            <option value="3">
-                                3 Bulan
-                            </option>
-
-                            <option value="6">
-                                6 Bulan
-                            </option>
-
-                            <option value="12">
-                                12 Bulan
-                            </option>
-
-                            <option value="custom">
-                                Lainnya
-                            </option>
-
-                        </select>
-
-                    </div>
-
-
-                    <div
-                        id="editCustomPeriod"
-                        class="custom-period"
-                    >
-
-                        <div class="form-group">
-
-                            <label>
-                                Jumlah
-                            </label>
-
-                            <input
-                                type="number"
-                                id="editCustomJumlah"
-                                min="1"
-                                placeholder="Contoh: 2"
-                            >
-
-                        </div>
-
-
-                        <div class="form-group">
-
-                            <label>
-                                Satuan
-                            </label>
-
-                            <select id="editCustomSatuan">
-
-                                <option value="months">
-                                    Bulan
-                                </option>
-
-                                <option value="years">
-                                    Tahun
-                                </option>
-
-                            </select>
-
-                        </div>
-
-                    </div>
-
-                </div>
-
-
-                <div class="form-actions">
-
-                    <button
-                        type="button"
-                        class="cancel-btn"
-                        onclick="closeEditModal()"
-                    >
-                        Batal
-                    </button>
-
-                    <button
-                        type="submit"
-                        class="save-btn"
-                    >
-                        Update
-                    </button>
-
-                </div>
-
-
-            </form>
-
-        </div>
-
-    </div>
-
-</div>
-
+@push('scripts')
 
 <script>
 
-/* =========================================================
-   FILTER
-========================================================= */
+document.addEventListener('DOMContentLoaded', function () {
 
-function toggleFilter()
-{
-    const panel =
-        document.getElementById('filterPanel');
 
-    const button =
-        document.getElementById('filterButton');
+    /* =====================================================
+       SEARCH & FILTER
+    ===================================================== */
 
-    const arrow =
-        document.getElementById('filterArrow');
+    const searchInput =
+        document.getElementById('splpSearch');
 
-    if (!panel || !button || !arrow)
+    const statusFilter =
+        document.getElementById('splpStatusFilter');
+
+    const verifikasiFilter =
+        document.getElementById('splpVerifikasiFilter');
+
+    const tableBody =
+        document.getElementById('splpTableBody');
+
+
+    function filterSplpTable()
     {
-        return;
+
+        if (!tableBody) {
+            return;
+        }
+
+
+        const rows =
+            tableBody.querySelectorAll(
+                'tr[data-search]'
+            );
+
+
+        const searchValue =
+            (searchInput?.value || '')
+                .toLowerCase()
+                .trim();
+
+
+        const statusValue =
+            (statusFilter?.value || '')
+                .toLowerCase()
+                .trim();
+
+
+        const verifikasiValue =
+            (verifikasiFilter?.value || '')
+                .toLowerCase()
+                .trim();
+
+
+        rows.forEach(function (row) {
+
+            const rowSearch =
+                row.dataset.search || '';
+
+            const rowStatus =
+                row.dataset.status || '';
+
+            const rowVerifikasi =
+                row.dataset.verifikasi || '';
+
+
+            const matchSearch =
+                !searchValue ||
+                rowSearch.includes(
+                    searchValue
+                );
+
+
+            const matchStatus =
+                !statusValue ||
+                rowStatus === statusValue;
+
+
+            const matchVerifikasi =
+                !verifikasiValue ||
+                rowVerifikasi ===
+                    verifikasiValue;
+
+
+            row.style.display =
+                matchSearch &&
+                matchStatus &&
+                matchVerifikasi
+                    ? ''
+                    : 'none';
+
+        });
+
     }
 
-    if (panel.classList.contains('show'))
-    {
-        panel.classList.remove('show');
-        button.classList.remove('active');
 
-        arrow.classList.remove('bi-chevron-up');
-        arrow.classList.add('bi-chevron-down');
-    }
-    else
-    {
-        panel.classList.add('show');
-        button.classList.add('active');
+    if (searchInput) {
 
-        arrow.classList.remove('bi-chevron-down');
-        arrow.classList.add('bi-chevron-up');
-    }
-}
-
-
-/* =========================================================
-   ADD MODAL
-========================================================= */
-
-function openAddModal()
-{
-    document.getElementById('addModal').style.display = 'flex';
-}
-
-function closeAddModal()
-{
-    document.getElementById('addModal').style.display = 'none';
-}
-
-
-/* =========================================================
-   ADD ELEMENT
-========================================================= */
-
-const pengadaan =
-    document.getElementById('pengadaan');
-
-const tanggalPengadaan =
-    document.getElementById('tanggal_pengadaan');
-
-const tanggalBerakhir =
-    document.getElementById('tanggal_berakhir');
-
-const sewaSection =
-    document.getElementById('sewa-section');
-
-const periodeSewa =
-    document.getElementById('periode_sewa');
-
-const customPeriod =
-    document.getElementById('custom-period');
-
-const customJumlah =
-    document.getElementById('custom_jumlah');
-
-const customSatuan =
-    document.getElementById('custom_satuan');
-
-const tanggalInfo =
-    document.getElementById('tanggal-info');
-
-
-/* =========================================================
-   HITUNG TANGGAL SEWA
-========================================================= */
-
-function calculateEndDate()
-{
-    if (!pengadaan || pengadaan.value !== 'Sewa')
-    {
-        return;
-    }
-
-    if (!tanggalPengadaan.value)
-    {
-        tanggalBerakhir.value = '';
-        return;
-    }
-
-    let jumlah = 0;
-    let satuan = 'months';
-
-    if (
-        periodeSewa.value &&
-        periodeSewa.value !== 'custom'
-    )
-    {
-        jumlah =
-            parseInt(periodeSewa.value);
-    }
-
-    if (periodeSewa.value === 'custom')
-    {
-        jumlah =
-            parseInt(customJumlah.value) || 0;
-
-        satuan =
-            customSatuan.value;
-    }
-
-    if (jumlah <= 0)
-    {
-        tanggalBerakhir.value = '';
-        return;
-    }
-
-    const date =
-        new Date(
-            tanggalPengadaan.value + 'T00:00:00'
+        searchInput.addEventListener(
+            'input',
+            filterSplpTable
         );
 
-    if (satuan === 'years')
-    {
-        date.setFullYear(
-            date.getFullYear() + jumlah
-        );
-    }
-    else
-    {
-        date.setMonth(
-            date.getMonth() + jumlah
-        );
     }
 
-    const year =
-        date.getFullYear();
 
-    const month =
-        String(
-            date.getMonth() + 1
-        ).padStart(2, '0');
+    if (statusFilter) {
 
-    const day =
-        String(
-            date.getDate()
-        ).padStart(2, '0');
-
-    tanggalBerakhir.value =
-        `${year}-${month}-${day}`;
-}
-
-
-/* =========================================================
-   CUSTOM PERIOD
-========================================================= */
-
-function updateCustomPeriod()
-{
-    if (
-        periodeSewa.value === 'custom'
-    )
-    {
-        customPeriod.classList.add('show');
-    }
-    else
-    {
-        customPeriod.classList.remove('show');
-    }
-
-    calculateEndDate();
-}
-
-
-/* =========================================================
-   PENGADAAN
-========================================================= */
-
-function updatePengadaan()
-{
-    if (pengadaan.value === 'Sewa')
-    {
-        sewaSection.classList.add('show');
-
-        tanggalBerakhir.readOnly = true;
-
-        tanggalBerakhir.classList.add('date-readonly');
-
-        tanggalInfo.textContent =
-            'Tanggal berakhir dihitung otomatis berdasarkan periode sewa.';
-
-        calculateEndDate();
-    }
-    else
-    {
-        sewaSection.classList.remove('show');
-
-        customPeriod.classList.remove('show');
-
-        periodeSewa.value = '';
-
-        customJumlah.value = '';
-
-        tanggalBerakhir.value = '';
-
-        tanggalBerakhir.readOnly = false;
-
-        tanggalBerakhir.classList.remove('date-readonly');
-
-        tanggalInfo.textContent =
-            'Untuk pengadaan Beli, tanggal berakhir dapat dikosongkan.';
-    }
-}
-
-
-if (pengadaan)
-{
-    pengadaan.addEventListener(
-        'change',
-        updatePengadaan
-    );
-}
-
-if (periodeSewa)
-{
-    periodeSewa.addEventListener(
-        'change',
-        updateCustomPeriod
-    );
-}
-
-if (customJumlah)
-{
-    customJumlah.addEventListener(
-        'input',
-        calculateEndDate
-    );
-}
-
-if (customSatuan)
-{
-    customSatuan.addEventListener(
-        'change',
-        calculateEndDate
-    );
-}
-
-if (tanggalPengadaan)
-{
-    tanggalPengadaan.addEventListener(
-        'change',
-        calculateEndDate
-    );
-}
-
-
-/* =========================================================
-   EDIT MODAL
-========================================================= */
-
-function openEditModal(
-    id,
-    nama,
-    spesifikasi,
-    pengadaanValue,
-    tanggalPengadaanValue,
-    tanggalBerakhirValue,
-    harga,
-    status
-)
-{
-    document.getElementById('editModal').style.display = 'flex';
-
-    document.getElementById('editId').value =
-        id;
-
-    document.getElementById('editNama').value =
-        nama;
-
-    document.getElementById('editSpesifikasi').value =
-        spesifikasi ?? '';
-
-    document.getElementById('editPengadaan').value =
-        pengadaanValue;
-
-    document.getElementById('editTanggalPengadaan').value =
-        tanggalPengadaanValue;
-
-    document.getElementById('editTanggalBerakhir').value =
-        tanggalBerakhirValue;
-
-    document.getElementById('editHarga').value =
-        harga;
-
-    document.getElementById('editStatus').value =
-        status;
-
-    document.getElementById('editForm').action =
-        "{{ url('/infrastruktur/splp') }}/" + id;
-
-    document.getElementById('editPeriodeSewa').value = '';
-
-    document.getElementById('editCustomPeriod')
-        .classList.remove('show');
-
-    document.getElementById('editCustomJumlah').value = '';
-
-    updateEditPengadaan();
-}
-
-
-/* =========================================================
-   EDIT ELEMENT
-========================================================= */
-
-const editPengadaan =
-    document.getElementById('editPengadaan');
-
-const editTanggalPengadaan =
-    document.getElementById('editTanggalPengadaan');
-
-const editTanggalBerakhir =
-    document.getElementById('editTanggalBerakhir');
-
-const editSewaSection =
-    document.getElementById('editSewaSection');
-
-const editPeriodeSewa =
-    document.getElementById('editPeriodeSewa');
-
-const editCustomPeriod =
-    document.getElementById('editCustomPeriod');
-
-const editCustomJumlah =
-    document.getElementById('editCustomJumlah');
-
-const editCustomSatuan =
-    document.getElementById('editCustomSatuan');
-
-const editTanggalInfo =
-    document.getElementById('editTanggalInfo');
-
-
-/* =========================================================
-   HITUNG TANGGAL EDIT
-========================================================= */
-
-function calculateEditEndDate()
-{
-    if (
-        editPengadaan.value !== 'Sewa'
-    )
-    {
-        return;
-    }
-
-    if (!editTanggalPengadaan.value)
-    {
-        editTanggalBerakhir.value = '';
-        return;
-    }
-
-    let jumlah = 0;
-    let satuan = 'months';
-
-    if (
-        editPeriodeSewa.value &&
-        editPeriodeSewa.value !== 'custom'
-    )
-    {
-        jumlah =
-            parseInt(editPeriodeSewa.value);
-    }
-
-    if (
-        editPeriodeSewa.value === 'custom'
-    )
-    {
-        jumlah =
-            parseInt(editCustomJumlah.value) || 0;
-
-        satuan =
-            editCustomSatuan.value;
-    }
-
-    if (jumlah <= 0)
-    {
-        return;
-    }
-
-    const date =
-        new Date(
-            editTanggalPengadaan.value + 'T00:00:00'
+        statusFilter.addEventListener(
+            'change',
+            filterSplpTable
         );
 
-    if (satuan === 'years')
-    {
-        date.setFullYear(
-            date.getFullYear() + jumlah
-        );
-    }
-    else
-    {
-        date.setMonth(
-            date.getMonth() + jumlah
-        );
     }
 
-    const year =
-        date.getFullYear();
 
-    const month =
-        String(
-            date.getMonth() + 1
-        ).padStart(2, '0');
+    if (verifikasiFilter) {
 
-    const day =
-        String(
-            date.getDate()
-        ).padStart(2, '0');
-
-    editTanggalBerakhir.value =
-        `${year}-${month}-${day}`;
-}
-
-
-/* =========================================================
-   CUSTOM EDIT
-========================================================= */
-
-function updateEditCustomPeriod()
-{
-    if (
-        editPeriodeSewa.value === 'custom'
-    )
-    {
-        editCustomPeriod.classList.add('show');
-    }
-    else
-    {
-        editCustomPeriod.classList.remove('show');
-    }
-
-    calculateEditEndDate();
-}
-
-
-/* =========================================================
-   UPDATE EDIT PENGADAAN
-========================================================= */
-
-function updateEditPengadaan()
-{
-    if (
-        editPengadaan.value === 'Sewa'
-    )
-    {
-        editSewaSection.classList.add('show');
-
-        editTanggalBerakhir.readOnly = true;
-
-        editTanggalBerakhir.classList.add(
-            'date-readonly'
+        verifikasiFilter.addEventListener(
+            'change',
+            filterSplpTable
         );
 
-        editTanggalInfo.textContent =
-            'Tanggal berakhir dihitung otomatis berdasarkan periode sewa. Pilih periode jika ingin mengubahnya.';
     }
-    else
-    {
-        editSewaSection.classList.remove('show');
 
-        editCustomPeriod.classList.remove('show');
 
-        editPeriodeSewa.value = '';
+    /* =====================================================
+       MODAL OVERLAY
+    ===================================================== */
 
-        editCustomJumlah.value = '';
-
-        editTanggalBerakhir.value = '';
-
-        editTanggalBerakhir.readOnly = false;
-
-        editTanggalBerakhir.classList.remove(
-            'date-readonly'
+    const modal =
+        document.getElementById(
+            'splpModal'
         );
 
-        editTanggalInfo.textContent =
-            'Untuk pengadaan Beli, tanggal berakhir dapat dikosongkan.';
-    }
-}
 
+    if (modal) {
 
-if (editPengadaan)
-{
-    editPengadaan.addEventListener(
-        'change',
-        updateEditPengadaan
-    );
-}
+        modal.addEventListener(
+            'click',
+            function (event) {
 
-if (editPeriodeSewa)
-{
-    editPeriodeSewa.addEventListener(
-        'change',
-        updateEditCustomPeriod
-    );
-}
+                if (
+                    event.target === modal
+                ) {
 
-if (editCustomJumlah)
-{
-    editCustomJumlah.addEventListener(
-        'input',
-        calculateEditEndDate
-    );
-}
+                    closeSplpModal();
 
-if (editCustomSatuan)
-{
-    editCustomSatuan.addEventListener(
-        'change',
-        calculateEditEndDate
-    );
-}
+                }
 
-if (editTanggalPengadaan)
-{
-    editTanggalPengadaan.addEventListener(
-        'change',
-        function()
-        {
-            if (
-                editPeriodeSewa &&
-                editPeriodeSewa.value
-            )
-            {
-                calculateEditEndDate();
             }
+        );
+
+    }
+
+
+    /* =====================================================
+       ESCAPE
+    ===================================================== */
+
+    document.addEventListener(
+        'keydown',
+        function (event) {
+
+            if (
+                event.key === 'Escape' &&
+                modal?.classList.contains('show')
+            ) {
+
+                closeSplpModal();
+
+            }
+
         }
     );
+
+
+    /* =====================================================
+       INITIAL
+    ===================================================== */
+
+    updateSplpPengadaan();
+
+
+    /* =====================================================
+       VALIDATION ERROR
+    ===================================================== */
+
+    @if($errors->any())
+
+        openAddSplpModal();
+
+    @endif
+
+});
+
+
+/* =========================================================
+   OPEN ADD
+========================================================= */
+
+function openAddSplpModal()
+{
+
+    const modal =
+        document.getElementById(
+            'splpModal'
+        );
+
+    const form =
+        document.getElementById(
+            'splpForm'
+        );
+
+
+    if (!modal || !form) {
+        return;
+    }
+
+
+    form.action =
+        "{{ route('splp.store') }}";
+
+
+    document.getElementById(
+        'splpMethod'
+    ).value =
+        'POST';
+
+
+    document.getElementById(
+        'splpModalTitle'
+    ).textContent =
+        'Tambah SPLP';
+
+
+    document.getElementById(
+        'splpModalDescription'
+    ).textContent =
+        'Masukan detail infrastruktur SPLP baru ke dalam sistem.';
+
+
+    document.getElementById(
+        'splpSaveButton'
+    ).innerHTML =
+        '<i class="bi bi-check-lg"></i> Simpan SPLP';
+
+
+    /*
+     * Jangan reset saat validation error.
+     */
+
+    @if(!$errors->any())
+
+        form.reset();
+
+        document.getElementById(
+            'splp_id'
+        ).value = '';
+
+        document.getElementById(
+            'splpSewaSection'
+        ).classList.remove(
+            'show'
+        );
+
+        document.getElementById(
+            'splpCustomPeriod'
+        ).classList.remove(
+            'show'
+        );
+
+    @endif
+
+
+    modal.classList.add(
+        'show'
+    );
+
+    modal.setAttribute(
+        'aria-hidden',
+        'false'
+    );
+
+    document.body.classList.add(
+        'splp-modal-open'
+    );
+
 }
 
 
 /* =========================================================
-   CLOSE EDIT
+   OPEN EDIT
 ========================================================= */
 
-function closeEditModal()
+function openEditSplpModal(id)
 {
-    document.getElementById('editModal').style.display = 'none';
+
+    const splps =
+        @json($splpCollection->values());
+
+
+    const splp =
+        splps.find(
+            function (item) {
+
+                return String(item.id) ===
+                    String(id);
+
+            }
+        );
+
+
+    if (!splp) {
+
+        alert(
+            'Data SPLP tidak ditemukan.'
+        );
+
+        return;
+
+    }
+
+
+    const modal =
+        document.getElementById(
+            'splpModal'
+        );
+
+    const form =
+        document.getElementById(
+            'splpForm'
+        );
+
+
+    if (!modal || !form) {
+        return;
+    }
+
+
+    form.action =
+        "{{ url('/infrastruktur/splp') }}/" +
+        encodeURIComponent(id);
+
+
+    document.getElementById(
+        'splpMethod'
+    ).value =
+        'PUT';
+
+
+    document.getElementById(
+        'splpModalTitle'
+    ).textContent =
+        'Edit SPLP';
+
+
+    document.getElementById(
+        'splpModalDescription'
+    ).textContent =
+        'Perbarui data infrastruktur SPLP yang dipilih.';
+
+
+    document.getElementById(
+        'splpSaveButton'
+    ).innerHTML =
+        '<i class="bi bi-check-lg"></i> Simpan Perubahan';
+
+
+    /* =====================================================
+       ISI FORM
+    ===================================================== */
+
+    document.getElementById(
+        'splp_id'
+    ).value =
+        splp.id ?? '';
+
+
+    document.getElementById(
+        'splp_nama_infrastruktur'
+    ).value =
+        splp.nama_infrastruktur ?? '';
+
+
+    document.getElementById(
+        'splp_spesifikasi'
+    ).value =
+        splp.spesifikasi ?? '';
+
+
+    document.getElementById(
+        'splp_pengadaan'
+    ).value =
+        splp.pengadaan ?? '';
+
+
+    document.getElementById(
+        'splp_harga'
+    ).value =
+        splp.harga ?? '';
+
+
+    document.getElementById(
+        'splp_tanggal_pengadaan'
+    ).value =
+        formatDateForInput(
+            splp.tanggal_pengadaan
+        );
+
+
+    document.getElementById(
+        'splp_tanggal_berakhir'
+    ).value =
+        formatDateForInput(
+            splp.tanggal_berakhir
+        );
+
+
+    document.getElementById(
+        'splp_periode_sewa'
+    ).value =
+        splp.periode_sewa ?? '';
+
+
+    document.getElementById(
+        'splp_durasi_sewa'
+    ).value =
+        splp.durasi_sewa ?? '';
+
+
+    document.getElementById(
+        'splp_satuan_sewa'
+    ).value =
+        splp.satuan_sewa ?? 'Months';
+
+
+    updateSplpPengadaan();
+
+    updateSplpCustomPeriod();
+
+
+    modal.classList.add(
+        'show'
+    );
+
+    modal.setAttribute(
+        'aria-hidden',
+        'false'
+    );
+
+    document.body.classList.add(
+        'splp-modal-open'
+    );
+
+}
+
+
+/* =========================================================
+   FORMAT DATE
+========================================================= */
+
+function formatDateForInput(value)
+{
+
+    if (!value) {
+        return '';
+    }
+
+
+    if (
+        typeof value === 'string' &&
+        /^\d{4}-\d{2}-\d{2}$/.test(value)
+    ) {
+
+        return value;
+
+    }
+
+
+    const date =
+        new Date(value);
+
+
+    if (isNaN(date.getTime())) {
+        return '';
+    }
+
+
+    const year =
+        date.getFullYear();
+
+
+    const month =
+        String(
+            date.getMonth() + 1
+        ).padStart(2, '0');
+
+
+    const day =
+        String(
+            date.getDate()
+        ).padStart(2, '0');
+
+
+    return (
+        year +
+        '-' +
+        month +
+        '-' +
+        day
+    );
+
 }
 
 
@@ -3089,133 +3246,345 @@ function closeEditModal()
    CLOSE MODAL
 ========================================================= */
 
-window.addEventListener('click', function(event)
+function closeSplpModal()
 {
-    const addModal =
-        document.getElementById('addModal');
 
-    const editModal =
-        document.getElementById('editModal');
+    const modal =
+        document.getElementById(
+            'splpModal'
+        );
 
-    if (event.target === addModal)
-    {
-        closeAddModal();
+
+    if (!modal) {
+        return;
     }
 
-    if (event.target === editModal)
-    {
-        closeEditModal();
-    }
-});
 
-
-/* =========================================================
-   SEARCH
-========================================================= */
-
-const searchInput =
-    document.getElementById('searchInput');
-
-if (searchInput)
-{
-    searchInput.addEventListener(
-        'keyup',
-        function()
-        {
-            const keyword =
-                this.value.toLowerCase();
-
-            const rows =
-                document.querySelectorAll(
-                    '#splpTable tr'
-                );
-
-            rows.forEach(function(row)
-            {
-                const text =
-                    row.innerText.toLowerCase();
-
-                if (text.includes(keyword))
-                {
-                    row.style.display = '';
-                }
-                else
-                {
-                    row.style.display = 'none';
-                }
-            });
-        }
+    modal.classList.remove(
+        'show'
     );
+
+
+    modal.setAttribute(
+        'aria-hidden',
+        'true'
+    );
+
+
+    document.body.classList.remove(
+        'splp-modal-open'
+    );
+
 }
 
 
 /* =========================================================
-   BUKA MODAL JIKA ERROR
+   PENGADAAN
 ========================================================= */
 
-@if ($errors->any())
+function updateSplpPengadaan()
+{
 
-    document.addEventListener(
-        'DOMContentLoaded',
-        function()
-        {
-            openAddModal();
+    const pengadaan =
+        document.getElementById(
+            'splp_pengadaan'
+        )?.value;
 
-            if (pengadaan)
-            {
-                updatePengadaan();
-            }
+
+    const sewaSection =
+        document.getElementById(
+            'splpSewaSection'
+        );
+
+
+    const tanggalBerakhir =
+        document.getElementById(
+            'splp_tanggal_berakhir'
+        );
+
+
+    if (!sewaSection) {
+        return;
+    }
+
+
+    if (
+        String(pengadaan).toLowerCase()
+        === 'sewa'
+    ) {
+
+        sewaSection.classList.add(
+            'show'
+        );
+
+
+        /*
+         * Tanggal berakhir tetap bisa
+         * diklik/edit manual.
+         */
+
+        if (tanggalBerakhir) {
+
+            tanggalBerakhir.readOnly =
+                false;
+
+            tanggalBerakhir.style.background =
+                'white';
+
         }
-    );
 
-@endif
+
+        calculateSplpEndDate();
+
+    } else {
+
+        sewaSection.classList.remove(
+            'show'
+        );
+
+
+        if (tanggalBerakhir) {
+
+            tanggalBerakhir.readOnly =
+                false;
+
+            tanggalBerakhir.style.background =
+                'white';
+
+        }
+
+    }
+
+}
 
 
 /* =========================================================
-   INITIAL STATE
+   CUSTOM PERIOD
 ========================================================= */
 
-document.addEventListener(
-    'DOMContentLoaded',
-    function()
-    {
-        if (pengadaan)
-        {
-            updatePengadaan();
-        }
+function updateSplpCustomPeriod()
+{
 
-        const hasActiveFilter =
-            {{ request()->hasAny(['status', 'pengadaan', 'verifikasi', 'tahun']) ? 'true' : 'false' }};
+    const periode =
+        document.getElementById(
+            'splp_periode_sewa'
+        )?.value;
 
-        if (hasActiveFilter)
-        {
-            const panel =
-                document.getElementById('filterPanel');
 
-            const button =
-                document.getElementById('filterButton');
+    const custom =
+        document.getElementById(
+            'splpCustomPeriod'
+        );
 
-            const arrow =
-                document.getElementById('filterArrow');
 
-            if (panel && button && arrow)
-            {
-                panel.classList.add('show');
-
-                button.classList.add('active');
-
-                arrow.classList.remove(
-                    'bi-chevron-down'
-                );
-
-                arrow.classList.add(
-                    'bi-chevron-up'
-                );
-            }
-        }
+    if (!custom) {
+        return;
     }
-);
+
+
+    if (
+        periode === 'Custom'
+    ) {
+
+        custom.classList.add(
+            'show'
+        );
+
+    } else {
+
+        custom.classList.remove(
+            'show'
+        );
+
+    }
+
+}
+
+
+/* =========================================================
+   CALCULATE END DATE
+========================================================= */
+
+function calculateSplpEndDate()
+{
+
+    const pengadaan =
+        document.getElementById(
+            'splp_pengadaan'
+        )?.value;
+
+
+    if (
+        String(pengadaan).toLowerCase()
+        !== 'sewa'
+    ) {
+
+        return;
+
+    }
+
+
+    const tanggalMulai =
+        document.getElementById(
+            'splp_tanggal_pengadaan'
+        )?.value;
+
+
+    const periode =
+        document.getElementById(
+            'splp_periode_sewa'
+        )?.value;
+
+
+    const tanggalBerakhir =
+        document.getElementById(
+            'splp_tanggal_berakhir'
+        );
+
+
+    if (
+        !tanggalMulai ||
+        !periode ||
+        !tanggalBerakhir
+    ) {
+
+        return;
+
+    }
+
+
+    const date =
+        new Date(
+            tanggalMulai +
+            'T00:00:00'
+        );
+
+
+    if (isNaN(date.getTime())) {
+        return;
+    }
+
+
+    switch (periode) {
+
+
+        case 'Monthly':
+
+            date.setMonth(
+                date.getMonth() + 1
+            );
+
+            break;
+
+
+        case '3 Months':
+
+            date.setMonth(
+                date.getMonth() + 3
+            );
+
+            break;
+
+
+        case '6 Months':
+
+            date.setMonth(
+                date.getMonth() + 6
+            );
+
+            break;
+
+
+        case 'Yearly':
+
+            date.setFullYear(
+                date.getFullYear() + 1
+            );
+
+            break;
+
+
+        case 'Custom':
+
+            const duration =
+                parseInt(
+                    document.getElementById(
+                        'splp_durasi_sewa'
+                    )?.value || 0
+                );
+
+
+            const unit =
+                document.getElementById(
+                    'splp_satuan_sewa'
+                )?.value;
+
+
+            if (
+                !duration ||
+                duration < 1
+            ) {
+
+                return;
+
+            }
+
+
+            if (
+                unit === 'Years'
+            ) {
+
+                date.setFullYear(
+                    date.getFullYear() +
+                    duration
+                );
+
+            } else {
+
+                date.setMonth(
+                    date.getMonth() +
+                    duration
+                );
+
+            }
+
+            break;
+
+
+        default:
+
+            return;
+
+    }
+
+
+    const year =
+        date.getFullYear();
+
+
+    const month =
+        String(
+            date.getMonth() + 1
+        ).padStart(2, '0');
+
+
+    const day =
+        String(
+            date.getDate()
+        ).padStart(2, '0');
+
+
+    tanggalBerakhir.value =
+        year +
+        '-' +
+        month +
+        '-' +
+        day;
+
+}
 
 </script>
+
+@endpush
 
 @endsection

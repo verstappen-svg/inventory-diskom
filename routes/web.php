@@ -13,9 +13,14 @@ use App\Http\Controllers\SplpController;
 use App\Http\Controllers\HardwareController;
 use App\Http\Controllers\SoftwareController;
 use App\Http\Controllers\DataController;
+<<<<<<< HEAD
 
 use App\Models\ActivityLog;
 
+=======
+use App\Http\Controllers\SDMController;
+use App\Http\Controllers\VerificationController;
+>>>>>>> 43dae04 (Update verification and layout)
 
 /*
 |--------------------------------------------------------------------------
@@ -40,6 +45,30 @@ Route::post('/logout', [AuthController::class, 'logout'])
 */
 
 Route::middleware('auth')->group(function () {
+
+    /*
+    |--------------------------------------------------------------------------
+    | VERIFIKASI
+    |--------------------------------------------------------------------------
+    */
+
+    Route::middleware('role:verifikator')->group(function () {
+
+        Route::get('/verifikasi', [
+            VerificationController::class,
+            'index'
+        ])->name('verifikasi.index');
+
+        Route::post('/verifikasi/{verificationRequest}/approve', [
+            VerificationController::class,
+            'approve'
+        ])->name('verifikasi.approve');
+
+        Route::post('/verifikasi/{verificationRequest}/reject', [
+            VerificationController::class,
+            'reject'
+        ])->name('verifikasi.reject');
+    });
 
     /*
     |--------------------------------------------------------------------------

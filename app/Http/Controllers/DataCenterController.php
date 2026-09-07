@@ -3,14 +3,16 @@
 namespace App\Http\Controllers;
 
 use App\Models\DataCenter;
+use App\Models\VerificationRequest;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\DB;
 use Carbon\Carbon;
 
 class DataCenterController extends Controller
 {
     /*
     |--------------------------------------------------------------------------
-    | HITUNG STATUS OTOMATIS
+    | STATUS OTOMATIS
     |--------------------------------------------------------------------------
     */
 
@@ -18,18 +20,18 @@ class DataCenterController extends Controller
     {
         /*
         |--------------------------------------------------------------------------
-        | JIKA BELI
+        | BELI
         |--------------------------------------------------------------------------
+        | Pembelian tidak memiliki tanggal berakhir.
         */
 
         if ($dataCenter->pengadaan === 'Beli') {
-            return $dataCenter->status ?? 'Tersedia';
+            return 'Tidak Berakhir';
         }
-
 
         /*
         |--------------------------------------------------------------------------
-        | JIKA SEWA
+        | SEWA
         |--------------------------------------------------------------------------
         */
 
@@ -37,13 +39,11 @@ class DataCenterController extends Controller
             $dataCenter->pengadaan === 'Sewa' &&
             $dataCenter->tanggal_berakhir
         ) {
-
             $today = Carbon::today();
 
             $tanggalBerakhir = Carbon::parse(
                 $dataCenter->tanggal_berakhir
             );
-
 
             /*
             |--------------------------------------------------------------------------
@@ -55,11 +55,11 @@ class DataCenterController extends Controller
                 return 'Expired';
             }
 
-
             /*
             |--------------------------------------------------------------------------
             | AKAN HABIS
             |--------------------------------------------------------------------------
+            | Jika sisa masa sewa <= 30 hari.
             */
 
             if (
@@ -71,7 +71,6 @@ class DataCenterController extends Controller
                 return 'Akan Habis';
             }
 
-
             /*
             |--------------------------------------------------------------------------
             | DIGUNAKAN
@@ -81,14 +80,13 @@ class DataCenterController extends Controller
             return 'Digunakan';
         }
 
-
         /*
         |--------------------------------------------------------------------------
         | FALLBACK
         |--------------------------------------------------------------------------
         */
 
-        return $dataCenter->status ?? 'Tersedia';
+        return 'Tidak Berakhir';
     }
 
 
@@ -102,7 +100,6 @@ class DataCenterController extends Controller
     {
         $query = DataCenter::query();
 
-
         /*
         |--------------------------------------------------------------------------
         | SEARCH
@@ -115,7 +112,11 @@ class DataCenterController extends Controller
 
             $query->where(function ($q) use ($search) {
 
-                $q->where('id', 'like', "%{$search}%")
+                $q->where(
+                    'id',
+                    'like',
+                    "%{$search}%"
+                )
                     ->orWhere(
                         'nama_infrastruktur',
                         'like',
@@ -128,7 +129,6 @@ class DataCenterController extends Controller
                     );
             });
         }
-
 
         /*
         |--------------------------------------------------------------------------
@@ -144,7 +144,6 @@ class DataCenterController extends Controller
             );
         }
 
-
         /*
         |--------------------------------------------------------------------------
         | FILTER VERIFIKASI
@@ -159,14 +158,10 @@ class DataCenterController extends Controller
             );
         }
 
-
         /*
         |--------------------------------------------------------------------------
         | FILTER TAHUN
         |--------------------------------------------------------------------------
-        |
-        | Filter berdasarkan tahun dari tanggal_pengadaan.
-        |
         */
 
         if ($request->filled('tahun')) {
@@ -176,7 +171,6 @@ class DataCenterController extends Controller
                 $request->tahun
             );
         }
-
 
         /*
         |--------------------------------------------------------------------------
@@ -189,10 +183,9 @@ class DataCenterController extends Controller
             ->orderBy('id')
             ->get();
 
-
         /*
         |--------------------------------------------------------------------------
-        | HITUNG STATUS OTOMATIS
+        | TAMBAHKAN STATUS OTOMATIS
         |--------------------------------------------------------------------------
         */
 
@@ -202,19 +195,10 @@ class DataCenterController extends Controller
                 $this->getStatusOtomatis($dataCenter);
         }
 
-
         /*
         |--------------------------------------------------------------------------
-        | FILTER STATUS
+        | FILTER STATUS OTOMATIS
         |--------------------------------------------------------------------------
-        |
-        | Status tidak langsung diambil dari database karena:
-        |
-        | Beli  -> Tersedia / Digunakan
-        | Sewa  -> Digunakan / Akan Habis / Expired
-        |
-        | Jadi status dihitung terlebih dahulu.
-        |
         */
 
         if ($request->filled('status')) {
@@ -228,19 +212,13 @@ class DataCenterController extends Controller
                 ->values();
         }
 
-
         /*
         |--------------------------------------------------------------------------
-        | DATA UNTUK CARD
+        | DATA UNTUK STATISTIK
         |--------------------------------------------------------------------------
-        |
-        | Card selalu menghitung seluruh data,
-        | tidak mengikuti filter tabel.
-        |
         */
 
         $allDataCenters = DataCenter::all();
-
 
         foreach ($allDataCenters as $dataCenter) {
 
@@ -248,39 +226,47 @@ class DataCenterController extends Controller
                 $this->getStatusOtomatis($dataCenter);
         }
 
-
         /*
         |--------------------------------------------------------------------------
-        | JUMLAH STATUS
+        | HITUNG STATUS
         |--------------------------------------------------------------------------
         */
 
-        $tersedia = $allDataCenters
-            ->where('status_otomatis', 'Tersedia')
+        $tidakBerakhir = $allDataCenters
+            ->where(
+                'status_otomatis',
+                'Tidak Berakhir'
+            )
             ->count();
 
         $digunakan = $allDataCenters
-            ->where('status_otomatis', 'Digunakan')
+            ->where(
+                'status_otomatis',
+                'Digunakan'
+            )
             ->count();
 
         $akanHabis = $allDataCenters
-            ->where('status_otomatis', 'Akan Habis')
+            ->where(
+                'status_otomatis',
+                'Akan Habis'
+            )
             ->count();
 
         $expired = $allDataCenters
-            ->where('status_otomatis', 'Expired')
+            ->where(
+                'status_otomatis',
+                'Expired'
+            )
             ->count();
 
-        $totalDataCenter = $allDataCenters->count();
-
+        $totalDataCenter =
+            $allDataCenters->count();
 
         /*
         |--------------------------------------------------------------------------
-        | DATA TAHUN UNTUK FILTER
+        | DAFTAR TAHUN
         |--------------------------------------------------------------------------
-        |
-        | Mengambil tahun unik dari tanggal_pengadaan.
-        |
         */
 
         $tahuns = DataCenter::query()
@@ -292,10 +278,9 @@ class DataCenterController extends Controller
             ->orderByDesc('tahun')
             ->pluck('tahun');
 
-
         /*
         |--------------------------------------------------------------------------
-        | DATA FILTER VERIFIKASI
+        | DAFTAR VERIFIKASI
         |--------------------------------------------------------------------------
         */
 
@@ -306,18 +291,18 @@ class DataCenterController extends Controller
             ->orderBy('verifikasi')
             ->pluck('verifikasi');
 
-
         /*
         |--------------------------------------------------------------------------
-        | KIRIM KE VIEW
+        | VIEW
         |--------------------------------------------------------------------------
         */
 
-        return view('infrastruktur.data-center.index',
+        return view(
+            'infrastruktur.data-center.index',
             compact(
                 'dataCenters',
                 'totalDataCenter',
-                'tersedia',
+                'tidakBerakhir',
                 'digunakan',
                 'akanHabis',
                 'expired',
@@ -336,77 +321,103 @@ class DataCenterController extends Controller
 
     public function store(Request $request)
     {
-        $validated = $request->validate([
+        $validated = $request->validate(
+            [
+                'nama_infrastruktur' => [
+                    'required',
+                    'string',
+                    'max:255',
+                ],
 
-            'nama_infrastruktur' => [
-                'required',
-                'string',
-                'max:255',
+                'spesifikasi' => [
+                    'nullable',
+                    'string',
+                ],
+
+                'pengadaan' => [
+                    'required',
+                    'in:Beli,Sewa',
+                ],
+
+                'harga' => [
+                    'required',
+                    'numeric',
+                    'min:0',
+                ],
+
+                'tanggal_pengadaan' => [
+                    'required',
+                    'date',
+                ],
+
+                'tanggal_berakhir' => [
+                    'nullable',
+                    'date',
+                    'after_or_equal:tanggal_pengadaan',
+                ],
             ],
+            [
+                'nama_infrastruktur.required' =>
+                    'Nama infrastruktur wajib diisi.',
 
-            'spesifikasi' => [
-                'nullable',
-                'string',
-            ],
+                'nama_infrastruktur.max' =>
+                    'Nama infrastruktur maksimal 255 karakter.',
 
-            'pengadaan' => [
-                'required',
-                'in:Beli,Sewa',
-            ],
+                'pengadaan.required' =>
+                    'Jenis pengadaan wajib dipilih.',
 
-            'harga' => [
-                'required',
-                'numeric',
-                'min:0',
-            ],
+                'pengadaan.in' =>
+                    'Jenis pengadaan harus Beli atau Sewa.',
 
-            'tanggal_pengadaan' => [
-                'required',
-                'date',
-            ],
+                'harga.required' =>
+                    'Harga wajib diisi.',
 
-            'tanggal_berakhir' => [
-                'nullable',
-                'date',
-                'after_or_equal:tanggal_pengadaan',
-            ],
+                'harga.numeric' =>
+                    'Harga harus berupa angka.',
 
-            'status' => [
-                'nullable',
-                'in:Tersedia,Digunakan',
-            ],
+                'harga.min' =>
+                    'Harga tidak boleh kurang dari 0.',
 
-            'komentar' => [
-                'nullable',
-                'string',
-            ],
-        ]);
+                'tanggal_pengadaan.required' =>
+                    'Tanggal pengadaan wajib diisi.',
 
+                'tanggal_pengadaan.date' =>
+                    'Tanggal pengadaan tidak valid.',
+
+                'tanggal_berakhir.date' =>
+                    'Tanggal berakhir tidak valid.',
+
+                'tanggal_berakhir.after_or_equal' =>
+                    'Tanggal berakhir tidak boleh sebelum tanggal pengadaan.',
+            ]
+        );
 
         /*
         |--------------------------------------------------------------------------
-        | JIKA BELI
+        | BELI
         |--------------------------------------------------------------------------
+        | Tidak mempunyai tanggal berakhir.
         */
 
         if ($validated['pengadaan'] === 'Beli') {
 
             $validated['tanggal_berakhir'] = null;
-
-            $validated['status'] =
-                $validated['status'] ?? 'Tersedia';
         }
-
 
         /*
         |--------------------------------------------------------------------------
-        | JIKA SEWA
+        | SEWA
         |--------------------------------------------------------------------------
+        | Wajib mempunyai tanggal berakhir.
         */
 
         if ($validated['pengadaan'] === 'Sewa') {
 
-            if (empty($validated['tanggal_berakhir'])) {
+            if (
+                empty(
+                    $validated['tanggal_berakhir']
+                )
+            ) {
 
                 return back()
                     ->withErrors([
@@ -415,44 +426,34 @@ class DataCenterController extends Controller
                     ])
                     ->withInput();
             }
-
-            $validated['status'] = 'Digunakan';
         }
-
 
         /*
         |--------------------------------------------------------------------------
-        | GENERATE ID OTOMATIS
+        | GENERATE ID
         |--------------------------------------------------------------------------
         */
 
-        $prefix = 'INFD-';
+        $prefix = 'INFDC-';
 
-$lastDataCenter = DataCenter::where(
-    'id',
-    'like',
-    $prefix . '%'
-)
-    ->orderByRaw(
-        'CAST(SUBSTRING(id, 6) AS UNSIGNED) DESC'
-    )
-    ->first();
+        $lastDataCenter = DataCenter::where(
+            'id',
+            'like',
+            $prefix . '%'
+        )
+            ->orderByRaw(
+                'CAST(SUBSTRING(id, 7) AS UNSIGNED) DESC'
+            )
+            ->first();
 
-
-        if ($lastDataCenter) {
-
-            $lastNumber = (int) substr(
-                $lastDataCenter->id,
-                strlen($prefix)
-            );
-
-            $newNumber = $lastNumber + 1;
-
-        } else {
-
-            $newNumber = 1;
-        }
-
+        $newNumber = $lastDataCenter
+            ? (
+                (int) substr(
+                    $lastDataCenter->id,
+                    strlen($prefix)
+                )
+            ) + 1
+            : 1;
 
         $validated['id'] =
             $prefix .
@@ -463,25 +464,15 @@ $lastDataCenter = DataCenter::where(
                 STR_PAD_LEFT
             );
 
-
         /*
         |--------------------------------------------------------------------------
         | VERIFIKASI
         |--------------------------------------------------------------------------
         */
 
-        $validated['verifikasi'] =
-            'Menunggu disetujui';
-
-
-        /*
-        |--------------------------------------------------------------------------
-        | KOMENTAR
-        |--------------------------------------------------------------------------
-        */
+        $validated['verifikasi'] = 'menunggu';
 
         $validated['komentar'] = null;
-
 
         /*
         |--------------------------------------------------------------------------
@@ -489,20 +480,35 @@ $lastDataCenter = DataCenter::where(
         |--------------------------------------------------------------------------
         */
 
-        DataCenter::create($validated);
+        DB::transaction(function () use ($validated) {
 
+            $dataCenter = DataCenter::create(
+                $validated
+            );
 
-        /*
-        |--------------------------------------------------------------------------
-        | REDIRECT
-        |--------------------------------------------------------------------------
-        */
+            VerificationRequest::create([
+                'module' => 'data-center',
+
+                'record_id' =>
+                    $dataCenter->id,
+
+                'action' => 'create',
+
+                'data' =>
+                    $dataCenter->toArray(),
+
+                'status' => 'menunggu',
+
+                'submitted_by' =>
+                    auth()->id(),
+            ]);
+        });
 
         return redirect()
-            ->route('datacenter.index')
+            ->route('data-center.index')
             ->with(
                 'success',
-                'Data datacenter berhasil diajukan dan menunggu disetujui verifikator.'
+                'Data Data Center berhasil ditambahkan dan menunggu verifikasi.'
             );
     }
 
@@ -517,49 +523,76 @@ $lastDataCenter = DataCenter::where(
         Request $request,
         $id
     ) {
+        $validated = $request->validate(
+            [
+                'nama_infrastruktur' => [
+                    'required',
+                    'string',
+                    'max:255',
+                ],
 
-        $validated = $request->validate([
+                'spesifikasi' => [
+                    'nullable',
+                    'string',
+                ],
 
-            'nama_infrastruktur' => [
-                'required',
-                'string',
-                'max:255',
+                'pengadaan' => [
+                    'required',
+                    'in:Beli,Sewa',
+                ],
+
+                'harga' => [
+                    'required',
+                    'numeric',
+                    'min:0',
+                ],
+
+                'tanggal_pengadaan' => [
+                    'required',
+                    'date',
+                ],
+
+                'tanggal_berakhir' => [
+                    'nullable',
+                    'date',
+                    'after_or_equal:tanggal_pengadaan',
+                ],
             ],
+            [
+                'nama_infrastruktur.required' =>
+                    'Nama infrastruktur wajib diisi.',
 
-            'spesifikasi' => [
-                'nullable',
-                'string',
-            ],
+                'nama_infrastruktur.max' =>
+                    'Nama infrastruktur maksimal 255 karakter.',
 
-            'pengadaan' => [
-                'required',
-                'in:Beli,Sewa',
-            ],
+                'pengadaan.required' =>
+                    'Jenis pengadaan wajib dipilih.',
 
-            'harga' => [
-                'required',
-                'numeric',
-                'min:0',
-            ],
+                'pengadaan.in' =>
+                    'Jenis pengadaan harus Beli atau Sewa.',
 
-            'tanggal_pengadaan' => [
-                'required',
-                'date',
-            ],
+                'harga.required' =>
+                    'Harga wajib diisi.',
 
-            'tanggal_berakhir' => [
-                'nullable',
-                'date',
-                'after_or_equal:tanggal_pengadaan',
-            ],
+                'harga.numeric' =>
+                    'Harga harus berupa angka.',
 
-            'status' => [
-                'nullable',
-                'in:Tersedia,Digunakan',
-            ],
+                'harga.min' =>
+                    'Harga tidak boleh kurang dari 0.',
 
-        ]);
+                'tanggal_pengadaan.required' =>
+                    'Tanggal pengadaan wajib diisi.',
 
+                'tanggal_pengadaan.date' =>
+                    'Tanggal pengadaan tidak valid.',
+
+                'tanggal_berakhir.date' =>
+                    'Tanggal berakhir tidak valid.',
+
+                'tanggal_berakhir.after_or_equal' =>
+                    'Tanggal berakhir tidak boleh sebelum tanggal pengadaan.',
+            ]
+        );
 
         /*
         |--------------------------------------------------------------------------
@@ -567,33 +600,33 @@ $lastDataCenter = DataCenter::where(
         |--------------------------------------------------------------------------
         */
 
-        $datacenter = DataCenter::findOrFail($id);
-
+        $dataCenter =
+            DataCenter::findOrFail($id);
 
         /*
         |--------------------------------------------------------------------------
-        | JIKA BELI
+        | BELI
         |--------------------------------------------------------------------------
         */
 
         if ($validated['pengadaan'] === 'Beli') {
 
             $validated['tanggal_berakhir'] = null;
-
-            $validated['status'] =
-                $validated['status'] ?? 'Tersedia';
         }
-
 
         /*
         |--------------------------------------------------------------------------
-        | JIKA SEWA
+        | SEWA
         |--------------------------------------------------------------------------
         */
 
         if ($validated['pengadaan'] === 'Sewa') {
 
-            if (empty($validated['tanggal_berakhir'])) {
+            if (
+                empty(
+                    $validated['tanggal_berakhir']
+                )
+            ) {
 
                 return back()
                     ->withErrors([
@@ -602,50 +635,57 @@ $lastDataCenter = DataCenter::where(
                     ])
                     ->withInput();
             }
-
-            $validated['status'] = 'Digunakan';
         }
 
-
         /*
         |--------------------------------------------------------------------------
-        | VERIFIKASI ULANG
+        | UPDATE + VERIFIKASI
         |--------------------------------------------------------------------------
         */
 
-        $validated['verifikasi'] =
-            'Menunggu disetujui';
+        DB::transaction(function () use (
+            $dataCenter,
+            $validated
+        ) {
 
+            $dataCenter->update([
+                ...$validated,
 
-        /*
-        |--------------------------------------------------------------------------
-        | HAPUS KOMENTAR LAMA
-        |--------------------------------------------------------------------------
-        */
+                'verifikasi' =>
+                    'menunggu',
 
-        $validated['komentar'] = null;
+                'komentar' =>
+                    null,
+            ]);
 
+            $dataCenter->refresh();
 
-        /*
-        |--------------------------------------------------------------------------
-        | UPDATE
-        |--------------------------------------------------------------------------
-        */
+            VerificationRequest::create([
+                'module' =>
+                    'data-center',
 
-        $datacenter->update($validated);
+                'record_id' =>
+                    $dataCenter->id,
 
+                'action' =>
+                    'update',
 
-        /*
-        |--------------------------------------------------------------------------
-        | REDIRECT
-        |--------------------------------------------------------------------------
-        */
+                'data' =>
+                    $dataCenter->toArray(),
+
+                'status' =>
+                    'menunggu',
+
+                'submitted_by' =>
+                    auth()->id(),
+            ]);
+        });
 
         return redirect()
-            ->route('datacenter.index')
+            ->route('data-center.index')
             ->with(
                 'success',
-                'Perubahan data datacenter berhasil diajukan dan menunggu disetujui verifikator.'
+                'Perubahan Data Center berhasil disimpan dan menunggu verifikasi.'
             );
     }
 
@@ -658,32 +698,54 @@ $lastDataCenter = DataCenter::where(
 
     public function destroy($id)
     {
-        $datacenter = DataCenter::findOrFail($id);
+        $dataCenter =
+            DataCenter::findOrFail($id);
 
+        DB::transaction(function () use (
+            $dataCenter
+        ) {
 
-        /*
-        |--------------------------------------------------------------------------
-        | AJUKAN PENGHAPUSAN
-        |--------------------------------------------------------------------------
-        */
+            /*
+            |--------------------------------------------------------------------------
+            | JANGAN LANGSUNG HAPUS
+            |--------------------------------------------------------------------------
+            | Buat pengajuan penghapusan ke verifikator.
+            */
 
-        $datacenter->update([
-            'verifikasi' => 'Menunggu disetujui',
-            'komentar' => null,
-        ]);
+            $dataCenter->update([
+                'verifikasi' =>
+                    'menunggu',
 
+                'komentar' =>
+                    null,
+            ]);
 
-        /*
-        |--------------------------------------------------------------------------
-        | REDIRECT
-        |--------------------------------------------------------------------------
-        */
+            VerificationRequest::create([
+                'module' =>
+                    'data-center',
+
+                'record_id' =>
+                    $dataCenter->id,
+
+                'action' =>
+                    'delete',
+
+                'data' =>
+                    $dataCenter->toArray(),
+
+                'status' =>
+                    'menunggu',
+
+                'submitted_by' =>
+                    auth()->id(),
+            ]);
+        });
 
         return redirect()
-            ->route('datacenter.index')
+            ->route('data-center.index')
             ->with(
                 'success',
-                'Permintaan penghapusan data berhasil diajukan dan menunggu disetujui verifikator.'
+                'Pengajuan penghapusan Data Center berhasil dikirim dan menunggu verifikasi.'
             );
     }
 }
