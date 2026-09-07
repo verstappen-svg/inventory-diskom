@@ -1,8 +1,11 @@
 <?php
 
 use Illuminate\Support\Facades\Route;
+
 use App\Http\Controllers\SDMController;
 use App\Http\Controllers\AuthController;
+use App\Http\Controllers\DashboardController;
+use App\Http\Controllers\NotificationController;
 use App\Http\Controllers\HardwareController;
 use App\Http\Controllers\SoftwareController;
 use App\Http\Controllers\DataController;
@@ -36,6 +39,12 @@ Route::post('/logout', [AuthController::class, 'logout'])
 
 Route::middleware('auth')->group(function () {
 
+
+    /*
+    |--------------------------------------------------------------------------
+    | DASHBOARD
+    |--------------------------------------------------------------------------
+    */
 
     Route::get('/dashboard', [DashboardController::class, 'index'])
         ->name('dashboard');
@@ -83,46 +92,56 @@ Route::middleware('auth')->group(function () {
     |--------------------------------------------------------------------------
     */
 
-// Jaringan
-Route::get('/infrastruktur/jaringan', [JaringanController::class, 'index'])
-    ->name('jaringan.index');
+    Route::get('/infrastruktur/jaringan', [JaringanController::class, 'index'])
+        ->name('jaringan.index');
 
-Route::post('/infrastruktur/jaringan', [JaringanController::class, 'store'])
-    ->name('jaringan.store');
+    Route::post('/infrastruktur/jaringan', [JaringanController::class, 'store'])
+        ->name('jaringan.store');
 
-Route::put('/infrastruktur/jaringan/{id}', [JaringanController::class, 'update'])
-    ->name('jaringan.update');
+    Route::put('/infrastruktur/jaringan/{id}', [JaringanController::class, 'update'])
+        ->name('jaringan.update');
 
-Route::delete('/infrastruktur/jaringan/{id}', [JaringanController::class, 'destroy'])
-    ->name('jaringan.destroy');
-
-
-// Data Center
-Route::get('/infrastruktur/data-center', [DataCenterController::class, 'index'])
-    ->name('data-center.index');
-
-Route::post('/infrastruktur/data-center', [DataCenterController::class, 'store'])
-    ->name('data-center.store');
-
-Route::put('/infrastruktur/data-center/{id}', [DataCenterController::class, 'update'])
-    ->name('data-center.update');
-
-Route::delete('/infrastruktur/data-center/{id}', [DataCenterController::class, 'destroy'])
-    ->name('data-center.destroy');
+    Route::delete('/infrastruktur/jaringan/{id}', [JaringanController::class, 'destroy'])
+        ->name('jaringan.destroy');
 
 
-// SPLP
-Route::get('/infrastruktur/splp', [SplpController::class, 'index'])
-    ->name('splp.index');
+    /*
+    |--------------------------------------------------------------------------
+    | DATA CENTER
+    |--------------------------------------------------------------------------
+    */
 
-Route::post('/infrastruktur/splp', [SplpController::class, 'store'])
-    ->name('splp.store');
+    Route::get('/infrastruktur/data-center', [DataCenterController::class, 'index'])
+        ->name('data-center.index');
 
-Route::put('/infrastruktur/splp/{id}', [SplpController::class, 'update'])
-    ->name('splp.update');
+    Route::post('/infrastruktur/data-center', [DataCenterController::class, 'store'])
+        ->name('data-center.store');
 
-Route::delete('/infrastruktur/splp/{id}', [SplpController::class, 'destroy'])
-    ->name('splp.destroy');
+    Route::put('/infrastruktur/data-center/{id}', [DataCenterController::class, 'update'])
+        ->name('data-center.update');
+
+    Route::delete('/infrastruktur/data-center/{id}', [DataCenterController::class, 'destroy'])
+        ->name('data-center.destroy');
+
+
+    /*
+    |--------------------------------------------------------------------------
+    | SPLP
+    |--------------------------------------------------------------------------
+    */
+
+    Route::get('/infrastruktur/splp', [SplpController::class, 'index'])
+        ->name('splp.index');
+
+    Route::post('/infrastruktur/splp', [SplpController::class, 'store'])
+        ->name('splp.store');
+
+    Route::put('/infrastruktur/splp/{id}', [SplpController::class, 'update'])
+        ->name('splp.update');
+
+    Route::delete('/infrastruktur/splp/{id}', [SplpController::class, 'destroy'])
+        ->name('splp.destroy');
+
 
     /*
     |--------------------------------------------------------------------------
@@ -185,8 +204,22 @@ Route::delete('/infrastruktur/splp/{id}', [SplpController::class, 'destroy'])
     */
 
     Route::get('/laporan', [LaporanController::class, 'index'])
-    ->name('laporan.index');
+        ->name('laporan.index');
 
 
-    });
+    /*
+    |--------------------------------------------------------------------------
+    | NOTIFIKASI
+    |--------------------------------------------------------------------------
+    */
 
+    // Halaman semua notifikasi
+    Route::get('/notifikasi', [NotificationController::class, 'index'])
+        ->name('notifikasi.index');
+
+    // Menandai notifikasi sebagai sudah dibaca
+    Route::get('/notifikasi/{id}/read', [NotificationController::class, 'read'])
+        ->name('notifikasi.read');
+
+
+});

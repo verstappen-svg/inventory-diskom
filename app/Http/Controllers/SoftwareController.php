@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use App\Models\SoftwareAsset;
+use App\Models\Notification;
 use Illuminate\Http\Request;
 use Illuminate\Support\Str;
 
@@ -38,7 +39,6 @@ class SoftwareController extends Controller
             });
         }
 
-
         // FILTER PENGADAAN
         if ($request->filled('pengadaan')) {
 
@@ -48,25 +48,18 @@ class SoftwareController extends Controller
             );
         }
 
-
         // Data yang ditampilkan pada tabel
         $softwares = $query
             ->latest()
             ->get();
 
-
         /*
         |--------------------------------------------------------------------------
         | DATA UNTUK CARD
         |--------------------------------------------------------------------------
-        |
-        | Card menggunakan SEMUA data software.
-        | Jadi search/filter tidak mengubah jumlah pada card.
-        |
         */
 
         $allSoftwares = SoftwareAsset::all();
-
 
         /*
         |--------------------------------------------------------------------------
@@ -74,9 +67,7 @@ class SoftwareController extends Controller
         |--------------------------------------------------------------------------
         */
 
-        // Total jenis software
         $totalSoftware = $allSoftwares->count();
-
 
         /*
         |--------------------------------------------------------------------------
@@ -84,9 +75,7 @@ class SoftwareController extends Controller
         |--------------------------------------------------------------------------
         */
 
-        // Total seluruh lisensi dari semua software
         $totalLisensi = $allSoftwares->sum('jumlah_lisensi');
-
 
         /*
         |--------------------------------------------------------------------------
@@ -101,7 +90,6 @@ class SoftwareController extends Controller
             ->addDays(30)
             ->endOfDay();
 
-
         /*
         |--------------------------------------------------------------------------
         | EXPIRED
@@ -114,7 +102,6 @@ class SoftwareController extends Controller
                 && $software->tanggal_berakhir->lt($today);
 
         })->count();
-
 
         /*
         |--------------------------------------------------------------------------
@@ -135,21 +122,10 @@ class SoftwareController extends Controller
 
         })->count();
 
-
         /*
         |--------------------------------------------------------------------------
         | TERSEDIA
         |--------------------------------------------------------------------------
-        |
-        | Software dianggap tersedia apabila:
-        |
-        | 1. Tidak memiliki tanggal berakhir
-        |    → perpetual
-        |
-        | ATAU
-        |
-        | 2. Tanggal berakhir lebih dari 30 hari lagi
-        |
         */
 
         $tersedia = $allSoftwares->filter(function ($software) use (
@@ -167,7 +143,6 @@ class SoftwareController extends Controller
 
         })->count();
 
-
         /*
         |--------------------------------------------------------------------------
         | TOTAL PENGELUARAN PER TAHUN
@@ -179,21 +154,15 @@ class SoftwareController extends Controller
 
                 $harga = (float) $software->harga;
 
-
                 /*
                 |--------------------------------------------------------------------------
                 | BELI
                 |--------------------------------------------------------------------------
-                |
-                | Software Beli / Perpetual dihitung
-                | sebagai pengeluaran pembelian.
-                |
                 */
 
                 if ($software->pengadaan === 'Beli') {
                     return $harga;
                 }
-
 
                 /*
                 |--------------------------------------------------------------------------
@@ -205,7 +174,6 @@ class SoftwareController extends Controller
                     return 0;
                 }
 
-
                 /*
                 |--------------------------------------------------------------------------
                 | HITUNG DURASI SEWA
@@ -216,10 +184,8 @@ class SoftwareController extends Controller
 
                 $tanggalBerakhir = $software->tanggal_berakhir;
 
-
                 $jumlahBulan = $tanggalMulai
                     ->diffInMonths($tanggalBerakhir);
-
 
                 // Minimal dianggap 1 bulan
                 $jumlahBulan = max(
@@ -227,26 +193,15 @@ class SoftwareController extends Controller
                     $jumlahBulan
                 );
 
-
                 /*
                 |--------------------------------------------------------------------------
                 | KONVERSI KE ESTIMASI BIAYA 1 TAHUN
                 |--------------------------------------------------------------------------
-                |
-                | Contoh:
-                |
-                | Sewa 3 bulan = Rp 3.000.000
-                |
-                | Rp 3.000.000 / 3 × 12
-                |
-                | = Rp 12.000.000 / tahun
-                |
                 */
 
                 return ($harga / $jumlahBulan) * 12;
             }
         );
-
 
         /*
         |--------------------------------------------------------------------------
@@ -265,7 +220,6 @@ class SoftwareController extends Controller
         ));
     }
 
-
     /*
     |--------------------------------------------------------------------------
     | CREATE
@@ -276,7 +230,6 @@ class SoftwareController extends Controller
     {
         return view('software.create');
     }
-
 
     /*
     |--------------------------------------------------------------------------
@@ -330,7 +283,6 @@ class SoftwareController extends Controller
 
         ]);
 
-
         /*
         |--------------------------------------------------------------------------
         | GENERATE KODE SOFTWARE
@@ -340,15 +292,31 @@ class SoftwareController extends Controller
         $validated['kode'] =
             'SW-' . strtoupper(Str::random(6));
 
-
         /*
         |--------------------------------------------------------------------------
-        | SIMPAN
+        | SIMPAN SOFTWARE
         |--------------------------------------------------------------------------
         */
 
-        SoftwareAsset::create($validated);
+        $software = SoftwareAsset::create($validated);
 
+        /*
+        |--------------------------------------------------------------------------
+        | NOTIFIKASI
+        |--------------------------------------------------------------------------
+        */
+
+        Notification::create([
+            'judul' => 'Software Baru Ditambahkan',
+            'pesan' =>
+                $request->user()->username .
+                ' menambahkan software "' .
+                $software->jenis .
+                '" dengan ID ' .
+                $software->kode .
+                '.',
+            'dibaca' => false,
+        ]);
 
         /*
         |--------------------------------------------------------------------------
@@ -364,7 +332,6 @@ class SoftwareController extends Controller
             );
     }
 
-
     /*
     |--------------------------------------------------------------------------
     | EDIT
@@ -378,7 +345,6 @@ class SoftwareController extends Controller
             compact('software')
         );
     }
-
 
     /*
     |--------------------------------------------------------------------------
@@ -435,7 +401,6 @@ class SoftwareController extends Controller
 
         ]);
 
-
         /*
         |--------------------------------------------------------------------------
         | UPDATE DATABASE
@@ -444,6 +409,23 @@ class SoftwareController extends Controller
 
         $software->update($validated);
 
+        /*
+        |--------------------------------------------------------------------------
+        | NOTIFIKASI
+        |--------------------------------------------------------------------------
+        */
+
+        Notification::create([
+            'judul' => 'Software Diperbarui',
+            'pesan' =>
+                $request->user()->username .
+                ' memperbarui software "' .
+                $software->jenis .
+                '" dengan ID ' .
+                $software->kode .
+                '.',
+            'dibaca' => false,
+        ]);
 
         /*
         |--------------------------------------------------------------------------
@@ -459,7 +441,6 @@ class SoftwareController extends Controller
             );
     }
 
-
     /*
     |--------------------------------------------------------------------------
     | DESTROY
@@ -468,8 +449,49 @@ class SoftwareController extends Controller
 
     public function destroy(SoftwareAsset $software)
     {
+        /*
+        |--------------------------------------------------------------------------
+        | SIMPAN DATA SEBELUM DIHAPUS
+        |--------------------------------------------------------------------------
+        */
+
+        $namaSoftware = $software->jenis;
+        $kodeSoftware = $software->kode;
+
+        // Ambil username operator
+        $username = auth()->user()->username;
+
+        /*
+        |--------------------------------------------------------------------------
+        | HAPUS DATA
+        |--------------------------------------------------------------------------
+        */
+
         $software->delete();
 
+        /*
+        |--------------------------------------------------------------------------
+        | NOTIFIKASI
+        |--------------------------------------------------------------------------
+        */
+
+        Notification::create([
+            'judul' => 'Software Dihapus',
+            'pesan' =>
+                $username .
+                ' menghapus software "' .
+                $namaSoftware .
+                '" dengan ID ' .
+                $kodeSoftware .
+                '.',
+            'dibaca' => false,
+        ]);
+
+        /*
+        |--------------------------------------------------------------------------
+        | REDIRECT
+        |--------------------------------------------------------------------------
+        */
 
         return redirect()
             ->route('software.index')

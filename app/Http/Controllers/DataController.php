@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use App\Models\Data;
 use App\Models\DataPengajuan;
+use App\Models\Notification;
 use Illuminate\Http\Request;
 
 class DataController extends Controller
@@ -81,7 +82,6 @@ class DataController extends Controller
 
         $show = $request->get('show', 10);
 
-        // Batasi pilihan agar aman
         if (!in_array($show, [10, 25, 50, 100])) {
             $show = 10;
         }
@@ -115,27 +115,22 @@ class DataController extends Controller
         // SUMMARY CARD
         // =====================================================
 
-        // Total seluruh dataset
         $totalData = Data::count();
 
-        // Total jenis data unik
         $totalJenis = Data::distinct(
             'jenis_data'
         )->count('jenis_data');
 
-        // Total menunggu persetujuan
         $totalPending = Data::where(
             'verifikasi',
             'Menunggu Disetujui'
         )->count();
 
-        // Total data disetujui
         $totalDisetujui = Data::where(
             'verifikasi',
             'Disetujui'
         )->count();
 
-        // Total data ditolak
         $totalDitolak = Data::where(
             'verifikasi',
             'Ditolak'
@@ -165,11 +160,6 @@ class DataController extends Controller
      * =========================================================
      * STORE
      * =========================================================
-     *
-     * TAMBAH DATA
-     *
-     * Data langsung muncul di tabel.
-     * Status otomatis Menunggu Disetujui.
      */
     public function store(Request $request)
     {
@@ -217,7 +207,7 @@ class DataController extends Controller
         // SIMPAN DATA
         // =====================================================
 
-        Data::create([
+        $data = Data::create([
 
             'nama_dataset' =>
                 $request->nama_dataset,
@@ -240,6 +230,25 @@ class DataController extends Controller
             'komentar_verifikasi' =>
                 null,
 
+        ]);
+
+        // =====================================================
+        // NOTIFIKASI
+        // =====================================================
+
+        Notification::create([
+            'judul' =>
+                'Pengajuan Dataset Baru',
+
+            'pesan' =>
+                $request->user()->username .
+                ' menambahkan dataset "' .
+                $data->nama_dataset .
+                '" dengan ID ' .
+                $data->id .
+                ' dan mengajukannya untuk persetujuan.',
+
+            'dibaca' => false,
         ]);
 
         // =====================================================
@@ -275,11 +284,6 @@ class DataController extends Controller
      * =========================================================
      * UPDATE
      * =========================================================
-     *
-     * EDIT TIDAK LANGSUNG MENGUBAH DATA.
-     *
-     * Perubahan disimpan sebagai pengajuan
-     * dan menunggu persetujuan verifikator.
      */
     public function update(
         Request $request,
@@ -400,6 +404,25 @@ class DataController extends Controller
         ]);
 
         // =====================================================
+        // NOTIFIKASI
+        // =====================================================
+
+        Notification::create([
+            'judul' =>
+                'Perubahan Dataset Diajukan',
+
+            'pesan' =>
+                $request->user()->username .
+                ' memperbarui dataset "' .
+                $data->nama_dataset .
+                '" dengan ID ' .
+                $data->id .
+                ' dan mengajukannya kembali untuk persetujuan.',
+
+            'dibaca' => false,
+        ]);
+
+        // =====================================================
         // REDIRECT
         // =====================================================
 
@@ -416,9 +439,6 @@ class DataController extends Controller
      * =========================================================
      * PREVIEW FILE
      * =========================================================
-     *
-     * File dikirim ke browser untuk ditampilkan.
-     * Tidak menggunakan response()->download().
      */
     public function preview($id)
     {
@@ -468,10 +488,6 @@ class DataController extends Controller
      * =========================================================
      * DESTROY
      * =========================================================
-     *
-     * HAPUS TIDAK LANGSUNG MENGHAPUS DATA.
-     *
-     * Hanya membuat pengajuan hapus.
      */
     public function destroy(
         Request $request,
@@ -530,6 +546,25 @@ class DataController extends Controller
             'tanggal_pengajuan' =>
                 now(),
 
+        ]);
+
+        // =====================================================
+        // NOTIFIKASI
+        // =====================================================
+
+        Notification::create([
+            'judul' =>
+                'Penghapusan Dataset Diajukan',
+
+            'pesan' =>
+                $request->user()->username .
+                ' mengajukan penghapusan dataset "' .
+                $data->nama_dataset .
+                '" dengan ID ' .
+                $data->id .
+                ' untuk persetujuan verifikator.',
+
+            'dibaca' => false,
         ]);
 
         // =====================================================

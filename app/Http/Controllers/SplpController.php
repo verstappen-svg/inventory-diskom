@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use App\Models\Splp;
+use App\Models\Notification;
 use Illuminate\Http\Request;
 use Carbon\Carbon;
 
@@ -26,7 +27,6 @@ class SplpController extends Controller
             return $splp->status ?? 'Tersedia';
         }
 
-
         /*
         |--------------------------------------------------------------------------
         | JIKA SEWA
@@ -44,7 +44,6 @@ class SplpController extends Controller
                 $splp->tanggal_berakhir
             );
 
-
             /*
             |--------------------------------------------------------------------------
             | EXPIRED
@@ -54,7 +53,6 @@ class SplpController extends Controller
             if ($tanggalBerakhir->lt($today)) {
                 return 'Expired';
             }
-
 
             /*
             |--------------------------------------------------------------------------
@@ -71,7 +69,6 @@ class SplpController extends Controller
                 return 'Akan Habis';
             }
 
-
             /*
             |--------------------------------------------------------------------------
             | DIGUNAKAN
@@ -80,7 +77,6 @@ class SplpController extends Controller
 
             return 'Digunakan';
         }
-
 
         /*
         |--------------------------------------------------------------------------
@@ -102,7 +98,6 @@ class SplpController extends Controller
     {
         $query = Splp::query();
 
-
         /*
         |--------------------------------------------------------------------------
         | SEARCH
@@ -115,20 +110,23 @@ class SplpController extends Controller
 
             $query->where(function ($q) use ($search) {
 
-                $q->where('id', 'like', "%{$search}%")
-                    ->orWhere(
-                        'nama_infrastruktur',
-                        'like',
-                        "%{$search}%"
-                    )
-                    ->orWhere(
-                        'spesifikasi',
-                        'like',
-                        "%{$search}%"
-                    );
+                $q->where(
+                    'id',
+                    'like',
+                    "%{$search}%"
+                )
+                ->orWhere(
+                    'nama_infrastruktur',
+                    'like',
+                    "%{$search}%"
+                )
+                ->orWhere(
+                    'spesifikasi',
+                    'like',
+                    "%{$search}%"
+                );
             });
         }
-
 
         /*
         |--------------------------------------------------------------------------
@@ -144,7 +142,6 @@ class SplpController extends Controller
             );
         }
 
-
         /*
         |--------------------------------------------------------------------------
         | FILTER VERIFIKASI
@@ -159,14 +156,10 @@ class SplpController extends Controller
             );
         }
 
-
         /*
         |--------------------------------------------------------------------------
         | FILTER TAHUN
         |--------------------------------------------------------------------------
-        |
-        | Filter berdasarkan tahun dari tanggal_pengadaan.
-        |
         */
 
         if ($request->filled('tahun')) {
@@ -176,7 +169,6 @@ class SplpController extends Controller
                 $request->tahun
             );
         }
-
 
         /*
         |--------------------------------------------------------------------------
@@ -188,7 +180,6 @@ class SplpController extends Controller
             ->orderByDesc('created_at')
             ->orderBy('id')
             ->get();
-
 
         /*
         |--------------------------------------------------------------------------
@@ -202,19 +193,10 @@ class SplpController extends Controller
                 $this->getStatusOtomatis($splp);
         }
 
-
         /*
         |--------------------------------------------------------------------------
         | FILTER STATUS
         |--------------------------------------------------------------------------
-        |
-        | Status tidak langsung diambil dari database karena:
-        |
-        | Beli  -> Tersedia / Digunakan
-        | Sewa  -> Digunakan / Akan Habis / Expired
-        |
-        | Jadi status dihitung terlebih dahulu.
-        |
         */
 
         if ($request->filled('status')) {
@@ -228,26 +210,19 @@ class SplpController extends Controller
                 ->values();
         }
 
-
         /*
         |--------------------------------------------------------------------------
         | DATA UNTUK CARD
         |--------------------------------------------------------------------------
-        |
-        | Card selalu menghitung seluruh data,
-        | tidak mengikuti filter tabel.
-        |
         */
 
         $allSplps = Splp::all();
-
 
         foreach ($allSplps as $splp) {
 
             $splp->status_otomatis =
                 $this->getStatusOtomatis($splp);
         }
-
 
         /*
         |--------------------------------------------------------------------------
@@ -256,42 +231,51 @@ class SplpController extends Controller
         */
 
         $tersedia = $allSplps
-            ->where('status_otomatis', 'Tersedia')
+            ->where(
+                'status_otomatis',
+                'Tersedia'
+            )
             ->count();
 
         $digunakan = $allSplps
-            ->where('status_otomatis', 'Digunakan')
+            ->where(
+                'status_otomatis',
+                'Digunakan'
+            )
             ->count();
 
         $akanHabis = $allSplps
-            ->where('status_otomatis', 'Akan Habis')
+            ->where(
+                'status_otomatis',
+                'Akan Habis'
+            )
             ->count();
 
         $expired = $allSplps
-            ->where('status_otomatis', 'Expired')
+            ->where(
+                'status_otomatis',
+                'Expired'
+            )
             ->count();
 
         $totalSplp = $allSplps->count();
-
 
         /*
         |--------------------------------------------------------------------------
         | DATA TAHUN UNTUK FILTER
         |--------------------------------------------------------------------------
-        |
-        | Mengambil tahun unik dari tanggal_pengadaan.
-        |
         */
 
         $tahuns = Splp::query()
-            ->whereNotNull('tanggal_pengadaan')
+            ->whereNotNull(
+                'tanggal_pengadaan'
+            )
             ->selectRaw(
                 'YEAR(tanggal_pengadaan) as tahun'
             )
             ->distinct()
             ->orderByDesc('tahun')
             ->pluck('tahun');
-
 
         /*
         |--------------------------------------------------------------------------
@@ -305,7 +289,6 @@ class SplpController extends Controller
             ->distinct()
             ->orderBy('verifikasi')
             ->pluck('verifikasi');
-
 
         /*
         |--------------------------------------------------------------------------
@@ -383,7 +366,6 @@ class SplpController extends Controller
             ],
         ]);
 
-
         /*
         |--------------------------------------------------------------------------
         | JIKA BELI
@@ -397,7 +379,6 @@ class SplpController extends Controller
             $validated['status'] =
                 $validated['status'] ?? 'Tersedia';
         }
-
 
         /*
         |--------------------------------------------------------------------------
@@ -420,7 +401,6 @@ class SplpController extends Controller
             $validated['status'] = 'Digunakan';
         }
 
-
         /*
         |--------------------------------------------------------------------------
         | GENERATE ID OTOMATIS
@@ -439,7 +419,6 @@ class SplpController extends Controller
             )
             ->first();
 
-
         if ($lastSplp) {
 
             $lastNumber = (int) substr(
@@ -454,7 +433,6 @@ class SplpController extends Controller
             $newNumber = 1;
         }
 
-
         $validated['id'] =
             $prefix .
             str_pad(
@@ -463,7 +441,6 @@ class SplpController extends Controller
                 '0',
                 STR_PAD_LEFT
             );
-
 
         /*
         |--------------------------------------------------------------------------
@@ -474,7 +451,6 @@ class SplpController extends Controller
         $validated['verifikasi'] =
             'Menunggu disetujui';
 
-
         /*
         |--------------------------------------------------------------------------
         | KOMENTAR
@@ -483,15 +459,34 @@ class SplpController extends Controller
 
         $validated['komentar'] = null;
 
-
         /*
         |--------------------------------------------------------------------------
         | SIMPAN
         |--------------------------------------------------------------------------
         */
 
-        Splp::create($validated);
+        $splp = Splp::create($validated);
 
+        /*
+        |--------------------------------------------------------------------------
+        | NOTIFIKASI
+        |--------------------------------------------------------------------------
+        */
+
+        Notification::create([
+            'judul' =>
+                'Pengajuan SPLP Baru',
+
+            'pesan' =>
+                $request->user()->username .
+                ' menambahkan SPLP "' .
+                $splp->nama_infrastruktur .
+                '" dengan ID ' .
+                $splp->id .
+                ' dan mengajukannya untuk persetujuan.',
+
+            'dibaca' => false,
+        ]);
 
         /*
         |--------------------------------------------------------------------------
@@ -558,9 +553,7 @@ class SplpController extends Controller
                 'nullable',
                 'in:Tersedia,Digunakan',
             ],
-
         ]);
-
 
         /*
         |--------------------------------------------------------------------------
@@ -569,7 +562,6 @@ class SplpController extends Controller
         */
 
         $splp = Splp::findOrFail($id);
-
 
         /*
         |--------------------------------------------------------------------------
@@ -584,7 +576,6 @@ class SplpController extends Controller
             $validated['status'] =
                 $validated['status'] ?? 'Tersedia';
         }
-
 
         /*
         |--------------------------------------------------------------------------
@@ -607,7 +598,6 @@ class SplpController extends Controller
             $validated['status'] = 'Digunakan';
         }
 
-
         /*
         |--------------------------------------------------------------------------
         | VERIFIKASI ULANG
@@ -617,7 +607,6 @@ class SplpController extends Controller
         $validated['verifikasi'] =
             'Menunggu disetujui';
 
-
         /*
         |--------------------------------------------------------------------------
         | HAPUS KOMENTAR LAMA
@@ -625,7 +614,6 @@ class SplpController extends Controller
         */
 
         $validated['komentar'] = null;
-
 
         /*
         |--------------------------------------------------------------------------
@@ -635,6 +623,26 @@ class SplpController extends Controller
 
         $splp->update($validated);
 
+        /*
+        |--------------------------------------------------------------------------
+        | NOTIFIKASI
+        |--------------------------------------------------------------------------
+        */
+
+        Notification::create([
+            'judul' =>
+                'Perubahan SPLP Diajukan',
+
+            'pesan' =>
+                $request->user()->username .
+                ' memperbarui SPLP "' .
+                $splp->nama_infrastruktur .
+                '" dengan ID ' .
+                $splp->id .
+                ' dan mengajukannya kembali untuk persetujuan.',
+
+            'dibaca' => false,
+        ]);
 
         /*
         |--------------------------------------------------------------------------
@@ -657,10 +665,24 @@ class SplpController extends Controller
     |--------------------------------------------------------------------------
     */
 
-    public function destroy($id)
-    {
+    public function destroy(
+        Request $request,
+        $id
+    ) {
+
         $splp = Splp::findOrFail($id);
 
+        /*
+        |--------------------------------------------------------------------------
+        | SIMPAN DATA UNTUK NOTIFIKASI
+        |--------------------------------------------------------------------------
+        */
+
+        $namaSplp =
+            $splp->nama_infrastruktur;
+
+        $idSplp =
+            $splp->id;
 
         /*
         |--------------------------------------------------------------------------
@@ -669,10 +691,32 @@ class SplpController extends Controller
         */
 
         $splp->update([
-            'verifikasi' => 'Menunggu disetujui',
+            'verifikasi' =>
+                'Menunggu disetujui',
+
             'komentar' => null,
         ]);
 
+        /*
+        |--------------------------------------------------------------------------
+        | NOTIFIKASI
+        |--------------------------------------------------------------------------
+        */
+
+        Notification::create([
+            'judul' =>
+                'Penghapusan SPLP Diajukan',
+
+            'pesan' =>
+                $request->user()->username .
+                ' mengajukan penghapusan SPLP "' .
+                $namaSplp .
+                '" dengan ID ' .
+                $idSplp .
+                ' untuk persetujuan verifikator.',
+
+            'dibaca' => false,
+        ]);
 
         /*
         |--------------------------------------------------------------------------

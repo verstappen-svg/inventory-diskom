@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use App\Models\DataCenter;
+use App\Models\Notification;
 use Illuminate\Http\Request;
 use Carbon\Carbon;
 
@@ -26,7 +27,6 @@ class DataCenterController extends Controller
             return $dataCenter->status ?? 'Tersedia';
         }
 
-
         /*
         |--------------------------------------------------------------------------
         | JIKA SEWA
@@ -44,7 +44,6 @@ class DataCenterController extends Controller
                 $dataCenter->tanggal_berakhir
             );
 
-
             /*
             |--------------------------------------------------------------------------
             | EXPIRED
@@ -54,7 +53,6 @@ class DataCenterController extends Controller
             if ($tanggalBerakhir->lt($today)) {
                 return 'Expired';
             }
-
 
             /*
             |--------------------------------------------------------------------------
@@ -71,7 +69,6 @@ class DataCenterController extends Controller
                 return 'Akan Habis';
             }
 
-
             /*
             |--------------------------------------------------------------------------
             | DIGUNAKAN
@@ -80,7 +77,6 @@ class DataCenterController extends Controller
 
             return 'Digunakan';
         }
-
 
         /*
         |--------------------------------------------------------------------------
@@ -102,7 +98,6 @@ class DataCenterController extends Controller
     {
         $query = DataCenter::query();
 
-
         /*
         |--------------------------------------------------------------------------
         | SEARCH
@@ -115,20 +110,23 @@ class DataCenterController extends Controller
 
             $query->where(function ($q) use ($search) {
 
-                $q->where('id', 'like', "%{$search}%")
-                    ->orWhere(
-                        'nama_infrastruktur',
-                        'like',
-                        "%{$search}%"
-                    )
-                    ->orWhere(
-                        'spesifikasi',
-                        'like',
-                        "%{$search}%"
-                    );
+                $q->where(
+                    'id',
+                    'like',
+                    "%{$search}%"
+                )
+                ->orWhere(
+                    'nama_infrastruktur',
+                    'like',
+                    "%{$search}%"
+                )
+                ->orWhere(
+                    'spesifikasi',
+                    'like',
+                    "%{$search}%"
+                );
             });
         }
-
 
         /*
         |--------------------------------------------------------------------------
@@ -144,7 +142,6 @@ class DataCenterController extends Controller
             );
         }
 
-
         /*
         |--------------------------------------------------------------------------
         | FILTER VERIFIKASI
@@ -159,14 +156,10 @@ class DataCenterController extends Controller
             );
         }
 
-
         /*
         |--------------------------------------------------------------------------
         | FILTER TAHUN
         |--------------------------------------------------------------------------
-        |
-        | Filter berdasarkan tahun dari tanggal_pengadaan.
-        |
         */
 
         if ($request->filled('tahun')) {
@@ -176,7 +169,6 @@ class DataCenterController extends Controller
                 $request->tahun
             );
         }
-
 
         /*
         |--------------------------------------------------------------------------
@@ -189,7 +181,6 @@ class DataCenterController extends Controller
             ->orderBy('id')
             ->get();
 
-
         /*
         |--------------------------------------------------------------------------
         | HITUNG STATUS OTOMATIS
@@ -199,22 +190,15 @@ class DataCenterController extends Controller
         foreach ($dataCenters as $dataCenter) {
 
             $dataCenter->status_otomatis =
-                $this->getStatusOtomatis($dataCenter);
+                $this->getStatusOtomatis(
+                    $dataCenter
+                );
         }
-
 
         /*
         |--------------------------------------------------------------------------
         | FILTER STATUS
         |--------------------------------------------------------------------------
-        |
-        | Status tidak langsung diambil dari database karena:
-        |
-        | Beli  -> Tersedia / Digunakan
-        | Sewa  -> Digunakan / Akan Habis / Expired
-        |
-        | Jadi status dihitung terlebih dahulu.
-        |
         */
 
         if ($request->filled('status')) {
@@ -228,26 +212,21 @@ class DataCenterController extends Controller
                 ->values();
         }
 
-
         /*
         |--------------------------------------------------------------------------
         | DATA UNTUK CARD
         |--------------------------------------------------------------------------
-        |
-        | Card selalu menghitung seluruh data,
-        | tidak mengikuti filter tabel.
-        |
         */
 
         $allDataCenters = DataCenter::all();
 
-
         foreach ($allDataCenters as $dataCenter) {
 
             $dataCenter->status_otomatis =
-                $this->getStatusOtomatis($dataCenter);
+                $this->getStatusOtomatis(
+                    $dataCenter
+                );
         }
-
 
         /*
         |--------------------------------------------------------------------------
@@ -256,42 +235,52 @@ class DataCenterController extends Controller
         */
 
         $tersedia = $allDataCenters
-            ->where('status_otomatis', 'Tersedia')
+            ->where(
+                'status_otomatis',
+                'Tersedia'
+            )
             ->count();
 
         $digunakan = $allDataCenters
-            ->where('status_otomatis', 'Digunakan')
+            ->where(
+                'status_otomatis',
+                'Digunakan'
+            )
             ->count();
 
         $akanHabis = $allDataCenters
-            ->where('status_otomatis', 'Akan Habis')
+            ->where(
+                'status_otomatis',
+                'Akan Habis'
+            )
             ->count();
 
         $expired = $allDataCenters
-            ->where('status_otomatis', 'Expired')
+            ->where(
+                'status_otomatis',
+                'Expired'
+            )
             ->count();
 
-        $totalDataCenter = $allDataCenters->count();
-
+        $totalDataCenter =
+            $allDataCenters->count();
 
         /*
         |--------------------------------------------------------------------------
         | DATA TAHUN UNTUK FILTER
         |--------------------------------------------------------------------------
-        |
-        | Mengambil tahun unik dari tanggal_pengadaan.
-        |
         */
 
         $tahuns = DataCenter::query()
-            ->whereNotNull('tanggal_pengadaan')
+            ->whereNotNull(
+                'tanggal_pengadaan'
+            )
             ->selectRaw(
                 'YEAR(tanggal_pengadaan) as tahun'
             )
             ->distinct()
             ->orderByDesc('tahun')
             ->pluck('tahun');
-
 
         /*
         |--------------------------------------------------------------------------
@@ -306,14 +295,14 @@ class DataCenterController extends Controller
             ->orderBy('verifikasi')
             ->pluck('verifikasi');
 
-
         /*
         |--------------------------------------------------------------------------
         | KIRIM KE VIEW
         |--------------------------------------------------------------------------
         */
 
-        return view('infrastruktur.data-center.index',
+        return view(
+            'infrastruktur.data-center.index',
             compact(
                 'dataCenters',
                 'totalDataCenter',
@@ -382,7 +371,6 @@ class DataCenterController extends Controller
             ],
         ]);
 
-
         /*
         |--------------------------------------------------------------------------
         | JIKA BELI
@@ -396,7 +384,6 @@ class DataCenterController extends Controller
             $validated['status'] =
                 $validated['status'] ?? 'Tersedia';
         }
-
 
         /*
         |--------------------------------------------------------------------------
@@ -419,7 +406,6 @@ class DataCenterController extends Controller
             $validated['status'] = 'Digunakan';
         }
 
-
         /*
         |--------------------------------------------------------------------------
         | GENERATE ID OTOMATIS
@@ -428,16 +414,15 @@ class DataCenterController extends Controller
 
         $prefix = 'INFD-';
 
-$lastDataCenter = DataCenter::where(
-    'id',
-    'like',
-    $prefix . '%'
-)
-    ->orderByRaw(
-        'CAST(SUBSTRING(id, 6) AS UNSIGNED) DESC'
-    )
-    ->first();
-
+        $lastDataCenter = DataCenter::where(
+            'id',
+            'like',
+            $prefix . '%'
+        )
+            ->orderByRaw(
+                'CAST(SUBSTRING(id, 6) AS UNSIGNED) DESC'
+            )
+            ->first();
 
         if ($lastDataCenter) {
 
@@ -453,7 +438,6 @@ $lastDataCenter = DataCenter::where(
             $newNumber = 1;
         }
 
-
         $validated['id'] =
             $prefix .
             str_pad(
@@ -462,7 +446,6 @@ $lastDataCenter = DataCenter::where(
                 '0',
                 STR_PAD_LEFT
             );
-
 
         /*
         |--------------------------------------------------------------------------
@@ -473,7 +456,6 @@ $lastDataCenter = DataCenter::where(
         $validated['verifikasi'] =
             'Menunggu disetujui';
 
-
         /*
         |--------------------------------------------------------------------------
         | KOMENTAR
@@ -482,15 +464,35 @@ $lastDataCenter = DataCenter::where(
 
         $validated['komentar'] = null;
 
-
         /*
         |--------------------------------------------------------------------------
         | SIMPAN
         |--------------------------------------------------------------------------
         */
 
-        DataCenter::create($validated);
+        $dataCenter =
+            DataCenter::create($validated);
 
+        /*
+        |--------------------------------------------------------------------------
+        | NOTIFIKASI
+        |--------------------------------------------------------------------------
+        */
+
+        Notification::create([
+            'judul' =>
+                'Pengajuan Data Center Baru',
+
+            'pesan' =>
+                $request->user()->username .
+                ' menambahkan data center "' .
+                $dataCenter->nama_infrastruktur .
+                '" dengan ID ' .
+                $dataCenter->id .
+                ' dan mengajukannya untuk persetujuan.',
+
+            'dibaca' => false,
+        ]);
 
         /*
         |--------------------------------------------------------------------------
@@ -557,9 +559,7 @@ $lastDataCenter = DataCenter::where(
                 'nullable',
                 'in:Tersedia,Digunakan',
             ],
-
         ]);
-
 
         /*
         |--------------------------------------------------------------------------
@@ -567,8 +567,8 @@ $lastDataCenter = DataCenter::where(
         |--------------------------------------------------------------------------
         */
 
-        $datacenter = DataCenter::findOrFail($id);
-
+        $datacenter =
+            DataCenter::findOrFail($id);
 
         /*
         |--------------------------------------------------------------------------
@@ -583,7 +583,6 @@ $lastDataCenter = DataCenter::where(
             $validated['status'] =
                 $validated['status'] ?? 'Tersedia';
         }
-
 
         /*
         |--------------------------------------------------------------------------
@@ -606,7 +605,6 @@ $lastDataCenter = DataCenter::where(
             $validated['status'] = 'Digunakan';
         }
 
-
         /*
         |--------------------------------------------------------------------------
         | VERIFIKASI ULANG
@@ -616,7 +614,6 @@ $lastDataCenter = DataCenter::where(
         $validated['verifikasi'] =
             'Menunggu disetujui';
 
-
         /*
         |--------------------------------------------------------------------------
         | HAPUS KOMENTAR LAMA
@@ -624,7 +621,6 @@ $lastDataCenter = DataCenter::where(
         */
 
         $validated['komentar'] = null;
-
 
         /*
         |--------------------------------------------------------------------------
@@ -634,6 +630,26 @@ $lastDataCenter = DataCenter::where(
 
         $datacenter->update($validated);
 
+        /*
+        |--------------------------------------------------------------------------
+        | NOTIFIKASI
+        |--------------------------------------------------------------------------
+        */
+
+        Notification::create([
+            'judul' =>
+                'Perubahan Data Center Diajukan',
+
+            'pesan' =>
+                $request->user()->username .
+                ' memperbarui data center "' .
+                $datacenter->nama_infrastruktur .
+                '" dengan ID ' .
+                $datacenter->id .
+                ' dan mengajukannya kembali untuk persetujuan.',
+
+            'dibaca' => false,
+        ]);
 
         /*
         |--------------------------------------------------------------------------
@@ -656,10 +672,25 @@ $lastDataCenter = DataCenter::where(
     |--------------------------------------------------------------------------
     */
 
-    public function destroy($id)
-    {
-        $datacenter = DataCenter::findOrFail($id);
+    public function destroy(
+        Request $request,
+        $id
+    ) {
 
+        $datacenter =
+            DataCenter::findOrFail($id);
+
+        /*
+        |--------------------------------------------------------------------------
+        | SIMPAN DATA UNTUK NOTIFIKASI
+        |--------------------------------------------------------------------------
+        */
+
+        $namaDataCenter =
+            $datacenter->nama_infrastruktur;
+
+        $idDataCenter =
+            $datacenter->id;
 
         /*
         |--------------------------------------------------------------------------
@@ -668,10 +699,32 @@ $lastDataCenter = DataCenter::where(
         */
 
         $datacenter->update([
-            'verifikasi' => 'Menunggu disetujui',
+            'verifikasi' =>
+                'Menunggu disetujui',
+
             'komentar' => null,
         ]);
 
+        /*
+        |--------------------------------------------------------------------------
+        | NOTIFIKASI
+        |--------------------------------------------------------------------------
+        */
+
+        Notification::create([
+            'judul' =>
+                'Penghapusan Data Center Diajukan',
+
+            'pesan' =>
+                $request->user()->username .
+                ' mengajukan penghapusan data center "' .
+                $namaDataCenter .
+                '" dengan ID ' .
+                $idDataCenter .
+                ' untuk persetujuan verifikator.',
+
+            'dibaca' => false,
+        ]);
 
         /*
         |--------------------------------------------------------------------------
