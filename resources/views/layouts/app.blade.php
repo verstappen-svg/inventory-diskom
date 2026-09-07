@@ -11,19 +11,17 @@
         @yield('title', 'Inventory IT Assets')
     </title>
 
+    {{-- =====================================================
+         BOOTSTRAP ICONS
+    ====================================================== --}}
+    <link rel="stylesheet"
+          href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css">
 
-    {{-- BOOTSTRAP ICONS --}}
-    <link
-        rel="stylesheet"
-        href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css"
-    >
-
-
-    {{-- VITE --}}
+    {{-- =====================================================
+         VITE
+    ====================================================== --}}
     @vite(['resources/css/app.css', 'resources/js/app.js'])
 
-
-    {{-- STYLE LAYOUT --}}
     <style>
 
         /* =====================================================
@@ -44,10 +42,9 @@
 
         body {
             font-family: Arial, sans-serif;
-            background: #f5f6fa;
+            background: #eef4fc;
             color: #1f2937;
         }
-
 
         /* =====================================================
            APP LAYOUT
@@ -58,33 +55,27 @@
             min-height: 100vh;
         }
 
-
         /* =====================================================
            MAIN AREA
-           
-           Sidebar = 325px
+           Sidebar = 270px
         ===================================================== */
 
         .main-area {
-    margin-left: 270px;
-    width: calc(100% - 270px);
-    min-width: 0;
-    min-height: 100vh;
-    box-sizing: border-box;
-}
-
+            margin-left: 270px;
+            width: calc(100% - 270px);
+            min-width: 0;
+            min-height: 100vh;
+            box-sizing: border-box;
+        }
 
         /* =====================================================
-           HEADER
+           TOP HEADER
         ===================================================== */
 
         .top-header {
-
             width: 100%;
-            height: 75px;
-
+            min-height: 75px;
             background: #ffffff;
-
             border-bottom: 1px solid #e5e7eb;
 
             display: flex;
@@ -95,80 +86,55 @@
 
             position: sticky;
             top: 0;
-
             z-index: 900;
-
         }
-
 
         /* =====================================================
            HEADER LEFT
         ===================================================== */
 
         .header-left {
-
             display: flex;
             align-items: center;
-
             gap: 20px;
-
             min-width: 0;
-
         }
-
 
         .page-title {
-
             margin: 0;
-
             font-size: 20px;
             font-weight: 700;
-
             color: #075985;
-
             white-space: nowrap;
-
         }
-
 
         /* =====================================================
            HEADER SEARCH
         ===================================================== */
 
         .top-header .search-box {
-
             width: 300px;
             height: 40px;
 
             flex-shrink: 0;
 
             background: #f5f6fa;
-
             border: 1px solid #e5e7eb;
-
             border-radius: 20px;
 
             display: flex;
             align-items: center;
 
             padding: 0 15px;
-
         }
-
 
         .top-header .search-box i {
-
             font-size: 16px;
-
             color: #9ca3af;
-
             margin-right: 9px;
-
         }
 
-
         .top-header .search-box input {
-
             width: 100%;
 
             border: none;
@@ -177,71 +143,62 @@
             background: transparent;
 
             font-size: 13px;
-
             color: #374151;
-
         }
-
 
         .top-header .search-box input::placeholder {
-
             color: #9ca3af;
-
         }
-
 
         /* =====================================================
            HEADER RIGHT
         ===================================================== */
 
         .header-right {
-
             display: flex;
-
             align-items: center;
-
             gap: 20px;
-
             flex-shrink: 0;
-
         }
-
 
         /* =====================================================
            NOTIFICATION
         ===================================================== */
 
-        .notification-button {
+        .notification-wrapper {
+            position: relative;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
 
+        .notification-button {
             width: 40px;
             height: 40px;
 
             border: none;
-
             background: transparent;
+            color: #374151;
 
             display: flex;
             align-items: center;
             justify-content: center;
 
-            position: relative;
-
             cursor: pointer;
+            border-radius: 7px;
 
-            color: #075985;
-
+            transition: 0.2s ease;
         }
 
+        .notification-button:hover {
+            background: #f5f6fa;
+        }
 
         .notification-button i {
-
-            font-size: 21px;
-
+            font-size: 17px;
         }
 
-
         .notification-badge {
-
             position: absolute;
 
             top: 5px;
@@ -251,39 +208,32 @@
             height: 8px;
 
             background: #ef4444;
-
             border-radius: 50%;
-
-            border: 2px solid white;
-
+            border: 1px solid white;
         }
-
 
         /* =====================================================
            USER
         ===================================================== */
 
         .user-info {
-
             display: flex;
-
             align-items: center;
+            gap: 8px;
 
-            gap: 10px;
-
+            padding-left: 12px;
+            border-left: 1px solid #d1d5db;
         }
 
-
         .user-avatar {
-
             width: 38px;
             height: 38px;
 
+            flex-shrink: 0;
+
             border-radius: 50%;
-
             background: #071b88;
-
-            color: white;
+            color: #ffffff;
 
             display: flex;
             align-items: center;
@@ -291,49 +241,34 @@
 
             font-size: 15px;
             font-weight: bold;
-
         }
-
 
         .user-text {
-
             display: flex;
-
             flex-direction: column;
-
             gap: 2px;
-
+            min-width: 75px;
         }
-
 
         .user-name {
-
-            font-size: 13px;
-
+            font-size: 10px;
             font-weight: 700;
-
             color: #374151;
-
+            line-height: 1.2;
         }
-
 
         .user-role {
-
-            font-size: 11px;
-
+            font-size: 8px;
             color: #9ca3af;
-
+            line-height: 1.2;
         }
-
 
         /* =====================================================
            MAIN CONTENT
         ===================================================== */
 
         .main-content {
-
             width: 100%;
-
             min-width: 0;
 
             min-height: calc(100vh - 75px);
@@ -341,41 +276,25 @@
             padding: 30px;
 
             box-sizing: border-box;
-
         }
-
 
         /* =====================================================
            HARDWARE PAGE
-           
-           Ini penting supaya tidak ikut menciut
         ===================================================== */
 
         .hardware-page {
-
             width: 100% !important;
-
             max-width: none !important;
-
             min-width: 0;
-
             box-sizing: border-box;
-
         }
-
 
         .hardware-table-container {
-
             width: 100% !important;
-
             max-width: none !important;
-
             min-width: 0;
-
             box-sizing: border-box;
-
         }
-
 
         /* =====================================================
            RESPONSIVE
@@ -383,109 +302,197 @@
 
         @media (max-width: 1200px) {
 
-    .main-area {
-        margin-left: 270px;
-        width: calc(100% - 270px);
-    }
-
-    .top-header .search-box {
-        width: 240px;
-    }
-
-}
+            .main-area {
+                margin-left: 270px;
+                width: calc(100% - 270px);
+            }
 
             .top-header .search-box {
-
                 width: 240px;
-
             }
 
         }
-
 
         @media (max-width: 900px) {
 
             .main-area {
-
                 margin-left: 0;
-
                 width: 100%;
-
             }
 
             .top-header {
-
                 padding: 0 20px;
-
             }
 
             .top-header .search-box {
-
                 width: 220px;
-
             }
 
             .main-content {
-
                 padding: 20px;
-
             }
 
         }
 
+        @media (max-width: 600px) {
 
-        @media (max-width: 700px) {
+            .top-header {
+                min-height: 90px;
+            }
 
             .page-title {
+                font-size: 13px;
+            }
 
-                display: none;
+            .header-right {
+                gap: 5px;
+            }
 
+            .user-info {
+                padding-left: 8px;
             }
 
             .top-header .search-box {
-
                 width: 200px;
-
             }
 
             .user-text {
-
                 display: none;
+            }
 
+            .main-content {
+                padding: 18px 15px 25px;
             }
 
         }
-
 
         @media (max-width: 500px) {
 
             .top-header .search-box {
-
                 width: 160px;
-
             }
 
             .main-content {
-
                 padding: 15px;
-
             }
 
         }
 
-    </style>
+        /* =====================================================
+           POPUP AKSES DITOLAK (GLOBAL)
+        ===================================================== */
 
+        .denied-popup-overlay {
+            display: none;
+            position: fixed;
+            inset: 0;
+            background: rgba(0,0,0,0.45);
+            z-index: 3000;
+            align-items: center;
+            justify-content: center;
+            opacity: 0;
+            transition: opacity 0.25s ease;
+        }
+
+        .denied-popup-overlay.show {
+            display: flex;
+            opacity: 1;
+        }
+
+        .denied-popup-box {
+            background: white;
+            border-radius: 18px;
+            padding: 32px 28px;
+            width: 100%;
+            max-width: 280px;
+            text-align: center;
+            box-shadow: 0 20px 40px rgba(0,0,0,0.2);
+            transform: scale(0.7) translateY(10px);
+            opacity: 0;
+            transition: transform 0.35s cubic-bezier(0.34, 1.56, 0.64, 1), opacity 0.25s ease;
+        }
+
+        .denied-popup-overlay.show .denied-popup-box {
+            transform: scale(1) translateY(0);
+            opacity: 1;
+        }
+
+        .denied-popup-icon {
+            width: 56px;
+            height: 56px;
+            border-radius: 50%;
+            border: 3px solid #dc2626;
+            color: #dc2626;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 26px;
+            margin: 0 auto 16px;
+            transform: scale(0);
+            opacity: 0;
+            transition: transform 0.4s cubic-bezier(0.34, 1.56, 0.64, 1) 0.15s, opacity 0.2s ease 0.15s;
+        }
+
+        .denied-popup-overlay.show .denied-popup-icon {
+            transform: scale(1);
+            opacity: 1;
+            animation: deniedPulse 0.5s ease 0.15s;
+        }
+
+        @keyframes deniedPulse {
+            0% { box-shadow: 0 0 0 0 rgba(220, 38, 38, 0.4); }
+            70% { box-shadow: 0 0 0 10px rgba(220, 38, 38, 0); }
+            100% { box-shadow: 0 0 0 0 rgba(220, 38, 38, 0); }
+        }
+
+        .denied-popup-text {
+            font-size: 14px;
+            font-weight: 700;
+            color: #7f1d1d;
+            margin-bottom: 20px;
+            line-height: 1.4;
+            opacity: 0;
+            transform: translateY(6px);
+            transition: transform 0.3s ease 0.2s, opacity 0.3s ease 0.2s;
+        }
+
+        .denied-popup-overlay.show .denied-popup-text {
+            opacity: 1;
+            transform: translateY(0);
+        }
+
+        .denied-popup-ok {
+            background: #dc2626;
+            color: white;
+            border: none;
+            padding: 9px 28px;
+            border-radius: 20px;
+            font-size: 13px;
+            font-weight: 600;
+            cursor: pointer;
+            opacity: 0;
+            transform: translateY(6px);
+            transition: transform 0.3s ease 0.25s, opacity 0.3s ease 0.25s, background 0.2s ease;
+        }
+
+        .denied-popup-overlay.show .denied-popup-ok {
+            opacity: 1;
+            transform: translateY(0);
+        }
+
+        .denied-popup-ok:hover {
+            background: #b91c1c;
+        }
+
+    </style>
 
     @stack('styles')
 
 </head>
 
-
 <body>
 
-
 <div class="app-layout">
-
 
     {{-- =================================================
          SIDEBAR
@@ -500,22 +507,20 @@
 
     <div class="main-area">
 
-
         {{-- =================================================
              HEADER
         ================================================== --}}
 
         <header class="top-header">
 
-
-            {{-- HEADER LEFT --}}
+            {{-- =================================================
+                 HEADER LEFT
+            ================================================== --}}
 
             <div class="header-left">
 
                 <h1 class="page-title">
-
                     @yield('page-title', 'Dashboard')
-
                 </h1>
 
 
@@ -549,19 +554,23 @@
 
             <div class="header-right">
 
-
                 {{-- NOTIFICATION --}}
 
-                <button
-                    class="notification-button"
-                    type="button"
-                >
+                <div class="notification-wrapper">
 
-                    <i class="bi bi-bell"></i>
+                    <button
+                        class="notification-button"
+                        type="button"
+                        title="Notifikasi"
+                    >
 
-                    <span class="notification-badge"></span>
+                        <i class="bi bi-bell"></i>
 
-                </button>
+                        <span class="notification-badge"></span>
+
+                    </button>
+
+                </div>
 
 
                 {{-- USER --}}
@@ -569,17 +578,35 @@
                 <div class="user-info">
 
                     <div class="user-avatar">
-                        A
+
+                        {{ strtoupper(
+                            substr(
+                                auth()->user()->name ?? 'U',
+                                0,
+                                1
+                            )
+                        ) }}
+
                     </div>
 
                     <div class="user-text">
 
                         <span class="user-name">
-                            Admin
+
+                            {{ auth()->user()->name ?? 'User' }}
+
                         </span>
 
                         <span class="user-role">
-                            Super Admin
+
+                            {{ ucwords(
+                                str_replace(
+                                    '_',
+                                    ' ',
+                                    auth()->user()->role ?? 'User'
+                                )
+                            ) }}
+
                         </span>
 
                     </div>
@@ -601,14 +628,39 @@
 
         </main>
 
-
     </div>
 
 </div>
 
+{{-- =================================================
+     POPUP AKSES DITOLAK (GLOBAL)
+================================================== --}}
+
+<div class="denied-popup-overlay" id="deniedPopup">
+    <div class="denied-popup-box">
+        <div class="denied-popup-icon">
+            <i class="bi bi-x-lg"></i>
+        </div>
+        <div class="denied-popup-text" id="deniedPopupText">
+            Anda tidak memiliki hak akses untuk melakukan aksi ini.
+        </div>
+        <button type="button" class="denied-popup-ok" onclick="document.getElementById('deniedPopup').classList.remove('show')">
+            OK
+        </button>
+    </div>
+</div>
+
+@if (session('permission_denied'))
+    <script>
+        document.addEventListener('DOMContentLoaded', function () {
+            document.getElementById('deniedPopupText').textContent = @json(session('permission_denied'));
+            document.getElementById('deniedPopup').classList.add('show');
+        });
+    </script>
+@endif
 
 @stack('scripts')
 
 </body>
-
 </html>
+</parameter>
