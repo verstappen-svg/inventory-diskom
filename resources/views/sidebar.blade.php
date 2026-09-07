@@ -29,94 +29,133 @@
     ====================================================== --}}
     <nav class="menu">
 
-        {{-- DASHBOARD --}}
-        <a href="/dashboard"
-           class="menu-item {{ request()->is('dashboard') ? 'active' : '' }}">
-            <i class="bi bi-grid-fill"></i>
-            <span>Dashboard</span>
-        </a>
+        @if (auth()->user()->role === 'super_admin')
 
-        {{-- HARDWARE --}}
-        <a href="/hardware"
-           class="menu-item {{ request()->is('hardware*') ? 'active' : '' }}">
-            <i class="bi bi-pc-display"></i>
-            <span>Hardware</span>
-        </a>
+            {{-- ============== MENU SUPER ADMIN ============== --}}
 
-        {{-- SOFTWARE --}}
-        <a href="/software"
-           class="menu-item {{ request()->is('software*') ? 'active' : '' }}">
-            <i class="bi bi-laptop"></i>
-            <span>Software</span>
-        </a>
+            <a href="/dashboard"
+               class="menu-item {{ request()->is('dashboard') ? 'active' : '' }}">
+                <i class="bi bi-grid-fill"></i>
+                <span>Dashboard</span>
+            </a>
 
-        {{-- =================================================
-             INFRASTRUKTUR
-        ================================================== --}}
-        <div class="infrastructure">
+            <a href="{{ route('pengguna.index') }}"
+               class="menu-item {{ request()->is('pengguna*') ? 'active' : '' }}">
+                <i class="bi bi-people-fill"></i>
+                <span>Manajemen Pengguna</span>
+            </a>
 
-            <button type="button"
-                    id="infrastructure-button"
-                    class="menu-item infrastructure-button {{ request()->is('infrastruktur/*') ? 'active' : '' }}"
-                    onclick="toggleInfrastructure()">
+            <a href="{{ route('log-aktivitas.index') }}"
+               class="menu-item {{ request()->is('log-aktivitas*') ? 'active' : '' }}">
+                <i class="bi bi-activity"></i>
+                <span>Log Aktivitas</span>
+            </a>
 
-                <i class="bi bi-diagram-3-fill"></i>
-                <span>Infrastruktur</span>
+        @else
 
-                <i id="infrastructure-arrow"
-                   class="bi {{ request()->is('infrastruktur/*') ? 'bi-chevron-down' : 'bi-chevron-right' }} arrow"></i>
+            @php
+                $role = auth()->user()->role;
+                $canView = fn($menuKey) => \App\Models\RolePermission::allows($role, $menuKey, 'can_view');
+            @endphp
 
-            </button>
+            {{-- ============== MENU OPERATOR/VERIFIKATOR/PIMPINAN (sesuai hak akses) ============== --}}
 
-            {{-- SUBMENU --}}
-            <div id="infrastructure-submenu"
-                 class="submenu {{ request()->is('infrastruktur/*') ? 'show' : '' }}">
+            <a href="/dashboard"
+               class="menu-item {{ request()->is('dashboard') ? 'active' : '' }}">
+                <i class="bi bi-grid-fill"></i>
+                <span>Dashboard</span>
+            </a>
 
-                {{-- JARINGAN --}}
-                <a href="/infrastruktur/jaringan"
-                   class="{{ request()->is('infrastruktur/jaringan') ? 'active' : '' }}">
-                    <i class="bi bi-wifi"></i>
-                    <span>Jaringan</span>
+            @if ($canView('hardware'))
+                <a href="/hardware"
+                   class="menu-item {{ request()->is('hardware*') ? 'active' : '' }}">
+                    <i class="bi bi-pc-display"></i>
+                    <span>Hardware</span>
                 </a>
+            @endif
 
-                {{-- DATA CENTER --}}
-                <a href="/infrastruktur/data-center"
-                   class="{{ request()->is('infrastruktur/data-center') ? 'active' : '' }}">
-                    <i class="bi bi-pie-chart-fill"></i>
-                    <span>Data Center</span>
+            @if ($canView('software'))
+                <a href="/software"
+                   class="menu-item {{ request()->is('software*') ? 'active' : '' }}">
+                    <i class="bi bi-laptop"></i>
+                    <span>Software</span>
                 </a>
+            @endif
 
-                {{-- SPLP --}}
-                <a href="/infrastruktur/splp"
-                   class="{{ request()->is('infrastruktur/splp') ? 'active' : '' }}">
-                    <i class="bi bi-diagram-2-fill"></i>
-                    <span>SPLP</span>
+            @php
+                $showInfra = $canView('infrastruktur.jaringan') || $canView('infrastruktur.data-center') || $canView('infrastruktur.splp');
+            @endphp
+
+            @if ($showInfra)
+                <div class="infrastructure">
+
+                    <button type="button"
+                            id="infrastructure-button"
+                            class="menu-item infrastructure-button {{ request()->is('infrastruktur/*') ? 'active' : '' }}"
+                            onclick="toggleInfrastructure()">
+                        <i class="bi bi-diagram-3-fill"></i>
+                        <span>Infrastruktur</span>
+                        <i id="infrastructure-arrow"
+                           class="bi {{ request()->is('infrastruktur/*') ? 'bi-chevron-down' : 'bi-chevron-right' }} arrow"></i>
+                    </button>
+
+                    <div id="infrastructure-submenu"
+                         class="submenu {{ request()->is('infrastruktur/*') ? 'show' : '' }}">
+
+                        @if ($canView('infrastruktur.jaringan'))
+                            <a href="/infrastruktur/jaringan"
+                               class="{{ request()->is('infrastruktur/jaringan') ? 'active' : '' }}">
+                                <i class="bi bi-wifi"></i>
+                                <span>Jaringan</span>
+                            </a>
+                        @endif
+
+                        @if ($canView('infrastruktur.data-center'))
+                            <a href="/infrastruktur/data-center"
+                               class="{{ request()->is('infrastruktur/data-center') ? 'active' : '' }}">
+                                <i class="bi bi-pie-chart-fill"></i>
+                                <span>Data Center</span>
+                            </a>
+                        @endif
+
+                        @if ($canView('infrastruktur.splp'))
+                            <a href="/infrastruktur/splp"
+                               class="{{ request()->is('infrastruktur/splp') ? 'active' : '' }}">
+                                <i class="bi bi-diagram-2-fill"></i>
+                                <span>SPLP</span>
+                            </a>
+                        @endif
+
+                    </div>
+
+                </div>
+            @endif
+
+            @if ($canView('data'))
+                <a href="/data"
+                   class="menu-item {{ request()->is('data*') ? 'active' : '' }}">
+                    <i class="bi bi-server"></i>
+                    <span>Data</span>
                 </a>
+            @endif
 
-            </div>
+            @if ($canView('sdm'))
+                <a href="/sdm"
+                   class="menu-item {{ request()->is('sdm*') ? 'active' : '' }}">
+                    <i class="bi bi-people-fill"></i>
+                    <span>SDM</span>
+                </a>
+            @endif
 
-        </div>
+            @if ($canView('laporan'))
+                <a href="/laporan"
+                   class="menu-item {{ request()->is('laporan*') ? 'active' : '' }}">
+                    <i class="bi bi-file-earmark-text-fill"></i>
+                    <span>Laporan</span>
+                </a>
+            @endif
 
-        {{-- DATA --}}
-        <a href="/data"
-           class="menu-item {{ request()->is('data*') ? 'active' : '' }}">
-            <i class="bi bi-server"></i>
-            <span>Data</span>
-        </a>
-
-        {{-- SDM --}}
-        <a href="/sdm"
-           class="menu-item {{ request()->is('sdm*') ? 'active' : '' }}">
-            <i class="bi bi-people-fill"></i>
-            <span>SDM</span>
-        </a>
-
-        {{-- LAPORAN --}}
-        <a href="/laporan"
-           class="menu-item {{ request()->is('laporan*') ? 'active' : '' }}">
-            <i class="bi bi-file-earmark-text-fill"></i>
-            <span>Laporan</span>
-        </a>
+        @endif
 
     </nav>
 

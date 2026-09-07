@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Models\ActivityLog;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 
@@ -14,7 +15,6 @@ class AuthController extends Controller
 
     public function login(Request $request)
     {
-        // Validasi sekaligus menyimpan credentials
         $credentials = $request->validate([
             'username' => ['required'],
             'password' => ['required'],
@@ -23,9 +23,23 @@ class AuthController extends Controller
             'password.required' => 'Password wajib diisi.',
         ]);
 
-        // Coba autentikasi pengguna
         if (Auth::attempt($credentials)) {
+
+            if (!auth()->user()->is_active) {
+                Auth::logout();
+                return back()->withErrors([
+                    'username' => 'Akun ini sudah dinonaktifkan.',
+                ])->onlyInput('username');
+            }
+
             $request->session()->regenerate();
+
+            auth()->user()->update(['last_login_at' => now()]);
+
+            ActivityLog::record(
+                'User "' . auth()->user()->name . '" login',
+                'login'
+            );
 
             return redirect()->intended(route('dashboard'));
         }
