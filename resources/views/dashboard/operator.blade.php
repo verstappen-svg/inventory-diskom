@@ -6,1951 +6,1790 @@
 @section('content')
 
 @php
-    /*
-    |--------------------------------------------------------------------------
-    | HELPER DATA
-    |--------------------------------------------------------------------------
-    */
+/*
+|--------------------------------------------------------------------------
+| HELPER DATA
+|--------------------------------------------------------------------------
+*/
 
-    $tahunList = $tahunList ?? [];
-    $tahun = $tahun ?? 'all';
 
-    /*
-    |--------------------------------------------------------------------------
-    | AKTIVITAS
-    |--------------------------------------------------------------------------
-    */
+$tahunList = $tahunList ?? [];
+$tahun = $tahun ?? 'all';
 
-    if ($activities instanceof \Illuminate\Support\Collection) {
-        $activities = $activities;
-    } elseif (is_array($activities ?? null)) {
-        $activities = collect($activities);
-    } else {
-        $activities = collect();
-    }
+/*
+|--------------------------------------------------------------------------
+| AKTIVITAS
+|--------------------------------------------------------------------------
+*/
 
-    /*
-    |--------------------------------------------------------------------------
-    | HARDWARE
-    |--------------------------------------------------------------------------
-    */
+if ($activities instanceof \Illuminate\Support\Collection) {
+    $activities = $activities;
+} elseif (is_array($activities ?? null)) {
+    $activities = collect($activities);
+} else {
+    $activities = collect();
+}
 
-    $hardwareDashboard = $hardwareDashboard ?? [];
+/*
+|--------------------------------------------------------------------------
+| HARDWARE
+|--------------------------------------------------------------------------
+*/
 
-    if ($hardwareDashboard instanceof \Illuminate\Support\Collection) {
-        $hardwareDashboard = $hardwareDashboard->toArray();
-    }
+$hardwareDashboard = $hardwareDashboard ?? [];
 
-    if (!is_array($hardwareDashboard)) {
-        $hardwareDashboard = [];
-    }
+if ($hardwareDashboard instanceof \Illuminate\Support\Collection) {
+    $hardwareDashboard = $hardwareDashboard->toArray();
+}
 
-    $hardwareStatus = $hardwareDashboard['status'] ?? [];
-    $hardwareJenis = $hardwareDashboard['jenis'] ?? [];
+if (!is_array($hardwareDashboard)) {
+    $hardwareDashboard = [];
+}
 
-    if ($hardwareStatus instanceof \Illuminate\Support\Collection) {
-        $hardwareStatus = $hardwareStatus->toArray();
-    }
+$hardwareStatus = $hardwareDashboard['status'] ?? [];
+$hardwareJenis = $hardwareDashboard['jenis'] ?? [];
 
-    if ($hardwareJenis instanceof \Illuminate\Support\Collection) {
-        $hardwareJenis = $hardwareJenis->toArray();
-    }
+if ($hardwareStatus instanceof \Illuminate\Support\Collection) {
+    $hardwareStatus = $hardwareStatus->toArray();
+}
 
-    $hardwareStatus = is_array($hardwareStatus)
-        ? $hardwareStatus
-        : [];
+if ($hardwareJenis instanceof \Illuminate\Support\Collection) {
+    $hardwareJenis = $hardwareJenis->toArray();
+}
 
-    $hardwareJenis = is_array($hardwareJenis)
-        ? $hardwareJenis
-        : [];
+$hardwareStatus = is_array($hardwareStatus) ? $hardwareStatus : [];
+$hardwareJenis = is_array($hardwareJenis) ? $hardwareJenis : [];
 
-    $hardwareStatus = array_merge([
-        'Baik' => 0,
-        'Perbaikan' => 0,
-        'Rusak' => 0,
-    ], $hardwareStatus);
+$hardwareStatus = array_merge([
+    'Baik' => 0,
+    'Perbaikan' => 0,
+    'Rusak' => 0,
+], $hardwareStatus);
 
-    $hardwareJenis = array_merge([
-        'Laptop' => 0,
-        'PC' => 0,
-        'Printer' => 0,
-        'Monitor' => 0,
-        'Keyboard' => 0,
-        'Mouse' => 0,
-        'Camera' => 0,
-    ], $hardwareJenis);
+$hardwareJenis = array_merge([
+    'Laptop' => 0,
+    'PC' => 0,
+    'Printer' => 0,
+    'Monitor' => 0,
+    'Keyboard' => 0,
+    'Mouse' => 0,
+    'Camera' => 0,
+], $hardwareJenis);
 
-    /*
-    |--------------------------------------------------------------------------
-    | SOFTWARE
-    |--------------------------------------------------------------------------
-    */
+/*
+|--------------------------------------------------------------------------
+| SOFTWARE
+|--------------------------------------------------------------------------
+*/
 
-    $softwareDashboard = $softwareDashboard ?? [];
+$softwareDashboard = $softwareDashboard ?? [];
 
-    if ($softwareDashboard instanceof \Illuminate\Support\Collection) {
-        $softwareDashboard = $softwareDashboard->toArray();
-    }
+if ($softwareDashboard instanceof \Illuminate\Support\Collection) {
+    $softwareDashboard = $softwareDashboard->toArray();
+}
 
-    if (!is_array($softwareDashboard)) {
-        $softwareDashboard = [];
-    }
+if (!is_array($softwareDashboard)) {
+    $softwareDashboard = [];
+}
 
-    $softwarePengadaan = $softwareDashboard['pengadaan'] ?? [];
-    $softwareStatus = $softwareDashboard['status'] ?? [];
+$softwarePengadaan = $softwareDashboard['pengadaan'] ?? [];
+$softwareStatus = $softwareDashboard['status'] ?? [];
 
-    if ($softwarePengadaan instanceof \Illuminate\Support\Collection) {
-        $softwarePengadaan = $softwarePengadaan->toArray();
-    }
+if ($softwarePengadaan instanceof \Illuminate\Support\Collection) {
+    $softwarePengadaan = $softwarePengadaan->toArray();
+}
 
-    if ($softwareStatus instanceof \Illuminate\Support\Collection) {
-        $softwareStatus = $softwareStatus->toArray();
-    }
+if ($softwareStatus instanceof \Illuminate\Support\Collection) {
+    $softwareStatus = $softwareStatus->toArray();
+}
 
-    $softwarePengadaan = is_array($softwarePengadaan)
-        ? $softwarePengadaan
-        : [];
+$softwarePengadaan = is_array($softwarePengadaan) ? $softwarePengadaan : [];
+$softwareStatus = is_array($softwareStatus) ? $softwareStatus : [];
 
-    $softwareStatus = is_array($softwareStatus)
-        ? $softwareStatus
-        : [];
+$softwarePengadaan = array_merge([
+    'Beli' => 0,
+    'Sewa' => 0,
+], $softwarePengadaan);
 
-    $softwarePengadaan = array_merge([
-        'Beli' => 0,
-        'Sewa' => 0,
-    ], $softwarePengadaan);
+$softwareStatus = array_merge([
+    'Tersedia' => 0,
+    'Akan Habis' => 0,
+    'Expired' => 0,
+], $softwareStatus);
 
-    $softwareStatus = array_merge([
-        'Tersedia' => 0,
-        'Akan Habis' => 0,
-        'Expired' => 0,
-    ], $softwareStatus);
+/*
+|--------------------------------------------------------------------------
+| INFRASTRUKTUR
+|--------------------------------------------------------------------------
+*/
 
-    /*
-    |--------------------------------------------------------------------------
-    | INFRASTRUKTUR
-    |--------------------------------------------------------------------------
-    */
+$infrastrukturDashboard = $infrastrukturDashboard ?? [];
 
-    $infrastrukturDashboard = $infrastrukturDashboard ?? [];
+if ($infrastrukturDashboard instanceof \Illuminate\Support\Collection) {
+    $infrastrukturDashboard = $infrastrukturDashboard->toArray();
+}
 
-    if ($infrastrukturDashboard instanceof \Illuminate\Support\Collection) {
-        $infrastrukturDashboard = $infrastrukturDashboard->toArray();
-    }
+if (!is_array($infrastrukturDashboard)) {
+    $infrastrukturDashboard = [];
+}
 
-    if (!is_array($infrastrukturDashboard)) {
-        $infrastrukturDashboard = [];
-    }
+$infraPengadaan = $infrastrukturDashboard['pengadaan'] ?? [];
+$infraStatus = $infrastrukturDashboard['status'] ?? [];
 
-    $infraPengadaan = $infrastrukturDashboard['pengadaan'] ?? [];
-    $infraStatus = $infrastrukturDashboard['status'] ?? [];
+if ($infraPengadaan instanceof \Illuminate\Support\Collection) {
+    $infraPengadaan = $infraPengadaan->toArray();
+}
 
-    if ($infraPengadaan instanceof \Illuminate\Support\Collection) {
-        $infraPengadaan = $infraPengadaan->toArray();
-    }
+if ($infraStatus instanceof \Illuminate\Support\Collection) {
+    $infraStatus = $infraStatus->toArray();
+}
 
-    if ($infraStatus instanceof \Illuminate\Support\Collection) {
-        $infraStatus = $infraStatus->toArray();
-    }
+$infraPengadaan = is_array($infraPengadaan) ? $infraPengadaan : [];
+$infraStatus = is_array($infraStatus) ? $infraStatus : [];
 
-    $infraPengadaan = is_array($infraPengadaan)
-        ? $infraPengadaan
-        : [];
+$infraPengadaan = array_merge([
+    'Beli' => 0,
+    'Sewa' => 0,
+], $infraPengadaan);
 
-    $infraStatus = is_array($infraStatus)
-        ? $infraStatus
-        : [];
+$infraStatus = array_merge([
+    'Tersedia' => 0,
+    'Akan Habis' => 0,
+    'Expired' => 0,
+], $infraStatus);
 
-    $infraPengadaan = array_merge([
-        'Beli' => 0,
-        'Sewa' => 0,
-    ], $infraPengadaan);
+/*
+|--------------------------------------------------------------------------
+| SUMMARY
+|--------------------------------------------------------------------------
+*/
 
-    $infraStatus = array_merge([
-        'Tersedia' => 0,
-        'Akan Habis' => 0,
-        'Expired' => 0,
-    ], $infraStatus);
+$totalAset = (int) ($totalAset ?? 0);
+$hardwareCount = (int) ($hardwareCount ?? 0);
+$softwareCount = (int) ($softwareCount ?? 0);
+$infrastrukturCount = (int) ($infrastrukturCount ?? 0);
+$sdmCount = (int) ($sdmCount ?? 0);
+$dataCount = (int) ($dataCount ?? 0);
 
-    /*
-    |--------------------------------------------------------------------------
-    | SUMMARY
-    |--------------------------------------------------------------------------
-    */
+/*
+|--------------------------------------------------------------------------
+| NORMALISASI ANGKA
+|--------------------------------------------------------------------------
+*/
 
-    $totalAset = (int) ($totalAset ?? 0);
-    $hardwareCount = (int) ($hardwareCount ?? 0);
-    $softwareCount = (int) ($softwareCount ?? 0);
-    $infrastrukturCount = (int) ($infrastrukturCount ?? 0);
-    $sdmCount = (int) ($sdmCount ?? 0);
-    $dataCount = (int) ($dataCount ?? 0);
+foreach ($hardwareStatus as $key => $value) {
+    $hardwareStatus[$key] = max(0, (int) $value);
+}
 
-    /*
-    |--------------------------------------------------------------------------
-    | NORMALISASI ANGKA
-    |--------------------------------------------------------------------------
-    */
+foreach ($hardwareJenis as $key => $value) {
+    $hardwareJenis[$key] = max(0, (int) $value);
+}
 
-    foreach ($hardwareStatus as $key => $value) {
-        $hardwareStatus[$key] = max(0, (int) $value);
-    }
+foreach ($softwarePengadaan as $key => $value) {
+    $softwarePengadaan[$key] = max(0, (int) $value);
+}
 
-    foreach ($hardwareJenis as $key => $value) {
-        $hardwareJenis[$key] = max(0, (int) $value);
-    }
+foreach ($softwareStatus as $key => $value) {
+    $softwareStatus[$key] = max(0, (int) $value);
+}
 
-    foreach ($softwarePengadaan as $key => $value) {
-        $softwarePengadaan[$key] = max(0, (int) $value);
-    }
+foreach ($infraPengadaan as $key => $value) {
+    $infraPengadaan[$key] = max(0, (int) $value);
+}
 
-    foreach ($softwareStatus as $key => $value) {
-        $softwareStatus[$key] = max(0, (int) $value);
-    }
+foreach ($infraStatus as $key => $value) {
+    $infraStatus[$key] = max(0, (int) $value);
+}
 
-    foreach ($infraPengadaan as $key => $value) {
-        $infraPengadaan[$key] = max(0, (int) $value);
-    }
+/*
+|--------------------------------------------------------------------------
+| TOTAL DONUT
+|--------------------------------------------------------------------------
+*/
 
-    foreach ($infraStatus as $key => $value) {
-        $infraStatus[$key] = max(0, (int) $value);
-    }
+$hardwareTotal = array_sum($hardwareStatus);
+$softwarePengadaanTotal = array_sum($softwarePengadaan);
+$infraPengadaanTotal = array_sum($infraPengadaan);
 
-    /*
-    |--------------------------------------------------------------------------
-    | TOTAL DONUT
-    |--------------------------------------------------------------------------
-    */
+/*
+|--------------------------------------------------------------------------
+| PERSENTASE DONUT
+|--------------------------------------------------------------------------
+*/
 
-    $hardwareTotal = array_sum($hardwareStatus);
-    $softwarePengadaanTotal = array_sum($softwarePengadaan);
-    $infraPengadaanTotal = array_sum($infraPengadaan);
+$hardwarePersen = [];
 
-    /*
-    |--------------------------------------------------------------------------
-    | PERSENTASE DONUT
-    |--------------------------------------------------------------------------
-    */
+foreach ($hardwareStatus as $key => $value) {
+    $hardwarePersen[$key] = $hardwareTotal > 0
+        ? round(($value / $hardwareTotal) * 100, 1)
+        : 0;
+}
 
-    $hardwarePersen = [];
+$softwarePersen = [];
 
-    foreach ($hardwareStatus as $key => $value) {
-        $hardwarePersen[$key] = $hardwareTotal > 0
-            ? round(($value / $hardwareTotal) * 100, 1)
-            : 0;
-    }
+foreach ($softwarePengadaan as $key => $value) {
+    $softwarePersen[$key] = $softwarePengadaanTotal > 0
+        ? round(($value / $softwarePengadaanTotal) * 100, 1)
+        : 0;
+}
 
-    $softwarePersen = [];
+$infraPersen = [];
 
-    foreach ($softwarePengadaan as $key => $value) {
-        $softwarePersen[$key] = $softwarePengadaanTotal > 0
-            ? round(($value / $softwarePengadaanTotal) * 100, 1)
-            : 0;
-    }
+foreach ($infraPengadaan as $key => $value) {
+    $infraPersen[$key] = $infraPengadaanTotal > 0
+        ? round(($value / $infraPengadaanTotal) * 100, 1)
+        : 0;
+}
 
-    $infraPersen = [];
+/*
+|--------------------------------------------------------------------------
+| DONUT DEGREE
+|--------------------------------------------------------------------------
+*/
 
-    foreach ($infraPengadaan as $key => $value) {
-        $infraPersen[$key] = $infraPengadaanTotal > 0
-            ? round(($value / $infraPengadaanTotal) * 100, 1)
-            : 0;
-    }
+$hardwareBaikDeg = 0;
+$hardwarePerbaikanDeg = 0;
 
-    /*
-    |--------------------------------------------------------------------------
-    | HARDWARE DONUT
-    |--------------------------------------------------------------------------
-    */
+if ($hardwareTotal > 0) {
+    $hardwareBaikDeg =
+        ($hardwareStatus['Baik'] / $hardwareTotal) * 360;
 
-    $hardwareBaikDeg = 0;
-    $hardwarePerbaikanDeg = 0;
-
-    if ($hardwareTotal > 0) {
-
-        $hardwareBaikDeg =
-            ($hardwareStatus['Baik'] / $hardwareTotal) * 360;
-
-        $hardwarePerbaikanDeg =
+    $hardwarePerbaikanDeg =
+        (
             (
-                (
-                    $hardwareStatus['Baik']
-                    + $hardwareStatus['Perbaikan']
-                )
-                / $hardwareTotal
-            ) * 360;
-    }
+                $hardwareStatus['Baik']
+                + $hardwareStatus['Perbaikan']
+            )
+            / $hardwareTotal
+        ) * 360;
+}
 
-    /*
-    |--------------------------------------------------------------------------
-    | SOFTWARE DONUT
-    |--------------------------------------------------------------------------
-    */
+$softwareBeliDeg = 0;
 
-    $softwareBeliDeg = 0;
+if ($softwarePengadaanTotal > 0) {
+    $softwareBeliDeg =
+        ($softwarePengadaan['Beli'] / $softwarePengadaanTotal) * 360;
+}
 
-    if ($softwarePengadaanTotal > 0) {
+$infraBeliDeg = 0;
 
-        $softwareBeliDeg =
-            ($softwarePengadaan['Beli'] / $softwarePengadaanTotal) * 360;
-    }
+if ($infraPengadaanTotal > 0) {
+    $infraBeliDeg =
+        ($infraPengadaan['Beli'] / $infraPengadaanTotal) * 360;
+}
 
-    /*
-    |--------------------------------------------------------------------------
-    | INFRA DONUT
-    |--------------------------------------------------------------------------
-    */
+/*
+|--------------------------------------------------------------------------
+| BAR MAX
+|--------------------------------------------------------------------------
+*/
 
-    $infraBeliDeg = 0;
+$hardwareBarMax = max(
+    !empty($hardwareJenis) ? max($hardwareJenis) : 0,
+    1
+);
 
-    if ($infraPengadaanTotal > 0) {
+$softwareBarMax = max(
+    !empty($softwareStatus) ? max($softwareStatus) : 0,
+    1
+);
 
-        $infraBeliDeg =
-            ($infraPengadaan['Beli'] / $infraPengadaanTotal) * 360;
-    }
+$infraBarMax = max(
+    !empty($infraStatus) ? max($infraStatus) : 0,
+    1
+);
 
-    /*
-    |--------------------------------------------------------------------------
-    | BAR MAX
-    |--------------------------------------------------------------------------
-    */
 
-    $hardwareBarMax = max(
-        !empty($hardwareJenis) ? max($hardwareJenis) : 0,
-        1
-    );
-
-    $softwareBarMax = max(
-        !empty($softwareStatus) ? max($softwareStatus) : 0,
-        1
-    );
-
-    $infraBarMax = max(
-        !empty($infraStatus) ? max($infraStatus) : 0,
-        1
-    );
 @endphp
-
 
 <style>
 
-    .dashboard {
-        width: 100%;
+.dashboard {
+    width: 100%;
+}
+
+/* =====================================================
+   WELCOME
+===================================================== */
+
+.welcome-section {
+    margin-bottom: 20px;
+}
+
+.welcome-title {
+    margin: 0 0 5px;
+    font-size: 24px;
+    font-weight: 700;
+    color: #1f2937;
+}
+
+.welcome-text {
+    margin: 0;
+    font-size: 13px;
+    color: #6b7280;
+}
+
+/* =====================================================
+   FILTER
+===================================================== */
+
+.dashboard-toolbar {
+    display: flex;
+    justify-content: flex-end;
+    margin-bottom: 20px;
+}
+
+.filter-wrapper {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+}
+
+.filter-label {
+    font-size: 12px;
+    font-weight: 600;
+    color: #6b7280;
+}
+
+.filter-select {
+    min-width: 150px;
+    padding: 9px 12px;
+    border: 1px solid #e5e7eb;
+    border-radius: 9px;
+    background: #fff;
+    color: #374151;
+    font-size: 12px;
+    outline: none;
+    cursor: pointer;
+    transition: .2s ease;
+}
+
+.filter-select:hover {
+    border-color: #d1d5db;
+}
+
+.filter-select:focus {
+    border-color: #079bd8;
+    box-shadow: 0 0 0 3px rgba(7, 155, 216, .10);
+}
+
+.filter-button {
+    border: none;
+    background: #079bd8;
+    color: #fff;
+    border-radius: 9px;
+    padding: 9px 15px;
+    font-size: 12px;
+    font-weight: 600;
+    cursor: pointer;
+    transition: .2s ease;
+}
+
+.filter-button:hover {
+    background: #0788bd;
+}
+
+/* =====================================================
+   SUMMARY
+===================================================== */
+
+.stats-grid {
+    display: grid;
+    grid-template-columns: repeat(6, minmax(0, 1fr));
+    gap: 14px;
+    margin-bottom: 22px;
+}
+
+.stat-card {
+    background: #fff;
+    border-radius: 14px;
+    padding: 17px;
+    border: 1px solid #eef0f4;
+    box-shadow: 0 3px 10px rgba(0,0,0,.05);
+    min-width: 0;
+    transition: transform .2s ease, box-shadow .2s ease;
+}
+
+.stat-card:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 6px 16px rgba(0,0,0,.07);
+}
+
+.stat-card-top {
+    display: flex;
+    align-items: center;
+    gap: 11px;
+    min-width: 0;
+}
+
+.stat-icon {
+    width: 42px;
+    height: 42px;
+    border-radius: 11px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background: #e0f2fe;
+    color: #075985;
+    flex-shrink: 0;
+}
+
+.stat-icon i {
+    font-size: 19px;
+}
+
+.stat-content {
+    min-width: 0;
+}
+
+.stat-label {
+    display: block;
+    font-size: 11px;
+    color: #6b7280;
+    margin-bottom: 4px;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+}
+
+.stat-value {
+    display: block;
+    font-size: 23px;
+    line-height: 1;
+    font-weight: 700;
+    color: #1f2937;
+}
+
+/* =====================================================
+   ASSET PANELS
+===================================================== */
+
+.asset-panels {
+    display: grid;
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+    gap: 14px;
+    margin-bottom: 22px;
+}
+
+.asset-panel {
+    background: #fff;
+    border-radius: 14px;
+    border: 1px solid #eef0f4;
+    box-shadow: 0 3px 10px rgba(0,0,0,.05);
+    padding: 17px;
+    min-width: 0;
+}
+
+.asset-panel-header {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    margin-bottom: 13px;
+}
+
+.asset-panel-header i {
+    font-size: 14px;
+    color: #6b7280;
+}
+
+.asset-panel-title {
+    margin: 0;
+    font-size: 13px;
+    font-weight: 600;
+    color: #374151;
+}
+
+/* =====================================================
+   DONUT
+===================================================== */
+
+.donut-section {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 22px;
+    min-height: 135px;
+    padding-bottom: 13px;
+    border-bottom: 1px solid #f0f1f3;
+}
+
+.donut {
+    position: relative;
+    width: 112px;
+    height: 112px;
+    border-radius: 50%;
+    flex-shrink: 0;
+
+    --donut-baik: 0deg;
+    --donut-perbaikan: 0deg;
+    --donut-beli: 0deg;
+    --donut-infra-beli: 0deg;
+
+    animation: donutEntrance .5s ease-out;
+}
+
+@keyframes donutEntrance {
+    from {
+        opacity: 0;
+        transform: scale(.75) rotate(-25deg);
     }
 
-    /* =====================================================
-       WELCOME
-    ===================================================== */
-
-    .welcome-section {
-        margin-bottom: 20px;
+    to {
+        opacity: 1;
+        transform: scale(1) rotate(0deg);
     }
+}
+
+.donut::after {
+    content: "";
+    position: absolute;
+    width: 66px;
+    height: 66px;
+    border-radius: 50%;
+    background: #fff;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+}
+
+.donut-center {
+    position: absolute;
+    z-index: 2;
+    inset: 0;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    flex-direction: column;
+}
+
+.donut-number {
+    font-size: 18px;
+    line-height: 1;
+    font-weight: 700;
+    color: #1f2937;
+}
+
+.donut-caption {
+    margin-top: 3px;
+    font-size: 9px;
+    color: #9ca3af;
+}
+
+/* =====================================================
+   LEGEND
+===================================================== */
+
+.legend {
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+    min-width: 145px;
+}
+
+.legend-item {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 10px;
+}
+
+.legend-left {
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    min-width: 0;
+}
+
+.legend-dot {
+    width: 8px;
+    height: 8px;
+    border-radius: 50%;
+    flex-shrink: 0;
+}
+
+.legend-name {
+    font-size: 12px;
+    color: #6b7280;
+    white-space: nowrap;
+}
+
+.legend-value {
+    font-size: 12px;
+    font-weight: 700;
+    color: #374151;
+    white-space: nowrap;
+}
+
+/* =====================================================
+   BAR CHART
+===================================================== */
+
+.bar-section {
+    padding-top: 13px;
+}
+
+.bar-title {
+    font-size: 12px;
+    font-weight: 600;
+    color: #9ca3af;
+    margin-bottom: 10px;
+}
+
+.bar-chart {
+    height: 82px;
+    display: flex;
+    align-items: flex-end;
+    justify-content: space-around;
+    gap: 12px;
+}
+
+.bar-item {
+    flex: 1;
+    height: 100%;
+    display: flex;
+    flex-direction: column;
+    justify-content: flex-end;
+    align-items: center;
+    min-width: 0;
+}
+
+.bar-value {
+    font-size: 11px;
+    font-weight: 700;
+    color: #374151;
+    margin-bottom: 4px;
+    line-height: 1;
+}
+
+.bar {
+    width: 18px;
+    max-height: 55px;
+    min-height: 0;
+    border-radius: 4px 4px 0 0;
+}
+
+.bar-label {
+    margin-top: 7px;
+    font-size: 10px;
+    color: #6b7280;
+    text-align: center;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    max-width: 100%;
+}
+
+.chart-empty {
+    width: 100%;
+    font-size: 10px;
+    color: #9ca3af;
+    text-align: center;
+    padding: 20px 0;
+}
+
+/* =====================================================
+   ACTIVITY
+===================================================== */
+
+.dashboard-card {
+    background: #fff;
+    border-radius: 16px;
+    padding: 22px;
+    border: 1px solid #eef0f4;
+    box-shadow: 0 4px 14px rgba(0,0,0,.05);
+}
+
+.activity-card {
+    margin-bottom: 22px;
+}
+
+.card-header {
+    display: flex;
+    align-items: flex-start;
+    justify-content: space-between;
+    gap: 15px;
+    margin-bottom: 22px;
+}
+
+.card-title {
+    margin: 0;
+    font-size: 17px;
+    font-weight: 700;
+    color: #1f2937;
+}
+
+.card-subtitle {
+    margin: 5px 0 0;
+    font-size: 11px;
+    color: #9ca3af;
+}
+
+.activity-total {
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    padding: 7px 11px;
+    border-radius: 20px;
+    background: #f0f9ff;
+    color: #0284c7;
+    font-size: 11px;
+    font-weight: 600;
+    white-space: nowrap;
+}
+
+.activity-total i {
+    font-size: 12px;
+}
+
+/* =====================================================
+   ACTIVITY TIMELINE
+===================================================== */
+
+.activity-list {
+    position: relative;
+    display: flex;
+    flex-direction: column;
+}
+
+.activity-item {
+    position: relative;
+    display: grid;
+    grid-template-columns: 46px minmax(0,1fr) auto;
+    gap: 14px;
+    align-items: start;
+
+    padding: 15px 14px;
+    border-radius: 12px;
+
+    transition:
+        background .2s ease,
+        transform .2s ease;
+}
+
+.activity-item:hover {
+    background: #f8fafc;
+    transform: translateX(3px);
+}
+
+.activity-timeline {
+    position: relative;
+    display: flex;
+    justify-content: center;
+    height: 100%;
+}
+
+.activity-timeline::after {
+    content: "";
+    position: absolute;
+    top: 40px;
+    bottom: -18px;
+    width: 2px;
+    background: #e5e7eb;
+}
+
+.activity-item:last-child .activity-timeline::after {
+    display: none;
+}
+
+.activity-icon {
+    position: relative;
+    z-index: 2;
+
+    width: 40px;
+    height: 40px;
+
+    border-radius: 12px;
+
+    background: #e0f2fe;
+    color: #0284c7;
+
+    display: flex;
+    align-items: center;
+    justify-content: center;
+
+    border: 4px solid #fff;
+
+    box-shadow: 0 2px 7px rgba(2,132,199,.12);
+}
+
+.activity-icon i {
+    font-size: 16px;
+}
+
+/* =====================================================
+   CONTENT
+===================================================== */
+
+.activity-content {
+    min-width: 0;
+    padding-top: 2px;
+}
+
+.activity-top {
+    display: flex;
+    align-items: center;
+    gap: 9px;
+    margin-bottom: 5px;
+    flex-wrap: wrap;
+}
+
+.activity-feature {
+    display: inline-flex;
+    align-items: center;
+
+    padding: 4px 8px;
+
+    border-radius: 6px;
+
+    background: #f3f4f6;
+
+    color: #6b7280;
+
+    font-size: 10px;
+    font-weight: 600;
+}
+
+.activity-text {
+    font-size: 13px;
+    font-weight: 500;
+    color: #374151;
+    line-height: 1.5;
+    word-break: break-word;
+}
+
+/* =====================================================
+   META
+===================================================== */
+
+.activity-meta {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+
+    margin-top: 8px;
+
+    font-size: 10px;
+    color: #9ca3af;
+
+    flex-wrap: wrap;
+}
+
+.activity-meta-item {
+    display: inline-flex;
+    align-items: center;
+    gap: 5px;
+}
+
+.activity-meta-item i {
+    font-size: 10px;
+}
+
+.activity-operator {
+    color: #0284c7;
+    font-weight: 600;
+}
+
+/* =====================================================
+   DATE
+===================================================== */
+
+.activity-date {
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+    gap: 10px;
+    white-space: nowrap;
+    text-align: right;
+    padding-top: 4px;
+    min-width: 105px;
+}
+
+.activity-date-main {
+    display: block;
+    font-size: 11px;
+    font-weight: 600;
+    color: #374151;
+    white-space: nowrap;
+}
+
+.activity-date-time {
+    display: block;
+    margin-top: 3px;
+    font-size: 10px;
+    color: #9ca3af;
+    white-space: nowrap;
+}
+
+/* =====================================================
+   EMPTY
+===================================================== */
+
+.empty-state {
+    padding: 45px 15px;
+    text-align: center;
+    color: #9ca3af;
+    font-size: 12px;
+}
+
+.empty-state i {
+    width: 50px;
+    height: 50px;
+
+    margin: 0 auto 12px;
+
+    border-radius: 50%;
+
+    background: #f3f4f6;
+
+    display: flex;
+    align-items: center;
+    justify-content: center;
+
+    font-size: 22px;
+    color: #9ca3af;
+}
+
+.empty-state-title {
+    display: block;
+    margin-bottom: 4px;
+
+    font-size: 13px;
+    font-weight: 600;
+    color: #6b7280;
+}
+
+.empty-state-text {
+    font-size: 11px;
+    color: #9ca3af;
+}
+
+/* =====================================================
+   RESPONSIVE
+===================================================== */
+
+@media (max-width:1300px) {
+
+    .stats-grid {
+        grid-template-columns: repeat(3,minmax(0,1fr));
+    }
+
+    .asset-panels {
+        grid-template-columns: repeat(2,minmax(0,1fr));
+    }
+}
+
+@media (max-width:900px) {
+
+    .asset-panels {
+        grid-template-columns: 1fr;
+    }
+
+    .activity-item {
+        grid-template-columns: 38px minmax(0,1fr) 110px;
+    }
+}
+
+@media (max-width:700px) {
 
     .welcome-title {
-        margin: 0 0 5px;
-        font-size: 24px;
-        font-weight: 700;
-        color: #1f2937;
+        font-size: 20px;
     }
 
-    .welcome-text {
-        margin: 0;
-        font-size: 13px;
-        color: #6b7280;
+    .stats-grid {
+        grid-template-columns: repeat(2,minmax(0,1fr));
     }
-
-
-    /* =====================================================
-       FILTER
-    ===================================================== */
 
     .dashboard-toolbar {
-        display: flex;
-        justify-content: flex-end;
-        margin-bottom: 20px;
+        justify-content: flex-start;
     }
 
     .filter-wrapper {
-        display: flex;
-        align-items: center;
-        gap: 10px;
-    }
-
-    .filter-label {
-        font-size: 12px;
-        font-weight: 600;
-        color: #6b7280;
+        width: 100%;
     }
 
     .filter-select {
-        min-width: 150px;
-        padding: 9px 12px;
-        border: 1px solid #e5e7eb;
-        border-radius: 9px;
-        background: #fff;
-        color: #374151;
-        font-size: 12px;
-        outline: none;
-        cursor: pointer;
-        transition: .2s ease;
+        flex: 1;
     }
 
-    .filter-select:hover {
-        border-color: #d1d5db;
+    .activity-item {
+        grid-template-columns: 46px minmax(0,1fr);
+        gap: 10px;
     }
 
-    .filter-select:focus {
-        border-color: #079bd8;
-        box-shadow: 0 0 0 3px rgba(7, 155, 216, .10);
+    .activity-date {
+        grid-column: 2;
+        grid-row: 3;
+
+        text-align: left;
+
+        display: flex;
+        align-items: center;
+        gap: 7px;
+
+        padding-top: 0;
+    }
+
+    .activity-date-main,
+    .activity-date-time {
+        display: inline;
+        margin-top: 0;
+    }
+
+    .activity-date-time::before {
+        content: "•";
+        margin-right: 7px;
+    }
+}
+
+@media (max-width:500px) {
+
+    .stats-grid {
+        grid-template-columns: 1fr;
+    }
+
+    .dashboard-toolbar {
+        margin-bottom: 15px;
+    }
+
+    .filter-wrapper {
+        flex-wrap: wrap;
+    }
+
+    .filter-label {
+        width: 100%;
+    }
+
+    .filter-select {
+        min-width: 0;
+        flex: 1;
     }
 
     .filter-button {
-        border: none;
-        background: #079bd8;
-        color: #fff;
-        border-radius: 9px;
-        padding: 9px 15px;
-        font-size: 12px;
-        font-weight: 600;
-        cursor: pointer;
-        transition: .2s ease;
-    }
-
-    .filter-button:hover {
-        background: #0788bd;
-    }
-
-
-    /* =====================================================
-       SUMMARY
-    ===================================================== */
-
-    .stats-grid {
-        display: grid;
-        grid-template-columns: repeat(6, minmax(0, 1fr));
-        gap: 14px;
-        margin-bottom: 22px;
-    }
-
-    .stat-card {
-        background: #fff;
-        border-radius: 14px;
-        padding: 17px;
-        border: 1px solid #eef0f4;
-        box-shadow: 0 3px 10px rgba(0, 0, 0, .05);
-        min-width: 0;
-        transition: transform .2s ease, box-shadow .2s ease;
-    }
-
-    .stat-card:hover {
-        transform: translateY(-2px);
-        box-shadow: 0 6px 16px rgba(0, 0, 0, .07);
-    }
-
-    .stat-card-top {
-        display: flex;
-        align-items: center;
-        gap: 11px;
-        min-width: 0;
-    }
-
-    .stat-icon {
-        width: 42px;
-        height: 42px;
-        border-radius: 11px;
-        display: flex;
-        align-items: center;
-        justify-content: center;
-        background: #e0f2fe;
-        color: #075985;
         flex-shrink: 0;
-    }
-
-    .stat-icon i {
-        font-size: 19px;
-    }
-
-    .stat-content {
-        min-width: 0;
-    }
-
-    .stat-label {
-        display: block;
-        font-size: 11px;
-        color: #6b7280;
-        margin-bottom: 4px;
-        white-space: nowrap;
-        overflow: hidden;
-        text-overflow: ellipsis;
-    }
-
-    .stat-value {
-        display: block;
-        font-size: 23px;
-        line-height: 1;
-        font-weight: 700;
-        color: #1f2937;
-    }
-
-
-    /* =====================================================
-       ASSET PANELS
-    ===================================================== */
-
-    .asset-panels {
-        display: grid;
-        grid-template-columns: repeat(3, minmax(0, 1fr));
-        gap: 14px;
-        margin-bottom: 22px;
     }
 
     .asset-panel {
-        background: #fff;
-        border-radius: 14px;
-        border: 1px solid #eef0f4;
-        box-shadow: 0 3px 10px rgba(0, 0, 0, .05);
-        padding: 17px;
-        min-width: 0;
+        padding: 14px;
     }
-
-    .asset-panel-header {
-        display: flex;
-        align-items: center;
-        gap: 8px;
-        margin-bottom: 13px;
-    }
-
-    .asset-panel-header i {
-        font-size: 14px;
-        color: #6b7280;
-    }
-
-    .asset-panel-title {
-        margin: 0;
-        font-size: 13px;
-        font-weight: 600;
-        color: #374151;
-    }
-
-
-    /* =====================================================
-       DONUT
-    ===================================================== */
 
     .donut-section {
-        display: flex;
-        align-items: center;
-        justify-content: center;
-        gap: 22px;
-        min-height: 135px;
-        padding-bottom: 13px;
-        border-bottom: 1px solid #f0f1f3;
+        gap: 15px;
     }
 
     .donut {
-        position: relative;
-        width: 112px;
-        height: 112px;
-        border-radius: 50%;
-        flex-shrink: 0;
-
-        --donut-baik: 0deg;
-        --donut-perbaikan: 0deg;
-        --donut-beli: 0deg;
-        --donut-infra-beli: 0deg;
-
-        animation: donutEntrance .5s ease-out;
-    }
-
-    @keyframes donutEntrance {
-
-        from {
-            opacity: 0;
-            transform: scale(.75) rotate(-25deg);
-        }
-
-        to {
-            opacity: 1;
-            transform: scale(1) rotate(0deg);
-        }
-
+        width: 100px;
+        height: 100px;
     }
 
     .donut::after {
-        content: "";
-        position: absolute;
-        width: 66px;
-        height: 66px;
-        border-radius: 50%;
-        background: #fff;
-        top: 50%;
-        left: 50%;
-        transform: translate(-50%, -50%);
+        width: 58px;
+        height: 58px;
     }
-
-    .donut-center {
-        position: absolute;
-        z-index: 2;
-        inset: 0;
-        display: flex;
-        align-items: center;
-        justify-content: center;
-        flex-direction: column;
-    }
-
-    .donut-number {
-        font-size: 18px;
-        line-height: 1;
-        font-weight: 700;
-        color: #1f2937;
-    }
-
-    .donut-caption {
-        margin-top: 3px;
-        font-size: 9px;
-        color: #9ca3af;
-    }
-
-
-    /* =====================================================
-       LEGEND
-    ===================================================== */
 
     .legend {
-        display: flex;
-        flex-direction: column;
-        gap: 8px;
-        min-width: 145px;
-    }
-
-    .legend-item {
-        display: flex;
-        align-items: center;
-        justify-content: space-between;
-        gap: 10px;
-    }
-
-    .legend-left {
-        display: flex;
-        align-items: center;
-        gap: 6px;
-        min-width: 0;
-    }
-
-    .legend-dot {
-        width: 8px;
-        height: 8px;
-        border-radius: 50%;
-        flex-shrink: 0;
-    }
-
-    .legend-name {
-        font-size: 12px;
-        color: #6b7280;
-        white-space: nowrap;
+        min-width: 95px;
     }
 
     .legend-value {
-        font-size: 12px;
-        font-weight: 700;
-        color: #374151;
-        white-space: nowrap;
+        font-size: 8px;
     }
-
-
-    /* =====================================================
-       BAR CHART
-    ===================================================== */
-
-    .bar-section {
-        padding-top: 13px;
-    }
-
-    .bar-title {
-        font-size: 12px;
-        font-weight: 600;
-        color: #9ca3af;
-        margin-bottom: 10px;
-    }
-
-    .bar-chart {
-        height: 82px;
-        display: flex;
-        align-items: flex-end;
-        justify-content: space-around;
-        gap: 12px;
-    }
-
-    .bar-item {
-        flex: 1;
-        height: 100%;
-        display: flex;
-        flex-direction: column;
-        justify-content: flex-end;
-        align-items: center;
-        min-width: 0;
-    }
-
-    .bar-value {
-        font-size: 11px;
-        font-weight: 700;
-        color: #374151;
-        margin-bottom: 4px;
-        line-height: 1;
-    }
-
-    .bar {
-        width: 18px;
-        max-height: 55px;
-        min-height: 0;
-        border-radius: 4px 4px 0 0;
-    }
-
-    .bar-label {
-        margin-top: 7px;
-        font-size: 10px;
-        color: #6b7280;
-        text-align: center;
-        white-space: nowrap;
-        overflow: hidden;
-        text-overflow: ellipsis;
-        max-width: 100%;
-    }
-
-    .chart-empty {
-        width: 100%;
-        font-size: 10px;
-        color: #9ca3af;
-        text-align: center;
-        padding: 20px 0;
-    }
-
-
-    /* =====================================================
-       ACTIVITY
-    ===================================================== */
 
     .dashboard-card {
-        background: #fff;
-        border-radius: 15px;
-        padding: 21px;
-        border: 1px solid #eef0f4;
-        box-shadow: 0 3px 10px rgba(0, 0, 0, .05);
+        padding: 16px;
     }
-
-    .activity-card {
-        margin-bottom: 22px;
-    }
-
-    .card-header {
-        display: flex;
-        align-items: center;
-        justify-content: space-between;
-        gap: 15px;
-        margin-bottom: 18px;
-    }
-
-    .card-title {
-        margin: 0;
-        font-size: 16px;
-        font-weight: 700;
-        color: #1f2937;
-    }
-
-    .card-subtitle {
-        margin: 4px 0 0;
-        font-size: 11px;
-        color: #9ca3af;
-    }
-
-    .activity-list {
-        display: flex;
-        flex-direction: column;
-        width: 100%;
-    }
-
-    .activity-header,
-    .activity-item {
-        display: grid;
-        grid-template-columns: 38px 145px 120px minmax(0, 1fr);
-        gap: 14px;
-    }
-
-    .activity-header {
-        padding-bottom: 10px;
-        border-bottom: 1px solid #e5e7eb;
-    }
-
-    .activity-header span {
-        font-size: 10px;
-        font-weight: 700;
-        color: #9ca3af;
-        text-transform: uppercase;
-    }
-
-    .activity-item {
-        align-items: center;
-        padding: 13px 0;
-        border-bottom: 1px solid #f0f1f3;
-    }
-
-    .activity-item:last-child {
-        border-bottom: none;
-    }
-
-    .activity-icon {
-        width: 35px;
-        height: 35px;
-        border-radius: 10px;
-        background: #e0f2fe;
-        color: #075985;
-        display: flex;
-        align-items: center;
-        justify-content: center;
-    }
-
-    .activity-icon i {
-        font-size: 14px;
-    }
-
-    /*
-    |--------------------------------------------------------------------------
-    | TANGGAL + JAM SEJAJAR
-    |--------------------------------------------------------------------------
-    */
-
-    .activity-date {
-        display: flex;
-        flex-direction: row;
-        align-items: center;
-        gap: 10px;
-        white-space: nowrap;
-    }
-
-    .activity-date-main {
-        font-size: 11px;
-        font-weight: 600;
-        color: #374151;
-        white-space: nowrap;
-    }
-
-    .activity-date-time {
-        font-size: 10px;
-        color: #9ca3af;
-        white-space: nowrap;
-    }
-
-    .activity-operator {
-        font-size: 11px;
-        font-weight: 600;
-        color: #075985;
-        word-break: break-word;
-    }
-
-    .activity-description {
-        display: flex;
-        flex-direction: column;
-        gap: 3px;
-        min-width: 0;
-    }
-
-    .activity-feature {
-        font-size: 10px;
-        color: #9ca3af;
-    }
-
-    .activity-text {
-        font-size: 12px;
-        color: #374151;
-        word-break: break-word;
-    }
-
-    .empty-state {
-        padding: 30px 10px;
-        text-align: center;
-        color: #9ca3af;
-        font-size: 12px;
-    }
-
-    .empty-state i {
-        font-size: 22px;
-        display: block;
-        margin-bottom: 8px;
-    }
-
-
-    /* =====================================================
-       RESPONSIVE
-    ===================================================== */
-
-    @media (max-width: 1300px) {
-
-        .stats-grid {
-            grid-template-columns: repeat(3, minmax(0, 1fr));
-        }
-
-        .asset-panels {
-            grid-template-columns: repeat(2, minmax(0, 1fr));
-        }
-    }
-
-
-    @media (max-width: 900px) {
-
-        .asset-panels {
-            grid-template-columns: 1fr;
-        }
-
-        .activity-header,
-        .activity-item {
-            grid-template-columns: 38px 120px 110px minmax(0, 1fr);
-        }
-    }
-
-
-    @media (max-width: 700px) {
-
-        .welcome-title {
-            font-size: 20px;
-        }
-
-        .stats-grid {
-            grid-template-columns: repeat(2, minmax(0, 1fr));
-        }
-
-        .dashboard-toolbar {
-            justify-content: flex-start;
-        }
-
-        .filter-wrapper {
-            width: 100%;
-        }
-
-        .filter-select {
-            flex: 1;
-        }
-
-        .activity-header {
-            display: none;
-        }
-
-        .activity-item {
-            grid-template-columns: 38px minmax(0, 1fr);
-            align-items: start;
-            row-gap: 7px;
-        }
-
-        .activity-date,
-        .activity-operator,
-        .activity-description {
-            grid-column: 2;
-        }
-
-        .activity-date {
-            flex-direction: row;
-            align-items: center;
-            gap: 8px;
-            white-space: nowrap;
-        }
-
-        .activity-icon {
-            grid-row: span 3;
-        }
-    }
-
-
-    @media (max-width: 500px) {
-
-        .stats-grid {
-            grid-template-columns: 1fr;
-        }
-
-        .dashboard-toolbar {
-            margin-bottom: 15px;
-        }
-
-        .filter-wrapper {
-            flex-wrap: wrap;
-        }
-
-        .filter-label {
-            width: 100%;
-        }
-
-        .filter-select {
-            min-width: 0;
-            flex: 1;
-        }
-
-        .filter-button {
-            flex-shrink: 0;
-        }
-
-        .asset-panel {
-            padding: 14px;
-        }
-
-        .donut-section {
-            gap: 15px;
-        }
-
-        .donut {
-            width: 100px;
-            height: 100px;
-        }
-
-        .donut::after {
-            width: 58px;
-            height: 58px;
-        }
-
-        .legend {
-            min-width: 95px;
-        }
-
-        .legend-value {
-            font-size: 8px;
-        }
-
-        .dashboard-card {
-            padding: 16px;
-        }
-    }
+}
 
 </style>
 
-
 <div class="dashboard">
 
-    {{-- =====================================================
-         WELCOME
-    ====================================================== --}}
 
-    <div class="welcome-section">
+{{-- =====================================================
+     WELCOME
+====================================================== --}}
 
-        <h2 class="welcome-title">
-            Selamat Datang,
-            {{ auth()->user()->name ?? 'Operator' }} 👋
-        </h2>
+<div class="welcome-section">
 
-        <p class="welcome-text">
-            Pantau dan kelola data aset IT melalui sistem
-            Inventory IT Assets.
-        </p>
+    <h2 class="welcome-title">
+        Selamat Datang,
+        {{ auth()->user()->name ?? 'Operator' }} 👋
+    </h2>
 
-    </div>
+    <p class="welcome-text">
+        Pantau dan kelola data aset IT melalui sistem
+        Inventory IT Assets.
+    </p>
+
+</div>
 
 
-    {{-- =====================================================
-         FILTER TAHUN
-    ====================================================== --}}
+{{-- =====================================================
+     FILTER TAHUN
+====================================================== --}}
 
-    <div class="dashboard-toolbar">
+<div class="dashboard-toolbar">
 
-        <form
-            method="GET"
-            action="{{ url()->current() }}"
-            class="filter-wrapper"
+    <form
+        method="GET"
+        action="{{ url()->current() }}"
+        class="filter-wrapper"
+    >
+
+        <span class="filter-label">
+            Filter Tahun
+        </span>
+
+        <select
+            name="tahun"
+            class="filter-select"
+            onchange="this.form.submit()"
         >
 
-            <span class="filter-label">
-                Filter Tahun
-            </span>
-
-            <select
-                name="tahun"
-                class="filter-select"
-                onchange="this.form.submit()"
+            <option
+                value="all"
+                {{ empty($tahun) || (string) $tahun === 'all' ? 'selected' : '' }}
             >
+                Semua Tahun
+            </option>
+
+            @foreach($tahunList as $year)
 
                 <option
-                    value="all"
-                    {{ empty($tahun) || (string) $tahun === 'all' ? 'selected' : '' }}
+                    value="{{ $year }}"
+                    {{ (string) $tahun === (string) $year ? 'selected' : '' }}
                 >
-                    Semua Tahun
+                    {{ $year }}
                 </option>
 
-                @foreach($tahunList as $year)
+            @endforeach
 
-                    <option
-                        value="{{ $year }}"
-                        {{ (string) $tahun === (string) $year ? 'selected' : '' }}
-                    >
-                        {{ $year }}
-                    </option>
+        </select>
 
-                @endforeach
+        <button
+            type="submit"
+            class="filter-button"
+        >
+            <i class="bi bi-funnel"></i>
+            Filter
+        </button>
 
-            </select>
+    </form>
 
-            <button
-                type="submit"
-                class="filter-button"
-            >
-                <i class="bi bi-funnel"></i>
-                Filter
-            </button>
+</div>
 
-        </form>
 
+{{-- =====================================================
+     SUMMARY
+====================================================== --}}
+
+<div class="stats-grid">
+
+    <div class="stat-card">
+        <div class="stat-card-top">
+            <div class="stat-icon">
+                <i class="bi bi-box-seam"></i>
+            </div>
+
+            <div class="stat-content">
+                <span class="stat-label">
+                    Total Aset
+                </span>
+
+                <span class="stat-value">
+                    {{ number_format($totalAset) }}
+                </span>
+            </div>
+        </div>
     </div>
 
 
-    {{-- =====================================================
-         SUMMARY
-    ====================================================== --}}
-
-    <div class="stats-grid">
-
-        <div class="stat-card">
-            <div class="stat-card-top">
-
-                <div class="stat-icon">
-                    <i class="bi bi-box-seam"></i>
-                </div>
-
-                <div class="stat-content">
-
-                    <span class="stat-label">
-                        Total Aset
-                    </span>
-
-                    <span class="stat-value">
-                        {{ number_format($totalAset) }}
-                    </span>
-
-                </div>
-
-            </div>
-        </div>
-
-
-        <div class="stat-card">
-            <div class="stat-card-top">
-
-                <div class="stat-icon">
-                    <i class="bi bi-pc-display"></i>
-                </div>
-
-                <div class="stat-content">
-
-                    <span class="stat-label">
-                        Hardware
-                    </span>
-
-                    <span class="stat-value">
-                        {{ number_format($hardwareCount) }}
-                    </span>
-
-                </div>
-
-            </div>
-        </div>
-
-
-        <div class="stat-card">
-            <div class="stat-card-top">
-
-                <div class="stat-icon">
-                    <i class="bi bi-laptop"></i>
-                </div>
-
-                <div class="stat-content">
-
-                    <span class="stat-label">
-                        Software
-                    </span>
-
-                    <span class="stat-value">
-                        {{ number_format($softwareCount) }}
-                    </span>
-
-                </div>
-
-            </div>
-        </div>
-
-
-        <div class="stat-card">
-            <div class="stat-card-top">
-
-                <div class="stat-icon">
-                    <i class="bi bi-diagram-3-fill"></i>
-                </div>
-
-                <div class="stat-content">
-
-                    <span class="stat-label">
-                        Infrastruktur
-                    </span>
-
-                    <span class="stat-value">
-                        {{ number_format($infrastrukturCount) }}
-                    </span>
-
-                </div>
-
-            </div>
-        </div>
-
-
-        <div class="stat-card">
-            <div class="stat-card-top">
-
-                <div class="stat-icon">
-                    <i class="bi bi-people-fill"></i>
-                </div>
-
-                <div class="stat-content">
-
-                    <span class="stat-label">
-                        SDM
-                    </span>
-
-                    <span class="stat-value">
-                        {{ number_format($sdmCount) }}
-                    </span>
-
-                </div>
-
-            </div>
-        </div>
-
-
-        <div class="stat-card">
-            <div class="stat-card-top">
-
-                <div class="stat-icon">
-                    <i class="bi bi-database-fill"></i>
-                </div>
-
-                <div class="stat-content">
-
-                    <span class="stat-label">
-                        Data
-                    </span>
-
-                    <span class="stat-value">
-                        {{ number_format($dataCount) }}
-                    </span>
-
-                </div>
-
-            </div>
-        </div>
-
-    </div>
-
-
-    {{-- =====================================================
-         3 PANEL
-    ====================================================== --}}
-
-    <div class="asset-panels">
-
-
-        {{-- =================================================
-             HARDWARE
-        ================================================== --}}
-
-        <div class="asset-panel">
-
-            <div class="asset-panel-header">
-
+    <div class="stat-card">
+        <div class="stat-card-top">
+            <div class="stat-icon">
                 <i class="bi bi-pc-display"></i>
+            </div>
 
-                <h3 class="asset-panel-title">
+            <div class="stat-content">
+                <span class="stat-label">
                     Hardware
-                </h3>
+                </span>
 
+                <span class="stat-value">
+                    {{ number_format($hardwareCount) }}
+                </span>
             </div>
-
-
-            <div class="donut-section">
-
-                <div
-                    class="donut hardware-donut"
-                    data-baik="{{ $hardwareBaikDeg }}"
-                    data-perbaikan="{{ $hardwarePerbaikanDeg }}"
-                    data-total="{{ $hardwareTotal }}"
-                >
-
-                    <div class="donut-center">
-
-                        <span class="donut-number">
-                            {{ number_format($hardwareTotal) }}
-                        </span>
-
-                        <span class="donut-caption">
-                            Total
-                        </span>
-
-                    </div>
-
-                </div>
-
-
-                <div class="legend">
-
-                    <div class="legend-item">
-
-                        <div class="legend-left">
-
-                            <span
-                                class="legend-dot"
-                                style="background:#16a34a;"
-                            ></span>
-
-                            <span class="legend-name">
-                                Baik
-                            </span>
-
-                        </div>
-
-                        <span class="legend-value">
-                            {{ number_format($hardwareStatus['Baik']) }}
-                            ({{ number_format($hardwarePersen['Baik'], 1, ',', '.') }}%)
-                        </span>
-
-                    </div>
-
-
-                    <div class="legend-item">
-
-                        <div class="legend-left">
-
-                            <span
-                                class="legend-dot"
-                                style="background:#f59e0b;"
-                            ></span>
-
-                            <span class="legend-name">
-                                Perbaikan
-                            </span>
-
-                        </div>
-
-                        <span class="legend-value">
-                            {{ number_format($hardwareStatus['Perbaikan']) }}
-                            ({{ number_format($hardwarePersen['Perbaikan'], 1, ',', '.') }}%)
-                        </span>
-
-                    </div>
-
-
-                    <div class="legend-item">
-
-                        <div class="legend-left">
-
-                            <span
-                                class="legend-dot"
-                                style="background:#ef4444;"
-                            ></span>
-
-                            <span class="legend-name">
-                                Rusak
-                            </span>
-
-                        </div>
-
-                        <span class="legend-value">
-                            {{ number_format($hardwareStatus['Rusak']) }}
-                            ({{ number_format($hardwarePersen['Rusak'], 1, ',', '.') }}%)
-                        </span>
-
-                    </div>
-
-                </div>
-
-            </div>
-
-
-            {{-- BAR HARDWARE --}}
-
-            <div class="bar-section">
-
-                <div class="bar-title">
-                    Jenis barang
-                </div>
-
-                @if(array_sum($hardwareJenis) > 0)
-
-                    <div class="bar-chart">
-
-                        @foreach($hardwareJenis as $label => $value)
-
-                            @php
-
-                                $height = $value > 0
-                                    ? max(4, ($value / $hardwareBarMax) * 55)
-                                    : 0;
-
-                            @endphp
-
-                            <div class="bar-item">
-
-                                <span class="bar-value">
-                                    {{ number_format($value) }}
-                                </span>
-
-                                <div
-                                    class="bar"
-                                    data-height="{{ $height }}"
-                                    style="
-                                        height: {{ $height }}px;
-                                        background:#079bd8;
-                                    "
-                                ></div>
-
-                                <span class="bar-label">
-                                    {{ $label }}
-                                </span>
-
-                            </div>
-
-                        @endforeach
-
-                    </div>
-
-                @else
-
-                    <div class="chart-empty">
-                        Belum ada data jenis hardware.
-                    </div>
-
-                @endif
-
-            </div>
-
         </div>
-
-
-        {{-- =================================================
-             SOFTWARE
-        ================================================== --}}
-
-        <div class="asset-panel">
-
-            <div class="asset-panel-header">
-
-                <i class="bi bi-grid-3x3-gap"></i>
-
-                <h3 class="asset-panel-title">
-                    Software
-                </h3>
-
-            </div>
-
-
-            <div class="donut-section">
-
-                <div
-                    class="donut software-donut"
-                    data-beli="{{ $softwareBeliDeg }}"
-                    data-total="{{ $softwarePengadaanTotal }}"
-                >
-
-                    <div class="donut-center">
-
-                        <span class="donut-number">
-                            {{ number_format($softwarePengadaanTotal) }}
-                        </span>
-
-                        <span class="donut-caption">
-                            Total
-                        </span>
-
-                    </div>
-
-                </div>
-
-
-                <div class="legend">
-
-                    <div class="legend-item">
-
-                        <div class="legend-left">
-
-                            <span
-                                class="legend-dot"
-                                style="background:#2f80d7;"
-                            ></span>
-
-                            <span class="legend-name">
-                                Beli
-                            </span>
-
-                        </div>
-
-                        <span class="legend-value">
-                            {{ number_format($softwarePengadaan['Beli']) }}
-                            ({{ number_format($softwarePersen['Beli'], 1, ',', '.') }}%)
-                        </span>
-
-                    </div>
-
-
-                    <div class="legend-item">
-
-                        <div class="legend-left">
-
-                            <span
-                                class="legend-dot"
-                                style="background:#9ca3af;"
-                            ></span>
-
-                            <span class="legend-name">
-                                Sewa
-                            </span>
-
-                        </div>
-
-                        <span class="legend-value">
-                            {{ number_format($softwarePengadaan['Sewa']) }}
-                            ({{ number_format($softwarePersen['Sewa'], 1, ',', '.') }}%)
-                        </span>
-
-                    </div>
-
-                </div>
-
-            </div>
-
-
-            {{-- BAR SOFTWARE --}}
-
-            <div class="bar-section">
-
-                <div class="bar-title">
-                    Status
-                </div>
-
-                @if(array_sum($softwareStatus) > 0)
-
-                    <div class="bar-chart">
-
-                        @foreach($softwareStatus as $label => $value)
-
-                            @php
-
-                                $height = $value > 0
-                                    ? max(4, ($value / $softwareBarMax) * 55)
-                                    : 0;
-
-                                if ($label === 'Tersedia') {
-                                    $barColor = '#16a34a';
-                                } elseif ($label === 'Akan Habis') {
-                                    $barColor = '#f59e0b';
-                                } else {
-                                    $barColor = '#ef4444';
-                                }
-
-                                if ($label === 'Akan Habis') {
-                                    $barLabel = 'Akan habis';
-                                } elseif ($label === 'Expired') {
-                                    $barLabel = 'Exp';
-                                } else {
-                                    $barLabel = $label;
-                                }
-
-                            @endphp
-
-                            <div class="bar-item">
-
-                                <span class="bar-value">
-                                    {{ number_format($value) }}
-                                </span>
-
-                                <div
-                                    class="bar"
-                                    data-height="{{ $height }}"
-                                    style="
-                                        height: {{ $height }}px;
-                                        background: {{ $barColor }};
-                                    "
-                                ></div>
-
-                                <span class="bar-label">
-                                    {{ $barLabel }}
-                                </span>
-
-                            </div>
-
-                        @endforeach
-
-                    </div>
-
-                @else
-
-                    <div class="chart-empty">
-                        Belum ada data status software.
-                    </div>
-
-                @endif
-
-            </div>
-
-        </div>
-
-
-        {{-- =================================================
-             INFRASTRUKTUR
-        ================================================== --}}
-
-        <div class="asset-panel">
-
-            <div class="asset-panel-header">
-
-                <i class="bi bi-diagram-3"></i>
-
-                <h3 class="asset-panel-title">
-                    Infrastruktur
-                </h3>
-
-            </div>
-
-
-            <div class="donut-section">
-
-                <div
-                    class="donut infrastructure-donut"
-                    data-beli="{{ $infraBeliDeg }}"
-                    data-total="{{ $infraPengadaanTotal }}"
-                >
-
-                    <div class="donut-center">
-
-                        <span class="donut-number">
-                            {{ number_format($infraPengadaanTotal) }}
-                        </span>
-
-                        <span class="donut-caption">
-                            Total
-                        </span>
-
-                    </div>
-
-                </div>
-
-
-                <div class="legend">
-
-                    <div class="legend-item">
-
-                        <div class="legend-left">
-
-                            <span
-                                class="legend-dot"
-                                style="background:#2f80d7;"
-                            ></span>
-
-                            <span class="legend-name">
-                                Beli
-                            </span>
-
-                        </div>
-
-                        <span class="legend-value">
-                            {{ number_format($infraPengadaan['Beli']) }}
-                            ({{ number_format($infraPersen['Beli'], 1, ',', '.') }}%)
-                        </span>
-
-                    </div>
-
-
-                    <div class="legend-item">
-
-                        <div class="legend-left">
-
-                            <span
-                                class="legend-dot"
-                                style="background:#9ca3af;"
-                            ></span>
-
-                            <span class="legend-name">
-                                Sewa
-                            </span>
-
-                        </div>
-
-                        <span class="legend-value">
-                            {{ number_format($infraPengadaan['Sewa']) }}
-                            ({{ number_format($infraPersen['Sewa'], 1, ',', '.') }}%)
-                        </span>
-
-                    </div>
-
-                </div>
-
-            </div>
-
-
-            {{-- BAR INFRASTRUKTUR --}}
-
-            <div class="bar-section">
-
-                <div class="bar-title">
-                    Status keseluruhan
-                </div>
-
-                @if(array_sum($infraStatus) > 0)
-
-                    <div class="bar-chart">
-
-                        @foreach($infraStatus as $label => $value)
-
-                            @php
-
-                                $height = $value > 0
-                                    ? max(4, ($value / $infraBarMax) * 55)
-                                    : 0;
-
-                                if ($label === 'Tersedia') {
-                                    $barColor = '#16a34a';
-                                } elseif ($label === 'Akan Habis') {
-                                    $barColor = '#f59e0b';
-                                } else {
-                                    $barColor = '#ef4444';
-                                }
-
-                                if ($label === 'Akan Habis') {
-                                    $barLabel = 'Akan habis';
-                                } elseif ($label === 'Expired') {
-                                    $barLabel = 'Exp';
-                                } else {
-                                    $barLabel = $label;
-                                }
-
-                            @endphp
-
-                            <div class="bar-item">
-
-                                <span class="bar-value">
-                                    {{ number_format($value) }}
-                                </span>
-
-                                <div
-                                    class="bar"
-                                    data-height="{{ $height }}"
-                                    style="
-                                        height: {{ $height }}px;
-                                        background: {{ $barColor }};
-                                    "
-                                ></div>
-
-                                <span class="bar-label">
-                                    {{ $barLabel }}
-                                </span>
-
-                            </div>
-
-                        @endforeach
-
-                    </div>
-
-                @else
-
-                    <div class="chart-empty">
-                        Belum ada data status infrastruktur.
-                    </div>
-
-                @endif
-
-            </div>
-
-        </div>
-
     </div>
 
 
-    {{-- =====================================================
-         AKTIVITAS TERBARU
-    ====================================================== --}}
+    <div class="stat-card">
+        <div class="stat-card-top">
+            <div class="stat-icon">
+                <i class="bi bi-laptop"></i>
+            </div>
 
-    <div class="dashboard-card activity-card">
+            <div class="stat-content">
+                <span class="stat-label">
+                    Software
+                </span>
 
-        <div class="card-header">
+                <span class="stat-value">
+                    {{ number_format($softwareCount) }}
+                </span>
+            </div>
+        </div>
+    </div>
 
-            <div>
 
-                <h3 class="card-title">
-                    Aktivitas Terbaru
-                </h3>
+    <div class="stat-card">
+        <div class="stat-card-top">
+            <div class="stat-icon">
+                <i class="bi bi-diagram-3-fill"></i>
+            </div>
 
-                <p class="card-subtitle">
-                    Aktivitas pengelolaan data aset terbaru
-                </p>
+            <div class="stat-content">
+                <span class="stat-label">
+                    Infrastruktur
+                </span>
+
+                <span class="stat-value">
+                    {{ number_format($infrastrukturCount) }}
+                </span>
+            </div>
+        </div>
+    </div>
+
+
+    <div class="stat-card">
+        <div class="stat-card-top">
+            <div class="stat-icon">
+                <i class="bi bi-people-fill"></i>
+            </div>
+
+            <div class="stat-content">
+                <span class="stat-label">
+                    SDM
+                </span>
+
+                <span class="stat-value">
+                    {{ number_format($sdmCount) }}
+                </span>
+            </div>
+        </div>
+    </div>
+
+
+    <div class="stat-card">
+        <div class="stat-card-top">
+            <div class="stat-icon">
+                <i class="bi bi-database-fill"></i>
+            </div>
+
+            <div class="stat-content">
+                <span class="stat-label">
+                    Data
+                </span>
+
+                <span class="stat-value">
+                    {{ number_format($dataCount) }}
+                </span>
+            </div>
+        </div>
+    </div>
+
+</div>
+
+
+{{-- =====================================================
+     3 PANEL
+====================================================== --}}
+
+<div class="asset-panels">
+
+    {{-- HARDWARE --}}
+
+    <div class="asset-panel">
+
+        <div class="asset-panel-header">
+            <i class="bi bi-pc-display"></i>
+
+            <h3 class="asset-panel-title">
+                Hardware
+            </h3>
+        </div>
+
+        <div class="donut-section">
+
+            <div
+                class="donut hardware-donut"
+                data-baik="{{ $hardwareBaikDeg }}"
+                data-perbaikan="{{ $hardwarePerbaikanDeg }}"
+                data-total="{{ $hardwareTotal }}"
+            >
+
+                <div class="donut-center">
+
+                    <span class="donut-number">
+                        {{ number_format($hardwareTotal) }}
+                    </span>
+
+                    <span class="donut-caption">
+                        Total
+                    </span>
+
+                </div>
+
+            </div>
+
+            <div class="legend">
+
+                <div class="legend-item">
+
+                    <div class="legend-left">
+
+                        <span
+                            class="legend-dot"
+                            style="background:#16a34a;"
+                        ></span>
+
+                        <span class="legend-name">
+                            Baik
+                        </span>
+
+                    </div>
+
+                    <span class="legend-value">
+                        {{ number_format($hardwareStatus['Baik']) }}
+                        ({{ number_format($hardwarePersen['Baik'],1,',','.') }}%)
+                    </span>
+
+                </div>
+
+
+                <div class="legend-item">
+
+                    <div class="legend-left">
+
+                        <span
+                            class="legend-dot"
+                            style="background:#f59e0b;"
+                        ></span>
+
+                        <span class="legend-name">
+                            Perbaikan
+                        </span>
+
+                    </div>
+
+                    <span class="legend-value">
+                        {{ number_format($hardwareStatus['Perbaikan']) }}
+                        ({{ number_format($hardwarePersen['Perbaikan'],1,',','.') }}%)
+                    </span>
+
+                </div>
+
+
+                <div class="legend-item">
+
+                    <div class="legend-left">
+
+                        <span
+                            class="legend-dot"
+                            style="background:#ef4444;"
+                        ></span>
+
+                        <span class="legend-name">
+                            Rusak
+                        </span>
+
+                    </div>
+
+                    <span class="legend-value">
+                        {{ number_format($hardwareStatus['Rusak']) }}
+                        ({{ number_format($hardwarePersen['Rusak'],1,',','.') }}%)
+                    </span>
+
+                </div>
 
             </div>
 
         </div>
 
 
-        <div class="activity-list">
+        <div class="bar-section">
 
-            @if($activities->isNotEmpty())
+            <div class="bar-title">
+                Jenis barang
+            </div>
 
-                <div class="activity-header">
+            @if(array_sum($hardwareJenis) > 0)
 
-                    <span></span>
+                <div class="bar-chart">
 
-                    <span>
-                        Tanggal & Jam
-                    </span>
+                    @foreach($hardwareJenis as $label => $value)
 
-                    <span>
-                        Operator
-                    </span>
+                        @php
+                            $height = $value > 0
+                                ? max(4, ($value / $hardwareBarMax) * 55)
+                                : 0;
+                        @endphp
 
-                    <span>
-                        Aktivitas
-                    </span>
+                        <div class="bar-item">
 
+                            <span class="bar-value">
+                                {{ number_format($value) }}
+                            </span>
+
+                            <div
+                                class="bar"
+                                data-height="{{ $height }}"
+                                style="
+                                    height: {{ $height }}px;
+                                    background:#079bd8;
+                                "
+                            ></div>
+
+                            <span class="bar-label">
+                                {{ $label }}
+                            </span>
+
+                        </div>
+
+                    @endforeach
+
+                </div>
+
+            @else
+
+                <div class="chart-empty">
+                    Belum ada data jenis hardware.
                 </div>
 
             @endif
 
+        </div>
 
-            @forelse($activities as $activity)
-
-                @php
-
-                    if (is_array($activity)) {
-
-                        $activityDateValue =
-                            $activity['date']
-                            ?? $activity['created_at']
-                            ?? null;
-
-                        $activityIcon =
-                            $activity['icon']
-                            ?? 'bi-activity';
-
-                        $activityOperator =
-                            $activity['operator']
-                            ?? 'Operator';
-
-                        $activityFeature =
-                            $activity['feature']
-                            ?? 'Inventory IT Assets';
-
-                        $activityText =
-                            $activity['text']
-                            ?? 'Aktivitas data aset';
-
-                    } else {
-
-                        $activityDateValue =
-                            $activity->date
-                            ?? $activity->created_at
-                            ?? null;
-
-                        $activityIcon =
-                            $activity->icon
-                            ?? 'bi-activity';
-
-                        $activityOperator =
-                            $activity->operator
-                            ?? 'Operator';
-
-                        $activityFeature =
-                            $activity->feature
-                            ?? 'Inventory IT Assets';
-
-                        $activityText =
-                            $activity->text
-                            ?? 'Aktivitas data aset';
-
-                    }
-
-                    $activityIcon = trim((string) $activityIcon);
-
-                    if (!str_starts_with($activityIcon, 'bi-')) {
-                        $activityIcon = 'bi-' . $activityIcon;
-                    }
-
-                    $activityDate = null;
-
-                    if (!empty($activityDateValue)) {
-
-                        try {
-
-                            $activityDate = \Carbon\Carbon::parse(
-                                $activityDateValue
-                            );
-
-                        } catch (\Throwable $e) {
-
-                            $activityDate = null;
-
-                        }
-
-                    }
-
-                @endphp
+    </div>
 
 
-                <div class="activity-item">
+    {{-- SOFTWARE --}}
 
-                    <div class="activity-icon">
+    <div class="asset-panel">
 
-                        <i class="bi {{ $activityIcon }}"></i>
+        <div class="asset-panel-header">
 
-                    </div>
+            <i class="bi bi-grid-3x3-gap"></i>
 
+            <h3 class="asset-panel-title">
+                Software
+            </h3>
 
-                    <div class="activity-date">
+        </div>
 
-                        @if($activityDate)
+        <div class="donut-section">
 
-                            <span class="activity-date-main">
-                                {{ $activityDate->format('d M Y') }}
-                            </span>
+            <div
+                class="donut software-donut"
+                data-beli="{{ $softwareBeliDeg }}"
+                data-total="{{ $softwarePengadaanTotal }}"
+            >
 
-                            <span class="activity-date-time">
-                                {{ $activityDate->format('H:i') }}
-                            </span>
+                <div class="donut-center">
 
-                        @else
+                    <span class="donut-number">
+                        {{ number_format($softwarePengadaanTotal) }}
+                    </span>
 
-                            <span class="activity-date-main">
-                                -
-                            </span>
+                    <span class="donut-caption">
+                        Total
+                    </span>
 
-                        @endif
+                </div>
 
-                    </div>
+            </div>
 
+            <div class="legend">
 
-                    <div class="activity-operator">
-                        {{ $activityOperator }}
-                    </div>
+                <div class="legend-item">
 
+                    <div class="legend-left">
 
-                    <div class="activity-description">
+                        <span
+                            class="legend-dot"
+                            style="background:#2f80d7;"
+                        ></span>
 
-                        <span class="activity-feature">
-                            {{ $activityFeature }}
-                        </span>
-
-                        <span class="activity-text">
-                            {{ $activityText }}
+                        <span class="legend-name">
+                            Beli
                         </span>
 
                     </div>
 
-                </div>
-
-
-            @empty
-
-                <div class="empty-state">
-
-                    <i class="bi bi-clock-history"></i>
-
-                    Belum ada aktivitas terbaru.
+                    <span class="legend-value">
+                        {{ number_format($softwarePengadaan['Beli']) }}
+                        ({{ number_format($softwarePersen['Beli'],1,',','.') }}%)
+                    </span>
 
                 </div>
 
-            @endforelse
+
+                <div class="legend-item">
+
+                    <div class="legend-left">
+
+                        <span
+                            class="legend-dot"
+                            style="background:#9ca3af;"
+                        ></span>
+
+                        <span class="legend-name">
+                            Sewa
+                        </span>
+
+                    </div>
+
+                    <span class="legend-value">
+                        {{ number_format($softwarePengadaan['Sewa']) }}
+                        ({{ number_format($softwarePersen['Sewa'],1,',','.') }}%)
+                    </span>
+
+                </div>
+
+            </div>
+
+        </div>
+
+
+        <div class="bar-section">
+
+            <div class="bar-title">
+                Status
+            </div>
+
+            @if(array_sum($softwareStatus) > 0)
+
+                <div class="bar-chart">
+
+                    @foreach($softwareStatus as $label => $value)
+
+                        @php
+
+                            $height = $value > 0
+                                ? max(4, ($value / $softwareBarMax) * 55)
+                                : 0;
+
+                            if ($label === 'Tersedia') {
+                                $barColor = '#16a34a';
+                            } elseif ($label === 'Akan Habis') {
+                                $barColor = '#f59e0b';
+                            } else {
+                                $barColor = '#ef4444';
+                            }
+
+                            if ($label === 'Akan Habis') {
+                                $barLabel = 'Akan habis';
+                            } elseif ($label === 'Expired') {
+                                $barLabel = 'Exp';
+                            } else {
+                                $barLabel = $label;
+                            }
+
+                        @endphp
+
+                        <div class="bar-item">
+
+                            <span class="bar-value">
+                                {{ number_format($value) }}
+                            </span>
+
+                            <div
+                                class="bar"
+                                data-height="{{ $height }}"
+                                style="
+                                    height: {{ $height }}px;
+                                    background: {{ $barColor }};
+                                "
+                            ></div>
+
+                            <span class="bar-label">
+                                {{ $barLabel }}
+                            </span>
+
+                        </div>
+
+                    @endforeach
+
+                </div>
+
+            @else
+
+                <div class="chart-empty">
+                    Belum ada data status software.
+                </div>
+
+            @endif
+
+        </div>
+
+    </div>
+
+
+    {{-- INFRASTRUKTUR --}}
+
+    <div class="asset-panel">
+
+        <div class="asset-panel-header">
+
+            <i class="bi bi-diagram-3"></i>
+
+            <h3 class="asset-panel-title">
+                Infrastruktur
+            </h3>
+
+        </div>
+
+        <div class="donut-section">
+
+            <div
+                class="donut infrastructure-donut"
+                data-beli="{{ $infraBeliDeg }}"
+                data-total="{{ $infraPengadaanTotal }}"
+            >
+
+                <div class="donut-center">
+
+                    <span class="donut-number">
+                        {{ number_format($infraPengadaanTotal) }}
+                    </span>
+
+                    <span class="donut-caption">
+                        Total
+                    </span>
+
+                </div>
+
+            </div>
+
+            <div class="legend">
+
+                <div class="legend-item">
+
+                    <div class="legend-left">
+
+                        <span
+                            class="legend-dot"
+                            style="background:#2f80d7;"
+                        ></span>
+
+                        <span class="legend-name">
+                            Beli
+                        </span>
+
+                    </div>
+
+                    <span class="legend-value">
+                        {{ number_format($infraPengadaan['Beli']) }}
+                        ({{ number_format($infraPersen['Beli'],1,',','.') }}%)
+                    </span>
+
+                </div>
+
+
+                <div class="legend-item">
+
+                    <div class="legend-left">
+
+                        <span
+                            class="legend-dot"
+                            style="background:#9ca3af;"
+                        ></span>
+
+                        <span class="legend-name">
+                            Sewa
+                        </span>
+
+                    </div>
+
+                    <span class="legend-value">
+                        {{ number_format($infraPengadaan['Sewa']) }}
+                        ({{ number_format($infraPersen['Sewa'],1,',','.') }}%)
+                    </span>
+
+                </div>
+
+            </div>
+
+        </div>
+
+
+        <div class="bar-section">
+
+            <div class="bar-title">
+                Status keseluruhan
+            </div>
+
+            @if(array_sum($infraStatus) > 0)
+
+                <div class="bar-chart">
+
+                    @foreach($infraStatus as $label => $value)
+
+                        @php
+
+                            $height = $value > 0
+                                ? max(4, ($value / $infraBarMax) * 55)
+                                : 0;
+
+                            if ($label === 'Tersedia') {
+                                $barColor = '#16a34a';
+                            } elseif ($label === 'Akan Habis') {
+                                $barColor = '#f59e0b';
+                            } else {
+                                $barColor = '#ef4444';
+                            }
+
+                            if ($label === 'Akan Habis') {
+                                $barLabel = 'Akan habis';
+                            } elseif ($label === 'Expired') {
+                                $barLabel = 'Exp';
+                            } else {
+                                $barLabel = $label;
+                            }
+
+                        @endphp
+
+                        <div class="bar-item">
+
+                            <span class="bar-value">
+                                {{ number_format($value) }}
+                            </span>
+
+                            <div
+                                class="bar"
+                                data-height="{{ $height }}"
+                                style="
+                                    height: {{ $height }}px;
+                                    background: {{ $barColor }};
+                                "
+                            ></div>
+
+                            <span class="bar-label">
+                                {{ $barLabel }}
+                            </span>
+
+                        </div>
+
+                    @endforeach
+
+                </div>
+
+            @else
+
+                <div class="chart-empty">
+                    Belum ada data status infrastruktur.
+                </div>
+
+            @endif
 
         </div>
 
@@ -1959,14 +1798,318 @@
 </div>
 
 
-<script>
-document.addEventListener('DOMContentLoaded', function () {
+{{-- =====================================================
+     AKTIVITAS TERBARU
+====================================================== --}}
 
-    /*
-    |--------------------------------------------------------------------------
-    | DURASI ANIMASI
-    |--------------------------------------------------------------------------
-    */
+<div class="dashboard-card activity-card">
+
+    <div class="card-header">
+
+        <div>
+
+            <h3 class="card-title">
+                Aktivitas Terbaru
+            </h3>
+
+            <p class="card-subtitle">
+                Riwayat pembaruan dan pengelolaan data aset terbaru
+            </p>
+
+        </div>
+
+        @if($activities->isNotEmpty())
+
+            <div class="activity-total">
+
+                <i class="bi bi-activity"></i>
+
+                {{ $activities->count() }} Aktivitas
+
+            </div>
+
+        @endif
+
+    </div>
+
+
+    <div class="activity-list">
+
+        @forelse($activities as $activity)
+
+            @php
+
+                /*
+                |--------------------------------------------------------------------------
+                | AMBIL DATA AKTIVITAS
+                |--------------------------------------------------------------------------
+                */
+
+                if (is_array($activity)) {
+
+                    $activityDateValue =
+                        $activity['date']
+                        ?? $activity['created_at']
+                        ?? null;
+
+                    $activityIcon =
+                        $activity['icon']
+                        ?? 'bi-activity';
+
+                    /*
+                    | Controller sekarang harus mengirim
+                    | username operator yang benar.
+                    */
+
+                    $activityOperator =
+                        $activity['operator']
+                        ?? $activity['username']
+                        ?? $activity['user_name']
+                        ?? 'Operator';
+
+                    $activityFeature =
+                        $activity['feature']
+                        ?? 'Inventory IT Assets';
+
+                    $activityText =
+                        $activity['text']
+                        ?? 'Aktivitas data aset';
+
+                } else {
+
+                    $activityDateValue =
+                        $activity->date
+                        ?? $activity->created_at
+                        ?? null;
+
+                    $activityIcon =
+                        $activity->icon
+                        ?? 'bi-activity';
+
+                    $activityOperator =
+                        $activity->operator
+                        ?? $activity->username
+                        ?? $activity->user_name
+                        ?? 'Operator';
+
+                    $activityFeature =
+                        $activity->feature
+                        ?? 'Inventory IT Assets';
+
+                    $activityText =
+                        $activity->text
+                        ?? 'Aktivitas data aset';
+
+                }
+
+                /*
+                |--------------------------------------------------------------------------
+                | ICON
+                |--------------------------------------------------------------------------
+                */
+
+                $activityIcon = trim((string) $activityIcon);
+
+                if (!str_starts_with($activityIcon, 'bi-')) {
+                    $activityIcon = 'bi-' . $activityIcon;
+                }
+
+                /*
+                |--------------------------------------------------------------------------
+                | TANGGAL
+                |--------------------------------------------------------------------------
+                |
+                | Controller sudah mengirim Carbon dalam timezone
+                | Asia/Jakarta.
+                |
+                | Blade TIDAK melakukan konversi UTC lagi.
+                |
+                */
+
+                $activityDate = null;
+
+                if ($activityDateValue instanceof \Carbon\Carbon) {
+
+                    $activityDate = $activityDateValue->copy();
+
+                } elseif ($activityDateValue instanceof \DateTimeInterface) {
+
+                    $activityDate =
+                        \Carbon\Carbon::instance(
+                            $activityDateValue
+                        );
+
+                } elseif (!empty($activityDateValue)) {
+
+                    try {
+
+                        $activityDate =
+                            \Carbon\Carbon::parse(
+                                $activityDateValue,
+                                'Asia/Jakarta'
+                            );
+
+                    } catch (\Throwable $e) {
+
+                        $activityDate = null;
+
+                    }
+
+                }
+
+                /*
+                |--------------------------------------------------------------------------
+                | FORMAT TANGGAL
+                |--------------------------------------------------------------------------
+                */
+
+                $activityDateLabel = '-';
+
+                if ($activityDate) {
+
+                    if ($activityDate->isToday()) {
+
+                        $activityDateLabel = 'Hari ini';
+
+                    } elseif ($activityDate->isYesterday()) {
+
+                        $activityDateLabel = 'Kemarin';
+
+                    } else {
+
+                        $activityDateLabel =
+                            $activityDate
+                                ->locale('id')
+                                ->translatedFormat('d M Y');
+
+                    }
+
+                }
+
+            @endphp
+
+
+            <div class="activity-item">
+
+                {{-- TIMELINE --}}
+
+                <div class="activity-timeline">
+
+                    <div class="activity-icon">
+
+                        <i class="bi {{ $activityIcon }}"></i>
+
+                    </div>
+
+                </div>
+
+
+                {{-- CONTENT --}}
+
+                <div class="activity-content">
+
+                    <div class="activity-top">
+
+                        <span class="activity-feature">
+                            {{ $activityFeature }}
+                        </span>
+
+                    </div>
+
+
+                    <div class="activity-text">
+
+                        {{ $activityText }}
+
+                    </div>
+
+
+                    <div class="activity-meta">
+
+                        <span class="activity-meta-item activity-operator">
+
+                            <i class="bi bi-person"></i>
+
+                            {{ $activityOperator }}
+
+                        </span>
+
+
+                        @if($activityDate)
+
+                            <span class="activity-meta-item">
+
+                                <i class="bi bi-clock"></i>
+
+                                {{ $activityDate
+                                    ->locale('id')
+                                    ->diffForHumans()
+                                }}
+
+                            </span>
+
+                        @endif
+
+                    </div>
+
+                </div>
+
+
+                {{-- DATE --}}
+
+                <div class="activity-date">
+
+                    @if($activityDate)
+
+                        <span class="activity-date-main">
+                            {{ $activityDateLabel }}
+                        </span>
+
+                        <span class="activity-date-time">
+                            {{ $activityDate->format('H:i') }}
+                        </span>
+
+                    @else
+
+                        <span class="activity-date-main">
+                            -
+                        </span>
+
+                    @endif
+
+                </div>
+
+            </div>
+
+
+        @empty
+
+            <div class="empty-state">
+
+                <i class="bi bi-clock-history"></i>
+
+                <span class="empty-state-title">
+                    Belum ada aktivitas terbaru
+                </span>
+
+                <span class="empty-state-text">
+                    Aktivitas pengelolaan data akan muncul di sini.
+                </span>
+
+            </div>
+
+        @endforelse
+
+    </div>
+
+</div>
+
+
+</div>
+
+<script>
+
+document.addEventListener('DOMContentLoaded', function () {
 
     const duration = 1200;
 
@@ -1983,19 +2126,13 @@ document.addEventListener('DOMContentLoaded', function () {
     if (hardware) {
 
         const targetBaik =
-            parseFloat(
-                hardware.dataset.baik
-            ) || 0;
+            parseFloat(hardware.dataset.baik) || 0;
 
         const targetPerbaikan =
-            parseFloat(
-                hardware.dataset.perbaikan
-            ) || 0;
+            parseFloat(hardware.dataset.perbaikan) || 0;
 
         const total =
-            parseFloat(
-                hardware.dataset.total
-            ) || 0;
+            parseFloat(hardware.dataset.total) || 0;
 
         if (total <= 0) {
 
@@ -2003,8 +2140,7 @@ document.addEventListener('DOMContentLoaded', function () {
 
         } else {
 
-            const start =
-                performance.now();
+            const start = performance.now();
 
             function animateHardware(time) {
 
@@ -2015,11 +2151,7 @@ document.addEventListener('DOMContentLoaded', function () {
                     );
 
                 const ease =
-                    1 -
-                    Math.pow(
-                        1 - progress,
-                        3
-                    );
+                    1 - Math.pow(1 - progress, 3);
 
                 const baik =
                     targetBaik * ease;
@@ -2036,21 +2168,12 @@ document.addEventListener('DOMContentLoaded', function () {
                 `;
 
                 if (progress < 1) {
-
-                    requestAnimationFrame(
-                        animateHardware
-                    );
-
+                    requestAnimationFrame(animateHardware);
                 }
-
             }
 
-            requestAnimationFrame(
-                animateHardware
-            );
-
+            requestAnimationFrame(animateHardware);
         }
-
     }
 
 
@@ -2066,14 +2189,10 @@ document.addEventListener('DOMContentLoaded', function () {
     if (software) {
 
         const targetBeli =
-            parseFloat(
-                software.dataset.beli
-            ) || 0;
+            parseFloat(software.dataset.beli) || 0;
 
         const total =
-            parseFloat(
-                software.dataset.total
-            ) || 0;
+            parseFloat(software.dataset.total) || 0;
 
         if (total <= 0) {
 
@@ -2081,8 +2200,7 @@ document.addEventListener('DOMContentLoaded', function () {
 
         } else {
 
-            const start =
-                performance.now();
+            const start = performance.now();
 
             function animateSoftware(time) {
 
@@ -2093,11 +2211,7 @@ document.addEventListener('DOMContentLoaded', function () {
                     );
 
                 const ease =
-                    1 -
-                    Math.pow(
-                        1 - progress,
-                        3
-                    );
+                    1 - Math.pow(1 - progress, 3);
 
                 const beli =
                     targetBeli * ease;
@@ -2110,21 +2224,12 @@ document.addEventListener('DOMContentLoaded', function () {
                 `;
 
                 if (progress < 1) {
-
-                    requestAnimationFrame(
-                        animateSoftware
-                    );
-
+                    requestAnimationFrame(animateSoftware);
                 }
-
             }
 
-            requestAnimationFrame(
-                animateSoftware
-            );
-
+            requestAnimationFrame(animateSoftware);
         }
-
     }
 
 
@@ -2135,31 +2240,23 @@ document.addEventListener('DOMContentLoaded', function () {
     */
 
     const infrastructure =
-        document.querySelector(
-            '.infrastructure-donut'
-        );
+        document.querySelector('.infrastructure-donut');
 
     if (infrastructure) {
 
         const targetBeli =
-            parseFloat(
-                infrastructure.dataset.beli
-            ) || 0;
+            parseFloat(infrastructure.dataset.beli) || 0;
 
         const total =
-            parseFloat(
-                infrastructure.dataset.total
-            ) || 0;
+            parseFloat(infrastructure.dataset.total) || 0;
 
         if (total <= 0) {
 
-            infrastructure.style.background =
-                '#e5e7eb';
+            infrastructure.style.background = '#e5e7eb';
 
         } else {
 
-            const start =
-                performance.now();
+            const start = performance.now();
 
             function animateInfrastructure(time) {
 
@@ -2170,11 +2267,7 @@ document.addEventListener('DOMContentLoaded', function () {
                     );
 
                 const ease =
-                    1 -
-                    Math.pow(
-                        1 - progress,
-                        3
-                    );
+                    1 - Math.pow(1 - progress, 3);
 
                 const beli =
                     targetBeli * ease;
@@ -2187,30 +2280,22 @@ document.addEventListener('DOMContentLoaded', function () {
                 `;
 
                 if (progress < 1) {
-
                     requestAnimationFrame(
                         animateInfrastructure
                     );
-
                 }
-
             }
 
             requestAnimationFrame(
                 animateInfrastructure
             );
-
         }
-
     }
 
 
     /*
     |--------------------------------------------------------------------------
     | BAR CHART
-    |--------------------------------------------------------------------------
-    | Animasi sama seperti donut:
-    | 0 -> nilai asli secara smooth
     |--------------------------------------------------------------------------
     */
 
@@ -2220,12 +2305,9 @@ document.addEventListener('DOMContentLoaded', function () {
     bars.forEach(function (bar) {
 
         const targetHeight =
-            parseFloat(
-                bar.dataset.height
-            ) || 0;
+            parseFloat(bar.dataset.height) || 0;
 
-        const start =
-            performance.now();
+        const start = performance.now();
 
         function animateBar(time) {
 
@@ -2236,11 +2318,7 @@ document.addEventListener('DOMContentLoaded', function () {
                 );
 
             const ease =
-                1 -
-                Math.pow(
-                    1 - progress,
-                    3
-                );
+                1 - Math.pow(1 - progress, 3);
 
             const height =
                 targetHeight * ease;
@@ -2263,13 +2341,12 @@ document.addEventListener('DOMContentLoaded', function () {
 
         }
 
-        requestAnimationFrame(
-            animateBar
-        );
+        requestAnimationFrame(animateBar);
 
     });
 
 });
+
 </script>
 
 @endsection

@@ -34,8 +34,8 @@
 
         html,
         body {
-            margin: 0;
-            padding: 0;
+            margin: 0 !important;
+            padding: 0 !important;
             width: 100%;
             min-height: 100%;
         }
@@ -46,6 +46,7 @@
             color: #1f2937;
         }
 
+
         /* =====================================================
            APP LAYOUT
         ===================================================== */
@@ -53,6 +54,9 @@
         .app-layout {
             width: 100%;
             min-height: 100vh;
+
+            margin: 0;
+            padding: 0;
         }
 
         /* =====================================================
@@ -62,6 +66,7 @@
 
         .main-area {
             margin-left: 270px;
+
             width: calc(100% - 270px);
             min-width: 0;
             min-height: 100vh;
@@ -86,8 +91,10 @@
 
             position: sticky;
             top: 0;
+
             z-index: 900;
         }
+
 
         /* =====================================================
            HEADER LEFT
@@ -110,6 +117,7 @@
 
         /* =====================================================
            HEADER SEARCH
+           SEARCH HANYA UNTUK DASHBOARD
         ===================================================== */
 
         .top-header .search-box {
@@ -161,6 +169,7 @@
             flex-shrink: 0;
         }
 
+
         /* =====================================================
            NOTIFICATION
         ===================================================== */
@@ -177,7 +186,9 @@
             height: 40px;
 
             border: none;
+
             background: transparent;
+
             color: #374151;
 
             display: flex;
@@ -185,18 +196,22 @@
             justify-content: center;
 
             cursor: pointer;
+
             border-radius: 7px;
 
             transition: 0.2s ease;
         }
 
+
         .notification-button:hover {
             background: #f5f6fa;
         }
 
+
         .notification-button i {
             font-size: 17px;
         }
+
 
         .notification-badge {
             position: absolute;
@@ -208,9 +223,12 @@
             height: 8px;
 
             background: #ef4444;
+
             border-radius: 50%;
-            border: 1px solid white;
+
+            border: 1px solid #ffffff;
         }
+
 
         /* =====================================================
            USER
@@ -219,9 +237,11 @@
         .user-info {
             display: flex;
             align-items: center;
+
             gap: 8px;
 
             padding-left: 12px;
+
             border-left: 1px solid #d1d5db;
         }
 
@@ -232,7 +252,9 @@
             flex-shrink: 0;
 
             border-radius: 50%;
+
             background: #071b88;
+
             color: #ffffff;
 
             display: flex;
@@ -243,25 +265,36 @@
             font-weight: bold;
         }
 
+
         .user-text {
             display: flex;
             flex-direction: column;
+
             gap: 2px;
+
             min-width: 75px;
         }
 
+
         .user-name {
             font-size: 10px;
+
             font-weight: 700;
+
             color: #374151;
+
             line-height: 1.2;
         }
 
+
         .user-role {
             font-size: 8px;
+
             color: #9ca3af;
+
             line-height: 1.2;
         }
+
 
         /* =====================================================
            MAIN CONTENT
@@ -296,6 +329,22 @@
             box-sizing: border-box;
         }
 
+
+        /* =====================================================
+           LAPORAN PAGE
+        ===================================================== */
+
+        .laporan-page {
+            width: 100% !important;
+
+            max-width: none !important;
+
+            min-width: 0;
+
+            box-sizing: border-box;
+        }
+
+
         /* =====================================================
            RESPONSIVE
         ===================================================== */
@@ -317,6 +366,7 @@
 
             .main-area {
                 margin-left: 0;
+
                 width: 100%;
             }
 
@@ -341,7 +391,7 @@
             }
 
             .page-title {
-                font-size: 13px;
+                font-size: 16px;
             }
 
             .header-right {
@@ -358,6 +408,10 @@
 
             .user-text {
                 display: none;
+            }
+
+            .top-header .search-box {
+                width: 180px;
             }
 
             .main-content {
@@ -380,13 +434,14 @@
 
     </style>
 
+
     @stack('styles')
 
 </head>
 
+
 <body>
 
-<div class="app-layout">
 
     {{-- =================================================
          SIDEBAR
@@ -402,7 +457,7 @@
     <div class="main-area">
 
         {{-- =================================================
-             HEADER
+             TOP HEADER
         ================================================== --}}
 
         <header class="top-header">
@@ -413,31 +468,26 @@
 
             <div class="header-left">
 
+
+                {{-- PAGE TITLE --}}
+
                 <h1 class="page-title">
                     @yield('page-title', 'Dashboard')
                 </h1>
 
 
-                {{-- SEARCH --}}
+                {{-- =================================================
+                     SEARCH HANYA DI DASHBOARD
+                ================================================== --}}
 
-                @hasSection('search')
+                @if(
+                    View::hasSection('dashboard-search')
+                )
 
-                    @yield('search')
-
-                @else
-
-                    <div class="search-box">
-
-                        <i class="bi bi-search"></i>
-
-                        <input
-                            type="text"
-                            placeholder="Search..."
-                        >
-
-                    </div>
+                    @yield('dashboard-search')
 
                 @endif
+
 
             </div>
 
@@ -507,13 +557,67 @@
 
                 </div>
 
+
+                {{-- =================================================
+                     USER
+                ================================================== --}}
+
+                <div class="user-info">
+
+
+                    {{-- AVATAR --}}
+
+                    <div class="user-avatar">
+
+                        {{ strtoupper(
+                            substr(
+                                auth()->user()->name ?? 'U',
+                                0,
+                                1
+                            )
+                        ) }}
+
+                    </div>
+
+
+                    {{-- USER TEXT --}}
+
+                    <div class="user-text">
+
+
+                        <span class="user-name">
+
+                            {{ auth()->user()->name ?? 'User' }}
+
+                        </span>
+
+
+                        <span class="user-role">
+
+                            {{ ucwords(
+                                str_replace(
+                                    '_',
+                                    ' ',
+                                    auth()->user()->role ?? 'User'
+                                )
+                            ) }}
+
+                        </span>
+
+
+                    </div>
+
+
+                </div>
+
+
             </div>
 
         </header>
 
 
         {{-- =================================================
-             CONTENT
+             MAIN CONTENT
         ================================================== --}}
 
         <main class="main-content">
@@ -524,9 +628,11 @@
 
     </div>
 
+
 </div>
 
 @stack('scripts')
+
 
 </body>
 </html>

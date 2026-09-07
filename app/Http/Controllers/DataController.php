@@ -81,6 +81,11 @@ class DataController extends Controller
 
         $show = $request->get('show', 10);
 
+        // Batasi pilihan agar aman
+        if (!in_array($show, [10, 25, 50, 100])) {
+            $show = 10;
+        }
+
         $data = $query
             ->latest()
             ->paginate($show)
@@ -107,18 +112,33 @@ class DataController extends Controller
             ->pluck('tahun');
 
         // =====================================================
-        // SUMMARY
+        // SUMMARY CARD
         // =====================================================
 
+        // Total seluruh dataset
         $totalData = Data::count();
 
+        // Total jenis data unik
         $totalJenis = Data::distinct(
             'jenis_data'
         )->count('jenis_data');
 
+        // Total menunggu persetujuan
         $totalPending = Data::where(
             'verifikasi',
             'Menunggu Disetujui'
+        )->count();
+
+        // Total data disetujui
+        $totalDisetujui = Data::where(
+            'verifikasi',
+            'Disetujui'
+        )->count();
+
+        // Total data ditolak
+        $totalDitolak = Data::where(
+            'verifikasi',
+            'Ditolak'
         )->count();
 
         // =====================================================
@@ -132,6 +152,8 @@ class DataController extends Controller
                 'totalData',
                 'totalJenis',
                 'totalPending',
+                'totalDisetujui',
+                'totalDitolak',
                 'jenisData',
                 'tahunData'
             )

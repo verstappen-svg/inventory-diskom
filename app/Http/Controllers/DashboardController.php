@@ -16,12 +16,6 @@ class DashboardController extends Controller
      */
     public function index(Request $request)
     {
-        /*
-        |--------------------------------------------------------------------------
-        | USER / ROLE
-        |--------------------------------------------------------------------------
-        */
-
         $user = auth()->user();
 
         $role = strtolower(
@@ -42,6 +36,8 @@ class DashboardController extends Controller
             $tahun === 'all'
         ) {
             $tahun = null;
+        } else {
+            $tahun = (int) $tahun;
         }
 
         /*
@@ -58,12 +54,14 @@ class DashboardController extends Controller
         |--------------------------------------------------------------------------
         */
 
-        $hardwareDashboard = $this->getHardwareDashboard($tahun);
+        $hardwareDashboard =
+            $this->getHardwareDashboard($tahun);
 
-        $hardwareCount = $this->getAssetCount(
-            'hardwares',
-            $tahun
-        );
+        $hardwareCount =
+            $this->getAssetCount(
+                'hardwares',
+                $tahun
+            );
 
         /*
         |--------------------------------------------------------------------------
@@ -71,12 +69,14 @@ class DashboardController extends Controller
         |--------------------------------------------------------------------------
         */
 
-        $softwareDashboard = $this->getSoftwareDashboard($tahun);
+        $softwareDashboard =
+            $this->getSoftwareDashboard($tahun);
 
-        $softwareCount = $this->getAssetCount(
-            'softwares',
-            $tahun
-        );
+        $softwareCount =
+            $this->getAssetCount(
+                'softwares',
+                $tahun
+            );
 
         /*
         |--------------------------------------------------------------------------
@@ -87,20 +87,23 @@ class DashboardController extends Controller
         $infrastrukturDashboard =
             $this->getInfrastrukturDashboard($tahun);
 
-        $jaringanCount = $this->getAssetCount(
-            'jaringans',
-            $tahun
-        );
+        $jaringanCount =
+            $this->getAssetCount(
+                'jaringans',
+                $tahun
+            );
 
-        $dataCenterCount = $this->getAssetCount(
-            'data_centers',
-            $tahun
-        );
+        $dataCenterCount =
+            $this->getAssetCount(
+                'data_centers',
+                $tahun
+            );
 
-        $splpCount = $this->getAssetCount(
-            'splps',
-            $tahun
-        );
+        $splpCount =
+            $this->getAssetCount(
+                'splps',
+                $tahun
+            );
 
         $infrastrukturCount =
             $jaringanCount +
@@ -113,10 +116,11 @@ class DashboardController extends Controller
         |--------------------------------------------------------------------------
         */
 
-        $sdmCount = $this->getAssetCount(
-            'sdms',
-            $tahun
-        );
+        $sdmCount =
+            $this->getAssetCount(
+                'sdms',
+                $tahun
+            );
 
         /*
         |--------------------------------------------------------------------------
@@ -124,10 +128,11 @@ class DashboardController extends Controller
         |--------------------------------------------------------------------------
         */
 
-        $dataCount = $this->getAssetCount(
-            'data',
-            $tahun
-        );
+        $dataCount =
+            $this->getAssetCount(
+                'data',
+                $tahun
+            );
 
         /*
         |--------------------------------------------------------------------------
@@ -148,7 +153,8 @@ class DashboardController extends Controller
         |--------------------------------------------------------------------------
         */
 
-        $statusData = $this->getStatusData($tahun);
+        $statusData =
+            $this->getStatusData($tahun);
 
         /*
         |--------------------------------------------------------------------------
@@ -162,25 +168,21 @@ class DashboardController extends Controller
                 'jumlah' => $hardwareCount,
                 'icon' => 'bi-pc-display',
             ],
-
             [
                 'nama' => 'Software',
                 'jumlah' => $softwareCount,
                 'icon' => 'bi-laptop',
             ],
-
             [
                 'nama' => 'Infrastruktur',
                 'jumlah' => $infrastrukturCount,
                 'icon' => 'bi-diagram-3',
             ],
-
             [
                 'nama' => 'SDM',
                 'jumlah' => $sdmCount,
                 'icon' => 'bi-people',
             ],
-
             [
                 'nama' => 'Data',
                 'jumlah' => $dataCount,
@@ -189,7 +191,6 @@ class DashboardController extends Controller
         ];
 
         foreach ($kategoriData as &$kategori) {
-
             $kategori['persentase'] =
                 $totalAset > 0
                     ? round(
@@ -212,12 +213,10 @@ class DashboardController extends Controller
                 'nama' => 'Jaringan',
                 'jumlah' => $jaringanCount,
             ],
-
             [
                 'nama' => 'Data Center',
                 'jumlah' => $dataCenterCount,
             ],
-
             [
                 'nama' => 'SPLP',
                 'jumlah' => $splpCount,
@@ -230,7 +229,8 @@ class DashboardController extends Controller
         |--------------------------------------------------------------------------
         */
 
-        $activities = $this->getActivities($tahun);
+        $activities =
+            $this->getActivities($tahun);
 
         /*
         |--------------------------------------------------------------------------
@@ -248,49 +248,57 @@ class DashboardController extends Controller
         */
 
         $viewData = [
-
             'tahun' => $tahun,
-
             'tahunList' => $tahunList,
-
             'totalAset' => $totalAset,
 
             'hardwareCount' => $hardwareCount,
-
             'softwareCount' => $softwareCount,
 
-            'infrastrukturCount' => $infrastrukturCount,
+            'infrastrukturCount' =>
+                $infrastrukturCount,
 
-            'jaringanCount' => $jaringanCount,
+            'jaringanCount' =>
+                $jaringanCount,
 
-            'dataCenterCount' => $dataCenterCount,
+            'dataCenterCount' =>
+                $dataCenterCount,
 
-            'splpCount' => $splpCount,
+            'splpCount' =>
+                $splpCount,
 
-            'sdmCount' => $sdmCount,
+            'sdmCount' =>
+                $sdmCount,
 
-            'dataCount' => $dataCount,
+            'dataCount' =>
+                $dataCount,
 
-            'hardwareDashboard' => $hardwareDashboard,
+            'hardwareDashboard' =>
+                $hardwareDashboard,
 
-            'softwareDashboard' => $softwareDashboard,
+            'softwareDashboard' =>
+                $softwareDashboard,
 
             'infrastrukturDashboard' =>
                 $infrastrukturDashboard,
 
-            'statusData' => $statusData,
+            'statusData' =>
+                $statusData,
 
-            'kategoriData' => $kategoriData,
+            'kategoriData' =>
+                $kategoriData,
 
             'infrastrukturDetail' =>
                 $infrastrukturDetail,
 
-            'activities' => $activities,
+            'activities' =>
+                $activities,
 
             'verificationData' =>
                 $verificationData,
 
-            'role' => $role,
+            'role' =>
+                $role,
         ];
 
         /*
@@ -348,46 +356,50 @@ class DashboardController extends Controller
      * RESOLVE TABLE NAME
      * ============================================================
      */
-    private function resolveTableName(string $table): ?string
-{
-    $candidates = [
-        $table,
-    ];
+    private function resolveTableName(
+        string $table
+    ): ?string {
 
-    if ($table === 'softwares') {
-        $candidates[] = 'software_assets';
-        $candidates[] = 'software_asset';
-    }
+        $candidates = [
+            $table,
+        ];
 
-    if ($table === 'hardwares') {
-        $candidates[] = 'hardware';
-    }
-
-    if ($table === 'sdms') {
-        $candidates[] = 'sdm';
-    }
-
-    if ($table === 'jaringans') {
-        $candidates[] = 'jaringan';
-    }
-
-    if ($table === 'splps') {
-        $candidates[] = 'splp';
-    }
-
-    if ($table === 'data_centers') {
-        $candidates[] = 'data_center';
-    }
-
-    foreach ($candidates as $candidate) {
-
-        if (Schema::hasTable($candidate)) {
-            return $candidate;
+        if ($table === 'softwares') {
+            $candidates[] = 'software_assets';
+            $candidates[] = 'software_asset';
         }
-    }
 
-    return null;
-}
+        if ($table === 'hardwares') {
+            $candidates[] = 'hardware';
+        }
+
+        if ($table === 'sdms') {
+            $candidates[] = 'sdm';
+        }
+
+        if ($table === 'jaringans') {
+            $candidates[] = 'jaringan';
+        }
+
+        if ($table === 'splps') {
+            $candidates[] = 'splp';
+        }
+
+        if ($table === 'data_centers') {
+            $candidates[] = 'data_center';
+        }
+
+        foreach ($candidates as $candidate) {
+
+            if (
+                Schema::hasTable($candidate)
+            ) {
+                return $candidate;
+            }
+        }
+
+        return null;
+    }
 
 
     /**
@@ -400,7 +412,6 @@ class DashboardController extends Controller
     ): array {
 
         $result = [
-
             'status' => [
                 'Baik' => 0,
                 'Perbaikan' => 0,
@@ -427,19 +438,11 @@ class DashboardController extends Controller
 
         $query = DB::table($table);
 
-        if ($tahun) {
-
-            $dateColumn =
-                $this->getDateColumn($table);
-
-            if ($dateColumn) {
-
-                $query->whereYear(
-                    $dateColumn,
-                    $tahun
-                );
-            }
-        }
+        $this->applyYearFilter(
+            $query,
+            $table,
+            $tahun
+        );
 
         $rows = $query->get();
 
@@ -467,19 +470,15 @@ class DashboardController extends Controller
 
         foreach ($rows as $row) {
 
-            /*
-            |--------------------------------------------------------------------------
-            | KONDISI
-            |--------------------------------------------------------------------------
-            */
-
-            $condition = $conditionColumn
-                ? trim(
-                    (string) (
-                        $row->{$conditionColumn} ?? ''
+            $condition =
+                $conditionColumn
+                    ? trim(
+                        (string) (
+                            $row->{$conditionColumn}
+                            ?? ''
+                        )
                     )
-                )
-                : '';
+                    : '';
 
             $conditionLower =
                 strtolower($condition);
@@ -533,73 +532,91 @@ class DashboardController extends Controller
                 $result['status']['Baik']++;
             }
 
-            /*
-|--------------------------------------------------------------------------
-| JENIS
-|--------------------------------------------------------------------------
-*/
+            $jenis =
+                $jenisColumn
+                    ? trim(
+                        (string) (
+                            $row->{$jenisColumn}
+                            ?? ''
+                        )
+                    )
+                    : '';
 
-$jenis = $jenisColumn
-    ? trim(
-        (string) (
-            $row->{$jenisColumn} ?? ''
-        )
-    )
-    : '';
+            $jenisLower =
+                strtolower($jenis);
 
-$jenisLower = strtolower($jenis);
+            if (
+                str_contains(
+                    $jenisLower,
+                    'laptop'
+                )
+            ) {
 
-if (
-    str_contains($jenisLower, 'laptop')
-) {
+                $result['jenis']['Laptop']++;
 
-    $result['jenis']['Laptop']++;
+            } elseif (
+                in_array(
+                    $jenisLower,
+                    [
+                        'pc',
+                        'komputer',
+                        'desktop',
+                    ],
+                    true
+                )
+            ) {
 
-} elseif (
-    in_array(
-        $jenisLower,
-        [
-            'pc',
-            'komputer',
-            'desktop',
-        ],
-        true
-    )
-) {
+                $result['jenis']['PC']++;
 
-    $result['jenis']['PC']++;
+            } elseif (
+                str_contains(
+                    $jenisLower,
+                    'printer'
+                )
+            ) {
 
-} elseif (
-    str_contains($jenisLower, 'printer')
-) {
+                $result['jenis']['Printer']++;
 
-    $result['jenis']['Printer']++;
+            } elseif (
+                str_contains(
+                    $jenisLower,
+                    'monitor'
+                )
+            ) {
 
-} elseif (
-    str_contains($jenisLower, 'monitor')
-) {
+                $result['jenis']['Monitor']++;
 
-    $result['jenis']['Monitor']++;
+            } elseif (
+                str_contains(
+                    $jenisLower,
+                    'keyboard'
+                )
+            ) {
 
-} elseif (
-    str_contains($jenisLower, 'keyboard')
-) {
+                $result['jenis']['Keyboard']++;
 
-    $result['jenis']['Keyboard']++;
+            } elseif (
+                str_contains(
+                    $jenisLower,
+                    'mouse'
+                )
+            ) {
 
-} elseif (
-    str_contains($jenisLower, 'mouse')
-) {
+                $result['jenis']['Mouse']++;
 
-    $result['jenis']['Mouse']++;
+            } elseif (
+                str_contains(
+                    $jenisLower,
+                    'kamera'
+                ) ||
+                str_contains(
+                    $jenisLower,
+                    'camera'
+                )
+            ) {
 
-} elseif (
-    str_contains($jenisLower, 'kamera') ||
-    str_contains($jenisLower, 'camera')
-) {
-
-    $result['jenis']['Camera']++;
-}
+                $result['jenis']['Camera']++;
+            }
         }
 
         return $result;
@@ -616,7 +633,6 @@ if (
     ): array {
 
         $result = [
-
             'pengadaan' => [
                 'Beli' => 0,
                 'Sewa' => 0,
@@ -629,15 +645,6 @@ if (
             ],
         ];
 
-        /*
-        |--------------------------------------------------------------------------
-        | CARI TABEL SOFTWARE
-        |--------------------------------------------------------------------------
-        |
-        | Akan menemukan software_assets
-        |
-        */
-
         $table =
             $this->resolveTableName('softwares');
 
@@ -647,31 +654,11 @@ if (
 
         $query = DB::table($table);
 
-        /*
-        |--------------------------------------------------------------------------
-        | FILTER TAHUN
-        |--------------------------------------------------------------------------
-        */
-
-        if ($tahun) {
-
-            $dateColumn =
-                $this->getDateColumn($table);
-
-            if ($dateColumn) {
-
-                $query->whereYear(
-                    $dateColumn,
-                    $tahun
-                );
-            }
-        }
-
-        /*
-        |--------------------------------------------------------------------------
-        | AMBIL DATA
-        |--------------------------------------------------------------------------
-        */
+        $this->applyYearFilter(
+            $query,
+            $table,
+            $tahun
+        );
 
         $rows = $query->get();
 
@@ -679,12 +666,6 @@ if (
 
         $thirtyDaysLater =
             Carbon::today()->addDays(30);
-
-        /*
-        |--------------------------------------------------------------------------
-        | CEK KOLOM
-        |--------------------------------------------------------------------------
-        */
 
         $pengadaanColumn =
             $this->firstExistingColumn(
@@ -718,63 +699,36 @@ if (
                 ]
             );
 
-        /*
-        |--------------------------------------------------------------------------
-        | HITUNG DATA
-        |--------------------------------------------------------------------------
-        */
-
         foreach ($rows as $row) {
-
-            /*
-            |--------------------------------------------------------------------------
-            | PENGADAAN
-            |--------------------------------------------------------------------------
-            */
 
             $pengadaan = '';
 
             if ($pengadaanColumn) {
 
-                $pengadaan = strtolower(
-                    trim(
-                        (string) (
-                            $row->{$pengadaanColumn}
-                            ?? ''
+                $pengadaan =
+                    strtolower(
+                        trim(
+                            (string) (
+                                $row->{$pengadaanColumn}
+                                ?? ''
+                            )
                         )
-                    )
-                );
+                    );
             }
 
             if ($pengadaan === 'beli') {
-
                 $result['pengadaan']['Beli']++;
-
             } elseif ($pengadaan === 'sewa') {
-
                 $result['pengadaan']['Sewa']++;
             }
-
-            /*
-            |--------------------------------------------------------------------------
-            | TANGGAL BERAKHIR
-            |--------------------------------------------------------------------------
-            */
 
             $tanggalBerakhir = null;
 
             if ($tanggalBerakhirColumn) {
-
                 $tanggalBerakhir =
                     $row->{$tanggalBerakhirColumn}
                     ?? null;
             }
-
-            /*
-            |--------------------------------------------------------------------------
-            | STATUS BERDASARKAN TANGGAL
-            |--------------------------------------------------------------------------
-            */
 
             if ($tanggalBerakhir) {
 
@@ -785,24 +739,14 @@ if (
                             $tanggalBerakhir
                         );
 
-                    /*
-                    |--------------------------------------------------------------------------
-                    | EXPIRED
-                    |--------------------------------------------------------------------------
-                    */
-
-                    if ($endDate->lt($today)) {
+                    if (
+                        $endDate->lt($today)
+                    ) {
 
                         $result['status']['Expired']++;
 
                         continue;
                     }
-
-                    /*
-                    |--------------------------------------------------------------------------
-                    | AKAN HABIS
-                    |--------------------------------------------------------------------------
-                    */
 
                     if (
                         $endDate->gte($today) &&
@@ -814,38 +758,26 @@ if (
                         continue;
                     }
 
-                    /*
-                    |--------------------------------------------------------------------------
-                    | TERSEDIA
-                    |--------------------------------------------------------------------------
-                    */
-
                     $result['status']['Tersedia']++;
 
                     continue;
 
                 } catch (\Throwable $e) {
-
-                    // lanjut ke status manual
+                    // fallback
                 }
             }
 
-            /*
-            |--------------------------------------------------------------------------
-            | STATUS MANUAL
-            |--------------------------------------------------------------------------
-            */
-
             if ($statusColumn) {
 
-                $status = strtolower(
-                    trim(
-                        (string) (
-                            $row->{$statusColumn}
-                            ?? ''
+                $status =
+                    strtolower(
+                        trim(
+                            (string) (
+                                $row->{$statusColumn}
+                                ?? ''
+                            )
                         )
-                    )
-                );
+                    );
 
                 if (
                     in_array(
@@ -881,12 +813,6 @@ if (
 
             } else {
 
-                /*
-                |--------------------------------------------------------------------------
-                | DEFAULT
-                |--------------------------------------------------------------------------
-                */
-
                 $result['status']['Tersedia']++;
             }
         }
@@ -905,7 +831,6 @@ if (
     ): array {
 
         $result = [
-
             'pengadaan' => [
                 'Beli' => 0,
                 'Sewa' => 0,
@@ -937,38 +862,29 @@ if (
 
             $query = DB::table($table);
 
-            if ($tahun) {
-
-                $dateColumn =
-                    $this->getDateColumn($table);
-
-                if ($dateColumn) {
-
-                    $query->whereYear(
-                        $dateColumn,
-                        $tahun
-                    );
-                }
-            }
+            $this->applyYearFilter(
+                $query,
+                $table,
+                $tahun
+            );
 
             $rows = $query->get();
 
             foreach ($rows as $row) {
 
-                $pengadaan = strtolower(
-                    trim(
-                        (string) (
-                            $row->pengadaan ?? ''
+                $pengadaan =
+                    strtolower(
+                        trim(
+                            (string) (
+                                $row->pengadaan
+                                ?? ''
+                            )
                         )
-                    )
-                );
+                    );
 
                 if ($pengadaan === 'beli') {
-
                     $result['pengadaan']['Beli']++;
-
                 } elseif ($pengadaan === 'sewa') {
-
                     $result['pengadaan']['Sewa']++;
                 }
 
@@ -1001,21 +917,25 @@ if (
         $row
     ): string {
 
-        $pengadaan = strtolower(
-            trim(
-                (string) (
-                    $row->pengadaan ?? ''
+        $pengadaan =
+            strtolower(
+                trim(
+                    (string) (
+                        $row->pengadaan
+                        ?? ''
+                    )
                 )
-            )
-        );
+            );
 
         if ($pengadaan === 'beli') {
 
-            $status = trim(
-                (string) (
-                    $row->status ?? ''
-                )
-            );
+            $status =
+                trim(
+                    (string) (
+                        $row->status
+                        ?? ''
+                    )
+                );
 
             if ($status !== '') {
 
@@ -1028,7 +948,8 @@ if (
         }
 
         $tanggalBerakhir =
-            $row->tanggal_berakhir ?? null;
+            $row->tanggal_berakhir
+            ?? null;
 
         if ($tanggalBerakhir) {
 
@@ -1064,11 +985,13 @@ if (
             }
         }
 
-        $status = trim(
-            (string) (
-                $row->status ?? ''
-            )
-        );
+        $status =
+            trim(
+                (string) (
+                    $row->status
+                    ?? ''
+                )
+            );
 
         if (
             strtolower($status) === 'digunakan'
@@ -1104,21 +1027,11 @@ if (
 
         $query = DB::table($table);
 
-        if ($tahun) {
-
-            $dateColumn =
-                $this->getDateColumn(
-                    $table
-                );
-
-            if ($dateColumn) {
-
-                $query->whereYear(
-                    $dateColumn,
-                    $tahun
-                );
-            }
-        }
+        $this->applyYearFilter(
+            $query,
+            $table,
+            $tahun
+        );
 
         return $query->count();
     }
@@ -1154,35 +1067,164 @@ if (
                 continue;
             }
 
-            $dateColumn =
-                $this->getDateColumn(
-                    $table
-                );
+            $yearColumns = [
+                'tahun_pembelian',
+                'tahun_pengadaan',
+                'tahun',
+            ];
 
-            if (!$dateColumn) {
+            $foundYearColumn = false;
+
+            foreach ($yearColumns as $yearColumn) {
+
+                if (
+                    !Schema::hasColumn(
+                        $table,
+                        $yearColumn
+                    )
+                ) {
+                    continue;
+                }
+
+                $years =
+                    DB::table($table)
+                        ->whereNotNull($yearColumn)
+                        ->where($yearColumn, '!=', '')
+                        ->pluck($yearColumn);
+
+                $tahunList =
+                    $tahunList->merge($years);
+
+                $foundYearColumn = true;
+
+                break;
+            }
+
+            if ($foundYearColumn) {
                 continue;
             }
 
-            $years = DB::table($table)
-                ->whereNotNull($dateColumn)
-                ->selectRaw(
-                    "YEAR(`{$dateColumn}`) as tahun"
-                )
-                ->distinct()
-                ->pluck('tahun');
+            $dateColumns = [
+                'tanggal_pengadaan',
+                'tanggal_pembelian',
+                'tgl_pengadaan',
+                'tanggal',
+                'created_at',
+            ];
 
-            $tahunList =
-                $tahunList->merge($years);
+            foreach ($dateColumns as $dateColumn) {
+
+                if (
+                    !Schema::hasColumn(
+                        $table,
+                        $dateColumn
+                    )
+                ) {
+                    continue;
+                }
+
+                $years =
+                    DB::table($table)
+                        ->whereNotNull($dateColumn)
+                        ->selectRaw(
+                            "YEAR(`{$dateColumn}`) as tahun"
+                        )
+                        ->distinct()
+                        ->pluck('tahun');
+
+                $tahunList =
+                    $tahunList->merge($years);
+
+                break;
+            }
         }
 
         return $tahunList
-            ->filter()
-            ->map(
-                fn ($year) => (int) $year
-            )
+            ->filter(function ($year) {
+
+                return is_numeric($year) &&
+                    (int) $year >= 1900 &&
+                    (int) $year <= 2100;
+            })
+            ->map(function ($year) {
+
+                return (int) $year;
+            })
             ->unique()
             ->sortDesc()
             ->values();
+    }
+
+
+    /**
+     * ============================================================
+     * FILTER TAHUN
+     * ============================================================
+     */
+    private function applyYearFilter(
+        $query,
+        string $table,
+        $tahun
+    ) {
+
+        if (
+            $tahun === null ||
+            $tahun === '' ||
+            $tahun === 'all'
+        ) {
+            return $query;
+        }
+
+        $tahun = (int) $tahun;
+
+        $yearColumns = [
+            'tahun_pembelian',
+            'tahun_pengadaan',
+            'tahun',
+        ];
+
+        foreach ($yearColumns as $yearColumn) {
+
+            if (
+                !Schema::hasColumn(
+                    $table,
+                    $yearColumn
+                )
+            ) {
+                continue;
+            }
+
+            return $query->where(
+                $yearColumn,
+                $tahun
+            );
+        }
+
+        $dateColumns = [
+            'tanggal_pengadaan',
+            'tanggal_pembelian',
+            'tgl_pengadaan',
+            'tanggal',
+            'created_at',
+        ];
+
+        foreach ($dateColumns as $dateColumn) {
+
+            if (
+                Schema::hasColumn(
+                    $table,
+                    $dateColumn
+                )
+            ) {
+
+                return $query->whereYear(
+                    $dateColumn,
+                    $tahun
+                );
+            }
+        }
+
+        return $query;
     }
 
 
@@ -1196,30 +1238,19 @@ if (
     ): array {
 
         $statuses = [
-
             'Aktif' => 0,
-
             'Pending' => 0,
-
             'Rusak' => 0,
-
             'Tidak Digunakan' => 0,
         ];
 
         $tables = [
-
             'hardwares',
-
             'softwares',
-
             'jaringans',
-
             'data_centers',
-
             'splps',
-
             'sdms',
-
             'data',
         ];
 
@@ -1236,29 +1267,15 @@ if (
 
             $query = DB::table($table);
 
-            if ($tahun) {
+            $this->applyYearFilter(
+                $query,
+                $table,
+                $tahun
+            );
 
-                $dateColumn =
-                    $this->getDateColumn(
-                        $table
-                    );
-
-                if ($dateColumn) {
-
-                    $query->whereYear(
-                        $dateColumn,
-                        $tahun
-                    );
-                }
-            }
-
-            /*
-            |--------------------------------------------------------------------------
-            | HARDWARE
-            |--------------------------------------------------------------------------
-            */
-
-            if ($requestedTable === 'hardwares') {
+            if (
+                $requestedTable === 'hardwares'
+            ) {
 
                 $column =
                     $this->firstExistingColumn(
@@ -1275,20 +1292,22 @@ if (
                     continue;
                 }
 
-                $rows = $query
-                    ->select($column)
-                    ->get();
+                $rows =
+                    $query
+                        ->select($column)
+                        ->get();
 
                 foreach ($rows as $row) {
 
-                    $value = strtolower(
-                        trim(
-                            (string) (
-                                $row->{$column}
-                                ?? ''
+                    $value =
+                        strtolower(
+                            trim(
+                                (string) (
+                                    $row->{$column}
+                                    ?? ''
+                                )
                             )
-                        )
-                    );
+                        );
 
                     if ($value === 'rusak') {
 
@@ -1335,13 +1354,9 @@ if (
                 continue;
             }
 
-            /*
-            |--------------------------------------------------------------------------
-            | SOFTWARE
-            |--------------------------------------------------------------------------
-            */
-
-            if ($requestedTable === 'softwares') {
+            if (
+                $requestedTable === 'softwares'
+            ) {
 
                 $rows = $query->get();
 
@@ -1382,12 +1397,6 @@ if (
                 continue;
             }
 
-            /*
-            |--------------------------------------------------------------------------
-            | INFRASTRUKTUR
-            |--------------------------------------------------------------------------
-            */
-
             if (
                 in_array(
                     $requestedTable,
@@ -1409,7 +1418,9 @@ if (
                             $row
                         );
 
-                    if ($status === 'Expired') {
+                    if (
+                        $status === 'Expired'
+                    ) {
 
                         $statuses[
                             'Tidak Digunakan'
@@ -1430,12 +1441,6 @@ if (
                 continue;
             }
 
-            /*
-            |--------------------------------------------------------------------------
-            | TABLE LAIN
-            |--------------------------------------------------------------------------
-            */
-
             $column =
                 $this->firstExistingColumn(
                     $table,
@@ -1450,20 +1455,22 @@ if (
                 continue;
             }
 
-            $rows = $query
-                ->select($column)
-                ->get();
+            $rows =
+                $query
+                    ->select($column)
+                    ->get();
 
             foreach ($rows as $row) {
 
-                $value = strtolower(
-                    trim(
-                        (string) (
-                            $row->{$column}
-                            ?? ''
+                $value =
+                    strtolower(
+                        trim(
+                            (string) (
+                                $row->{$column}
+                                ?? ''
+                            )
                         )
-                    )
-                );
+                    );
 
                 if (
                     in_array(
@@ -1529,14 +1536,11 @@ if (
      * AKTIVITAS TERBARU
      * ============================================================
      */
-    private function getActivities(
-        $tahun = null
-    ) {
-
+    private function getActivities($tahun = null)
+    {
         $activities = collect();
 
         $tables = [
-
             [
                 'table' => 'hardwares',
                 'label' => 'Hardware',
@@ -1594,176 +1598,445 @@ if (
                 continue;
             }
 
-            $timeColumn =
-                $this->getActivityDateColumn(
+            $hasCreatedAt =
+                Schema::hasColumn(
+                    $table,
+                    'created_at'
+                );
+
+            $hasUpdatedAt =
+                Schema::hasColumn(
+                    $table,
+                    'updated_at'
+                );
+
+            $fallbackDateColumn =
+                $this->getActivityFallbackDateColumn(
                     $table
                 );
 
-            if (!$timeColumn) {
+            if (
+                !$hasCreatedAt &&
+                !$hasUpdatedAt &&
+                !$fallbackDateColumn
+            ) {
                 continue;
             }
 
-            $query = DB::table($table);
+            $query =
+                DB::table($table);
 
-            if ($tahun) {
+            $this->applyYearFilter(
+                $query,
+                $table,
+                $tahun
+            );
 
-                $dateColumn =
-                    $this->getDateColumn(
-                        $table
-                    );
-
-                if ($dateColumn) {
-
-                    $query->whereYear(
-                        $dateColumn,
-                        $tahun
-                    );
-                }
-            }
-
-            $rows = $query
-                ->orderByDesc($timeColumn)
-                ->limit(10)
-                ->get();
+            $rows = $query->get();
 
             foreach ($rows as $row) {
 
-                $dateValue =
-                    $row->{$timeColumn}
-                    ?? null;
+                $activityDate = null;
 
-                if (!$dateValue) {
-                    continue;
-                }
+                $activityType = 'created';
 
-                try {
+                /*
+                |--------------------------------------------------------------------------
+                | TENTUKAN TANGGAL AKTIVITAS
+                |--------------------------------------------------------------------------
+                */
 
-                    $date =
-                        Carbon::parse(
-                            $dateValue
-                        );
+                $createdRaw =
+                    $hasCreatedAt
+                        ? ($row->created_at ?? null)
+                        : null;
 
-                } catch (\Throwable $e) {
+                $updatedRaw =
+                    $hasUpdatedAt
+                        ? ($row->updated_at ?? null)
+                        : null;
 
-                    continue;
+                $createdDate =
+                    $this->parseActivityDate(
+                        $createdRaw
+                    );
+
+                $updatedDate =
+                    $this->parseActivityDate(
+                        $updatedRaw
+                    );
+
+                if ($createdDate) {
+
+                    $activityDate =
+                        $createdDate;
                 }
 
                 /*
                 |--------------------------------------------------------------------------
-                | OPERATOR
+                | UPDATE HANYA JIKA BENAR-BENAR LEBIH BARU
                 |--------------------------------------------------------------------------
                 */
 
-                $operator = 'Operator';
-
-                $userId = null;
-
                 if (
-                    isset($row->user_id) &&
-                    $row->user_id
-                ) {
-
-                    $userId =
-                        $row->user_id;
-
-                } elseif (
-                    isset($row->created_by) &&
-                    $row->created_by
-                ) {
-
-                    $userId =
-                        $row->created_by;
-                }
-
-                if (
-                    $userId &&
-                    Schema::hasTable('users')
-                ) {
-
-                    $userName =
-                        DB::table('users')
-                            ->where(
-                                'id',
-                                $userId
-                            )
-                            ->value('name');
-
-                    if ($userName) {
-
-                        $operator =
-                            $userName;
-                    }
-                }
-
-                /*
-                |--------------------------------------------------------------------------
-                | AKTIVITAS
-                |--------------------------------------------------------------------------
-                */
-
-                $text =
-                    'Data ' .
-                    $item['label'] .
-                    ' baru ditambahkan';
-
-                $icon =
-                    $item['icon'];
-
-                if (
-                    Schema::hasColumn(
-                        $table,
-                        'created_at'
-                    ) &&
-                    Schema::hasColumn(
-                        $table,
-                        'updated_at'
+                    $updatedDate &&
+                    (
+                        !$createdDate ||
+                        $updatedDate->gt(
+                            $createdDate
+                        )
                     )
                 ) {
 
-                    $created =
-                        $row->created_at
+                    $activityDate =
+                        $updatedDate;
+
+                    $activityType =
+                        'updated';
+                }
+
+                /*
+                |--------------------------------------------------------------------------
+                | FALLBACK TANGGAL
+                |--------------------------------------------------------------------------
+                */
+
+                if (
+                    !$activityDate &&
+                    $fallbackDateColumn
+                ) {
+
+                    $fallbackRaw =
+                        $row->{$fallbackDateColumn}
                         ?? null;
 
-                    $updated =
-                        $row->updated_at
-                        ?? null;
+                    $activityDate =
+                        $this->parseActivityDate(
+                            $fallbackRaw
+                        );
+                }
+
+                if (!$activityDate) {
+                    continue;
+                }
+
+                /*
+                |--------------------------------------------------------------------------
+                | CARI USER YANG MELAKUKAN AKTIVITAS
+                |--------------------------------------------------------------------------
+                */
+
+                $userId = null;
+
+                /*
+                | Kalau UPDATE:
+                | updated_by > user_id > created_by
+                */
+
+                if ($activityType === 'updated') {
 
                     if (
-                        $created &&
-                        $updated &&
-                        $created != $updated
+                        isset($row->updated_by) &&
+                        $row->updated_by
                     ) {
 
-                        $text =
-                            'Data ' .
-                            $item['label'] .
-                            ' diperbarui';
+                        $userId =
+                            $row->updated_by;
 
-                        $icon =
-                            'bi-pencil';
+                    } elseif (
+                        isset($row->user_id) &&
+                        $row->user_id
+                    ) {
+
+                        $userId =
+                            $row->user_id;
+
+                    } elseif (
+                        isset($row->created_by) &&
+                        $row->created_by
+                    ) {
+
+                        $userId =
+                            $row->created_by;
+                    }
+
+                } else {
+
+                    /*
+                    | Kalau CREATE:
+                    | created_by > user_id > updated_by
+                    */
+
+                    if (
+                        isset($row->created_by) &&
+                        $row->created_by
+                    ) {
+
+                        $userId =
+                            $row->created_by;
+
+                    } elseif (
+                        isset($row->user_id) &&
+                        $row->user_id
+                    ) {
+
+                        $userId =
+                            $row->user_id;
+
+                    } elseif (
+                        isset($row->updated_by) &&
+                        $row->updated_by
+                    ) {
+
+                        $userId =
+                            $row->updated_by;
                     }
                 }
 
+                /*
+                |--------------------------------------------------------------------------
+                | NAMA / USERNAME USER
+                |--------------------------------------------------------------------------
+                */
+
+                $operator =
+                    $this->getActivityUserName(
+                        $userId
+                    );
+
+                /*
+                |--------------------------------------------------------------------------
+                | TEXT
+                |--------------------------------------------------------------------------
+                */
+
+                if (
+                    $activityType === 'updated'
+                ) {
+
+                    $text =
+                        'Data ' .
+                        $item['label'] .
+                        ' diperbarui';
+
+                    $icon =
+                        'bi-pencil';
+
+                } else {
+
+                    $text =
+                        'Data ' .
+                        $item['label'] .
+                        ' baru ditambahkan';
+
+                    $icon =
+                        $item['icon'];
+                }
+
+                /*
+                |--------------------------------------------------------------------------
+                | TANGGAL LENGKAP
+                |--------------------------------------------------------------------------
+                */
+
+                $tanggal =
+                    $activityDate
+                        ->locale('id')
+                        ->translatedFormat(
+                            'd F Y, H:i'
+                        );
+
+                /*
+                |--------------------------------------------------------------------------
+                | SIMPAN
+                |--------------------------------------------------------------------------
+                */
+
                 $activities->push([
+                    'date' =>
+                        $activityDate,
 
-                    'date' => $date,
+                    'tanggal' =>
+                        $tanggal,
 
-                    'icon' => $icon,
-
-                    'operator' => $operator,
+                    'operator' =>
+                        $operator,
 
                     'feature' =>
                         $item['label'],
 
-                    'text' => $text,
+                    'text' =>
+                        $text,
+
+                    'type' =>
+                        $activityType,
+
+                    'icon' =>
+                        $icon,
+
+                    'table' =>
+                        $table,
                 ]);
             }
         }
 
+        /*
+        |--------------------------------------------------------------------------
+        | SORT DARI AKTIVITAS TERBARU
+        |--------------------------------------------------------------------------
+        */
+
         return $activities
-            ->sortByDesc('date')
+            ->sortByDesc(function ($activity) {
+
+                return $activity['date']->timestamp;
+
+            })
             ->take(10)
             ->values();
+    }
+
+
+    /**
+     * ============================================================
+     * NAMA USER AKTIVITAS
+     * ============================================================
+     */
+    private function getActivityUserName(
+        $userId
+    ): string {
+
+        if (
+            !$userId ||
+            !Schema::hasTable('users')
+        ) {
+            return 'Operator';
+        }
+
+        $user =
+            DB::table('users')
+                ->where('id', $userId)
+                ->first();
+
+        if (!$user) {
+            return 'Operator';
+        }
+
+        /*
+        |--------------------------------------------------------------------------
+        | PRIORITAS USERNAME
+        |--------------------------------------------------------------------------
+        */
+
+        if (
+            isset($user->username) &&
+            !empty($user->username)
+        ) {
+
+            return $user->username;
+        }
+
+        /*
+        |--------------------------------------------------------------------------
+        | FALLBACK NAME
+        |--------------------------------------------------------------------------
+        */
+
+        if (
+            isset($user->name) &&
+            !empty($user->name)
+        ) {
+
+            return $user->name;
+        }
+
+        return 'Operator';
+    }
+
+
+    /**
+     * ============================================================
+     * PARSE TANGGAL AKTIVITAS
+     * ============================================================
+     */
+    private function parseActivityDate(
+        $value
+    ): ?Carbon {
+
+        if (
+            $value === null ||
+            $value === ''
+        ) {
+            return null;
+        }
+
+        try {
+
+            if (
+                $value instanceof Carbon
+            ) {
+
+                return $value
+                    ->copy()
+                    ->setTimezone(
+                        'Asia/Jakarta'
+                    );
+            }
+
+            return Carbon::createFromFormat(
+                'Y-m-d H:i:s',
+                (string) $value,
+                'Asia/Jakarta'
+            );
+
+        } catch (\Throwable $e) {
+
+            try {
+
+                return Carbon::parse(
+                    (string) $value,
+                    'Asia/Jakarta'
+                );
+
+            } catch (\Throwable $e) {
+
+                return null;
+            }
+        }
+    }
+
+
+    /**
+     * ============================================================
+     * CARI KOLOM TANGGAL FALLBACK AKTIVITAS
+     * ============================================================
+     */
+    private function getActivityFallbackDateColumn(
+        string $table
+    ) {
+
+        $candidates = [
+            'tanggal_pengadaan',
+            'tanggal_pembelian',
+            'tgl_pengadaan',
+            'tanggal',
+            'tahun_pengadaan',
+        ];
+
+        foreach ($candidates as $column) {
+
+            if (
+                Schema::hasColumn(
+                    $table,
+                    $column
+                )
+            ) {
+
+                return $column;
+            }
+        }
+
+        return null;
     }
 
 
@@ -1777,28 +2050,18 @@ if (
     ): array {
 
         $result = [
-
             'Menunggu' => 0,
-
             'Disetujui' => 0,
-
             'Ditolak' => 0,
         ];
 
         $tables = [
-
             'hardwares',
-
             'softwares',
-
             'jaringans',
-
             'data_centers',
-
             'splps',
-
             'sdms',
-
             'data',
         ];
 
@@ -1827,40 +2090,33 @@ if (
                 continue;
             }
 
-            $query = DB::table($table);
+            $query =
+                DB::table($table);
 
-            if ($tahun) {
+            $this->applyYearFilter(
+                $query,
+                $table,
+                $tahun
+            );
 
-                $dateColumn =
-                    $this->getDateColumn(
-                        $table
-                    );
-
-                if ($dateColumn) {
-
-                    $query->whereYear(
-                        $dateColumn,
-                        $tahun
-                    );
-                }
-            }
-
-            $rows = $query
-                ->select(
-                    $verificationColumn
-                )
-                ->get();
+            $rows =
+                $query
+                    ->select(
+                        $verificationColumn
+                    )
+                    ->get();
 
             foreach ($rows as $row) {
 
-                $value = strtolower(
-                    trim(
-                        (string) (
-                            $row->{$verificationColumn}
-                            ?? ''
+                $value =
+                    strtolower(
+                        trim(
+                            (string) (
+                                $row->{$verificationColumn}
+                                ?? ''
+                            )
                         )
-                    )
-                );
+                    );
 
                 if (
                     in_array(
@@ -1912,88 +2168,6 @@ if (
         }
 
         return $result;
-    }
-
-
-    /**
-     * ============================================================
-     * CARI KOLOM TANGGAL
-     * ============================================================
-     */
-    private function getDateColumn(
-        string $table
-    ) {
-
-        $candidates = [
-
-            'tanggal_pengadaan',
-
-            'tanggal_pembelian',
-
-            'tgl_pengadaan',
-
-            'tanggal',
-
-            'tahun_pengadaan',
-
-            'created_at',
-        ];
-
-        foreach ($candidates as $column) {
-
-            if (
-                Schema::hasColumn(
-                    $table,
-                    $column
-                )
-            ) {
-
-                return $column;
-            }
-        }
-
-        return null;
-    }
-
-
-    /**
-     * ============================================================
-     * CARI KOLOM AKTIVITAS
-     * ============================================================
-     */
-    private function getActivityDateColumn(
-        string $table
-    ) {
-
-        $candidates = [
-
-            'created_at',
-
-            'updated_at',
-
-            'tanggal_pengadaan',
-
-            'tanggal_pembelian',
-
-            'tgl_pengadaan',
-
-            'tanggal',
-        ];
-
-        foreach ($candidates as $column) {
-
-            if (
-                Schema::hasColumn(
-                    $table,
-                    $column
-                )
-            ) {
-
-                return $column;
-            }
-        }
-
-        return null;
     }
 
 
