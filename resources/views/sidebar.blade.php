@@ -171,12 +171,15 @@
                     class="logout-button"
                     title="Logout">
                 <i class="bi bi-box-arrow-right"></i>
+
             </button>
+
         </form>
 
     </div>
 
 </aside>
+
 
 <style>
     /* =========================================================
@@ -420,6 +423,7 @@
         transform: scale(1.08);
     }
 </style>
+
 
 <script>
     /* =========================================================

@@ -5,7 +5,9 @@ namespace App\Http\Controllers;
 use App\Models\Data;
 use App\Models\DataPengajuan;
 use App\Models\Notification;
+use App\Models\VerificationRequest;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\DB;
 
 class DataController extends Controller
 {
@@ -18,9 +20,11 @@ class DataController extends Controller
     {
         $query = Data::query();
 
-        // =====================================================
-        // SEARCH
-        // =====================================================
+        /*
+        |--------------------------------------------------------------------------
+        | SEARCH
+        |--------------------------------------------------------------------------
+        */
 
         if ($request->filled('search')) {
 
@@ -31,18 +35,26 @@ class DataController extends Controller
                 $q->where(
                     'nama_dataset',
                     'like',
-                    '%' . $search . '%'
-                )->orWhere(
-                    'jenis_data',
-                    'like',
-                    '%' . $search . '%'
-                );
+                    "%{$search}%"
+                )
+                    ->orWhere(
+                        'jenis_data',
+                        'like',
+                        "%{$search}%"
+                    )
+                    ->orWhere(
+                        'tahun',
+                        'like',
+                        "%{$search}%"
+                    );
             });
         }
 
-        // =====================================================
-        // FILTER JENIS DATA
-        // =====================================================
+        /*
+        |--------------------------------------------------------------------------
+        | FILTER JENIS DATA
+        |--------------------------------------------------------------------------
+        */
 
         if ($request->filled('jenis_data')) {
 
@@ -52,9 +64,11 @@ class DataController extends Controller
             );
         }
 
-        // =====================================================
-        // FILTER TAHUN
-        // =====================================================
+        /*
+        |--------------------------------------------------------------------------
+        | FILTER TAHUN
+        |--------------------------------------------------------------------------
+        */
 
         if ($request->filled('tahun')) {
 
@@ -64,23 +78,38 @@ class DataController extends Controller
             );
         }
 
-        // =====================================================
-        // FILTER VERIFIKASI
-        // =====================================================
+        /*
+        |--------------------------------------------------------------------------
+        | FILTER VERIFIKASI
+        |--------------------------------------------------------------------------
+        */
 
         if ($request->filled('verifikasi')) {
 
-            $query->where(
-                'verifikasi',
-                $request->verifikasi
-            );
+            $verifikasi = $request->verifikasi;
+
+            $allowedStatuses = [
+                'Menunggu Disetujui',
+                'Disetujui',
+                'Ditolak',
+            ];
+
+            if (in_array($verifikasi, $allowedStatuses)) {
+
+                $query->where(
+                    'verifikasi',
+                    $verifikasi
+                );
+            }
         }
 
-        // =====================================================
-        // PAGINATION
-        // =====================================================
+        /*
+        |--------------------------------------------------------------------------
+        | PAGINATION
+        |--------------------------------------------------------------------------
+        */
 
-        $show = $request->get('show', 10);
+        $show = (int) $request->input('show', 10);
 
         if (!in_array($show, [10, 25, 50, 100])) {
             $show = 10;
@@ -91,35 +120,45 @@ class DataController extends Controller
             ->paginate($show)
             ->withQueryString();
 
-        // =====================================================
-        // JENIS DATA
-        // =====================================================
+        /*
+        |--------------------------------------------------------------------------
+        | DATA UNTUK FILTER JENIS
+        |--------------------------------------------------------------------------
+        */
 
         $jenisData = Data::query()
             ->select('jenis_data')
+            ->whereNotNull('jenis_data')
+            ->where('jenis_data', '!=', '')
             ->distinct()
             ->orderBy('jenis_data')
             ->pluck('jenis_data');
 
-        // =====================================================
-        // TAHUN
-        // =====================================================
+        /*
+        |--------------------------------------------------------------------------
+        | DATA UNTUK FILTER TAHUN
+        |--------------------------------------------------------------------------
+        */
 
         $tahunData = Data::query()
             ->select('tahun')
+            ->whereNotNull('tahun')
             ->distinct()
             ->orderByDesc('tahun')
             ->pluck('tahun');
 
-        // =====================================================
-        // SUMMARY CARD
-        // =====================================================
+        /*
+        |--------------------------------------------------------------------------
+        | SUMMARY CARD
+        |--------------------------------------------------------------------------
+        */
 
         $totalData = Data::count();
 
-        $totalJenis = Data::distinct(
-            'jenis_data'
-        )->count('jenis_data');
+        $totalJenis = Data::query()
+            ->whereNotNull('jenis_data')
+            ->distinct('jenis_data')
+            ->count('jenis_data');
 
         $totalPending = Data::where(
             'verifikasi',
@@ -136,9 +175,11 @@ class DataController extends Controller
             'Ditolak'
         )->count();
 
-        // =====================================================
-        // RETURN VIEW
-        // =====================================================
+        /*
+        |--------------------------------------------------------------------------
+        | RETURN VIEW
+        |--------------------------------------------------------------------------
+        */
 
         return view(
             'data.index',
@@ -163,20 +204,31 @@ class DataController extends Controller
      */
     public function store(Request $request)
     {
-        // =====================================================
-        // VALIDASI
-        // =====================================================
+        /*
+        |--------------------------------------------------------------------------
+        | VALIDATION
+        |--------------------------------------------------------------------------
+        */
 
         $request->validate([
+            'nama_dataset' => [
+                'required',
+                'string',
+                'max:255',
+            ],
 
-            'nama_dataset' =>
-                'required|string|max:255',
+            'jenis_data' => [
+                'required',
+                'string',
+                'max:255',
+            ],
 
-            'jenis_data' =>
-                'required|string|max:255',
-
-            'tahun' =>
-                'required|integer|min:1900|max:2100',
+            'tahun' => [
+                'required',
+                'integer',
+                'min:1900',
+                'max:2100',
+            ],
 
             'file_data' => [
                 'required',
@@ -184,12 +236,13 @@ class DataController extends Controller
                 'mimes:csv,xls,xlsx,pdf,zip',
                 'max:10240',
             ],
-
         ]);
 
-        // =====================================================
-        // UPLOAD FILE
-        // =====================================================
+        /*
+        |--------------------------------------------------------------------------
+        | UPLOAD FILE
+        |--------------------------------------------------------------------------
+        */
 
         $filePath = null;
 
@@ -203,63 +256,107 @@ class DataController extends Controller
                 );
         }
 
-        // =====================================================
-        // SIMPAN DATA
-        // =====================================================
+        /*
+        |--------------------------------------------------------------------------
+        | CREATE DATA + VERIFICATION REQUEST
+        |--------------------------------------------------------------------------
+        */
 
-        $data = Data::create([
+        DB::transaction(function () use (
+            $request,
+            $filePath
+        ) {
 
-            'nama_dataset' =>
-                $request->nama_dataset,
+            $data = Data::create([
 
-            'jenis_data' =>
-                $request->jenis_data,
+                'nama_dataset' =>
+                    $request->nama_dataset,
 
-            'tahun' =>
-                $request->tahun,
+                'jenis_data' =>
+                    $request->jenis_data,
 
-            'file_data' =>
-                $filePath,
+                'tahun' =>
+                    $request->tahun,
 
-            'verifikasi' =>
-                'Menunggu Disetujui',
+                'file_data' =>
+                    $filePath,
 
-            'tanggal_pengajuan' =>
-                now(),
+                /*
+                | Status SESUAI ENUM database
+                */
+                'verifikasi' =>
+                    'Menunggu Disetujui',
 
-            'komentar_verifikasi' =>
-                null,
+                'tanggal_pengajuan' =>
+                    now(),
 
-        ]);
+                'komentar_verifikasi' =>
+                    null,
+            ]);
 
-        // =====================================================
-        // NOTIFIKASI
-        // =====================================================
+            /*
+            |--------------------------------------------------------------------------
+            | VERIFICATION REQUEST
+            |--------------------------------------------------------------------------
+            | VerificationRequest menggunakan status internal
+            | "menunggu".
+            */
 
-        Notification::create([
-            'judul' =>
-                'Pengajuan Dataset Baru',
+            VerificationRequest::create([
 
-            'pesan' =>
-                $request->user()->username .
-                ' menambahkan dataset "' .
-                $data->nama_dataset .
-                '" dengan ID ' .
-                $data->id .
-                ' dan mengajukannya untuk persetujuan.',
+                'module' =>
+                    'data',
 
-            'dibaca' => false,
-        ]);
+                'record_id' =>
+                    $data->id,
 
-        // =====================================================
-        // REDIRECT
-        // =====================================================
+                'action' =>
+                    'create',
+
+                'data' =>
+                    $data->toArray(),
+
+                'status' =>
+                    'menunggu',
+
+                'submitted_by' =>
+                    auth()->id(),
+            ]);
+
+            /*
+            |--------------------------------------------------------------------------
+            | NOTIFIKASI
+            |--------------------------------------------------------------------------
+            */
+
+            Notification::create([
+                'judul' =>
+                    'Pengajuan Dataset Baru',
+
+                'pesan' =>
+                    $request->user()->username .
+                    ' menambahkan dataset "' .
+                    $data->nama_dataset .
+                    '" dengan ID ' .
+                    $data->id .
+                    ' dan mengajukannya untuk persetujuan.',
+
+                'dibaca' =>
+                    false,
+            ]);
+        });
+
+        /*
+        |--------------------------------------------------------------------------
+        | REDIRECT
+        |--------------------------------------------------------------------------
+        */
 
         return redirect()
             ->route('data.index')
             ->with(
                 'success',
-                'Data berhasil ditambahkan dan menunggu persetujuan verifikator.'
+                'Data berhasil ditambahkan dan menunggu verifikasi.'
             );
     }
 
@@ -289,23 +386,33 @@ class DataController extends Controller
         Request $request,
         $id
     ) {
-
         $data = Data::findOrFail($id);
 
-        // =====================================================
-        // VALIDASI
-        // =====================================================
+        /*
+        |--------------------------------------------------------------------------
+        | VALIDATION
+        |--------------------------------------------------------------------------
+        */
 
         $request->validate([
+            'nama_dataset' => [
+                'required',
+                'string',
+                'max:255',
+            ],
 
-            'nama_dataset' =>
-                'required|string|max:255',
+            'jenis_data' => [
+                'required',
+                'string',
+                'max:255',
+            ],
 
-            'jenis_data' =>
-                'required|string|max:255',
-
-            'tahun' =>
-                'required|integer|min:1900|max:2100',
+            'tahun' => [
+                'required',
+                'integer',
+                'min:1900',
+                'max:2100',
+            ],
 
             'file_data' => [
                 'nullable',
@@ -313,124 +420,140 @@ class DataController extends Controller
                 'mimes:csv,xls,xlsx,pdf,zip',
                 'max:10240',
             ],
-
         ]);
 
-        // =====================================================
-        // DATA LAMA
-        // =====================================================
+        /*
+        |--------------------------------------------------------------------------
+        | SIMPAN DATA LAMA
+        |--------------------------------------------------------------------------
+        */
 
-        $dataLama = [
+        $dataLama = $data->toArray();
 
-            'nama_dataset' =>
-                $data->nama_dataset,
+        /*
+        |--------------------------------------------------------------------------
+        | FILE
+        |--------------------------------------------------------------------------
+        */
 
-            'jenis_data' =>
-                $data->jenis_data,
-
-            'tahun' =>
-                $data->tahun,
-
-            'file_data' =>
-                $data->file_data,
-
-        ];
-
-        // =====================================================
-        // DATA BARU
-        // =====================================================
-
-        $dataBaru = [
-
-            'nama_dataset' =>
-                $request->nama_dataset,
-
-            'jenis_data' =>
-                $request->jenis_data,
-
-            'tahun' =>
-                $request->tahun,
-
-            'file_data' =>
-                $data->file_data,
-
-        ];
-
-        // =====================================================
-        // FILE BARU
-        // =====================================================
+        $filePath = $data->file_data;
 
         if ($request->hasFile('file_data')) {
 
-            $dataBaru['file_data'] =
-                $request
-                    ->file('file_data')
-                    ->store(
-                        'data',
-                        'public'
-                    );
+            $filePath = $request
+                ->file('file_data')
+                ->store(
+                    'data',
+                    'public'
+                );
         }
 
-        // =====================================================
-        // SIMPAN PENGAJUAN EDIT
-        // =====================================================
+        /*
+        |--------------------------------------------------------------------------
+        | UPDATE + VERIFICATION REQUEST
+        |--------------------------------------------------------------------------
+        */
 
-        DataPengajuan::create([
+        DB::transaction(function () use (
+            $data,
+            $request,
+            $filePath,
+            $dataLama
+        ) {
 
-            'data_id' =>
-                $data->id,
+            $data->update([
 
-            'user_id' =>
-                $request->user()->id,
+                'nama_dataset' =>
+                    $request->nama_dataset,
 
-            'aksi' =>
-                'edit',
+                'jenis_data' =>
+                    $request->jenis_data,
 
-            'data_lama' =>
-                $dataLama,
+                'tahun' =>
+                    $request->tahun,
 
-            'data_baru' =>
-                $dataBaru,
+                'file_data' =>
+                    $filePath,
 
-            'status' =>
-                'Menunggu Disetujui',
+                /*
+                | Status kembali menunggu verifikasi.
+                */
+                'verifikasi' =>
+                    'Menunggu Disetujui',
 
-            'komentar' =>
-                null,
+                'komentar_verifikasi' =>
+                    null,
 
-            'tanggal_pengajuan' =>
-                now(),
+                'tanggal_pengajuan' =>
+                    now(),
+            ]);
 
-        ]);
+            /*
+            |--------------------------------------------------------------------------
+            | SIMPAN SNAPSHOT PERUBAHAN
+            |--------------------------------------------------------------------------
+            */
 
-        // =====================================================
-        // NOTIFIKASI
-        // =====================================================
+            VerificationRequest::create([
 
-        Notification::create([
-            'judul' =>
-                'Perubahan Dataset Diajukan',
+                'module' =>
+                    'data',
 
-            'pesan' =>
-                $request->user()->username .
-                ' memperbarui dataset "' .
-                $data->nama_dataset .
-                '" dengan ID ' .
-                $data->id .
-                ' dan mengajukannya kembali untuk persetujuan.',
+                'record_id' =>
+                    $data->id,
 
-            'dibaca' => false,
-        ]);
+                'action' =>
+                    'update',
 
-        // =====================================================
-        // REDIRECT
-        // =====================================================
+                'data' => [
+                    'data_lama' =>
+                        $dataLama,
+
+                    'data_baru' =>
+                        $data->fresh()->toArray(),
+                ],
+
+                'status' =>
+                    'menunggu',
+
+                'submitted_by' =>
+                    auth()->id(),
+            ]);
+
+            /*
+            |--------------------------------------------------------------------------
+            | NOTIFIKASI
+            |--------------------------------------------------------------------------
+            */
+
+            Notification::create([
+                'judul' =>
+                    'Perubahan Dataset Diajukan',
+
+                'pesan' =>
+                    $request->user()->username .
+                    ' memperbarui dataset "' .
+                    $data->nama_dataset .
+                    '" dengan ID ' .
+                    $data->id .
+                    ' dan mengajukannya kembali untuk persetujuan.',
+
+                'dibaca' =>
+                    false,
+            ]);
+        });
+
+        /*
+        |--------------------------------------------------------------------------
+        | REDIRECT
+        |--------------------------------------------------------------------------
+        */
 
         return redirect()
             ->route('data.index')
             ->with(
                 'success',
-                'Perubahan data berhasil diajukan dan menunggu persetujuan verifikator.'
+                'Perubahan data berhasil disimpan dan menunggu verifikasi.'
             );
     }
 
@@ -444,10 +567,6 @@ class DataController extends Controller
     {
         $data = Data::findOrFail($id);
 
-        // =====================================================
-        // CEK FILE
-        // =====================================================
-
         if (!$data->file_data) {
 
             abort(
@@ -456,17 +575,9 @@ class DataController extends Controller
             );
         }
 
-        // =====================================================
-        // PATH FILE
-        // =====================================================
-
         $path = storage_path(
             'app/public/' . $data->file_data
         );
-
-        // =====================================================
-        // CEK FILE FISIK
-        // =====================================================
 
         if (!file_exists($path)) {
 
@@ -475,10 +586,6 @@ class DataController extends Controller
                 'File tidak ditemukan di storage.'
             );
         }
-
-        // =====================================================
-        // TAMPILKAN FILE
-        // =====================================================
 
         return response()->file($path);
     }
@@ -493,89 +600,106 @@ class DataController extends Controller
         Request $request,
         $id
     ) {
-
         $data = Data::findOrFail($id);
 
-        // =====================================================
-        // DATA LAMA
-        // =====================================================
+        /*
+        |--------------------------------------------------------------------------
+        | SIMPAN DATA LAMA
+        |--------------------------------------------------------------------------
+        */
 
-        $dataLama = [
+        $dataLama = $data->toArray();
 
-            'nama_dataset' =>
-                $data->nama_dataset,
+        /*
+        |--------------------------------------------------------------------------
+        | AJUKAN PENGHAPUSAN
+        |--------------------------------------------------------------------------
+        */
 
-            'jenis_data' =>
-                $data->jenis_data,
+        DB::transaction(function () use (
+            $data,
+            $request,
+            $dataLama
+        ) {
 
-            'tahun' =>
-                $data->tahun,
+            /*
+            |--------------------------------------------------------------------------
+            | VERIFICATION REQUEST
+            |--------------------------------------------------------------------------
+            */
 
-            'file_data' =>
-                $data->file_data,
+            VerificationRequest::create([
 
-        ];
+                'module' =>
+                    'data',
 
-        // =====================================================
-        // SIMPAN PENGAJUAN HAPUS
-        // =====================================================
+                'record_id' =>
+                    $data->id,
 
-        DataPengajuan::create([
+                'action' =>
+                    'delete',
 
-            'data_id' =>
-                $data->id,
+                'data' =>
+                    $dataLama,
 
-            'user_id' =>
-                $request->user()->id,
+                'status' =>
+                    'menunggu',
 
-            'aksi' =>
-                'hapus',
+                'submitted_by' =>
+                    auth()->id(),
+            ]);
 
-            'data_lama' =>
-                $dataLama,
+            /*
+            |--------------------------------------------------------------------------
+            | DATA TETAP ADA
+            |--------------------------------------------------------------------------
+            | Data tidak langsung dihapus.
+            | Penghapusan dilakukan setelah disetujui Verifikator.
+            */
 
-            'data_baru' =>
-                null,
+            $data->update([
 
-            'status' =>
-                'Menunggu Disetujui',
+                'verifikasi' =>
+                    'Menunggu Disetujui',
 
-            'komentar' =>
-                null,
+                'komentar_verifikasi' =>
+                    null,
+            ]);
 
-            'tanggal_pengajuan' =>
-                now(),
+            /*
+            |--------------------------------------------------------------------------
+            | NOTIFIKASI
+            |--------------------------------------------------------------------------
+            */
 
-        ]);
+            Notification::create([
+                'judul' =>
+                    'Penghapusan Dataset Diajukan',
 
-        // =====================================================
-        // NOTIFIKASI
-        // =====================================================
+                'pesan' =>
+                    $request->user()->username .
+                    ' mengajukan penghapusan dataset "' .
+                    $data->nama_dataset .
+                    '" dengan ID ' .
+                    $data->id .
+                    ' untuk persetujuan verifikator.',
 
-        Notification::create([
-            'judul' =>
-                'Penghapusan Dataset Diajukan',
+                'dibaca' =>
+                    false,
+            ]);
+        });
 
-            'pesan' =>
-                $request->user()->username .
-                ' mengajukan penghapusan dataset "' .
-                $data->nama_dataset .
-                '" dengan ID ' .
-                $data->id .
-                ' untuk persetujuan verifikator.',
-
-            'dibaca' => false,
-        ]);
-
-        // =====================================================
-        // REDIRECT
-        // =====================================================
+        /*
+        |--------------------------------------------------------------------------
+        | REDIRECT
+        |--------------------------------------------------------------------------
+        */
 
         return redirect()
             ->route('data.index')
             ->with(
                 'success',
-                'Pengajuan penghapusan berhasil dikirim dan menunggu persetujuan verifikator.'
+                'Pengajuan penghapusan data berhasil dikirim dan menunggu verifikasi.'
             );
     }
 }

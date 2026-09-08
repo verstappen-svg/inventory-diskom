@@ -1,6 +1,7 @@
 @extends('layouts.app')
 
 @section('title', 'Software')
+
 @section('page-title', 'Software')
 
 @section('content')
@@ -403,7 +404,7 @@
 
 .software-table {
     width: 100%;
-    min-width: 1050px;
+    min-width: 1300px;
     border-collapse: collapse;
 }
 
@@ -552,6 +553,50 @@
 .status-perpetual {
     background: #e0f2fe;
     color: #075985;
+}
+
+/* =========================================================
+   VERIFIKASI
+========================================================= */
+
+.verification-badge {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    padding: 5px 9px;
+    border-radius: 20px;
+    font-size: 10px;
+    font-weight: 600;
+    white-space: nowrap;
+}
+
+.verification-approved {
+    background: #dcfce7;
+    color: #166534;
+}
+
+.verification-rejected {
+    background: #fee2e2;
+    color: #991b1b;
+}
+
+.verification-pending {
+    background: #fef3c7;
+    color: #92400e;
+}
+
+/* =========================================================
+   KOMENTAR
+========================================================= */
+
+.software-comment {
+    max-width: 180px;
+    min-width: 120px;
+    font-size: 10px;
+    line-height: 1.4;
+    color: #6b7280;
+    white-space: normal;
+    word-break: break-word;
 }
 
 /* =========================================================
@@ -912,7 +957,10 @@
 
     <div class="software-table-card">
 
-        {{-- TABLE HEADER --}}
+
+        {{-- =================================================
+             TABLE HEADER
+        ================================================== --}}
 
         <div class="table-header">
 
@@ -929,9 +977,12 @@
             </div>
 
 
-            {{-- TOOLBAR --}}
+            {{-- =================================================
+                 TOOLBAR
+            ================================================== --}}
 
             <div class="software-toolbar">
+
 
                 {{-- SEARCH --}}
 
@@ -982,9 +1033,6 @@
 
                 {{-- ADD --}}
 
-                {{-- JANGAN DIUBAH:
-                     tetap menggunakan modal create yang sudah berhasil --}}
-
                 <button
                     type="button"
                     class="add-button"
@@ -994,7 +1042,7 @@
                     <i class="bi bi-plus-lg"></i>
 
                     <span>
-                        Add
+                        Tambah Software
                     </span>
 
                 </button>
@@ -1100,14 +1148,29 @@
                         <tr>
 
                             <th>No</th>
+
                             <th>Kode</th>
+
                             <th>Jenis Software</th>
+
                             <th>Lisensi</th>
+
                             <th>Pengadaan</th>
+
                             <th>Harga</th>
+
                             <th>Tanggal Pengadaan</th>
+
                             <th>Tanggal Berakhir</th>
+
                             <th>Status</th>
+
+                            <th>Verifikasi</th>
+
+                            {{-- KOLOM BARU --}}
+
+                            <th>Komentar</th>
+
                             <th>Aksi</th>
 
                         </tr>
@@ -1121,7 +1184,14 @@
 
                             @php
 
+                                /*
+                                |--------------------------------------------------------------------------
+                                | STATUS SOFTWARE
+                                |--------------------------------------------------------------------------
+                                */
+
                                 $status = 'Aktif';
+
                                 $statusClass = 'status-active';
 
                                 if ($software->tanggal_berakhir) {
@@ -1140,11 +1210,13 @@
                                     if ($daysLeft < 0) {
 
                                         $status = 'Expired';
+
                                         $statusClass = 'status-expired';
 
                                     } elseif ($daysLeft <= 30) {
 
                                         $status = 'Segera Berakhir';
+
                                         $statusClass = 'status-warning';
 
                                     }
@@ -1152,6 +1224,7 @@
                                 } else {
 
                                     $status = 'Perpetual';
+
                                     $statusClass = 'status-perpetual';
 
                                 }
@@ -1161,36 +1234,51 @@
 
                             <tr>
 
-                                {{-- NO --}}
+
+                                {{-- =================================================
+                                     NO
+                                ================================================== --}}
 
                                 <td>
+
                                     {{ $loop->iteration }}
+
                                 </td>
 
 
-                                {{-- KODE --}}
+                                {{-- =================================================
+                                     KODE
+                                ================================================== --}}
 
                                 <td>
 
                                     <span class="software-code">
+
                                         {{ $software->kode }}
+
                                     </span>
 
                                 </td>
 
 
-                                {{-- JENIS SOFTWARE --}}
+                                {{-- =================================================
+                                     JENIS SOFTWARE
+                                ================================================== --}}
 
                                 <td>
 
                                     <div class="software-name">
+
                                         {{ $software->jenis }}
+
                                     </div>
 
                                     @if($software->spesifikasi)
 
                                         <div class="software-spec">
+
                                             {{ $software->spesifikasi }}
+
                                         </div>
 
                                     @endif
@@ -1198,31 +1286,41 @@
                                 </td>
 
 
-                                {{-- LISENSI --}}
+                                {{-- =================================================
+                                     LISENSI
+                                ================================================== --}}
 
                                 <td>
 
                                     <span class="license-badge">
+
                                         {{ $software->jumlah_lisensi }}
+
                                     </span>
 
                                 </td>
 
 
-                                {{-- PENGADAAN --}}
+                                {{-- =================================================
+                                     PENGADAAN
+                                ================================================== --}}
 
                                 <td>
 
                                     @if($software->pengadaan === 'Sewa')
 
                                         <span class="procurement-badge procurement-sewa">
+
                                             Sewa
+
                                         </span>
 
                                     @else
 
                                         <span class="procurement-badge procurement-beli">
+
                                             Beli
+
                                         </span>
 
                                     @endif
@@ -1230,34 +1328,44 @@
                                 </td>
 
 
-                                {{-- HARGA --}}
+                                {{-- =================================================
+                                     HARGA
+                                ================================================== --}}
 
                                 <td>
 
                                     <span class="price">
+
                                         Rp {{ number_format(
                                             $software->harga,
                                             0,
                                             ',',
                                             '.'
                                         ) }}
+
                                     </span>
 
                                 </td>
 
 
-                                {{-- TANGGAL PENGADAAN --}}
+                                {{-- =================================================
+                                     TANGGAL PENGADAAN
+                                ================================================== --}}
 
                                 <td>
 
                                     <span class="date">
+
                                         {{ $software->tanggal_pengadaan?->format('d M Y') }}
+
                                     </span>
 
                                 </td>
 
 
-                                {{-- TANGGAL BERAKHIR --}}
+                                {{-- =================================================
+                                     TANGGAL BERAKHIR
+                                ================================================== --}}
 
                                 <td>
 
@@ -1278,22 +1386,86 @@
                                 </td>
 
 
-                                {{-- STATUS --}}
+                                {{-- =================================================
+                                     STATUS
+                                ================================================== --}}
 
                                 <td>
 
                                     <span class="status-badge {{ $statusClass }}">
+
                                         {{ $status }}
+
                                     </span>
 
                                 </td>
 
 
-                                {{-- AKSI --}}
+                                {{-- =================================================
+                                     VERIFIKASI
+                                ================================================== --}}
+
+                                <td>
+
+                                    @php
+
+                                        $verifikasi = $software->verifikasi ?? 'Disetujui';
+
+                                        $verifikasiClass = match (
+                                            strtolower($verifikasi)
+                                        ) {
+
+                                            'disetujui'
+                                                => 'verification-approved',
+
+                                            'ditolak'
+                                                => 'verification-rejected',
+
+                                            'menunggu'
+                                                => 'verification-pending',
+
+                                            default
+                                                => 'verification-pending',
+
+                                        };
+
+                                    @endphp
+
+
+                                    <span
+                                        class="verification-badge {{ $verifikasiClass }}"
+                                    >
+
+                                        {{ $verifikasi }}
+
+                                    </span>
+
+                                </td>
+
+
+                                {{-- =================================================
+                                     KOMENTAR
+                                ================================================== --}}
+
+                                <td>
+
+                                    <div class="software-comment">
+
+                                        -
+
+                                    </div>
+
+                                </td>
+
+
+                                {{-- =================================================
+                                     AKSI
+                                ================================================== --}}
 
                                 <td>
 
                                     <div class="action-buttons">
+
 
                                         {{-- EDIT --}}
 
@@ -1318,7 +1490,9 @@
                                         >
 
                                             @csrf
+
                                             @method('DELETE')
+
 
                                             <button
                                                 type="submit"
@@ -1331,6 +1505,7 @@
                                             </button>
 
                                         </form>
+
 
                                     </div>
 
@@ -1356,7 +1531,10 @@
 
             @else
 
-                {{-- EMPTY STATE --}}
+
+                {{-- =================================================
+                     EMPTY STATE
+                ================================================== --}}
 
                 <div class="empty-state">
 
@@ -1365,6 +1543,7 @@
                         <i class="bi bi-laptop"></i>
 
                     </div>
+
 
                     <h3>
 
@@ -1379,6 +1558,7 @@
                         @endif
 
                     </h3>
+
 
                     <p>
 
@@ -1407,7 +1587,6 @@
 
 {{-- =========================================================
      MODAL TAMBAH SOFTWARE
-     
      CREATE.BLADE.PHP TIDAK DIUBAH
 ========================================================= --}}
 
@@ -1479,7 +1658,9 @@ function openSoftwareModal()
     );
 
     if (typeof updatePengadaan === 'function') {
+
         updatePengadaan();
+
     }
 }
 
@@ -1517,6 +1698,7 @@ function openEditSoftwareModal(id)
         );
 
     if (!modal) {
+
         console.error(
             'Edit modal tidak ditemukan:',
             id
@@ -1530,6 +1712,7 @@ function openEditSoftwareModal(id)
     document.body.classList.add(
         'software-modal-open'
     );
+
 
     /*
     |---------------------------------------------------------
@@ -1576,6 +1759,7 @@ function closeEditSoftwareModal(id)
 ========================================================= */
 
 document.addEventListener('click', function(event) {
+
 
     /*
     |---------------------------------------------------------

@@ -3,9 +3,11 @@
 namespace App\Http\Controllers;
 
 use App\Models\SoftwareAsset;
+use App\Models\SoftwareCounter;
+use App\Models\VerificationRequest;
 use App\Models\Notification;
 use Illuminate\Http\Request;
-use Illuminate\Support\Str;
+use Illuminate\Support\Facades\DB;
 
 class SoftwareController extends Controller
 {
@@ -17,29 +19,41 @@ class SoftwareController extends Controller
 
     public function index(Request $request)
     {
-        /*
-        |--------------------------------------------------------------------------
-        | DATA UNTUK TABEL
-        |--------------------------------------------------------------------------
-        */
-
         $query = SoftwareAsset::query();
 
+        // =====================================================
         // SEARCH
+        // =====================================================
+
         if ($request->filled('search')) {
 
             $search = $request->search;
 
             $query->where(function ($q) use ($search) {
 
-                $q->where('kode', 'like', "%{$search}%")
-                    ->orWhere('jenis', 'like', "%{$search}%")
-                    ->orWhere('spesifikasi', 'like', "%{$search}%");
-
+                $q->where(
+                    'kode',
+                    'like',
+                    "%{$search}%"
+                )
+                    ->orWhere(
+                        'jenis',
+                        'like',
+                        "%{$search}%"
+                    )
+                    ->orWhere(
+                        'spesifikasi',
+                        'like',
+                        "%{$search}%"
+                    );
             });
         }
 
+
+        // =====================================================
         // FILTER PENGADAAN
+        // =====================================================
+
         if ($request->filled('pengadaan')) {
 
             $query->where(
@@ -48,177 +62,197 @@ class SoftwareController extends Controller
             );
         }
 
-        // Data yang ditampilkan pada tabel
+
+        // =====================================================
+        // DATA SOFTWARE
+        // =====================================================
+
         $softwares = $query
             ->latest()
             ->get();
 
-        /*
-        |--------------------------------------------------------------------------
-        | DATA UNTUK CARD
-        |--------------------------------------------------------------------------
-        */
+
+        // =====================================================
+        // DATA UNTUK CARD
+        // =====================================================
 
         $allSoftwares = SoftwareAsset::all();
 
-        /*
-        |--------------------------------------------------------------------------
-        | TOTAL SOFTWARE
-        |--------------------------------------------------------------------------
-        */
 
-        $totalSoftware = $allSoftwares->count();
+        // =====================================================
+        // TOTAL SOFTWARE
+        // =====================================================
 
-        /*
-        |--------------------------------------------------------------------------
-        | TOTAL LISENSI
-        |--------------------------------------------------------------------------
-        */
+        $totalSoftware =
+            $allSoftwares->count();
 
-        $totalLisensi = $allSoftwares->sum('jumlah_lisensi');
 
-        /*
-        |--------------------------------------------------------------------------
-        | TANGGAL
-        |--------------------------------------------------------------------------
-        */
+        // =====================================================
+        // TOTAL LISENSI
+        // =====================================================
 
-        $today = now()->startOfDay();
+        $totalLisensi =
+            $allSoftwares->sum('jumlah_lisensi');
 
-        // Batas 30 hari dari sekarang
-        $thirtyDaysLater = now()
-            ->addDays(30)
-            ->endOfDay();
 
-        /*
-        |--------------------------------------------------------------------------
-        | EXPIRED
-        |--------------------------------------------------------------------------
-        */
+        // =====================================================
+        // TANGGAL
+        // =====================================================
 
-        $expired = $allSoftwares->filter(function ($software) use ($today) {
+        $today =
+            now()->startOfDay();
 
-            return $software->tanggal_berakhir
-                && $software->tanggal_berakhir->lt($today);
+        $thirtyDaysLater =
+            now()
+                ->addDays(30)
+                ->endOfDay();
 
-        })->count();
 
-        /*
-        |--------------------------------------------------------------------------
-        | AKAN BERAKHIR
-        |--------------------------------------------------------------------------
-        */
+        // =====================================================
+        // EXPIRED
+        // =====================================================
 
-        $akanBerakhir = $allSoftwares->filter(function ($software) use (
-            $today,
-            $thirtyDaysLater
-        ) {
+        $expired =
+            $allSoftwares
+                ->filter(function ($software) use ($today) {
 
-            return $software->tanggal_berakhir
-                && $software->tanggal_berakhir->between(
+                    return $software->tanggal_berakhir
+                        && $software->tanggal_berakhir->lt(
+                            $today
+                        );
+                })
+                ->count();
+
+
+        // =====================================================
+        // AKAN BERAKHIR
+        // =====================================================
+
+        $akanBerakhir =
+            $allSoftwares
+                ->filter(function ($software) use (
                     $today,
                     $thirtyDaysLater
-                );
+                ) {
 
-        })->count();
+                    return $software->tanggal_berakhir
+                        && $software->tanggal_berakhir->between(
+                            $today,
+                            $thirtyDaysLater
+                        );
+                })
+                ->count();
 
-        /*
-        |--------------------------------------------------------------------------
-        | TERSEDIA
-        |--------------------------------------------------------------------------
-        */
 
-        $tersedia = $allSoftwares->filter(function ($software) use (
-            $thirtyDaysLater
-        ) {
+        // =====================================================
+        // TERSEDIA
+        // =====================================================
 
-            // Perpetual / tidak memiliki tanggal berakhir
-            if (!$software->tanggal_berakhir) {
-                return true;
-            }
+        $tersedia =
+            $allSoftwares
+                ->filter(function ($software) use (
+                    $thirtyDaysLater
+                ) {
 
-            // Masih berlaku lebih dari 30 hari
-            return $software->tanggal_berakhir
-                ->greaterThan($thirtyDaysLater);
+                    if (!$software->tanggal_berakhir) {
+                        return true;
+                    }
 
-        })->count();
+                    return $software->tanggal_berakhir
+                        ->greaterThan(
+                            $thirtyDaysLater
+                        );
+                })
+                ->count();
 
-        /*
-        |--------------------------------------------------------------------------
-        | TOTAL PENGELUARAN PER TAHUN
-        |--------------------------------------------------------------------------
-        */
 
-        $totalPengeluaranPertahun = $allSoftwares->sum(
-            function ($software) {
+        // =====================================================
+        // TOTAL PENGELUARAN PER TAHUN
+        // =====================================================
 
-                $harga = (float) $software->harga;
+        $totalPengeluaranPertahun =
+            $allSoftwares->sum(
+                function ($software) {
 
-                /*
-                |--------------------------------------------------------------------------
-                | BELI
-                |--------------------------------------------------------------------------
-                */
+                    $harga =
+                        (float) $software->harga;
 
-                if ($software->pengadaan === 'Beli') {
-                    return $harga;
+
+                    // -----------------------------------------
+                    // BELI
+                    // -----------------------------------------
+
+                    if ($software->pengadaan === 'Beli') {
+                        return $harga;
+                    }
+
+
+                    // -----------------------------------------
+                    // SEWA TANPA TANGGAL
+                    // -----------------------------------------
+
+                    if (
+                        !$software->tanggal_pengadaan ||
+                        !$software->tanggal_berakhir
+                    ) {
+                        return 0;
+                    }
+
+
+                    // -----------------------------------------
+                    // DURASI SEWA
+                    // -----------------------------------------
+
+                    $tanggalMulai =
+                        $software->tanggal_pengadaan;
+
+                    $tanggalBerakhir =
+                        $software->tanggal_berakhir;
+
+
+                    $jumlahBulan =
+                        $tanggalMulai->diffInMonths(
+                            $tanggalBerakhir
+                        );
+
+
+                    $jumlahBulan =
+                        max(
+                            1,
+                            $jumlahBulan
+                        );
+
+
+                    // -----------------------------------------
+                    // ESTIMASI BIAYA 1 TAHUN
+                    // -----------------------------------------
+
+                    return (
+                        $harga /
+                        $jumlahBulan
+                    ) * 12;
                 }
+            );
 
-                /*
-                |--------------------------------------------------------------------------
-                | SEWA TANPA TANGGAL BERAKHIR
-                |--------------------------------------------------------------------------
-                */
 
-                if (!$software->tanggal_berakhir) {
-                    return 0;
-                }
+        // =====================================================
+        // VIEW
+        // =====================================================
 
-                /*
-                |--------------------------------------------------------------------------
-                | HITUNG DURASI SEWA
-                |--------------------------------------------------------------------------
-                */
-
-                $tanggalMulai = $software->tanggal_pengadaan;
-
-                $tanggalBerakhir = $software->tanggal_berakhir;
-
-                $jumlahBulan = $tanggalMulai
-                    ->diffInMonths($tanggalBerakhir);
-
-                // Minimal dianggap 1 bulan
-                $jumlahBulan = max(
-                    1,
-                    $jumlahBulan
-                );
-
-                /*
-                |--------------------------------------------------------------------------
-                | KONVERSI KE ESTIMASI BIAYA 1 TAHUN
-                |--------------------------------------------------------------------------
-                */
-
-                return ($harga / $jumlahBulan) * 12;
-            }
+        return view(
+            'software.index',
+            compact(
+                'softwares',
+                'totalSoftware',
+                'totalLisensi',
+                'akanBerakhir',
+                'expired',
+                'tersedia',
+                'totalPengeluaranPertahun'
+            )
         );
-
-        /*
-        |--------------------------------------------------------------------------
-        | KIRIM DATA KE VIEW
-        |--------------------------------------------------------------------------
-        */
-
-        return view('software.index', compact(
-            'softwares',
-            'totalSoftware',
-            'totalLisensi',
-            'akanBerakhir',
-            'expired',
-            'tersedia',
-            'totalPengeluaranPertahun'
-        ));
     }
+
 
     /*
     |--------------------------------------------------------------------------
@@ -228,8 +262,11 @@ class SoftwareController extends Controller
 
     public function create()
     {
-        return view('software.create');
+        return view(
+            'software.create'
+        );
     }
+
 
     /*
     |--------------------------------------------------------------------------
@@ -239,98 +276,215 @@ class SoftwareController extends Controller
 
     public function store(Request $request)
     {
+        // =====================================================
+        // VALIDASI
+        // =====================================================
+
         $validated = $request->validate([
 
             'jenis' => [
                 'required',
                 'string',
-                'max:255'
+                'max:255',
             ],
 
             'spesifikasi' => [
                 'nullable',
                 'string',
-                'max:255'
+                'max:255',
             ],
 
             'jumlah_lisensi' => [
                 'required',
                 'integer',
-                'min:1'
+                'min:1',
             ],
 
             'pengadaan' => [
                 'required',
-                'in:Sewa,Beli'
+                'in:Sewa,Beli',
+            ],
+
+            'periode_sewa' => [
+                'nullable',
+                'string',
+                'max:100',
             ],
 
             'harga' => [
                 'required',
                 'numeric',
-                'min:0'
+                'min:0',
             ],
 
             'tanggal_pengadaan' => [
                 'required',
-                'date'
+                'date',
             ],
 
             'tanggal_berakhir' => [
                 'nullable',
                 'date',
-                'after_or_equal:tanggal_pengadaan'
+                'after_or_equal:tanggal_pengadaan',
             ],
 
         ]);
 
-        /*
-        |--------------------------------------------------------------------------
-        | GENERATE KODE SOFTWARE
-        |--------------------------------------------------------------------------
-        */
 
-        $validated['kode'] =
-            'SW-' . strtoupper(Str::random(6));
+        // =====================================================
+        // GENERATE KODE SOFTWARE
+        //
+        // Contoh:
+        // SW-260001
+        // SW-260002
+        //
+        // Tahun berubah:
+        // SW-270001
+        //
+        // Counter tetap tersimpan.
+        // =====================================================
 
-        /*
-        |--------------------------------------------------------------------------
-        | SIMPAN SOFTWARE
-        |--------------------------------------------------------------------------
-        */
+        $software = DB::transaction(
+            function () use (
+                &$validated,
+                $request
+            ) {
 
-        $software = SoftwareAsset::create($validated);
+                $year =
+                    now()->year;
 
-        /*
-        |--------------------------------------------------------------------------
-        | NOTIFIKASI
-        |--------------------------------------------------------------------------
-        */
 
-        Notification::create([
-            'judul' => 'Software Baru Ditambahkan',
-            'pesan' =>
-                $request->user()->username .
-                ' menambahkan software "' .
-                $software->jenis .
-                '" dengan ID ' .
-                $software->kode .
-                '.',
-            'dibaca' => false,
-        ]);
+                $counter =
+                    SoftwareCounter::where(
+                        'year',
+                        $year
+                    )
+                        ->lockForUpdate()
+                        ->first();
 
-        /*
-        |--------------------------------------------------------------------------
-        | REDIRECT
-        |--------------------------------------------------------------------------
-        */
+
+                if (!$counter) {
+
+                    $counter =
+                        SoftwareCounter::create([
+                            'year' =>
+                                $year,
+
+                            'last_number' =>
+                                0,
+                        ]);
+                }
+
+
+                $counter->increment(
+                    'last_number'
+                );
+
+
+                $number =
+                    $counter
+                        ->fresh()
+                        ->last_number;
+
+
+                $validated['kode'] =
+                    sprintf(
+                        'SW-%02d%04d',
+                        $year % 100,
+                        $number
+                    );
+
+
+                // =================================================
+                // STATUS AWAL
+                // =================================================
+
+                $validated['verifikasi'] =
+                    'menunggu';
+
+                $validated['komentar'] =
+                    null;
+
+
+                // =================================================
+                // SIMPAN SOFTWARE
+                // =================================================
+
+                $software =
+                    SoftwareAsset::create(
+                        $validated
+                    );
+
+
+                // =================================================
+                // VERIFICATION REQUEST
+                // =================================================
+
+                VerificationRequest::create([
+
+                    'module' =>
+                        'software',
+
+                    'record_id' =>
+                        $software->id,
+
+                    'action' =>
+                        'create',
+
+                    'data' =>
+                        $software->toArray(),
+
+                    'status' =>
+                        'menunggu',
+
+                    'submitted_by' =>
+                        auth()->id(),
+
+                ]);
+
+
+                // =================================================
+                // NOTIFIKASI
+                // =================================================
+
+                Notification::create([
+
+                    'judul' =>
+                        'Software Baru Ditambahkan',
+
+                    'pesan' =>
+                        $request
+                            ->user()
+                            ->username .
+                        ' menambahkan software "' .
+                        $software->jenis .
+                        '" dengan ID ' .
+                        $software->kode .
+                        ' dan mengajukannya untuk persetujuan.',
+
+                    'dibaca' =>
+                        false,
+
+                ]);
+
+
+                return $software;
+            }
+        );
+
+
+        // =====================================================
+        // REDIRECT
+        // =====================================================
 
         return redirect()
             ->route('software.index')
             ->with(
                 'success',
-                'Data software berhasil ditambahkan.'
+                'Pengajuan penambahan software berhasil dikirim dan menunggu verifikasi.'
             );
     }
+
 
     /*
     |--------------------------------------------------------------------------
@@ -338,13 +492,16 @@ class SoftwareController extends Controller
     |--------------------------------------------------------------------------
     */
 
-    public function edit(SoftwareAsset $software)
-    {
+    public function edit(
+        SoftwareAsset $software
+    ) {
+
         return view(
             'software.edit',
             compact('software')
         );
     }
+
 
     /*
     |--------------------------------------------------------------------------
@@ -357,89 +514,155 @@ class SoftwareController extends Controller
         SoftwareAsset $software
     ) {
 
+        // =====================================================
+        // VALIDASI
+        // =====================================================
+
         $validated = $request->validate([
 
             'jenis' => [
                 'required',
                 'string',
-                'max:255'
+                'max:255',
             ],
 
             'spesifikasi' => [
                 'nullable',
                 'string',
-                'max:255'
+                'max:255',
             ],
 
             'jumlah_lisensi' => [
                 'required',
                 'integer',
-                'min:1'
+                'min:1',
             ],
 
             'pengadaan' => [
                 'required',
-                'in:Sewa,Beli'
+                'in:Sewa,Beli',
+            ],
+
+            'periode_sewa' => [
+                'nullable',
+                'string',
+                'max:100',
             ],
 
             'harga' => [
                 'required',
                 'numeric',
-                'min:0'
+                'min:0',
             ],
 
             'tanggal_pengadaan' => [
                 'required',
-                'date'
+                'date',
             ],
 
             'tanggal_berakhir' => [
                 'nullable',
                 'date',
-                'after_or_equal:tanggal_pengadaan'
+                'after_or_equal:tanggal_pengadaan',
             ],
 
         ]);
 
-        /*
-        |--------------------------------------------------------------------------
-        | UPDATE DATABASE
-        |--------------------------------------------------------------------------
-        */
 
-        $software->update($validated);
+        // =====================================================
+        // UPDATE
+        //
+        // KODE SOFTWARE TIDAK BERUBAH.
+        // =====================================================
 
-        /*
-        |--------------------------------------------------------------------------
-        | NOTIFIKASI
-        |--------------------------------------------------------------------------
-        */
+        DB::transaction(
+            function () use (
+                $validated,
+                $software,
+                $request
+            ) {
 
-        Notification::create([
-            'judul' => 'Software Diperbarui',
-            'pesan' =>
-                $request->user()->username .
-                ' memperbarui software "' .
-                $software->jenis .
-                '" dengan ID ' .
-                $software->kode .
-                '.',
-            'dibaca' => false,
-        ]);
+                $validated['verifikasi'] =
+                    'menunggu';
 
-        /*
-        |--------------------------------------------------------------------------
-        | REDIRECT
-        |--------------------------------------------------------------------------
-        */
+                $validated['komentar'] =
+                    null;
+
+
+                // Update data
+                $software->update(
+                    $validated
+                );
+
+
+                // =================================================
+                // VERIFICATION REQUEST
+                // =================================================
+
+                VerificationRequest::create([
+
+                    'module' =>
+                        'software',
+
+                    'record_id' =>
+                        $software->id,
+
+                    'action' =>
+                        'update',
+
+                    'data' =>
+                        $software
+                            ->fresh()
+                            ->toArray(),
+
+                    'status' =>
+                        'menunggu',
+
+                    'submitted_by' =>
+                        auth()->id(),
+
+                ]);
+
+
+                // =================================================
+                // NOTIFIKASI
+                // =================================================
+
+                Notification::create([
+
+                    'judul' =>
+                        'Software Diperbarui',
+
+                    'pesan' =>
+                        $request
+                            ->user()
+                            ->username .
+                        ' memperbarui software "' .
+                        $software->jenis .
+                        '" dengan ID ' .
+                        $software->kode .
+                        ' dan mengajukannya kembali untuk persetujuan.',
+
+                    'dibaca' =>
+                        false,
+
+                ]);
+            }
+        );
+
+
+        // =====================================================
+        // REDIRECT
+        // =====================================================
 
         return redirect()
             ->route('software.index')
             ->with(
                 'success',
-                'Data software berhasil diperbarui.'
+                'Perubahan software berhasil disimpan dan menunggu verifikasi.'
             );
     }
+
 
     /*
     |--------------------------------------------------------------------------
@@ -447,57 +670,109 @@ class SoftwareController extends Controller
     |--------------------------------------------------------------------------
     */
 
-    public function destroy(SoftwareAsset $software)
-    {
-        /*
-        |--------------------------------------------------------------------------
-        | SIMPAN DATA SEBELUM DIHAPUS
-        |--------------------------------------------------------------------------
-        */
+    public function destroy(
+        SoftwareAsset $software
+    ) {
 
-        $namaSoftware = $software->jenis;
-        $kodeSoftware = $software->kode;
+        // =====================================================
+        // DATA UNTUK NOTIFIKASI
+        // =====================================================
 
-        // Ambil username operator
-        $username = auth()->user()->username;
+        $namaSoftware =
+            $software->jenis;
 
-        /*
-        |--------------------------------------------------------------------------
-        | HAPUS DATA
-        |--------------------------------------------------------------------------
-        */
+        $kodeSoftware =
+            $software->kode;
 
-        $software->delete();
+        $username =
+            auth()->user()->username;
 
-        /*
-        |--------------------------------------------------------------------------
-        | NOTIFIKASI
-        |--------------------------------------------------------------------------
-        */
+
+        // =====================================================
+        // AJUKAN PENGHAPUSAN
+        //
+        // DATA TIDAK LANGSUNG DIHAPUS.
+        // =====================================================
+
+        DB::transaction(
+            function () use (
+                $software
+            ) {
+
+                $software->update([
+
+                    'verifikasi' =>
+                        'menunggu',
+
+                    'komentar' =>
+                        null,
+
+                ]);
+
+
+                // =================================================
+                // VERIFICATION REQUEST
+                // =================================================
+
+                VerificationRequest::create([
+
+                    'module' =>
+                        'software',
+
+                    'record_id' =>
+                        $software->id,
+
+                    'action' =>
+                        'delete',
+
+                    'data' =>
+                        $software
+                            ->fresh()
+                            ->toArray(),
+
+                    'status' =>
+                        'menunggu',
+
+                    'submitted_by' =>
+                        auth()->id(),
+
+                ]);
+            }
+        );
+
+
+        // =====================================================
+        // NOTIFIKASI
+        // =====================================================
 
         Notification::create([
-            'judul' => 'Software Dihapus',
+
+            'judul' =>
+                'Penghapusan Software Diajukan',
+
             'pesan' =>
                 $username .
-                ' menghapus software "' .
+                ' mengajukan penghapusan software "' .
                 $namaSoftware .
                 '" dengan ID ' .
                 $kodeSoftware .
-                '.',
-            'dibaca' => false,
+                ' untuk persetujuan verifikator.',
+
+            'dibaca' =>
+                false,
+
         ]);
 
-        /*
-        |--------------------------------------------------------------------------
-        | REDIRECT
-        |--------------------------------------------------------------------------
-        */
+
+        // =====================================================
+        // REDIRECT
+        // =====================================================
 
         return redirect()
             ->route('software.index')
             ->with(
                 'success',
-                'Data software berhasil dihapus.'
+                'Pengajuan penghapusan software berhasil dikirim dan menunggu verifikasi.'
             );
     }
 }

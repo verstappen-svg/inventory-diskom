@@ -1,224 +1,257 @@
 @extends('layouts.app')
 
-@section('title', 'Data - Inventory IT Assets')
-
-@section('page-title', 'DATA')
-
+@section('title', 'Data')
+@section('page-title', 'Data')
 
 {{-- =========================================================
-     CSS
+CSS
 ========================================================= --}}
 @push('styles')
-    @include('data.style')
+@include('data.style')
 @endpush
-
 
 @section('content')
 
 <div class="data-page">
 
+```
+{{-- =====================================================
+     HEADER
+====================================================== --}}
 
-    {{-- =====================================================
-         ALERT SUCCESS
-    ====================================================== --}}
+<div class="data-header">
 
-    @if(session('success'))
+    <div>
+        <h1 class="data-title">
+            Data
+        </h1>
 
-        <div class="alert-success">
+        <p class="data-subtitle">
+            Kelola dataset dan informasi data yang tersimpan dalam inventory.
+        </p>
+    </div>
 
-            <i class="bi bi-check-circle"></i>
-
-            <span>
-                {{ session('success') }}
-            </span>
-
-        </div>
-
-    @endif
-
-
-    {{-- =====================================================
-         ALERT ERROR
-    ====================================================== --}}
-
-    @if(session('error'))
-
-        <div class="alert-error">
-
-            <i class="bi bi-exclamation-circle"></i>
-
-            <span>
-                {{ session('error') }}
-            </span>
-
-        </div>
-
-    @endif
+</div>
 
 
-    {{-- =====================================================
-         VALIDATION ERROR
-    ====================================================== --}}
+{{-- =====================================================
+     ALERT SUCCESS
+====================================================== --}}
 
-    @if($errors->any())
+@if(session('success'))
 
-        <div class="alert-error">
+    <div class="data-alert data-alert-success">
+        <i class="bi bi-check-circle-fill"></i>
 
-            <i class="bi bi-exclamation-circle"></i>
+        <span>
+            {{ session('success') }}
+        </span>
+    </div>
 
-            <div>
-
-                <strong>
-                    Data gagal disimpan.
-                </strong>
-
-                <ul>
-
-                    @foreach($errors->all() as $error)
-
-                        <li>
-                            {{ $error }}
-                        </li>
-
-                    @endforeach
-
-                </ul>
-
-            </div>
-
-        </div>
-
-    @endif
+@endif
 
 
-    {{-- =====================================================
-         SUMMARY CARDS
-    ====================================================== --}}
+{{-- =====================================================
+     ALERT ERROR
+====================================================== --}}
 
-    <div class="summary-cards">
+@if(session('error'))
+
+    <div class="data-alert data-alert-error">
+        <i class="bi bi-exclamation-circle-fill"></i>
+
+        <span>
+            {{ session('error') }}
+        </span>
+    </div>
+
+@endif
 
 
-        {{-- TOTAL DATASET --}}
+{{-- =====================================================
+     VALIDATION ERROR
+====================================================== --}}
 
-        <div class="summary-card">
+@if($errors->any())
 
-            <div class="summary-label">
-                TOTAL DATASET
-            </div>
+    <div class="data-alert data-alert-error">
 
-            <div class="summary-value">
-                {{ $totalData }}
-            </div>
+        <i class="bi bi-exclamation-circle-fill"></i>
+
+        <div>
+
+            <strong>
+                Data gagal disimpan.
+            </strong>
+
+            <ul style="margin: 6px 0 0 18px;">
+
+                @foreach($errors->all() as $error)
+
+                    <li>
+                        {{ $error }}
+                    </li>
+
+                @endforeach
+
+            </ul>
 
         </div>
 
+    </div>
 
-        {{-- JENIS DATA --}}
+@endif
 
-        <div class="summary-card">
 
-            <div class="summary-label">
-                JENIS DATA
-            </div>
+{{-- =====================================================
+     SUMMARY CARDS
+====================================================== --}}
 
-            <div class="summary-value">
-                {{ $totalJenis }}
-            </div>
+<div class="summary-cards">
 
+    {{-- TOTAL DATASET --}}
+
+    <div class="summary-card">
+
+        <div class="summary-label">
+            TOTAL DATASET
         </div>
 
-
-        {{-- MENUNGGU DISETUJUI --}}
-
-        <div class="summary-card">
-
-            <div class="summary-label">
-                MENUNGGU DISETUJUI
-            </div>
-
-            <div class="summary-value">
-                {{ $totalPending }}
-            </div>
-
+        <div class="summary-value">
+            {{ $totalData ?? 0 }}
         </div>
-
-
-        {{-- DATA DISETUJUI --}}
-
-        <div class="summary-card">
-
-            <div class="summary-label">
-                DATA DISETUJUI
-            </div>
-
-            <div class="summary-value">
-                {{ $totalDisetujui }}
-            </div>
-
-        </div>
-
-
-        {{-- DATA DITOLAK --}}
-
-        <div class="summary-card">
-
-            <div class="summary-label">
-                DATA DITOLAK
-            </div>
-
-            <div class="summary-value">
-                {{ $totalDitolak }}
-            </div>
-
-        </div>
-
 
     </div>
 
 
-    {{-- =====================================================
-         TABLE CONTAINER
-    ====================================================== --}}
+    {{-- JENIS DATA --}}
 
-    <div class="data-table-container">
+    <div class="summary-card">
 
+        <div class="summary-label">
+            JENIS DATA
+        </div>
 
-        {{-- =================================================
-             TOOLBAR
-        ================================================== --}}
+        <div class="summary-value">
+            {{ $totalJenis ?? 0 }}
+        </div>
 
-        <div class="table-toolbar">
-
-
-            {{-- SEARCH --}}
-
-            <div class="table-toolbar-left">
-
-                <form
-                    method="GET"
-                    action="{{ route('data.index') }}">
-
-                    <div class="table-search">
-
-                        <i class="bi bi-search"></i>
-
-                        <input
-                            type="text"
-                            name="search"
-                            value="{{ request('search') }}"
-                            placeholder="Search..."
-                            autocomplete="off">
-
-                    </div>
-
-                </form>
-
-            </div>
+    </div>
 
 
-            {{-- ACTION BUTTON --}}
+    {{-- MENUNGGU --}}
+
+    <div class="summary-card">
+
+        <div class="summary-label">
+            MENUNGGU DISETUJUI
+        </div>
+
+        <div class="summary-value">
+            {{ $totalPending ?? ($menunggu ?? 0) }}
+        </div>
+
+    </div>
+
+
+    {{-- DISETUJUI --}}
+
+    <div class="summary-card">
+
+        <div class="summary-label">
+            DATA DISETUJUI
+        </div>
+
+        <div class="summary-value">
+            {{ $totalDisetujui ?? ($disetujui ?? 0) }}
+        </div>
+
+    </div>
+
+
+    {{-- DITOLAK --}}
+
+    <div class="summary-card">
+
+        <div class="summary-label">
+            DATA DITOLAK
+        </div>
+
+        <div class="summary-value">
+            {{ $totalDitolak ?? 0 }}
+        </div>
+
+    </div>
+
+</div>
+
+
+{{-- =====================================================
+     TOOLBAR / FILTER
+====================================================== --}}
+
+<div class="data-stats">
+
+    {{-- =================================================
+         SEARCH + ACTION
+    ================================================== --}}
+
+    <div class="data-stat-card">
+
+        <div class="table-toolbar-left">
+
+            <form
+                method="GET"
+                action="{{ route('data.index') }}"
+                class="data-search"
+            >
+
+                <i class="bi bi-search"></i>
+
+                <input
+                    type="text"
+                    name="search"
+                    value="{{ request('search') }}"
+                    placeholder="Cari dataset..."
+                    autocomplete="off"
+                >
+
+                @if(request('jenis_data'))
+                    <input
+                        type="hidden"
+                        name="jenis_data"
+                        value="{{ request('jenis_data') }}"
+                    >
+                @endif
+
+                @if(request('tahun'))
+                    <input
+                        type="hidden"
+                        name="tahun"
+                        value="{{ request('tahun') }}"
+                    >
+                @endif
+
+                @if(request('verifikasi'))
+                    <input
+                        type="hidden"
+                        name="verifikasi"
+                        value="{{ request('verifikasi') }}"
+                    >
+                @endif
+
+            </form>
+
+        </div>
+
+
+        <div class="data-stat-content">
 
             <div class="table-actions">
+
+                <span class="data-stat-value">
+                    {{ $data->total() ?? 0 }}
+                </span>
 
 
                 {{-- FILTER --}}
@@ -226,7 +259,8 @@
                 <button
                     type="button"
                     class="filter-button"
-                    onclick="toggleFilter()">
+                    onclick="toggleDataFilter(event)"
+                >
 
                     <i class="bi bi-filter"></i>
 
@@ -240,7 +274,8 @@
                 <button
                     type="button"
                     class="add-button"
-                    onclick="openAddModal()">
+                    onclick="openDataModal()"
+                >
 
                     <i class="bi bi-plus-lg"></i>
 
@@ -248,283 +283,395 @@
 
                 </button>
 
-
             </div>
 
+        </div>
+
+    </div>
+
+
+    {{-- =================================================
+         DISETUJUI
+    ================================================== --}}
+
+    <div class="data-stat-card">
+
+        <div class="data-stat-icon green">
+
+            <i class="bi bi-check-circle-fill"></i>
+
+        </div>
+
+        <div class="data-stat-content">
+
+            <span class="data-stat-label">
+                Disetujui
+            </span>
+
+            <span class="data-stat-value">
+                {{ $disetujui ?? ($totalDisetujui ?? 0) }}
+            </span>
+
+            <span class="data-stat-description">
+                Data telah diverifikasi
+            </span>
+
+        </div>
+
+    </div>
+
+
+    {{-- =================================================
+         MENUNGGU
+    ================================================== --}}
+
+    <div class="data-stat-card">
+
+        <div class="data-stat-icon orange">
+
+            <i class="bi bi-clock-history"></i>
+
+        </div>
+
+        <div class="data-stat-content">
+
+            <span class="data-stat-label">
+                Menunggu
+            </span>
+
+            <span class="data-stat-value">
+                {{ $menunggu ?? ($totalPending ?? 0) }}
+            </span>
+
+            <span class="data-stat-description">
+                Menunggu verifikasi
+            </span>
+
+        </div>
+
+    </div>
+
+</div>
+
+
+{{-- =====================================================
+     FILTER DROPDOWN
+====================================================== --}}
+
+<div
+    id="dataFilterDropdown"
+    class="data-filter-dropdown"
+    style="display:none;"
+>
+
+    <form
+        method="GET"
+        action="{{ route('data.index') }}"
+    >
+
+        {{-- SEARCH --}}
+
+        <input
+            type="hidden"
+            name="search"
+            value="{{ request('search') }}"
+        >
+
+
+        {{-- JENIS DATA --}}
+
+        <div class="data-filter-group">
+
+            <label class="data-filter-label">
+                Jenis Data
+            </label>
+
+            <select name="jenis_data">
+
+                <option value="">
+                    Semua Jenis
+                </option>
+
+                @foreach(($jenisDataList ?? collect()) as $jenis)
+
+                    <option
+                        value="{{ $jenis }}"
+                        {{ request('jenis_data') == $jenis ? 'selected' : '' }}
+                    >
+                        {{ $jenis }}
+                    </option>
+
+                @endforeach
+
+            </select>
 
         </div>
 
 
-        {{-- =================================================
-             FILTER
-        ================================================== --}}
+        {{-- TAHUN --}}
 
-        <div
-            class="filter-box
-            {{ request('jenis_data') || request('tahun') || request('verifikasi') ? 'show' : '' }}"
-            id="filterBox">
+        <div class="data-filter-group">
+
+            <label class="data-filter-label">
+                Tahun
+            </label>
+
+            <select name="tahun">
+
+                <option value="">
+                    Semua Tahun
+                </option>
+
+                @foreach(($tahunData ?? []) as $tahun)
+
+                    <option
+                        value="{{ $tahun }}"
+                        {{ request('tahun') == $tahun ? 'selected' : '' }}
+                    >
+                        {{ $tahun }}
+                    </option>
+
+                @endforeach
+
+            </select>
+
+        </div>
 
 
-            <form
-                method="GET"
-                action="{{ route('data.index') }}"
-                class="filter-form">
+        {{-- STATUS --}}
+
+        <div class="data-filter-group">
+
+            <label class="data-filter-label">
+                Status Verifikasi
+            </label>
+
+            <select name="verifikasi">
+
+                <option value="">
+                    Semua Status
+                </option>
+
+                <option
+                    value="Menunggu Disetujui"
+                    {{ request('verifikasi') == 'Menunggu Disetujui' ? 'selected' : '' }}
+                >
+                    Menunggu Disetujui
+                </option>
+
+                <option
+                    value="Disetujui"
+                    {{ request('verifikasi') == 'Disetujui' ? 'selected' : '' }}
+                >
+                    Disetujui
+                </option>
+
+                <option
+                    value="Ditolak"
+                    {{ request('verifikasi') == 'Ditolak' ? 'selected' : '' }}
+                >
+                    Ditolak
+                </option>
+
+            </select>
+
+        </div>
 
 
-                {{-- SEARCH --}}
+        {{-- JUMLAH DATA --}}
 
-                <input
-                    type="hidden"
-                    name="search"
-                    value="{{ request('search') }}">
+        <div class="data-filter-group">
+
+            <label class="data-filter-label">
+                Tampilkan
+            </label>
+
+            <select name="show">
+
+                @foreach([10, 25, 50, 100] as $jumlah)
+
+                    <option
+                        value="{{ $jumlah }}"
+                        {{ request('show', 10) == $jumlah ? 'selected' : '' }}
+                    >
+                        {{ $jumlah }} data
+                    </option>
+
+                @endforeach
+
+            </select>
+
+        </div>
 
 
-                {{-- JENIS DATA --}}
+        {{-- BUTTON --}}
 
-                <div class="filter-group">
+        <div class="data-filter-actions">
 
-                    <label>
+            <a
+                href="{{ route('data.index') }}"
+                class="data-reset-filter"
+            >
+                Reset
+            </a>
+
+            <button
+                type="submit"
+                class="data-reset-filter"
+            >
+                Terapkan
+            </button>
+
+        </div>
+
+    </form>
+
+</div>
+
+
+{{-- =====================================================
+     TABLE
+====================================================== --}}
+
+<div class="data-table-wrapper">
+
+    @if($data->count() > 0)
+
+        <table class="data-table">
+
+            <thead>
+
+                <tr>
+
+                    <th>
+                        No
+                    </th>
+
+                    <th>
+                        Nama Dataset
+                    </th>
+
+                    <th>
                         Jenis Data
-                    </label>
+                    </th>
 
-                    <select name="jenis_data">
-
-                        <option value="">
-                            Semua Jenis Data
-                        </option>
-
-                        @foreach($jenisData as $jenis)
-
-                            <option
-                                value="{{ $jenis }}"
-                                {{ request('jenis_data') == $jenis ? 'selected' : '' }}>
-
-                                {{ $jenis }}
-
-                            </option>
-
-                        @endforeach
-
-                    </select>
-
-                </div>
-
-
-                {{-- TAHUN --}}
-
-                <div class="filter-group">
-
-                    <label>
+                    <th>
                         Tahun
-                    </label>
+                    </th>
 
-                    <select name="tahun">
+                    <th>
+                        File
+                    </th>
 
-                        <option value="">
-                            Semua Tahun
-                        </option>
+                    <th>
+                        Tanggal Pengajuan
+                    </th>
 
-                        @foreach($tahunData as $tahun)
+                    <th>
+                        Verifikasi
+                    </th>
 
-                            <option
-                                value="{{ $tahun }}"
-                                {{ request('tahun') == $tahun ? 'selected' : '' }}>
+                    <th>
+                        Keterangan
+                    </th>
 
-                                {{ $tahun }}
+                    <th>
+                        Aksi
+                    </th>
 
-                            </option>
+                </tr>
 
-                        @endforeach
-
-                    </select>
-
-                </div>
-
-
-                {{-- STATUS --}}
-
-                <div class="filter-group">
-
-                    <label>
-                        Status Verifikasi
-                    </label>
-
-                    <select name="verifikasi">
-
-                        <option value="">
-                            Semua Status
-                        </option>
-
-                        <option
-                            value="Menunggu Disetujui"
-                            {{ request('verifikasi') == 'Menunggu Disetujui' ? 'selected' : '' }}>
-
-                            Menunggu Disetujui
-
-                        </option>
-
-                        <option
-                            value="Disetujui"
-                            {{ request('verifikasi') == 'Disetujui' ? 'selected' : '' }}>
-
-                            Disetujui
-
-                        </option>
-
-                        <option
-                            value="Ditolak"
-                            {{ request('verifikasi') == 'Ditolak' ? 'selected' : '' }}>
-
-                            Ditolak
-
-                        </option>
-
-                    </select>
-
-                </div>
+            </thead>
 
 
-                {{-- TERAPKAN --}}
+            <tbody>
 
-                <button
-                    type="submit"
-                    class="filter-submit">
-
-                    <i class="bi bi-check-lg"></i>
-
-                    Terapkan
-
-                </button>
-
-
-                {{-- RESET --}}
-
-                <a
-                    href="{{ route('data.index') }}"
-                    class="filter-reset">
-
-                    <i class="bi bi-arrow-counterclockwise"></i>
-
-                    Reset
-
-                </a>
-
-
-            </form>
-
-        </div>
-
-
-        {{-- =================================================
-             TABLE
-        ================================================== --}}
-
-        <div class="data-table-wrapper">
-
-            <table class="data-table">
-
-
-                <thead>
+                @foreach($data as $item)
 
                     <tr>
 
-                        <th width="7%">
-                            ID
-                        </th>
+                        {{-- NO --}}
 
-                        <th width="18%">
-                            NAMA DATASET
-                        </th>
+                        <td>
 
-                        <th width="14%">
-                            JENIS DATA
-                        </th>
+                            {{ $data->firstItem() + $loop->index }}
 
-                        <th width="8%">
-                            TAHUN
-                        </th>
-
-                        <th width="13%">
-                            TANGGAL PENGAJUAN
-                        </th>
-
-                        <th width="13%">
-                            FILE DATA
-                        </th>
-
-                        <th width="13%">
-                            VERIFIKASI
-                        </th>
-
-                        <th width="14%">
-                            KOMENTAR
-                        </th>
-
-                        <th width="10%">
-                            AKSI
-                        </th>
-
-                    </tr>
-
-                </thead>
+                        </td>
 
 
-                <tbody>
+                        {{-- NAMA DATASET --}}
 
+                        <td>
 
-                    @forelse($data as $item)
-
-                        <tr>
-
-
-                            {{-- ID --}}
-
-                            <td>
-
-                                DS-{{
-                                    str_pad(
-                                        $item->id,
-                                        3,
-                                        '0',
-                                        STR_PAD_LEFT
-                                    )
-                                }}
-
-                            </td>
-
-
-                            {{-- NAMA DATASET --}}
-
-                            <td>
+                            <strong>
                                 {{ $item->nama_dataset }}
-                            </td>
+                            </strong>
+
+                        </td>
 
 
-                            {{-- JENIS DATA --}}
+                        {{-- JENIS DATA --}}
 
-                            <td>
-                                {{ $item->jenis_data }}
-                            </td>
+                        <td>
 
+                            {{ $item->jenis_data }}
 
-                            {{-- TAHUN --}}
-
-                            <td>
-                                {{ $item->tahun }}
-                            </td>
+                        </td>
 
 
-                            {{-- TANGGAL PENGAJUAN --}}
+                        {{-- TAHUN --}}
 
-                            <td>
+                        <td>
+
+                            <span class="data-year">
+
+                                {{ $item->tahun ?: '-' }}
+
+                            </span>
+
+                        </td>
+
+
+                        {{-- FILE --}}
+
+                        <td>
+
+                            @if($item->file_data)
+
+                                <a
+                                    href="{{ asset('storage/' . $item->file_data) }}"
+                                    target="_blank"
+                                    rel="noopener noreferrer"
+                                    class="data-file"
+                                    title="Buka file"
+                                >
+
+                                    <i class="bi bi-file-earmark-text-fill"></i>
+
+                                    {{ basename($item->file_data) }}
+
+                                </a>
+
+                            @else
+
+                                <span class="data-no-file">
+                                    -
+                                </span>
+
+                            @endif
+
+                        </td>
+
+
+                        {{-- TANGGAL PENGAJUAN --}}
+
+                        <td>
+
+                            <span class="data-date">
 
                                 @if($item->tanggal_pengajuan)
 
-                                    {{
-                                        \Carbon\Carbon::parse(
-                                            $item->tanggal_pengajuan
-                                        )->format('d/m/Y H:i')
-                                    }}
+                                    {{ \Carbon\Carbon::parse($item->tanggal_pengajuan)->format('d/m/Y H:i') }}
 
                                 @else
 
@@ -532,325 +679,298 @@
 
                                 @endif
 
-                            </td>
+                            </span>
+
+                        </td>
 
 
-                            {{-- FILE DATA --}}
+                        {{-- VERIFIKASI --}}
 
-                            <td>
+                        <td>
 
-                                @if($item->file_data)
+                            @if($item->verifikasi === 'Menunggu Disetujui')
 
-                                    <a
-                                        href="{{ asset('storage/' . $item->file_data) }}"
-                                        target="_blank"
-                                        rel="noopener noreferrer"
-                                        class="file-button">
+                                <span class="verifikasi verifikasi-pending">
 
-                                        <i class="bi bi-eye"></i>
+                                    <i class="bi bi-clock"></i>
 
-                                        Lihat File
+                                    Menunggu Disetujui
 
-                                    </a>
+                                </span>
 
-                                @else
+                            @elseif($item->verifikasi === 'Disetujui')
 
-                                    <span class="no-file">
+                                <span class="verifikasi verifikasi-approved">
 
-                                        <i class="bi bi-file-earmark-x"></i>
+                                    <i class="bi bi-check-circle"></i>
 
-                                        Tidak ada file
+                                    Disetujui
 
-                                    </span>
+                                </span>
 
-                                @endif
+                            @elseif($item->verifikasi === 'Ditolak')
 
-                            </td>
+                                <span class="verifikasi verifikasi-rejected">
 
+                                    <i class="bi bi-x-circle"></i>
 
-                            {{-- VERIFIKASI --}}
+                                    Ditolak
 
-                            <td>
+                                </span>
 
-                                @if($item->verifikasi == 'Disetujui')
+                            @else
 
-                                    <span class="verifikasi verifikasi-approved">
+                                <span class="verifikasi">
+                                    -
+                                </span>
 
-                                        <i class="bi bi-check-circle"></i>
+                            @endif
 
-                                        Disetujui
-
-                                    </span>
-
-                                @elseif($item->verifikasi == 'Menunggu Disetujui')
-
-                                    <span class="verifikasi verifikasi-pending">
-
-                                        <i class="bi bi-clock"></i>
-
-                                        Menunggu Disetujui
-
-                                    </span>
-
-                                @elseif($item->verifikasi == 'Ditolak')
-
-                                    <span class="verifikasi verifikasi-rejected">
-
-                                        <i class="bi bi-x-circle"></i>
-
-                                        Ditolak
-
-                                    </span>
-
-                                @else
-
-                                    <span class="verifikasi">
-                                        -
-                                    </span>
-
-                                @endif
-
-                            </td>
+                        </td>
 
 
-                            {{-- KOMENTAR --}}
+                        {{-- KOMENTAR --}}
 
-                            <td>
+                        <td>
 
-                                @if(
-                                    $item->verifikasi == 'Ditolak' &&
-                                    $item->komentar_verifikasi
-                                )
+                            @if(
+                                $item->verifikasi === 'Ditolak' &&
+                                !empty($item->komentar_verifikasi)
+                            )
+
+                                <button
+                                    type="button"
+                                    class="comment-button"
+                                    onclick="showComment(@js($item->komentar_verifikasi))"
+                                >
+
+                                    <i class="bi bi-chat-left-text"></i>
+
+                                    Lihat Komentar
+
+                                </button>
+
+                            @elseif($item->verifikasi === 'Ditolak')
+
+                                <span class="no-comment">
+                                    Tidak ada komentar
+                                </span>
+
+                            @else
+
+                                <span class="no-comment">
+                                    -
+                                </span>
+
+                            @endif
+
+                        </td>
+
+
+                        {{-- AKSI --}}
+
+                        <td>
+
+                            <div class="action-buttons">
+
+
+                                {{-- EDIT --}}
+
+                                <button
+                                    type="button"
+                                    class="action-button edit"
+                                    title="Edit"
+                                    onclick='openEditDataModal(
+                                        @json($item->id),
+                                        @json($item->nama_dataset),
+                                        @json($item->jenis_data),
+                                        @json($item->tahun),
+                                        @json($item->file_data)
+                                    )'
+                                >
+
+                                    <i class="bi bi-pencil-fill"></i>
+
+                                </button>
+
+
+                                {{-- DELETE --}}
+
+                                <form
+                                    action="{{ route('data.destroy', $item->id) }}"
+                                    method="POST"
+                                    style="display:inline;"
+                                    onsubmit="return confirm('Yakin ingin menghapus data ini?');"
+                                >
+
+                                    @csrf
+
+                                    @method('DELETE')
 
                                     <button
-                                        type="button"
-                                        class="comment-button"
-                                        onclick="showComment(
-                                            @js($item->komentar_verifikasi)
-                                        )">
+                                        type="submit"
+                                        class="action-button delete"
+                                        title="Hapus"
+                                    >
 
-                                        <i class="bi bi-chat-left-text"></i>
-
-                                        Lihat Komentar
+                                        <i class="bi bi-trash-fill"></i>
 
                                     </button>
 
-                                @elseif($item->verifikasi == 'Ditolak')
+                                </form>
 
-                                    <span class="no-comment">
+                            </div>
 
-                                        Tidak ada komentar
+                        </td>
 
-                                    </span>
+                    </tr>
 
-                                @else
+                @endforeach
 
-                                    <span class="no-comment">
-                                        -
-                                    </span>
+            </tbody>
 
-                                @endif
+        </table>
 
-                            </td>
+    @else
 
+        <div class="data-empty">
 
-                            {{-- AKSI --}}
+            <div class="data-empty-icon">
 
-                            <td>
+                <i class="bi bi-database"></i>
 
-                                <div class="action-buttons">
+            </div>
 
+            <h3>
 
-                                    {{-- EDIT --}}
+                @if(
+                    request('search') ||
+                    request('jenis_data') ||
+                    request('tahun') ||
+                    request('verifikasi')
+                )
 
-                                    <button
-                                        type="button"
-                                        class="action-button edit"
-                                        title="Edit"
-                                        onclick='openEditModal(
-                                            @json($item->id),
-                                            @json($item->nama_dataset),
-                                            @json($item->jenis_data),
-                                            @json($item->tahun),
-                                            @json($item->file_data)
-                                        )'>
+                    Data tidak ditemukan
 
-                                        <i class="bi bi-pencil-fill"></i>
+                @else
 
-                                    </button>
+                    Belum ada data
 
+                @endif
 
-                                    {{-- DELETE --}}
+            </h3>
 
-                                    <form
-                                        action="{{ route('data.destroy', $item->id) }}"
-                                        method="POST"
-                                        onsubmit="return confirm(
-                                            'Yakin ingin menghapus data ini?'
-                                        )">
+            <p>
 
-                                        @csrf
+                @if(
+                    request('search') ||
+                    request('jenis_data') ||
+                    request('tahun') ||
+                    request('verifikasi')
+                )
 
-                                        @method('DELETE')
+                    Coba ubah kata pencarian atau filter.
 
-                                        <button
-                                            type="submit"
-                                            class="action-button delete"
-                                            title="Hapus">
+                @else
 
-                                            <i class="bi bi-trash-fill"></i>
+                    Belum ada dataset yang tersimpan.
 
-                                        </button>
+                @endif
 
-                                    </form>
+            </p>
 
+        </div>
 
-                                </div>
+    @endif
 
-                            </td>
+</div>
 
 
-                        </tr>
+{{-- =====================================================
+     FOOTER / PAGINATION
+====================================================== --}}
 
+@if($data->total() > 0)
 
-                    @empty
+    <div class="data-table-footer">
 
-                        <tr>
+        {{-- SHOW --}}
 
-                            <td
-                                colspan="9"
-                                class="empty-data">
+        <div class="show-data">
 
-                                <i class="bi bi-database-x"></i>
+            <span>
+                Show
+            </span>
 
-                                Tidak ada data ditemukan.
+            <form
+                method="GET"
+                action="{{ route('data.index') }}"
+                id="showForm"
+            >
 
-                            </td>
+                <input
+                    type="hidden"
+                    name="search"
+                    value="{{ request('search') }}"
+                >
 
-                        </tr>
+                <input
+                    type="hidden"
+                    name="jenis_data"
+                    value="{{ request('jenis_data') }}"
+                >
 
-                    @endforelse
+                <input
+                    type="hidden"
+                    name="tahun"
+                    value="{{ request('tahun') }}"
+                >
 
+                <input
+                    type="hidden"
+                    name="verifikasi"
+                    value="{{ request('verifikasi') }}"
+                >
 
-                </tbody>
+                <select
+                    name="show"
+                    onchange="document.getElementById('showForm').submit()"
+                >
 
-            </table>
+                    @foreach([10, 25, 50, 100] as $jumlah)
+
+                        <option
+                            value="{{ $jumlah }}"
+                            {{ request('show', 10) == $jumlah ? 'selected' : '' }}
+                        >
+                            {{ $jumlah }}
+                        </option>
+
+                    @endforeach
+
+                </select>
+
+            </form>
+
+            <span>
+                entries
+            </span>
 
         </div>
 
 
-        {{-- =================================================
-             FOOTER
-        ================================================== --}}
+        {{-- INFO --}}
 
-        <div class="table-footer">
-
-
-            {{-- SHOW DATA --}}
-
-            <div class="show-data">
-
-                <span>
-                    Show
-                </span>
-
-                <form
-                    method="GET"
-                    action="{{ route('data.index') }}"
-                    id="showForm">
-
-
-                    <input
-                        type="hidden"
-                        name="search"
-                        value="{{ request('search') }}">
-
-
-                    <input
-                        type="hidden"
-                        name="jenis_data"
-                        value="{{ request('jenis_data') }}">
-
-
-                    <input
-                        type="hidden"
-                        name="tahun"
-                        value="{{ request('tahun') }}">
-
-
-                    <input
-                        type="hidden"
-                        name="verifikasi"
-                        value="{{ request('verifikasi') }}">
-
-
-                    <select
-                        name="show"
-                        onchange="
-                            document
-                            .getElementById('showForm')
-                            .submit()
-                        ">
-
-                        <option
-                            value="10"
-                            {{ request('show', 10) == 10 ? 'selected' : '' }}>
-
-                            10
-
-                        </option>
-
-                        <option
-                            value="25"
-                            {{ request('show') == 25 ? 'selected' : '' }}>
-
-                            25
-
-                        </option>
-
-                        <option
-                            value="50"
-                            {{ request('show') == 50 ? 'selected' : '' }}>
-
-                            50
-
-                        </option>
-
-                        <option
-                            value="100"
-                            {{ request('show') == 100 ? 'selected' : '' }}>
-
-                            100
-
-                        </option>
-
-                    </select>
-
-                </form>
-
-                <span>
-                    entries
-                </span>
-
-            </div>
-
-
-            {{-- INFO PAGINATION --}}
+        <div class="data-pagination">
 
             <span>
 
                 Showing
-
                 {{ $data->firstItem() ?? 0 }}
-
                 to
-
                 {{ $data->lastItem() ?? 0 }}
-
                 of
-
                 {{ $data->total() }}
-
                 entries
 
             </span>
@@ -860,12 +980,11 @@
 
             <div class="pagination">
 
-
                 {{-- PREVIOUS --}}
 
                 @if($data->onFirstPage())
 
-                    <span class="page-link">
+                    <span class="page-link disabled">
 
                         <i class="bi bi-chevron-left"></i>
 
@@ -875,7 +994,8 @@
 
                     <a
                         href="{{ $data->previousPageUrl() }}"
-                        class="page-link">
+                        class="page-link"
+                    >
 
                         <i class="bi bi-chevron-left"></i>
 
@@ -884,12 +1004,12 @@
                 @endif
 
 
-                {{-- PAGE NUMBER --}}
+                {{-- PAGE NUMBERS --}}
 
                 @foreach(
                     $data->getUrlRange(
-                        1,
-                        $data->lastPage()
+                        max(1, $data->currentPage() - 2),
+                        min($data->lastPage(), $data->currentPage() + 2)
                     )
                     as $page => $url
                 )
@@ -906,7 +1026,8 @@
 
                         <a
                             href="{{ $url }}"
-                            class="page-link">
+                            class="page-link"
+                        >
 
                             {{ $page }}
 
@@ -923,7 +1044,8 @@
 
                     <a
                         href="{{ $data->nextPageUrl() }}"
-                        class="page-link">
+                        class="page-link"
+                    >
 
                         <i class="bi bi-chevron-right"></i>
 
@@ -931,7 +1053,7 @@
 
                 @else
 
-                    <span class="page-link">
+                    <span class="page-link disabled">
 
                         <i class="bi bi-chevron-right"></i>
 
@@ -939,491 +1061,394 @@
 
                 @endif
 
-
             </div>
-
 
         </div>
 
-
     </div>
 
+@endif
+```
 
 </div>
 
-
 {{-- =========================================================
-     MODAL ADD DATA
+MODAL TAMBAH / EDIT DATA
 ========================================================= --}}
 
 <div
     class="data-modal"
-    id="addDataModal">
+    id="dataModal"
+    style="display:none;"
+>
 
+```
+<div
+    class="data-modal-content"
+    onclick="event.stopPropagation()"
+>
 
-    <div class="data-modal-content">
+    {{-- HEADER --}}
 
+    <div class="data-modal-header">
 
-        <div class="data-modal-header">
+        <div class="data-modal-header-left">
 
-            <h2>
-                Add
-            </h2>
+            <div class="data-modal-icon">
 
-            <button
-                type="button"
-                class="modal-close"
-                onclick="closeAddModal()">
+                <i class="bi bi-database-fill"></i>
 
-                &times;
+            </div>
 
-            </button>
+            <div>
+
+                <h2
+                    id="dataModalTitle"
+                    class="data-modal-title"
+                >
+                    Tambah Data
+                </h2>
+
+                <p
+                    id="dataModalSubtitle"
+                    class="data-modal-subtitle"
+                >
+                    Tambahkan dataset baru ke dalam sistem.
+                </p>
+
+            </div>
 
         </div>
 
 
-        <form
-            action="{{ route('data.store') }}"
-            method="POST"
-            enctype="multipart/form-data">
+        <button
+            type="button"
+            class="data-modal-close"
+            onclick="closeDataModal()"
+            title="Tutup"
+        >
 
-            @csrf
+            <i class="bi bi-x-lg"></i>
 
-
-            {{-- NAMA DATASET --}}
-
-            <div class="form-group">
-
-                <label>
-                    Nama Dataset
-                </label>
-
-                <input
-                    type="text"
-                    name="nama_dataset"
-                    class="form-control-data"
-                    value="{{ old('nama_dataset') }}"
-                    placeholder="Masukkan nama dataset"
-                    required>
-
-            </div>
-
-
-            {{-- JENIS DATA --}}
-
-            <div class="form-group">
-
-                <label>
-                    Jenis Data
-                </label>
-
-                <input
-                    type="text"
-                    name="jenis_data"
-                    class="form-control-data"
-                    value="{{ old('jenis_data') }}"
-                    placeholder="Contoh: Data Kepegawaian"
-                    required>
-
-            </div>
-
-
-            {{-- TAHUN --}}
-
-            <div class="form-group">
-
-                <label>
-                    Tahun
-                </label>
-
-                <select
-                    name="tahun"
-                    class="form-control-data"
-                    required>
-
-                    <option value="">
-                        Pilih Tahun
-                    </option>
-
-                    @for(
-                        $tahun = date('Y');
-                        $tahun >= 1900;
-                        $tahun--
-                    )
-
-                        <option
-                            value="{{ $tahun }}"
-                            {{ old('tahun') == $tahun ? 'selected' : '' }}>
-
-                            {{ $tahun }}
-
-                        </option>
-
-                    @endfor
-
-                </select>
-
-            </div>
-
-
-            {{-- FILE DATA --}}
-
-            <div class="form-group">
-
-                <label>
-                    File Data
-                </label>
-
-                <input
-                    type="file"
-                    name="file_data"
-                    class="form-control-data"
-                    accept=".csv,.xls,.xlsx,.pdf,.zip"
-                    required>
-
-                <small class="form-help">
-
-                    Format file: CSV, XLS, XLSX, PDF, ZIP.
-                    Maksimal 10 MB.
-
-                </small>
-
-            </div>
-
-
-            {{-- STATUS INFO --}}
-
-            <div class="status-info">
-
-                <i class="bi bi-info-circle"></i>
-
-                <span>
-
-                    Setelah dikirim, data akan otomatis berstatus
-
-                    <strong>
-                        Menunggu Disetujui
-                    </strong>
-
-                    dan akan diperiksa oleh Verifikator.
-
-                </span>
-
-            </div>
-
-
-            {{-- BUTTON --}}
-
-            <div class="form-actions">
-
-                <button
-                    type="button"
-                    class="cancel-btn"
-                    onclick="closeAddModal()">
-
-                    Batal
-
-                </button>
-
-                <button
-                    type="submit"
-                    class="save-btn">
-
-                    <i class="bi bi-send"></i>
-
-                    Add
-
-                </button>
-
-            </div>
-
-
-        </form>
-
+        </button>
 
     </div>
 
-</div>
+
+    {{-- FORM --}}
+
+    <form
+        id="dataForm"
+        action="{{ route('data.store') }}"
+        method="POST"
+        enctype="multipart/form-data"
+    >
+
+        @csrf
+
+        <input
+            type="hidden"
+            id="dataMethod"
+            name="_method"
+            value="POST"
+        >
 
 
-{{-- =========================================================
-     MODAL EDIT DATA
-========================================================= --}}
+        {{-- BODY --}}
 
-<div
-    class="data-modal"
-    id="editDataModal">
+        <div class="data-modal-body">
+
+            <div class="data-form-grid">
 
 
-    <div class="data-modal-content">
+                {{-- NAMA DATASET --}}
 
+                <div class="data-form-group full">
 
-        <div class="data-modal-header">
+                    <label
+                        for="data_nama_dataset"
+                        class="data-form-label"
+                    >
 
-            <h2>
-                Edit Data
-            </h2>
+                        Nama Dataset
 
-            <button
-                type="button"
-                class="modal-close"
-                onclick="closeEditModal()">
+                        <span>*</span>
 
-                &times;
+                    </label>
 
-            </button>
-
-        </div>
-
-
-        <form
-            id="editDataForm"
-            method="POST"
-            enctype="multipart/form-data">
-
-            @csrf
-
-            @method('PUT')
-
-
-            {{-- NAMA DATASET --}}
-
-            <div class="form-group">
-
-                <label>
-                    Nama Dataset
-                </label>
-
-                <input
-                    type="text"
-                    id="edit_nama_dataset"
-                    name="nama_dataset"
-                    class="form-control-data"
-                    required>
-
-            </div>
-
-
-            {{-- JENIS DATA --}}
-
-            <div class="form-group">
-
-                <label>
-                    Jenis Data
-                </label>
-
-                <input
-                    type="text"
-                    id="edit_jenis_data"
-                    name="jenis_data"
-                    class="form-control-data"
-                    required>
-
-            </div>
-
-
-            {{-- TAHUN --}}
-
-            <div class="form-group">
-
-                <label>
-                    Tahun
-                </label>
-
-                <select
-                    id="edit_tahun"
-                    name="tahun"
-                    class="form-control-data"
-                    required>
-
-                    <option value="">
-                        Pilih Tahun
-                    </option>
-
-                    @for(
-                        $tahun = date('Y');
-                        $tahun >= 1900;
-                        $tahun--
-                    )
-
-                        <option value="{{ $tahun }}">
-
-                            {{ $tahun }}
-
-                        </option>
-
-                    @endfor
-
-                </select>
-
-            </div>
-
-
-            {{-- FILE DATA --}}
-
-            <div class="form-group">
-
-                <label>
-                    File Data
-                </label>
-
-
-                <div
-                    id="edit_current_file"
-                    class="current-file"
-                    style="display:none;">
-
-                    <i class="bi bi-file-earmark"></i>
-
-                    <span>
-                        File saat ini:
-                    </span>
-
-                    <a
-                        id="edit_file_link"
-                        href="#"
-                        target="_blank">
-
-                        Lihat File
-
-                    </a>
+                    <input
+                        type="text"
+                        id="data_nama_dataset"
+                        name="nama_dataset"
+                        class="data-form-control"
+                        placeholder="Contoh: Data Penduduk Kota Bekasi"
+                        required
+                    >
 
                 </div>
 
 
-                <input
-                    type="file"
-                    name="file_data"
-                    class="form-control-data"
-                    accept=".csv,.xls,.xlsx,.pdf,.zip">
+                {{-- JENIS DATA --}}
+
+                <div class="data-form-group">
+
+                    <label
+                        for="data_jenis_data"
+                        class="data-form-label"
+                    >
+
+                        Jenis Data
+
+                        <span>*</span>
+
+                    </label>
+
+                    <input
+                        type="text"
+                        id="data_jenis_data"
+                        name="jenis_data"
+                        class="data-form-control"
+                        placeholder="Contoh: Kependudukan"
+                        required
+                    >
+
+                </div>
 
 
-                <small class="form-help">
+                {{-- TAHUN --}}
 
-                    Kosongkan jika tidak ingin mengganti file.
-                    Format: CSV, XLS, XLSX, PDF, ZIP.
-                    Maksimal 10 MB.
+                <div class="data-form-group">
 
-                </small>
+                    <label
+                        for="data_tahun"
+                        class="data-form-label"
+                    >
+
+                        Tahun
+
+                        <span>*</span>
+
+                    </label>
+
+                    <input
+                        type="number"
+                        id="data_tahun"
+                        name="tahun"
+                        class="data-form-control"
+                        min="1900"
+                        max="2100"
+                        placeholder="Contoh: 2026"
+                        required
+                    >
+
+                </div>
+
+
+                {{-- FILE --}}
+
+                <div class="data-form-group full">
+
+                    <label
+                        for="data_file_data"
+                        class="data-form-label"
+                    >
+
+                        File Data
+
+                    </label>
+
+                    <div
+                        id="currentDataFile"
+                        style="display:none; margin-bottom:8px;"
+                    >
+
+                        <i class="bi bi-file-earmark-text"></i>
+
+                        <span>
+                            File saat ini:
+                        </span>
+
+                        <a
+                            id="currentDataFileLink"
+                            href="#"
+                            target="_blank"
+                            rel="noopener noreferrer"
+                        >
+                            Lihat File
+                        </a>
+
+                    </div>
+
+                    <input
+                        type="file"
+                        id="data_file_data"
+                        name="file_data"
+                        class="data-form-control data-file-input"
+                        accept=".csv,.xls,.xlsx,.pdf,.zip"
+                    >
+
+                    <small class="data-form-help">
+
+                        Saat menambah data, upload file jika tersedia.
+                        Saat edit, kosongkan jika tidak ingin mengganti file.
+
+                    </small>
+
+                </div>
+
+
+                {{-- KETERANGAN --}}
+
+                <div class="data-form-group full">
+
+                    <label
+                        for="data_komentar_verifikasi"
+                        class="data-form-label"
+                    >
+
+                        Keterangan
+
+                    </label>
+
+                    <textarea
+                        id="data_komentar_verifikasi"
+                        name="komentar_verifikasi"
+                        class="data-form-control"
+                        rows="4"
+                        placeholder="Tambahkan keterangan jika diperlukan..."
+                    ></textarea>
+
+                </div>
+
+
+                {{-- INFO VERIFIKASI --}}
+
+                <div class="data-form-group full">
+
+                    <div class="status-info">
+
+                        <i class="bi bi-info-circle"></i>
+
+                        <span>
+
+                            Perubahan data akan diajukan terlebih dahulu
+                            dan menunggu persetujuan Verifikator.
+
+                        </span>
+
+                    </div>
+
+                </div>
 
             </div>
 
-
-            {{-- INFO --}}
-
-            <div class="status-info">
-
-                <i class="bi bi-info-circle"></i>
-
-                <span>
-
-                    Perubahan data akan diajukan terlebih dahulu
-                    dan menunggu persetujuan Verifikator.
-
-                </span>
-
-            </div>
+        </div>
 
 
-            {{-- BUTTON --}}
+        {{-- FOOTER --}}
 
-            <div class="form-actions">
+        <div class="data-modal-footer">
 
-                <button
-                    type="button"
-                    class="cancel-btn"
-                    onclick="closeEditModal()">
+            <button
+                type="button"
+                class="data-modal-cancel"
+                onclick="closeDataModal()"
+            >
 
-                    Batal
+                Batal
 
-                </button>
+            </button>
 
-                <button
-                    type="submit"
-                    class="save-btn">
+            <button
+                type="submit"
+                class="save-btn"
+            >
 
-                    <i class="bi bi-save"></i>
+                <i class="bi bi-send"></i>
 
-                    Ajukan Perubahan
+                Ajukan Perubahan
 
-                </button>
+            </button>
 
-            </div>
+        </div>
 
+    </form>
 
-        </form>
-
-
-    </div>
+</div>
+```
 
 </div>
 
-
 {{-- =========================================================
-     MODAL KOMENTAR
+MODAL KOMENTAR
 ========================================================= --}}
 
 <div
     class="data-modal"
-    id="commentModal">
+    id="commentModal"
+    style="display:none;"
+>
+
+```
+<div class="data-modal-content comment-modal-content">
+
+    <div class="data-modal-header">
+
+        <h2>
+            Komentar Verifikator
+        </h2>
+
+        <button
+            type="button"
+            class="modal-close"
+            onclick="closeCommentModal()"
+        >
+
+            &times;
+
+        </button>
+
+    </div>
 
 
-    <div class="data-modal-content comment-modal-content">
+    <div class="comment-box">
+
+        <i class="bi bi-chat-left-text"></i>
+
+        <p id="commentText"></p>
+
+    </div>
 
 
-        <div class="data-modal-header">
+    <div class="form-actions">
 
-            <h2>
-                Komentar Verifikator
-            </h2>
+        <button
+            type="button"
+            class="cancel-btn"
+            onclick="closeCommentModal()"
+        >
 
-            <button
-                type="button"
-                class="modal-close"
-                onclick="closeCommentModal()">
+            Tutup
 
-                &times;
-
-            </button>
-
-        </div>
-
-
-        <div class="comment-box">
-
-            <i class="bi bi-chat-left-text"></i>
-
-            <p id="commentText"></p>
-
-        </div>
-
-
-        <div class="form-actions">
-
-            <button
-                type="button"
-                class="cancel-btn"
-                onclick="closeCommentModal()">
-
-                Tutup
-
-            </button>
-
-        </div>
-
+        </button>
 
     </div>
 
 </div>
+```
 
+</div>
 
 @endsection
 
-
 {{-- =========================================================
-     JAVASCRIPT
+JAVASCRIPT
 ========================================================= --}}
 
 @push('scripts')
-    @include('data.script')
+
+```
+@include('data.script')
+```
+
 @endpush

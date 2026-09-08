@@ -35,7 +35,6 @@ class DataCenter extends Model
         'harga',
         'tanggal_pengadaan',
         'tanggal_berakhir',
-        'status',
         'verifikasi',
         'komentar',
     ];

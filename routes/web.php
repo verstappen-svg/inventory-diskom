@@ -2,7 +2,6 @@
 
 use Illuminate\Support\Facades\Route;
 
-use App\Http\Controllers\SDMController;
 use App\Http\Controllers\AuthController;
 use App\Http\Controllers\DashboardController;
 use App\Http\Controllers\UserController;
@@ -16,6 +15,9 @@ use App\Http\Controllers\JaringanController;
 use App\Http\Controllers\SplpController;
 use App\Http\Controllers\DataCenterController;
 use App\Http\Controllers\LaporanController;
+use App\Http\Controllers\SDMController;
+use App\Http\Controllers\VerificationController;
+
 use App\Models\ActivityLog;
 
 
@@ -43,6 +45,33 @@ Route::post('/logout', [AuthController::class, 'logout'])
 
 Route::middleware('auth')->group(function () {
 
+
+    /*
+    |--------------------------------------------------------------------------
+    | VERIFIKASI
+    |--------------------------------------------------------------------------
+    */
+
+    Route::middleware('role:verifikator')->group(function () {
+
+        Route::get(
+            '/verifikasi',
+            [VerificationController::class, 'index']
+        )->name('verifikasi.index');
+
+        Route::post(
+            '/verifikasi/{verificationRequest}/approve',
+            [VerificationController::class, 'approve']
+        )->name('verifikasi.approve');
+
+        Route::post(
+            '/verifikasi/{verificationRequest}/reject',
+            [VerificationController::class, 'reject']
+        )->name('verifikasi.reject');
+
+    });
+
+
     /*
     |--------------------------------------------------------------------------
     | DASHBOARD
@@ -55,104 +84,122 @@ Route::middleware('auth')->group(function () {
 
         return match ($role) {
 
+            /*
+            |--------------------------------------------------------------------------
+            | SUPER ADMIN
+            |--------------------------------------------------------------------------
+            */
+
             'super_admin' => view('dashboard.super-admin', [
 
-                'totalUser' =>
-                    \App\Models\User::count(),
+                'totalUser' => \App\Models\User::count(),
 
-                'totalOperator' =>
-                    \App\Models\User::where(
-                        'role',
-                        'operator'
-                    )->count(),
+                'totalOperator' => \App\Models\User::where(
+                    'role',
+                    'operator'
+                )->count(),
 
-                'totalVerifikator' =>
-                    \App\Models\User::where(
-                        'role',
-                        'verifikator'
-                    )->count(),
+                'totalVerifikator' => \App\Models\User::where(
+                    'role',
+                    'verifikator'
+                )->count(),
 
-                'totalPimpinan' =>
-                    \App\Models\User::where(
-                        'role',
-                        'pimpinan'
-                    )->count(),
+                'totalPimpinan' => \App\Models\User::where(
+                    'role',
+                    'pimpinan'
+                )->count(),
 
-                'activities' =>
-                    ActivityLog::latest()
-                        ->take(5)
-                        ->get()
-                        ->map(function ($log) {
+                'activities' => ActivityLog::latest()
+                    ->take(5)
+                    ->get()
+                    ->map(function ($log) {
 
-                            $meta = match ($log->action) {
+                        $meta = match ($log->action) {
 
-                                'create' => [
-                                    'icon' => 'plus-lg',
-                                    'type' => 'add'
-                                ],
+                            'create' => [
+                                'icon' => 'plus-lg',
+                                'type' => 'add',
+                            ],
 
-                                'update' => [
-                                    'icon' => 'pencil',
-                                    'type' => 'role'
-                                ],
+                            'update' => [
+                                'icon' => 'pencil',
+                                'type' => 'role',
+                            ],
 
-                                'delete' => [
-                                    'icon' => 'trash',
-                                    'type' => 'reject'
-                                ],
+                            'delete' => [
+                                'icon' => 'trash',
+                                'type' => 'reject',
+                            ],
 
-                                'login' => [
-                                    'icon' => 'box-arrow-in-right',
-                                    'type' => 'login'
-                                ],
+                            'login' => [
+                                'icon' => 'box-arrow-in-right',
+                                'type' => 'login',
+                            ],
 
-                                default => [
-                                    'icon' => 'info-circle',
-                                    'type' => 'add'
-                                ],
+                            default => [
+                                'icon' => 'info-circle',
+                                'type' => 'add',
+                            ],
 
-                            };
+                        };
 
-                            return [
+                        return [
 
-                                'icon' =>
-                                    $meta['icon'],
+                            'icon' => $meta['icon'],
 
-                                'type' =>
-                                    $meta['type'],
+                            'type' => $meta['type'],
 
-                                'text' =>
-                                    $log->description,
+                            'text' => $log->description,
 
-                                'by' =>
-                                    $log->user_name,
+                            'by' => $log->user_name,
 
-                                'time' =>
-                                    $log->created_at
-                                        ->diffForHumans(),
+                            'time' => $log->created_at
+                                ->diffForHumans(),
 
-                            ];
-
-                        })
-                        ->toArray(),
+                        ];
+                    })
+                    ->toArray(),
 
             ]),
 
-            'operator' =>
-                view('dashboard.operator'),
 
-            'verifikator' =>
-                view('dashboard.verifikator'),
+            /*
+            |--------------------------------------------------------------------------
+            | OPERATOR
+            |--------------------------------------------------------------------------
+            */
 
-            'pimpinan' =>
-                view('dashboard.pimpinan'),
+            'operator' => view('dashboard.operator'),
 
-            default =>
-                abort(
-                    403,
-                    'Role pengguna tidak valid.'
-                ),
 
+            /*
+            |--------------------------------------------------------------------------
+            | VERIFIKATOR
+            |--------------------------------------------------------------------------
+            */
+
+            'verifikator' => view('dashboard.verifikator'),
+
+
+            /*
+            |--------------------------------------------------------------------------
+            | PIMPINAN
+            |--------------------------------------------------------------------------
+            */
+
+            'pimpinan' => view('dashboard.pimpinan'),
+
+
+            /*
+            |--------------------------------------------------------------------------
+            | ROLE TIDAK VALID
+            |--------------------------------------------------------------------------
+            */
+
+            default => abort(
+                403,
+                'Role pengguna tidak valid.'
+            ),
         };
 
     })->name('dashboard');
@@ -227,18 +274,15 @@ Route::middleware('auth')->group(function () {
             [HardwareController::class, 'index']
         )->name('hardware.index');
 
-
         Route::post(
             '/hardware',
             [HardwareController::class, 'store']
         )->name('hardware.store');
 
-
         Route::put(
             '/hardware/{hardware}',
             [HardwareController::class, 'update']
         )->name('hardware.update');
-
 
         Route::delete(
             '/hardware/{hardware}',
@@ -276,26 +320,13 @@ Route::middleware('auth')->group(function () {
     )
         ->names([
 
-            'index' =>
-                'jaringan.index',
-
-            'create' =>
-                'jaringan.create',
-
-            'store' =>
-                'jaringan.store',
-
-            'show' =>
-                'jaringan.show',
-
-            'edit' =>
-                'jaringan.edit',
-
-            'update' =>
-                'jaringan.update',
-
-            'destroy' =>
-                'jaringan.destroy',
+            'index' => 'jaringan.index',
+            'create' => 'jaringan.create',
+            'store' => 'jaringan.store',
+            'show' => 'jaringan.show',
+            'edit' => 'jaringan.edit',
+            'update' => 'jaringan.update',
+            'destroy' => 'jaringan.destroy',
 
         ])
         ->except(['show'])
@@ -316,26 +347,13 @@ Route::middleware('auth')->group(function () {
     )
         ->names([
 
-            'index' =>
-                'data-center.index',
-
-            'create' =>
-                'data-center.create',
-
-            'store' =>
-                'data-center.store',
-
-            'show' =>
-                'data-center.show',
-
-            'edit' =>
-                'data-center.edit',
-
-            'update' =>
-                'data-center.update',
-
-            'destroy' =>
-                'data-center.destroy',
+            'index' => 'data-center.index',
+            'create' => 'data-center.create',
+            'store' => 'data-center.store',
+            'show' => 'data-center.show',
+            'edit' => 'data-center.edit',
+            'update' => 'data-center.update',
+            'destroy' => 'data-center.destroy',
 
         ])
         ->except(['show'])
@@ -356,26 +374,13 @@ Route::middleware('auth')->group(function () {
     )
         ->names([
 
-            'index' =>
-                'splp.index',
-
-            'create' =>
-                'splp.create',
-
-            'store' =>
-                'splp.store',
-
-            'show' =>
-                'splp.show',
-
-            'edit' =>
-                'splp.edit',
-
-            'update' =>
-                'splp.update',
-
-            'destroy' =>
-                'splp.destroy',
+            'index' => 'splp.index',
+            'create' => 'splp.create',
+            'store' => 'splp.store',
+            'show' => 'splp.show',
+            'edit' => 'splp.edit',
+            'update' => 'splp.update',
+            'destroy' => 'splp.destroy',
 
         ])
         ->except(['show'])
@@ -399,30 +404,25 @@ Route::middleware('auth')->group(function () {
             [DataController::class, 'index']
         )->name('data.index');
 
-
         Route::post(
             '/data',
             [DataController::class, 'store']
         )->name('data.store');
-
 
         Route::get(
             '/data/{id}/preview',
             [DataController::class, 'preview']
         )->name('data.preview');
 
-
         Route::get(
             '/data/{id}/edit',
             [DataController::class, 'edit']
         )->name('data.edit');
 
-
         Route::put(
             '/data/{id}',
             [DataController::class, 'update']
         )->name('data.update');
-
 
         Route::delete(
             '/data/{id}',
@@ -447,35 +447,20 @@ Route::middleware('auth')->group(function () {
             [SDMController::class, 'index']
         )->name('sdm.index');
 
-
         Route::post(
             '/sdm',
             [SDMController::class, 'store']
         )->name('sdm.store');
-
 
         Route::put(
             '/sdm/{sdm}',
             [SDMController::class, 'update']
         )->name('sdm.update');
 
-
         Route::delete(
             '/sdm/{sdm}',
             [SDMController::class, 'destroy']
         )->name('sdm.destroy');
-
-
-        Route::post(
-            '/sdm/{sdm}/approve',
-            [SDMController::class, 'approve']
-        )->name('sdm.approve');
-
-
-        Route::post(
-            '/sdm/{sdm}/reject',
-            [SDMController::class, 'reject']
-        )->name('sdm.reject');
 
     });
 

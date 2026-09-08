@@ -4,14 +4,16 @@ namespace App\Http\Controllers;
 
 use App\Models\DataCenter;
 use App\Models\Notification;
+use App\Models\VerificationRequest;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\DB;
 use Carbon\Carbon;
 
 class DataCenterController extends Controller
 {
     /*
     |--------------------------------------------------------------------------
-    | HITUNG STATUS OTOMATIS
+    | STATUS OTOMATIS
     |--------------------------------------------------------------------------
     */
 
@@ -19,17 +21,18 @@ class DataCenterController extends Controller
     {
         /*
         |--------------------------------------------------------------------------
-        | JIKA BELI
+        | BELI
         |--------------------------------------------------------------------------
+        | Pembelian tidak memiliki tanggal berakhir.
         */
 
         if ($dataCenter->pengadaan === 'Beli') {
-            return $dataCenter->status ?? 'Tersedia';
+            return 'Tidak Berakhir';
         }
 
         /*
         |--------------------------------------------------------------------------
-        | JIKA SEWA
+        | SEWA
         |--------------------------------------------------------------------------
         */
 
@@ -37,7 +40,6 @@ class DataCenterController extends Controller
             $dataCenter->pengadaan === 'Sewa' &&
             $dataCenter->tanggal_berakhir
         ) {
-
             $today = Carbon::today();
 
             $tanggalBerakhir = Carbon::parse(
@@ -58,6 +60,7 @@ class DataCenterController extends Controller
             |--------------------------------------------------------------------------
             | AKAN HABIS
             |--------------------------------------------------------------------------
+            | Jika sisa masa sewa <= 30 hari.
             */
 
             if (
@@ -84,7 +87,7 @@ class DataCenterController extends Controller
         |--------------------------------------------------------------------------
         */
 
-        return $dataCenter->status ?? 'Tersedia';
+        return 'Tidak Berakhir';
     }
 
 
@@ -105,26 +108,24 @@ class DataCenterController extends Controller
         */
 
         if ($request->filled('search')) {
-
             $search = $request->search;
 
             $query->where(function ($q) use ($search) {
-
                 $q->where(
                     'id',
                     'like',
                     "%{$search}%"
                 )
-                ->orWhere(
-                    'nama_infrastruktur',
-                    'like',
-                    "%{$search}%"
-                )
-                ->orWhere(
-                    'spesifikasi',
-                    'like',
-                    "%{$search}%"
-                );
+                    ->orWhere(
+                        'nama_infrastruktur',
+                        'like',
+                        "%{$search}%"
+                    )
+                    ->orWhere(
+                        'spesifikasi',
+                        'like',
+                        "%{$search}%"
+                    );
             });
         }
 
@@ -135,7 +136,6 @@ class DataCenterController extends Controller
         */
 
         if ($request->filled('pengadaan')) {
-
             $query->where(
                 'pengadaan',
                 $request->pengadaan
@@ -149,7 +149,6 @@ class DataCenterController extends Controller
         */
 
         if ($request->filled('verifikasi')) {
-
             $query->where(
                 'verifikasi',
                 $request->verifikasi
@@ -163,7 +162,6 @@ class DataCenterController extends Controller
         */
 
         if ($request->filled('tahun')) {
-
             $query->whereYear(
                 'tanggal_pengadaan',
                 $request->tahun
@@ -183,12 +181,11 @@ class DataCenterController extends Controller
 
         /*
         |--------------------------------------------------------------------------
-        | HITUNG STATUS OTOMATIS
+        | TAMBAHKAN STATUS OTOMATIS
         |--------------------------------------------------------------------------
         */
 
         foreach ($dataCenters as $dataCenter) {
-
             $dataCenter->status_otomatis =
                 $this->getStatusOtomatis(
                     $dataCenter
@@ -197,15 +194,13 @@ class DataCenterController extends Controller
 
         /*
         |--------------------------------------------------------------------------
-        | FILTER STATUS
+        | FILTER STATUS OTOMATIS
         |--------------------------------------------------------------------------
         */
 
         if ($request->filled('status')) {
-
             $dataCenters = $dataCenters
                 ->filter(function ($dataCenter) use ($request) {
-
                     return $dataCenter->status_otomatis ===
                         $request->status;
                 })
@@ -214,14 +209,13 @@ class DataCenterController extends Controller
 
         /*
         |--------------------------------------------------------------------------
-        | DATA UNTUK CARD
+        | DATA UNTUK STATISTIK
         |--------------------------------------------------------------------------
         */
 
         $allDataCenters = DataCenter::all();
 
         foreach ($allDataCenters as $dataCenter) {
-
             $dataCenter->status_otomatis =
                 $this->getStatusOtomatis(
                     $dataCenter
@@ -230,14 +224,14 @@ class DataCenterController extends Controller
 
         /*
         |--------------------------------------------------------------------------
-        | JUMLAH STATUS
+        | HITUNG STATUS
         |--------------------------------------------------------------------------
         */
 
-        $tersedia = $allDataCenters
+        $tidakBerakhir = $allDataCenters
             ->where(
                 'status_otomatis',
-                'Tersedia'
+                'Tidak Berakhir'
             )
             ->count();
 
@@ -267,7 +261,7 @@ class DataCenterController extends Controller
 
         /*
         |--------------------------------------------------------------------------
-        | DATA TAHUN UNTUK FILTER
+        | DAFTAR TAHUN
         |--------------------------------------------------------------------------
         */
 
@@ -284,7 +278,7 @@ class DataCenterController extends Controller
 
         /*
         |--------------------------------------------------------------------------
-        | DATA FILTER VERIFIKASI
+        | DAFTAR VERIFIKASI
         |--------------------------------------------------------------------------
         */
 
@@ -297,7 +291,7 @@ class DataCenterController extends Controller
 
         /*
         |--------------------------------------------------------------------------
-        | KIRIM KE VIEW
+        | VIEW
         |--------------------------------------------------------------------------
         */
 
@@ -306,7 +300,7 @@ class DataCenterController extends Controller
             compact(
                 'dataCenters',
                 'totalDataCenter',
-                'tersedia',
+                'tidakBerakhir',
                 'digunakan',
                 'akanHabis',
                 'expired',
@@ -325,76 +319,101 @@ class DataCenterController extends Controller
 
     public function store(Request $request)
     {
-        $validated = $request->validate([
+        $validated = $request->validate(
+            [
+                'nama_infrastruktur' => [
+                    'required',
+                    'string',
+                    'max:255',
+                ],
 
-            'nama_infrastruktur' => [
-                'required',
-                'string',
-                'max:255',
-            ],
+                'spesifikasi' => [
+                    'nullable',
+                    'string',
+                ],
 
-            'spesifikasi' => [
-                'nullable',
-                'string',
-            ],
+                'pengadaan' => [
+                    'required',
+                    'in:Beli,Sewa',
+                ],
 
-            'pengadaan' => [
-                'required',
-                'in:Beli,Sewa',
-            ],
+                'harga' => [
+                    'required',
+                    'numeric',
+                    'min:0',
+                ],
 
-            'harga' => [
-                'required',
-                'numeric',
-                'min:0',
-            ],
+                'tanggal_pengadaan' => [
+                    'required',
+                    'date',
+                ],
 
-            'tanggal_pengadaan' => [
-                'required',
-                'date',
+                'tanggal_berakhir' => [
+                    'nullable',
+                    'date',
+                    'after_or_equal:tanggal_pengadaan',
+                ],
             ],
+            [
+                'nama_infrastruktur.required' =>
+                    'Nama infrastruktur wajib diisi.',
 
-            'tanggal_berakhir' => [
-                'nullable',
-                'date',
-                'after_or_equal:tanggal_pengadaan',
-            ],
+                'nama_infrastruktur.max' =>
+                    'Nama infrastruktur maksimal 255 karakter.',
 
-            'status' => [
-                'nullable',
-                'in:Tersedia,Digunakan',
-            ],
+                'pengadaan.required' =>
+                    'Jenis pengadaan wajib dipilih.',
 
-            'komentar' => [
-                'nullable',
-                'string',
-            ],
-        ]);
+                'pengadaan.in' =>
+                    'Jenis pengadaan harus Beli atau Sewa.',
+
+                'harga.required' =>
+                    'Harga wajib diisi.',
+
+                'harga.numeric' =>
+                    'Harga harus berupa angka.',
+
+                'harga.min' =>
+                    'Harga tidak boleh kurang dari 0.',
+
+                'tanggal_pengadaan.required' =>
+                    'Tanggal pengadaan wajib diisi.',
+
+                'tanggal_pengadaan.date' =>
+                    'Tanggal pengadaan tidak valid.',
+
+                'tanggal_berakhir.date' =>
+                    'Tanggal berakhir tidak valid.',
+
+                'tanggal_berakhir.after_or_equal' =>
+                    'Tanggal berakhir tidak boleh sebelum tanggal pengadaan.',
+            ]
+        );
 
         /*
         |--------------------------------------------------------------------------
-        | JIKA BELI
+        | BELI
         |--------------------------------------------------------------------------
+        | Tidak mempunyai tanggal berakhir.
         */
 
         if ($validated['pengadaan'] === 'Beli') {
-
             $validated['tanggal_berakhir'] = null;
-
-            $validated['status'] =
-                $validated['status'] ?? 'Tersedia';
         }
 
         /*
         |--------------------------------------------------------------------------
-        | JIKA SEWA
+        | SEWA
         |--------------------------------------------------------------------------
+        | Wajib mempunyai tanggal berakhir.
         */
 
         if ($validated['pengadaan'] === 'Sewa') {
-
-            if (empty($validated['tanggal_berakhir'])) {
-
+            if (
+                empty(
+                    $validated['tanggal_berakhir']
+                )
+            ) {
                 return back()
                     ->withErrors([
                         'tanggal_berakhir' =>
@@ -402,17 +421,15 @@ class DataCenterController extends Controller
                     ])
                     ->withInput();
             }
-
-            $validated['status'] = 'Digunakan';
         }
 
         /*
         |--------------------------------------------------------------------------
-        | GENERATE ID OTOMATIS
+        | GENERATE ID
         |--------------------------------------------------------------------------
         */
 
-        $prefix = 'INFD-';
+        $prefix = 'INFDC-';
 
         $lastDataCenter = DataCenter::where(
             'id',
@@ -420,23 +437,18 @@ class DataCenterController extends Controller
             $prefix . '%'
         )
             ->orderByRaw(
-                'CAST(SUBSTRING(id, 6) AS UNSIGNED) DESC'
+                'CAST(SUBSTRING(id, 7) AS UNSIGNED) DESC'
             )
             ->first();
 
-        if ($lastDataCenter) {
-
-            $lastNumber = (int) substr(
-                $lastDataCenter->id,
-                strlen($prefix)
-            );
-
-            $newNumber = $lastNumber + 1;
-
-        } else {
-
-            $newNumber = 1;
-        }
+        $newNumber = $lastDataCenter
+            ? (
+                (int) substr(
+                    $lastDataCenter->id,
+                    strlen($prefix)
+                )
+            ) + 1
+            : 1;
 
         $validated['id'] =
             $prefix .
@@ -453,8 +465,7 @@ class DataCenterController extends Controller
         |--------------------------------------------------------------------------
         */
 
-        $validated['verifikasi'] =
-            'Menunggu disetujui';
+        $validated['verifikasi'] = 'menunggu';
 
         /*
         |--------------------------------------------------------------------------
@@ -466,45 +477,72 @@ class DataCenterController extends Controller
 
         /*
         |--------------------------------------------------------------------------
-        | SIMPAN
+        | SIMPAN + VERIFICATION REQUEST
         |--------------------------------------------------------------------------
         */
 
-        $dataCenter =
-            DataCenter::create($validated);
+        DB::transaction(function () use (
+            $validated,
+            $request
+        ) {
+            $dataCenter = DataCenter::create(
+                $validated
+            );
 
-        /*
-        |--------------------------------------------------------------------------
-        | NOTIFIKASI
-        |--------------------------------------------------------------------------
-        */
+            /*
+            |--------------------------------------------------------------------------
+            | VERIFICATION REQUEST
+            |--------------------------------------------------------------------------
+            */
 
-        Notification::create([
-            'judul' =>
-                'Pengajuan Data Center Baru',
+            VerificationRequest::create([
+                'module' =>
+                    'data-center',
 
-            'pesan' =>
-                $request->user()->username .
-                ' menambahkan data center "' .
-                $dataCenter->nama_infrastruktur .
-                '" dengan ID ' .
-                $dataCenter->id .
-                ' dan mengajukannya untuk persetujuan.',
+                'record_id' =>
+                    $dataCenter->id,
 
-            'dibaca' => false,
-        ]);
+                'action' =>
+                    'create',
 
-        /*
-        |--------------------------------------------------------------------------
-        | REDIRECT
-        |--------------------------------------------------------------------------
-        */
+                'data' =>
+                    $dataCenter->toArray(),
+
+                'status' =>
+                    'menunggu',
+
+                'submitted_by' =>
+                    auth()->id(),
+            ]);
+
+            /*
+            |--------------------------------------------------------------------------
+            | NOTIFIKASI
+            |--------------------------------------------------------------------------
+            */
+
+            Notification::create([
+                'judul' =>
+                    'Pengajuan Data Center Baru',
+
+                'pesan' =>
+                    $request->user()->username .
+                    ' menambahkan data center "' .
+                    $dataCenter->nama_infrastruktur .
+                    '" dengan ID ' .
+                    $dataCenter->id .
+                    ' dan mengajukannya untuk persetujuan.',
+
+                'dibaca' =>
+                    false,
+            ]);
+        });
 
         return redirect()
             ->route('data-center.index')
             ->with(
                 'success',
-                'Data datacenter berhasil diajukan dan menunggu disetujui verifikator.'
+                'Data Data Center berhasil ditambahkan dan menunggu verifikasi.'
             );
     }
 
@@ -519,47 +557,76 @@ class DataCenterController extends Controller
         Request $request,
         $id
     ) {
+        $validated = $request->validate(
+            [
+                'nama_infrastruktur' => [
+                    'required',
+                    'string',
+                    'max:255',
+                ],
 
-        $validated = $request->validate([
+                'spesifikasi' => [
+                    'nullable',
+                    'string',
+                ],
 
-            'nama_infrastruktur' => [
-                'required',
-                'string',
-                'max:255',
+                'pengadaan' => [
+                    'required',
+                    'in:Beli,Sewa',
+                ],
+
+                'harga' => [
+                    'required',
+                    'numeric',
+                    'min:0',
+                ],
+
+                'tanggal_pengadaan' => [
+                    'required',
+                    'date',
+                ],
+
+                'tanggal_berakhir' => [
+                    'nullable',
+                    'date',
+                    'after_or_equal:tanggal_pengadaan',
+                ],
             ],
+            [
+                'nama_infrastruktur.required' =>
+                    'Nama infrastruktur wajib diisi.',
 
-            'spesifikasi' => [
-                'nullable',
-                'string',
-            ],
+                'nama_infrastruktur.max' =>
+                    'Nama infrastruktur maksimal 255 karakter.',
 
-            'pengadaan' => [
-                'required',
-                'in:Beli,Sewa',
-            ],
+                'pengadaan.required' =>
+                    'Jenis pengadaan wajib dipilih.',
 
-            'harga' => [
-                'required',
-                'numeric',
-                'min:0',
-            ],
+                'pengadaan.in' =>
+                    'Jenis pengadaan harus Beli atau Sewa.',
 
-            'tanggal_pengadaan' => [
-                'required',
-                'date',
-            ],
+                'harga.required' =>
+                    'Harga wajib diisi.',
 
-            'tanggal_berakhir' => [
-                'nullable',
-                'date',
-                'after_or_equal:tanggal_pengadaan',
-            ],
+                'harga.numeric' =>
+                    'Harga harus berupa angka.',
 
-            'status' => [
-                'nullable',
-                'in:Tersedia,Digunakan',
-            ],
-        ]);
+                'harga.min' =>
+                    'Harga tidak boleh kurang dari 0.',
+
+                'tanggal_pengadaan.required' =>
+                    'Tanggal pengadaan wajib diisi.',
+
+                'tanggal_pengadaan.date' =>
+                    'Tanggal pengadaan tidak valid.',
+
+                'tanggal_berakhir.date' =>
+                    'Tanggal berakhir tidak valid.',
+
+                'tanggal_berakhir.after_or_equal' =>
+                    'Tanggal berakhir tidak boleh sebelum tanggal pengadaan.',
+            ]
+        );
 
         /*
         |--------------------------------------------------------------------------
@@ -567,33 +634,31 @@ class DataCenterController extends Controller
         |--------------------------------------------------------------------------
         */
 
-        $datacenter =
+        $dataCenter =
             DataCenter::findOrFail($id);
 
         /*
         |--------------------------------------------------------------------------
-        | JIKA BELI
+        | BELI
         |--------------------------------------------------------------------------
         */
 
         if ($validated['pengadaan'] === 'Beli') {
-
             $validated['tanggal_berakhir'] = null;
-
-            $validated['status'] =
-                $validated['status'] ?? 'Tersedia';
         }
 
         /*
         |--------------------------------------------------------------------------
-        | JIKA SEWA
+        | SEWA
         |--------------------------------------------------------------------------
         */
 
         if ($validated['pengadaan'] === 'Sewa') {
-
-            if (empty($validated['tanggal_berakhir'])) {
-
+            if (
+                empty(
+                    $validated['tanggal_berakhir']
+                )
+            ) {
                 return back()
                     ->withErrors([
                         'tanggal_berakhir' =>
@@ -601,67 +666,91 @@ class DataCenterController extends Controller
                     ])
                     ->withInput();
             }
-
-            $validated['status'] = 'Digunakan';
         }
 
         /*
         |--------------------------------------------------------------------------
-        | VERIFIKASI ULANG
+        | UPDATE + VERIFIKASI
         |--------------------------------------------------------------------------
         */
 
-        $validated['verifikasi'] =
-            'Menunggu disetujui';
+        DB::transaction(function () use (
+            $dataCenter,
+            $validated,
+            $request
+        ) {
+            /*
+            |--------------------------------------------------------------------------
+            | UPDATE DATA
+            |--------------------------------------------------------------------------
+            */
 
-        /*
-        |--------------------------------------------------------------------------
-        | HAPUS KOMENTAR LAMA
-        |--------------------------------------------------------------------------
-        */
+            $dataCenter->update([
+                ...$validated,
 
-        $validated['komentar'] = null;
+                'verifikasi' =>
+                    'menunggu',
 
-        /*
-        |--------------------------------------------------------------------------
-        | UPDATE
-        |--------------------------------------------------------------------------
-        */
+                'komentar' =>
+                    null,
+            ]);
 
-        $datacenter->update($validated);
+            $dataCenter->refresh();
 
-        /*
-        |--------------------------------------------------------------------------
-        | NOTIFIKASI
-        |--------------------------------------------------------------------------
-        */
+            /*
+            |--------------------------------------------------------------------------
+            | VERIFICATION REQUEST
+            |--------------------------------------------------------------------------
+            */
 
-        Notification::create([
-            'judul' =>
-                'Perubahan Data Center Diajukan',
+            VerificationRequest::create([
+                'module' =>
+                    'data-center',
 
-            'pesan' =>
-                $request->user()->username .
-                ' memperbarui data center "' .
-                $datacenter->nama_infrastruktur .
-                '" dengan ID ' .
-                $datacenter->id .
-                ' dan mengajukannya kembali untuk persetujuan.',
+                'record_id' =>
+                    $dataCenter->id,
 
-            'dibaca' => false,
-        ]);
+                'action' =>
+                    'update',
 
-        /*
-        |--------------------------------------------------------------------------
-        | REDIRECT
-        |--------------------------------------------------------------------------
-        */
+                'data' =>
+                    $dataCenter->toArray(),
+
+                'status' =>
+                    'menunggu',
+
+                'submitted_by' =>
+                    auth()->id(),
+            ]);
+
+            /*
+            |--------------------------------------------------------------------------
+            | NOTIFIKASI
+            |--------------------------------------------------------------------------
+            */
+
+            Notification::create([
+                'judul' =>
+                    'Perubahan Data Center Diajukan',
+
+                'pesan' =>
+                    $request->user()->username .
+                    ' memperbarui data center "' .
+                    $dataCenter->nama_infrastruktur .
+                    '" dengan ID ' .
+                    $dataCenter->id .
+                    ' dan mengajukannya kembali untuk persetujuan.',
+
+                'dibaca' =>
+                    false,
+            ]);
+        });
 
         return redirect()
             ->route('data-center.index')
             ->with(
                 'success',
-                'Perubahan data datacenter berhasil diajukan dan menunggu disetujui verifikator.'
+                'Perubahan Data Center berhasil disimpan dan menunggu verifikasi.'
             );
     }
 
@@ -676,8 +765,7 @@ class DataCenterController extends Controller
         Request $request,
         $id
     ) {
-
-        $datacenter =
+        $dataCenter =
             DataCenter::findOrFail($id);
 
         /*
@@ -687,56 +775,92 @@ class DataCenterController extends Controller
         */
 
         $namaDataCenter =
-            $datacenter->nama_infrastruktur;
+            $dataCenter->nama_infrastruktur;
 
         $idDataCenter =
-            $datacenter->id;
+            $dataCenter->id;
 
         /*
         |--------------------------------------------------------------------------
-        | AJUKAN PENGHAPUSAN
+        | JANGAN LANGSUNG HAPUS
         |--------------------------------------------------------------------------
+        | Buat pengajuan penghapusan ke verifikator.
         */
 
-        $datacenter->update([
-            'verifikasi' =>
-                'Menunggu disetujui',
+        DB::transaction(function () use (
+            $dataCenter,
+            $request,
+            $namaDataCenter,
+            $idDataCenter
+        ) {
+            /*
+            |--------------------------------------------------------------------------
+            | UBAH STATUS MENJADI MENUNGGU
+            |--------------------------------------------------------------------------
+            */
 
-            'komentar' => null,
-        ]);
+            $dataCenter->update([
+                'verifikasi' =>
+                    'menunggu',
 
-        /*
-        |--------------------------------------------------------------------------
-        | NOTIFIKASI
-        |--------------------------------------------------------------------------
-        */
+                'komentar' =>
+                    null,
+            ]);
 
-        Notification::create([
-            'judul' =>
-                'Penghapusan Data Center Diajukan',
+            /*
+            |--------------------------------------------------------------------------
+            | VERIFICATION REQUEST
+            |--------------------------------------------------------------------------
+            */
 
-            'pesan' =>
-                $request->user()->username .
-                ' mengajukan penghapusan data center "' .
-                $namaDataCenter .
-                '" dengan ID ' .
-                $idDataCenter .
-                ' untuk persetujuan verifikator.',
+            VerificationRequest::create([
+                'module' =>
+                    'data-center',
 
-            'dibaca' => false,
-        ]);
+                'record_id' =>
+                    $dataCenter->id,
 
-        /*
-        |--------------------------------------------------------------------------
-        | REDIRECT
-        |--------------------------------------------------------------------------
-        */
+                'action' =>
+                    'delete',
+
+                'data' =>
+                    $dataCenter->toArray(),
+
+                'status' =>
+                    'menunggu',
+
+                'submitted_by' =>
+                    auth()->id(),
+            ]);
+
+            /*
+            |--------------------------------------------------------------------------
+            | NOTIFIKASI
+            |--------------------------------------------------------------------------
+            */
+
+            Notification::create([
+                'judul' =>
+                    'Penghapusan Data Center Diajukan',
+
+                'pesan' =>
+                    $request->user()->username .
+                    ' mengajukan penghapusan data center "' .
+                    $namaDataCenter .
+                    '" dengan ID ' .
+                    $idDataCenter .
+                    ' untuk persetujuan verifikator.',
+
+                'dibaca' =>
+                    false,
+            ]);
+        });
 
         return redirect()
             ->route('data-center.index')
             ->with(
                 'success',
-                'Permintaan penghapusan data berhasil diajukan dan menunggu disetujui verifikator.'
+                'Pengajuan penghapusan Data Center berhasil dikirim dan menunggu verifikasi.'
             );
     }
 }

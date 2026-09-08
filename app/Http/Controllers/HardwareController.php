@@ -6,12 +6,20 @@ use App\Models\Hardware;
 use App\Models\VerifikasiHardware;
 use App\Models\Notification;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\DB;
 
 class HardwareController extends Controller
 {
+    /**
+     * ============================================================
+     * INDEX
+     * ============================================================
+     */
     public function index()
     {
-        $hardwares = Hardware::with('verifikasi')->latest()->get();
+        $hardwares = Hardware::with('verifikasi')
+            ->latest()
+            ->get();
 
         // =====================================================
         // SUMMARY CARD
@@ -46,6 +54,12 @@ class HardwareController extends Controller
         ));
     }
 
+
+    /**
+     * ============================================================
+     * STORE
+     * ============================================================
+     */
     public function store(Request $request)
     {
         // =====================================================
@@ -53,19 +67,78 @@ class HardwareController extends Controller
         // =====================================================
 
         $validated = $request->validate([
-            'nama_barang' => 'required|string|max:255',
-            'spesifikasi' => 'required|string',
-            'jenis_barang' => 'required|string|max:100',
-            'tahun_pembelian' => 'required|integer',
-            'harga' => 'required|numeric|min:0',
-            'kondisi' => 'required|in:Baik,Perlu Perbaikan,Rusak',
+
+            'nama_barang' => [
+                'required',
+                'string',
+                'max:255',
+            ],
+
+            'spesifikasi' => [
+                'required',
+                'string',
+            ],
+
+            'jenis_barang' => [
+                'required',
+                'string',
+                'max:255',
+            ],
+
+            'tahun_pembelian' => [
+                'required',
+                'integer',
+                'min:1900',
+                'max:2100',
+            ],
+
+            'harga' => [
+                'required',
+                'numeric',
+                'min:0',
+            ],
+
+            'kondisi' => [
+                'required',
+                'string',
+                'max:100',
+            ],
+
+        ], [
+
+            'nama_barang.required' =>
+                'Nama barang wajib diisi.',
+
+            'spesifikasi.required' =>
+                'Spesifikasi wajib diisi.',
+
+            'jenis_barang.required' =>
+                'Jenis barang wajib diisi.',
+
+            'tahun_pembelian.required' =>
+                'Tahun pembelian wajib diisi.',
+
+            'tahun_pembelian.integer' =>
+                'Tahun pembelian harus berupa angka.',
+
+            'harga.required' =>
+                'Harga wajib diisi.',
+
+            'harga.numeric' =>
+                'Harga harus berupa angka.',
+
+            'kondisi.required' =>
+                'Kondisi wajib dipilih.',
+
         ]);
 
+
         // =====================================================
-        // BUAT PREFIX ASSET ID
+        // PREFIX ASSET ID
         // =====================================================
 
         $prefix = match ($validated['jenis_barang']) {
+
             'Laptop' => 'LP',
             'PC' => 'PC',
             'Printer' => 'PR',
@@ -73,76 +146,147 @@ class HardwareController extends Controller
             'Keyboard' => 'KB',
             'Mouse' => 'MS',
             'Camera' => 'CM',
+
+            default => strtoupper(
+                substr(
+                    preg_replace(
+                        '/[^A-Za-z]/',
+                        '',
+                        $validated['jenis_barang']
+                    ),
+                    0,
+                    2
+                )
+            ),
+
         };
 
-        $year = date('y');
 
         // =====================================================
-        // CARI NOMOR ASSET TERAKHIR
+        // TAHUN 2 DIGIT
+        // Contoh:
+        // 2026 -> 26
         // =====================================================
 
-        $lastHardware = Hardware::where(
-            'asset_id',
-            'like',
-            "$prefix-$year-%"
-        )
-            ->orderByDesc('id')
-            ->first();
-
-        $number = $lastHardware
-            ? ((int) substr($lastHardware->asset_id, -3)) + 1
-            : 1;
-
-        // =====================================================
-        // GENERATE ASSET ID
-        // Contoh: LP-26-001
-        // =====================================================
-
-        $assetId = sprintf(
-            '%s-%s-%03d',
-            $prefix,
-            $year,
-            $number
+        $year = substr(
+            (string) $validated['tahun_pembelian'],
+            -2
         );
 
-        // =====================================================
-        // SIMPAN HARDWARE
-        // =====================================================
-
-        $hardware = Hardware::create([
-            'asset_id' => $assetId,
-            'nama_barang' => $validated['nama_barang'],
-            'spesifikasi' => $validated['spesifikasi'],
-            'jenis_barang' => $validated['jenis_barang'],
-            'tahun_pembelian' => $validated['tahun_pembelian'],
-            'harga' => $validated['harga'],
-            'kondisi' => $validated['kondisi'],
-        ]);
 
         // =====================================================
-        // BUAT PENGAJUAN VERIFIKASI
+        // PROSES SIMPAN
         // =====================================================
 
-        VerifikasiHardware::create([
-            'hardware_id' => $hardware->id,
-            'status' => 'Menunggu Persetujuan',
-        ]);
+        $hardware = DB::transaction(function () use (
+            $validated,
+            $prefix,
+            $year,
+            $request
+        ) {
+
+            // =================================================
+            // CARI NOMOR ASSET TERAKHIR
+            // =================================================
+
+            $lastHardware = Hardware::where(
+                'asset_id',
+                'like',
+                "{$prefix}-{$year}-%"
+            )
+                ->orderByDesc('id')
+                ->first();
+
+
+            // =================================================
+            // TENTUKAN NOMOR BERIKUTNYA
+            // =================================================
+
+            $number = 1;
+
+            if ($lastHardware && $lastHardware->asset_id) {
+
+                $parts = explode(
+                    '-',
+                    $lastHardware->asset_id
+                );
+
+                $lastNumber = end($parts);
+
+                if (is_numeric($lastNumber)) {
+                    $number = ((int) $lastNumber) + 1;
+                }
+            }
+
+
+            // =================================================
+            // GENERATE ASSET ID
+            //
+            // Contoh:
+            // LP-26-001
+            // PC-26-002
+            // PR-26-003
+            // =================================================
+
+            $assetId = sprintf(
+                '%s-%s-%03d',
+                $prefix,
+                $year,
+                $number
+            );
+
+
+            // =================================================
+            // SIMPAN HARDWARE
+            // =================================================
+
+            $hardware = Hardware::create([
+                'asset_id' => $assetId,
+                'nama_barang' => $validated['nama_barang'],
+                'spesifikasi' => $validated['spesifikasi'],
+                'jenis_barang' => $validated['jenis_barang'],
+                'tahun_pembelian' => $validated['tahun_pembelian'],
+                'harga' => $validated['harga'],
+                'kondisi' => $validated['kondisi'],
+            ]);
+
+
+            // =================================================
+            // BUAT PENGAJUAN VERIFIKASI
+            // =================================================
+
+            VerifikasiHardware::create([
+                'hardware_id' => $hardware->id,
+                'status' => 'Menunggu Persetujuan',
+            ]);
+
+
+            // =================================================
+            // NOTIFIKASI
+            // =================================================
+
+            Notification::create([
+                'judul' => 'Pengajuan Hardware Baru',
+
+                'pesan' =>
+                    $request->user()->username .
+                    ' menambahkan hardware "' .
+                    $hardware->nama_barang .
+                    '" dengan ID ' .
+                    $hardware->asset_id .
+                    ' dan mengajukannya untuk persetujuan.',
+
+                'dibaca' => false,
+            ]);
+
+
+            return $hardware;
+        });
+
 
         // =====================================================
-        // NOTIFIKASI PENGAJUAN
+        // REDIRECT
         // =====================================================
-
-        Notification::create([
-            'judul' => 'Pengajuan Hardware Baru',
-            'pesan' =>
-                $request->user()->username .
-                ' menambahkan hardware "' .
-                $hardware->nama_barang .
-                '" dengan ID ' .
-                $hardware->asset_id .
-                ' dan mengajukannya untuk persetujuan.',
-            'dibaca' => false,
-        ]);
 
         return redirect()
             ->route('hardware.index')
@@ -152,20 +296,60 @@ class HardwareController extends Controller
             );
     }
 
-    public function update(Request $request, Hardware $hardware)
-    {
+
+    /**
+     * ============================================================
+     * UPDATE
+     * ============================================================
+     */
+    public function update(
+        Request $request,
+        Hardware $hardware
+    ) {
+
         // =====================================================
         // VALIDASI
         // =====================================================
 
         $validated = $request->validate([
-            'nama_barang' => 'required|string|max:255',
-            'spesifikasi' => 'required|string',
-            'jenis_barang' => 'required|string|max:100',
-            'tahun_pembelian' => 'required|integer',
-            'harga' => 'required|numeric|min:0',
-            'kondisi' => 'required|in:Baik,Perlu Perbaikan,Rusak',
+
+            'nama_barang' => [
+                'required',
+                'string',
+                'max:255',
+            ],
+
+            'spesifikasi' => [
+                'required',
+                'string',
+            ],
+
+            'jenis_barang' => [
+                'required',
+                'string',
+                'max:100',
+            ],
+
+            'tahun_pembelian' => [
+                'required',
+                'integer',
+                'min:1900',
+                'max:2100',
+            ],
+
+            'harga' => [
+                'required',
+                'numeric',
+                'min:0',
+            ],
+
+            'kondisi' => [
+                'required',
+                'in:Baik,Perlu Perbaikan,Rusak',
+            ],
+
         ]);
+
 
         // =====================================================
         // UPDATE HARDWARE
@@ -173,12 +357,14 @@ class HardwareController extends Controller
 
         $hardware->update($validated);
 
+
         // =====================================================
         // NOTIFIKASI UPDATE
         // =====================================================
 
         Notification::create([
             'judul' => 'Hardware Diperbarui',
+
             'pesan' =>
                 $request->user()->username .
                 ' memperbarui hardware "' .
@@ -186,8 +372,14 @@ class HardwareController extends Controller
                 '" dengan ID ' .
                 $hardware->asset_id .
                 '.',
+
             'dibaca' => false,
         ]);
+
+
+        // =====================================================
+        // REDIRECT
+        // =====================================================
 
         return redirect()
             ->route('hardware.index')
@@ -197,6 +389,12 @@ class HardwareController extends Controller
             );
     }
 
+
+    /**
+     * ============================================================
+     * DESTROY
+     * ============================================================
+     */
     public function destroy(Hardware $hardware)
     {
         // =====================================================
@@ -204,10 +402,11 @@ class HardwareController extends Controller
         // =====================================================
 
         $namaHardware = $hardware->nama_barang;
+
         $assetId = $hardware->asset_id;
 
-        // Ambil username operator yang menghapus
         $username = auth()->user()->username;
+
 
         // =====================================================
         // HAPUS HARDWARE
@@ -215,12 +414,14 @@ class HardwareController extends Controller
 
         $hardware->delete();
 
+
         // =====================================================
         // NOTIFIKASI HAPUS
         // =====================================================
 
         Notification::create([
             'judul' => 'Hardware Dihapus',
+
             'pesan' =>
                 $username .
                 ' menghapus hardware "' .
@@ -228,8 +429,14 @@ class HardwareController extends Controller
                 '" dengan ID ' .
                 $assetId .
                 '.',
+
             'dibaca' => false,
         ]);
+
+
+        // =====================================================
+        // REDIRECT
+        // =====================================================
 
         return redirect()
             ->route('hardware.index')
