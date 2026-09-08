@@ -4,172 +4,235 @@
 
 @section('page-title', 'Jaringan')
 
-@section('header')
-
-    <div class="custom-header">
-
-        <div class="header-breadcrumb">
-
-            <span class="breadcrumb-main">
-                INFRASTRUKTUR
-            </span>
-
-            <i class="bi bi-chevron-right"></i>
-
-            <span class="breadcrumb-active">
-                JARINGAN
-            </span>
-
-        </div>
-
-    </div>
-
-@endsection
-
-
 @section('content')
 
 <style>
 
 /* =========================================================
-   PAGE
+   JARINGAN PAGE
 ========================================================= */
 
-.infrastruktur-page {
+.jaringan-page {
     width: 100%;
 }
 
 
 /* =========================================================
-   CUSTOM HEADER
+   HEADER
 ========================================================= */
 
-.custom-header {
+.jaringan-header {
     display: flex;
+    justify-content: space-between;
     align-items: center;
-    height: 100%;
+    margin-bottom: 24px;
 }
 
-.header-breadcrumb {
-    display: flex;
-    align-items: center;
-    gap: 10px;
-    font-size: 14px;
+.jaringan-heading h2 {
+    margin: 0;
+    font-size: 24px;
     font-weight: 700;
     color: #1f2937;
 }
 
-.header-breadcrumb i {
+.jaringan-heading p {
+    margin: 6px 0 0;
+    font-size: 13px;
+    color: #6b7280;
+}
+
+.add-jaringan-button {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    gap: 8px;
+
+    padding: 11px 18px;
+
+    border: none;
+    border-radius: 10px;
+
+    background: #071b88;
+    color: white;
+
+    text-decoration: none;
+
+    font-size: 13px;
+    font-weight: 600;
+
+    cursor: pointer;
+
+    transition: 0.2s ease;
+}
+
+.add-jaringan-button:hover {
+    background: #050f63;
+    color: white;
+    transform: translateY(-1px);
+}
+
+.add-jaringan-button i {
+    font-size: 16px;
+}
+
+
+/* =========================================================
+   ALERT
+========================================================= */
+
+.alert-success,
+.alert-error {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+
+    padding: 12px 15px;
+
+    border-radius: 9px;
+
+    margin-bottom: 20px;
+
+    font-size: 13px;
+}
+
+.alert-success {
+    background: #ecfdf5;
+    border: 1px solid #a7f3d0;
+    color: #047857;
+}
+
+.alert-error {
+    background: #fef2f2;
+    border: 1px solid #fecaca;
+    color: #b91c1c;
+}
+
+.alert-success i,
+.alert-error i {
+    font-size: 17px;
+}
+
+
+/* =========================================================
+   STATISTIC CARDS
+========================================================= */
+
+.jaringan-stats {
+    display: grid;
+    grid-template-columns: repeat(4, minmax(0, 1fr));
+    gap: 18px;
+
+    margin-bottom: 25px;
+}
+
+.jaringan-stat-card {
+    min-height: 135px;
+
+    background: white;
+
+    border: 1px solid #e5e7eb;
+    border-radius: 14px;
+
+    padding: 20px;
+
+    display: flex;
+    align-items: flex-start;
+    gap: 15px;
+
+    box-shadow: 0 2px 6px rgba(0, 0, 0, 0.05);
+
+    transition: all 0.2s ease;
+}
+
+.jaringan-stat-card:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 5px 12px rgba(0, 0, 0, 0.08);
+}
+
+.jaringan-stat-icon {
+    width: 45px;
+    height: 45px;
+
+    flex-shrink: 0;
+
+    border-radius: 12px;
+
+    display: flex;
+    align-items: center;
+    justify-content: center;
+
+    font-size: 20px;
+}
+
+.jaringan-stat-icon.blue {
+    background: #e0f2fe;
+    color: #0284c7;
+}
+
+.jaringan-stat-icon.purple {
+    background: #ede9fe;
+    color: #7c3aed;
+}
+
+.jaringan-stat-icon.orange {
+    background: #ffedd5;
+    color: #ea580c;
+}
+
+.jaringan-stat-icon.green {
+    background: #dcfce7;
+    color: #16a34a;
+}
+
+.jaringan-stat-icon.red {
+    background: #fee2e2;
+    color: #dc2626;
+}
+
+.jaringan-stat-content {
+    display: flex;
+    flex-direction: column;
+    min-width: 0;
+}
+
+.jaringan-stat-label {
+    font-size: 12px;
+    color: #6b7280;
+    margin-bottom: 5px;
+}
+
+.jaringan-stat-value {
+    font-size: 23px;
+    font-weight: 700;
+    color: #075985;
+    line-height: 1.2;
+}
+
+.jaringan-stat-value.currency {
+    font-size: 17px;
+    white-space: nowrap;
+}
+
+.jaringan-stat-description {
+    margin-top: 7px;
     font-size: 10px;
     color: #9ca3af;
 }
 
-.breadcrumb-main,
-.breadcrumb-active {
-    color: #1f2937;
-    letter-spacing: 0.2px;
-}
-
 
 /* =========================================================
-   MESSAGE
+   TABLE CARD
 ========================================================= */
 
-.success-message {
-    margin-bottom: 20px;
-    padding: 12px 15px;
-    background: #eff9e9;
-    border: 1px solid #c9e6ca;
-    border-radius: 8px;
-    color: #397542;
-    font-size: 12px;
-}
-
-.error-message {
-    margin-bottom: 20px;
-    padding: 12px 15px;
-    background: #fff1f2;
-    border: 1px solid #fecdd3;
-    border-radius: 8px;
-    color: #b42318;
-    font-size: 12px;
-}
-
-
-/* =========================================================
-   STATISTICS
-========================================================= */
-
-.statistics {
-    display: grid;
-    grid-template-columns: repeat(3, 1fr);
-    gap: 20px;
-    margin-bottom: 25px;
-}
-
-.stat-card {
+.jaringan-table-card {
     background: white;
-    border-radius: 15px;
-    padding: 20px;
-    min-height: 80px;
-    display: flex;
-    flex-direction: column;
-    justify-content: center;
-    border: 1px solid #eef0f4;
-    box-shadow: 0 3px 10px rgba(0, 0, 0, 0.06);
-    box-sizing: border-box;
-}
 
-.stat-card:nth-child(1) {
-    background: #eef4ff;
-}
+    border: 1px solid #e5e7eb;
+    border-radius: 14px;
 
-.stat-card:nth-child(2) {
-    background: #fff8e7;
-}
-
-.stat-card:nth-child(3) {
-    background: #eff9e9;
-}
-
-.stat-title {
-    font-size: 11px;
-    font-weight: 600;
-    margin-bottom: 7px;
-    letter-spacing: 0.4px;
-    text-transform: uppercase;
-}
-
-.stat-card:nth-child(1) .stat-title {
-    color: #4f7da7;
-}
-
-.stat-card:nth-child(2) .stat-title {
-    color: #c38a19;
-}
-
-.stat-card:nth-child(3) .stat-title {
-    color: #4f8a5a;
-}
-
-.stat-value {
-    font-size: 24px;
-    line-height: 1;
-    font-weight: 700;
-    color: #1f2937;
-}
-
-
-/* =========================================================
-   TABLE CONTAINER
-========================================================= */
-
-.table-container {
-    background: white;
-    border-radius: 15px;
-    border: 1px solid #eef0f4;
     overflow: hidden;
-    box-shadow: 0 3px 10px rgba(0, 0, 0, 0.06);
+
+    box-shadow: 0 2px 7px rgba(0, 0, 0, 0.04);
 }
 
 
@@ -177,245 +240,110 @@
    TABLE HEADER
 ========================================================= */
 
-.table-header {
-    display: flex;
-    flex-direction: column;
-    gap: 12px;
-    padding: 18px 20px;
-}
+.jaringan-table-header {
+    padding: 20px 22px;
 
-.top-tools {
     display: flex;
-    align-items: center;
     justify-content: space-between;
-    gap: 15px;
-}
-
-.left-tools,
-.right-tools {
-    display: flex;
     align-items: center;
+    gap: 20px;
+
+    border-bottom: 1px solid #e5e7eb;
 }
 
-.right-tools {
-    gap: 10px;
-}
-
-
-/* =========================================================
-   SEARCH
-========================================================= */
-
-.search-box {
-    position: relative;
-    width: 210px;
-    height: 36px;
-}
-
-.search-box i {
-    position: absolute;
-    left: 13px;
-    top: 50%;
-    transform: translateY(-50%);
-    color: #6b7280;
-    font-size: 13px;
-    z-index: 2;
-    pointer-events: none;
-}
-
-.search-box input {
-    width: 100%;
-    height: 36px;
-    display: block;
-    background: #f3f4f6;
-    border: 1px solid #eef0f4;
-    outline: none;
-    border-radius: 18px;
-    padding: 0 14px 0 36px;
-    font-size: 11px;
-    color: #374151;
-    box-sizing: border-box;
-}
-
-.search-box input:focus {
-    border-color: #d1d5db;
-    background: #f9fafb;
-}
-
-.search-box input::placeholder {
-    color: #9ca3af;
-    opacity: 1;
-}
-
-
-/* =========================================================
-   FILTER BUTTON
-========================================================= */
-
-.filter-wrapper {
-    position: relative;
-    display: flex;
-    align-items: center;
-}
-
-.filter-btn {
-    height: 36px;
-    padding: 0 13px;
-    background: white;
-    border: 1px solid #d9dee7;
-    border-radius: 8px;
-    color: #374151;
-    cursor: pointer;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    gap: 6px;
-    font-size: 11px;
-    font-weight: 600;
-    text-decoration: none;
-    box-sizing: border-box;
-}
-
-.filter-btn:hover {
-    background: #f8fafc;
-}
-
-
-/* =========================================================
-   FILTER PANEL
-========================================================= */
-
-.filter-panel {
-    display: none;
-    width: 100%;
-    padding: 15px 0 3px;
-    border-top: 1px solid #eef0f4;
-    margin-top: 2px;
-}
-
-.filter-panel.show {
-    display: block;
-}
-
-.filter-form {
-    display: flex;
-    align-items: flex-end;
-    gap: 12px;
-    width: 100%;
-}
-
-.filter-group {
-    flex: 1;
-    min-width: 150px;
-}
-
-.filter-label {
-    display: block;
-    margin-bottom: 6px;
-    font-size: 10px;
-    font-weight: 600;
-    color: #374151;
-}
-
-.filter-select {
-    width: 100%;
-    height: 35px;
-    padding: 0 10px;
-    border: 1px solid #d9dee7;
-    border-radius: 7px;
-    background: white;
-    color: #374151;
-    font-size: 10px;
-    outline: none;
-    cursor: pointer;
-    box-sizing: border-box;
-}
-
-.filter-select:focus {
-    border-color: #17146b;
-    box-shadow: 0 0 0 2px rgba(23, 20, 107, 0.06);
-}
-
-.filter-actions {
+.jaringan-table-header-left {
     display: flex;
     align-items: center;
     gap: 8px;
-    padding-bottom: 0;
 }
 
-.filter-apply {
-    height: 35px;
-    padding: 0 14px;
-    border: none;
-    border-radius: 7px;
-    background: #17146b;
-    color: white;
-    font-size: 10px;
-    font-weight: 600;
-    cursor: pointer;
-    white-space: nowrap;
+.jaringan-table-title {
+    margin: 0;
+
+    font-size: 16px;
+    font-weight: 700;
+
+    color: #1f2937;
 }
 
-.filter-apply:hover {
-    background: #100e58;
-}
-
-.filter-reset {
-    height: 35px;
-    padding: 0 14px;
-    border: 1px solid #d9dee7;
-    border-radius: 7px;
-    background: white;
-    color: #374151;
-    font-size: 10px;
-    font-weight: 600;
-    text-decoration: none;
-    display: inline-flex;
-    align-items: center;
-    justify-content: center;
-    box-sizing: border-box;
-    white-space: nowrap;
-}
-
-.filter-reset:hover {
-    background: #f8fafc;
+.jaringan-table-count {
+    font-size: 12px;
+    color: #6b7280;
 }
 
 
 /* =========================================================
-   FILTER ACTIVE
+   TOOLBAR
 ========================================================= */
 
-.filter-btn.active {
-    background: #f4f3ff;
-    border-color: #17146b;
-    color: #17146b;
-}
-
-
-/* =========================================================
-   ADD BUTTON
-========================================================= */
-
-.add-btn {
-    height: 36px;
-    padding: 0 15px;
-    border: none;
-    border-radius: 8px;
-    background: #17146b;
-    color: white;
-    cursor: pointer;
+.jaringan-toolbar {
     display: flex;
     align-items: center;
-    justify-content: center;
-    gap: 6px;
-    font-size: 11px;
-    font-weight: 600;
-    box-shadow: 0 3px 7px rgba(23, 20, 107, 0.20);
+    gap: 9px;
 }
 
-.add-btn:hover {
-    background: #100e58;
+.jaringan-search {
+    position: relative;
+}
+
+.jaringan-search i {
+    position: absolute;
+
+    left: 12px;
+    top: 50%;
+
+    transform: translateY(-50%);
+
+    color: #94a3b8;
+
+    font-size: 14px;
+}
+
+.jaringan-search input {
+    width: 220px;
+    height: 38px;
+
+    padding: 0 12px 0 35px;
+
+    border: 1px solid #d1d5db;
+    border-radius: 8px;
+
+    outline: none;
+
+    font-size: 12px;
+    color: #374151;
+
+    background: white;
+
+    transition: 0.2s ease;
+}
+
+.jaringan-search input:focus {
+    border-color: #079bd8;
+    box-shadow: 0 0 0 3px rgba(7, 155, 216, 0.10);
+}
+
+.jaringan-filter-select {
+    height: 38px;
+
+    padding: 0 32px 0 12px;
+
+    border: 1px solid #d1d5db;
+    border-radius: 8px;
+
+    background: white;
+
+    color: #374151;
+
+    font-size: 12px;
+
+    outline: none;
+
+    cursor: pointer;
+}
+
+.jaringan-filter-select:focus {
+    border-color: #079bd8;
 }
 
 
@@ -423,447 +351,131 @@
    TABLE
 ========================================================= */
 
-.table-wrapper {
+.jaringan-table-wrapper {
+    width: 100%;
     overflow-x: auto;
 }
 
 .jaringan-table {
     width: 100%;
-    min-width: 1250px;
+
     border-collapse: collapse;
+
+    min-width: 1150px;
 }
 
 .jaringan-table th {
-    background: #f8f9fb;
-    color: #4b5563;
-    font-size: 10px;
-    font-weight: 700;
-    text-align: center;
-    padding: 13px 10px;
-    border-top: 1px solid #eef0f4;
+    padding: 14px 16px;
+
+    background: #f8fafc;
+
     border-bottom: 1px solid #e5e7eb;
+
+    color: #475569;
+
+    font-size: 12px;
+    font-weight: 700;
+
+    text-align: left;
+
     white-space: nowrap;
-    letter-spacing: 0.2px;
 }
 
 .jaringan-table td {
-    height: 50px;
-    padding: 8px 10px;
-    border-bottom: 1px solid #f0f1f3;
-    font-size: 10px;
-    color: #4b5563;
-    white-space: nowrap;
-    text-align: center;
+    padding: 15px 16px;
+
+    border-bottom: 1px solid #f1f5f9;
+
+    color: #374151;
+
+    font-size: 13px;
+
+    vertical-align: middle;
 }
 
-.jaringan-table tbody tr:hover {
-    background: #fafafa;
-}
-
-.jaringan-table td:nth-child(2),
-.jaringan-table td:nth-child(3) {
-    max-width: 180px;
-    overflow: hidden;
-    text-overflow: ellipsis;
-}
-
-.id {
-    font-weight: 600;
-    color: #4b5563;
-}
-
-
-/* =========================================================
-   STATUS BADGE
-========================================================= */
-
-.status {
-    display: inline-flex;
-    align-items: center;
-    justify-content: center;
-    min-width: 75px;
-    padding: 7px 14px;
-    border-radius: 20px;
-    font-size: 10px;
-    font-weight: 600;
-    line-height: 1;
-    white-space: nowrap;
-    box-sizing: border-box;
-}
-
-.status-tersedia {
-    background: #d9f8e5;
-    color: #247a47;
-}
-
-.status-digunakan {
-    background: #dce9ff;
-    color: #315ea8;
-}
-
-.status-akan-habis {
-    background: #ffeb91;
-    color: #966315;
-}
-
-.status-expired {
-    background: #ffe0e0;
-    color: #b42318;
-}
-
-.status-default {
-    background: #e5e7eb;
-    color: #4b5563;
-}
-
-
-/* =========================================================
-   VERIFIKASI BADGE
-========================================================= */
-
-.verifikasi {
-    display: inline-flex;
-    align-items: center;
-    justify-content: center;
-    min-width: 110px;
-    padding: 6px 10px;
-    border-radius: 15px;
-    font-size: 9px;
-    font-weight: 600;
-    line-height: 1.2;
-    white-space: nowrap;
-}
-
-.verifikasi-menunggu {
-    background: #fff4cc;
-    color: #946200;
-}
-
-.verifikasi-disetujui {
-    background: #d9f8e5;
-    color: #247a47;
-}
-
-.verifikasi-ditolak {
-    background: #ffe0e0;
-    color: #b42318;
-}
-
-
-/* =========================================================
-   KOMENTAR
-========================================================= */
-
-.komentar-cell {
-    max-width: 180px;
-    overflow: hidden;
-    text-overflow: ellipsis;
-}
-
-.komentar-cell.empty {
-    color: #9ca3af;
-}
-
-
-/* =========================================================
-   ACTION
-========================================================= */
-
-.action {
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    gap: 10px;
-}
-
-.action button {
-    width: 20px;
-    height: 20px;
-    padding: 0;
-    border: none;
-    background: transparent;
-    cursor: pointer;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    font-size: 12px;
+.jaringan-table tbody tr {
     transition: 0.15s ease;
 }
 
-.edit-btn {
-    color: #198754;
+.jaringan-table tbody tr:hover {
+    background: #f8fafc;
 }
 
-.edit-btn:hover {
-    color: #146c43;
-    transform: scale(1.08);
-}
-
-.delete-btn {
-    color: #dc3545;
-}
-
-.delete-btn:hover {
-    color: #b02a37;
-    transform: scale(1.08);
+.jaringan-table tbody tr:last-child td {
+    border-bottom: none;
 }
 
 
 /* =========================================================
-   EMPTY DATA
+   ID
 ========================================================= */
 
-.empty-data {
-    text-align: center !important;
-    padding: 40px !important;
-    color: #6b7280 !important;
-    font-size: 11px !important;
-}
-
-
-/* =========================================================
-   TABLE FOOTER
-========================================================= */
-
-.table-footer {
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-    padding: 13px 20px;
-    min-height: 35px;
-    border-top: 1px solid #eef0f4;
-}
-
-.showing-info {
-    font-size: 10px;
-    color: #6b7280;
-}
-
-.pagination {
-    display: flex;
-    align-items: center;
-    gap: 4px;
-}
-
-.page-btn {
-    width: 25px;
-    height: 25px;
-    border: 1px solid #e1e5eb;
-    background: white;
-    color: #8b95a1;
-    border-radius: 5px;
-    font-size: 9px;
-    cursor: pointer;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-}
-
-.page-btn:hover {
-    background: #f5f6f8;
-}
-
-.page-btn.active {
-    background: #17146b;
-    border-color: #17146b;
-    color: white;
-}
-
-
-/* =========================================================
-   MODAL
-========================================================= */
-
-.modal {
-    display: none;
-    position: fixed;
-    z-index: 9999;
-    inset: 0;
-    background: rgba(0, 0, 0, 0.78);
-    align-items: center;
-    justify-content: center;
-    padding: 20px;
-    box-sizing: border-box;
-    overflow: hidden;
-}
-
-.modal-content {
-    width: 780px;
-    max-width: 100%;
-    max-height: 92vh;
-    background: white;
-    border-radius: 14px;
-    box-shadow: 0 10px 40px rgba(0, 0, 0, 0.18);
-    display: flex;
-    flex-direction: column;
-    overflow: hidden;
-}
-
-
-/* =========================================================
-   MODAL HEADER
-========================================================= */
-
-.modal-header {
-    flex-shrink: 0;
-    display: flex;
-    align-items: flex-start;
-    justify-content: space-between;
-    padding: 18px 30px 15px;
-    border-bottom: 1px solid #e5e7eb;
-    background: white;
-}
-
-.modal-title-wrapper {
-    display: flex;
-    flex-direction: column;
-    gap: 4px;
-}
-
-.modal-header h2 {
-    margin: 0;
-    font-size: 22px;
-    line-height: 1.2;
+.jaringan-code {
     font-weight: 700;
-    color: #111111;
+    color: #075985;
+
+    white-space: nowrap;
 }
 
-.modal-subtitle {
-    margin: 0;
+
+/* =========================================================
+   NAME
+========================================================= */
+
+.jaringan-name {
+    font-weight: 600;
+    color: #1f2937;
+}
+
+.jaringan-spec {
+    margin-top: 3px;
+
     font-size: 11px;
-    line-height: 1.4;
-    color: #374151;
+    color: #9ca3af;
+
+    max-width: 230px;
 }
 
-.close {
-    flex-shrink: 0;
-    border: none;
-    background: transparent;
-    font-size: 27px;
-    line-height: 1;
-    cursor: pointer;
-    color: #555555;
-    padding: 0;
-    width: 25px;
-    height: 25px;
-    display: flex;
+
+/* =========================================================
+   PENGADAAN
+========================================================= */
+
+.procurement-badge {
+    display: inline-flex;
     align-items: center;
     justify-content: center;
-    transition: 0.2s ease;
-}
 
-.close:hover {
-    color: #111111;
-    transform: scale(1.05);
-}
+    padding: 5px 10px;
 
+    border-radius: 20px;
 
-/* =========================================================
-   MODAL BODY
-========================================================= */
-
-.modal-body {
-    flex: 1;
-    min-height: 0;
-    padding: 28px 30px 20px;
-    overflow-y: auto;
-    overflow-x: hidden;
-    box-sizing: border-box;
-    scrollbar-width: thin;
-    scrollbar-color: #c7cbd4 transparent;
-}
-
-.modal-body::-webkit-scrollbar {
-    width: 7px;
-}
-
-.modal-body::-webkit-scrollbar-track {
-    background: transparent;
-}
-
-.modal-body::-webkit-scrollbar-thumb {
-    background: #c7cbd4;
-    border-radius: 10px;
-}
-
-.modal-body::-webkit-scrollbar-thumb:hover {
-    background: #aeb4bf;
-}
-
-
-/* =========================================================
-   FORM
-========================================================= */
-
-.form-group {
-    margin-bottom: 20px;
-}
-
-.form-group label {
-    display: block;
-    margin-bottom: 8px;
     font-size: 11px;
-    font-weight: 500;
-    color: #374151;
+    font-weight: 600;
+
+    white-space: nowrap;
 }
 
-.form-group label span {
-    color: #ef4444;
+.procurement-sewa {
+    background: #fef3c7;
+    color: #92400e;
 }
 
-.form-group input,
-.form-group textarea,
-.form-group select {
-    width: 100%;
-    height: 39px;
-    padding: 0 11px;
-    border: 1px solid #e5e7eb;
-    border-radius: 7px;
-    outline: none;
-    font-family: inherit;
-    font-size: 11px;
-    color: #374151;
-    background: white;
-    box-sizing: border-box;
-    transition:
-        border-color 0.2s ease,
-        box-shadow 0.2s ease;
-}
-
-.form-group input::placeholder,
-.form-group textarea::placeholder {
-    color: #d1d5db;
-    opacity: 1;
-}
-
-.form-group input:focus,
-.form-group textarea:focus,
-.form-group select:focus {
-    border-color: #17146b;
-    box-shadow: 0 0 0 2px rgba(23, 20, 107, 0.06);
-}
-
-.form-group textarea {
-    height: 87px;
-    padding: 10px 11px;
-    resize: vertical;
-    min-height: 87px;
+.procurement-beli {
+    background: #dcfce7;
+    color: #166534;
 }
 
 
 /* =========================================================
-   FORM ROW
+   PRICE
 ========================================================= */
 
-.form-row {
-    display: grid;
-    grid-template-columns: 1fr 1fr 1fr;
-    gap: 20px;
-    margin-bottom: 0;
-}
+.jaringan-price {
+    font-weight: 600;
+    color: #374151;
 
-.form-row .form-group {
-    margin-bottom: 20px;
+    white-space: nowrap;
 }
 
 
@@ -871,128 +483,735 @@
    DATE
 ========================================================= */
 
-.date-input {
-    position: relative;
+.jaringan-date {
+    white-space: nowrap;
+    color: #4b5563;
 }
 
-.date-input i {
-    position: absolute;
-    left: 11px;
-    top: 50%;
-    transform: translateY(-50%);
-    color: #6b7280;
+.jaringan-date-empty {
+    color: #9ca3af;
+}
+
+
+/* =========================================================
+   STATUS OTOMATIS
+========================================================= */
+
+.jaringan-status-badge {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+
+    padding: 5px 10px;
+
+    border-radius: 20px;
+
+    font-size: 11px;
+    font-weight: 600;
+
+    white-space: nowrap;
+}
+
+.status-perpetual {
+    background: #e0f2fe;
+    color: #075985;
+}
+
+.status-warning {
+    background: #fef3c7;
+    color: #92400e;
+}
+
+.status-expired {
+    background: #fee2e2;
+    color: #991b1b;
+}
+
+
+/* =========================================================
+   VERIFIKASI
+========================================================= */
+
+.verifikasi-badge {
+    display: inline-flex;
+
+    align-items: center;
+    justify-content: center;
+
+    padding: 5px 10px;
+
+    border-radius: 20px;
+
+    font-size: 11px;
+    font-weight: 600;
+
+    white-space: nowrap;
+}
+
+.verifikasi-menunggu {
+    background: #fef3c7;
+    color: #92400e;
+}
+
+.verifikasi-disetujui {
+    background: #dcfce7;
+    color: #166534;
+}
+
+.verifikasi-ditolak {
+    background: #fee2e2;
+    color: #991b1b;
+}
+
+
+/* =========================================================
+   ACTION
+========================================================= */
+
+.jaringan-action-buttons {
+    display: flex;
+    align-items: center;
+    gap: 7px;
+}
+
+.jaringan-action-button {
+    width: 32px;
+    height: 32px;
+
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+
+    border-radius: 7px;
+
+    border: none;
+
+    text-decoration: none;
+
+    cursor: pointer;
+
+    transition: 0.2s ease;
+}
+
+.jaringan-edit-button {
+    background: #e0f2fe;
+    color: #075985;
+}
+
+.jaringan-edit-button:hover {
+    background: #bae6fd;
+    color: #075985;
+}
+
+.jaringan-delete-button {
+    background: #fee2e2;
+    color: #dc2626;
+}
+
+.jaringan-delete-button:hover {
+    background: #fecaca;
+    color: #dc2626;
+}
+
+.jaringan-action-button i {
+    font-size: 14px;
+}
+
+
+/* =========================================================
+   EMPTY STATE
+========================================================= */
+
+.jaringan-empty-state {
+    padding: 55px 20px;
+
+    text-align: center;
+}
+
+.jaringan-empty-icon {
+    width: 60px;
+    height: 60px;
+
+    margin: 0 auto 15px;
+
+    border-radius: 50%;
+
+    display: flex;
+    align-items: center;
+    justify-content: center;
+
+    background: #f1f5f9;
+    color: #94a3b8;
+}
+
+.jaringan-empty-icon i {
+    font-size: 27px;
+}
+
+.jaringan-empty-state h3 {
+    margin: 0 0 6px;
+
+    font-size: 15px;
+    color: #374151;
+}
+
+.jaringan-empty-state p {
+    margin: 0;
+
     font-size: 12px;
-    pointer-events: none;
-    z-index: 2;
-}
-
-.date-input input {
-    padding-left: 32px;
-}
-
-.date-readonly {
-    background: #f8f9fb !important;
+    color: #9ca3af;
 }
 
 
 /* =========================================================
-   SEWA
+   PAGINATION
 ========================================================= */
 
-.sewa-section {
+.jaringan-table-footer {
+    display: flex;
+
+    justify-content: space-between;
+    align-items: center;
+
+    padding: 15px 20px;
+
+    border-top: 1px solid #e5e7eb;
+}
+
+.jaringan-showing-text {
+    font-size: 11px;
+    color: #6b7280;
+}
+
+
+/* =========================================================
+   MODAL OVERLAY
+========================================================= */
+
+.jaringan-modal-overlay {
+    position: fixed;
+
+    inset: 0;
+
+    z-index: 9999;
+
     display: none;
-    margin-top: 0;
-    padding-top: 0;
+
+    align-items: center;
+    justify-content: center;
+
+    padding: 30px;
+
+    background: rgba(15, 23, 42, 0.55);
+
+    overflow-y: auto;
 }
 
-.sewa-section.show {
-    display: block;
+.jaringan-modal-overlay.show {
+    display: flex;
 }
 
-.custom-period {
-    display: none;
-    grid-template-columns: 1fr 1fr;
-    gap: 20px;
-    margin-top: 2px;
+
+/* =========================================================
+   MODAL
+========================================================= */
+
+.jaringan-modal {
+    width: 100%;
+    max-width: 1050px;
+
+    height: min(720px, calc(100vh - 60px));
+    max-height: calc(100vh - 60px);
+
+    background: white;
+
+    border-radius: 16px;
+
+    box-shadow:
+        0 25px 60px rgba(15, 23, 42, 0.25);
+
+    overflow: hidden;
+
+    display: flex;
+    flex-direction: column;
+
+    min-height: 0;
+
+    animation: jaringanModalIn 0.18s ease;
 }
 
-.custom-period.show {
+@keyframes jaringanModalIn {
+
+    from {
+        opacity: 0;
+        transform: translateY(10px) scale(0.99);
+    }
+
+    to {
+        opacity: 1;
+        transform: translateY(0) scale(1);
+    }
+
+}
+
+
+/* =========================================================
+   MODAL HEADER
+========================================================= */
+
+.jaringan-modal-header {
+    min-height: 78px;
+
+    padding: 18px 22px;
+
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+
+    border-bottom: 1px solid #e5e7eb;
+
+    flex-shrink: 0;
+}
+
+.jaringan-modal-header-left {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+}
+
+.jaringan-modal-icon {
+    width: 40px;
+    height: 40px;
+
+    border-radius: 10px;
+
+    display: flex;
+    align-items: center;
+    justify-content: center;
+
+    background: #e0f2fe;
+    color: #075985;
+
+    flex-shrink: 0;
+}
+
+.jaringan-modal-icon i {
+    font-size: 18px;
+}
+
+.jaringan-modal-header-text h2 {
+    margin: 0;
+
+    font-size: 17px;
+    font-weight: 700;
+
+    color: #1f2937;
+}
+
+.jaringan-modal-header-text p {
+    margin: 4px 0 0;
+
+    font-size: 11px;
+    color: #6b7280;
+}
+
+.jaringan-modal-close {
+    width: 34px;
+    height: 34px;
+
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+
+    border: none;
+
+    border-radius: 8px;
+
+    background: #f1f5f9;
+    color: #64748b;
+
+    cursor: pointer;
+
+    transition: 0.2s ease;
+}
+
+.jaringan-modal-close:hover {
+    background: #e2e8f0;
+    color: #1f2937;
+}
+
+
+/* =========================================================
+   MODAL FORM
+========================================================= */
+
+#jaringanForm {
+    min-height: 0;
+
+    height: 100%;
+
+    display: flex;
+    flex-direction: column;
+
+    flex: 1 1 auto;
+
+    overflow: hidden;
+}
+
+
+/* =========================================================
+   MODAL BODY
+========================================================= */
+
+.jaringan-modal-body {
+    padding: 24px;
+
+    overflow-y: scroll;
+    overflow-x: hidden;
+
+    flex: 1 1 0%;
+
+    min-height: 0;
+    height: 0;
+
+    overscroll-behavior: contain;
+
+    -webkit-overflow-scrolling: touch;
+
+    scrollbar-width: thin;
+    scrollbar-color: #cbd5e1 transparent;
+}
+
+
+/* =========================================================
+   FORM CARD
+========================================================= */
+
+.jaringan-form-card {
+    background: white;
+
+    border: 1px solid #e5e7eb;
+
+    border-radius: 14px;
+
+    padding: 24px;
+
+    margin-bottom: 18px;
+
+    box-shadow: 0 2px 7px rgba(0, 0, 0, 0.03);
+}
+
+.jaringan-form-card:last-child {
+    margin-bottom: 0;
+}
+
+.jaringan-form-card-header {
+    display: flex;
+    align-items: center;
+    gap: 9px;
+
+    padding-bottom: 13px;
+
+    margin-bottom: 20px;
+
+    border-bottom: 1px solid #e5e7eb;
+}
+
+.jaringan-form-card-header i {
+    color: #075985;
+    font-size: 16px;
+}
+
+.jaringan-form-card-header h3 {
+    margin: 0;
+
+    font-size: 14px;
+    font-weight: 700;
+
+    color: #1f2937;
+}
+
+
+/* =========================================================
+   FORM GRID
+========================================================= */
+
+.jaringan-form-grid {
     display: grid;
+
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+
+    gap: 20px;
 }
 
-.form-info {
-    display: block;
-    margin-top: 5px;
-    font-size: 9px;
-    color: #6b7280;
-    line-height: 1.4;
+.jaringan-form-group {
+    display: flex;
+    flex-direction: column;
 }
 
+.jaringan-form-group.full {
+    grid-column: 1 / -1;
+}
 
-/* =========================================================
-   EDIT ID
-========================================================= */
+.jaringan-form-group label {
+    margin-bottom: 7px;
 
-#editId {
-    background: #f8f9fb;
-    color: #6b7280;
+    font-size: 12px;
+    font-weight: 600;
+
+    color: #374151;
+}
+
+.jaringan-form-group label span {
+    color: #dc2626;
+}
+
+.jaringan-form-group input,
+.jaringan-form-group select,
+.jaringan-form-group textarea {
+    width: 100%;
+
+    box-sizing: border-box;
+
+    border: 1px solid #d1d5db;
+
+    border-radius: 8px;
+
+    background: white;
+
+    color: #374151;
+
+    outline: none;
+
+    font-family: inherit;
+
+    font-size: 12px;
+
+    transition: 0.2s ease;
+}
+
+.jaringan-form-group input,
+.jaringan-form-group select {
+    height: 40px;
+
+    padding: 0 12px;
+}
+
+.jaringan-form-group textarea {
+    min-height: 85px;
+
+    padding: 10px 12px;
+
+    resize: vertical;
+}
+
+.jaringan-form-group input:focus,
+.jaringan-form-group select:focus,
+.jaringan-form-group textarea:focus {
+    border-color: #079bd8;
+
+    box-shadow:
+        0 0 0 3px rgba(7, 155, 216, 0.10);
+}
+
+.jaringan-form-group input[readonly] {
+    background: #f8fafc;
+
+    color: #64748b;
+
     cursor: not-allowed;
 }
 
+.jaringan-form-error {
+    margin-top: 5px;
+
+    font-size: 10px;
+
+    color: #dc2626;
+}
+
 
 /* =========================================================
-   FORM FOOTER
+   PRICE INPUT
 ========================================================= */
 
-.form-actions {
+.jaringan-price-input {
+    position: relative;
+}
+
+.jaringan-price-prefix {
+    position: absolute;
+
+    left: 12px;
+    top: 50%;
+
+    transform: translateY(-50%);
+
+    font-size: 12px;
+    font-weight: 600;
+
+    color: #64748b;
+
+    pointer-events: none;
+}
+
+.jaringan-price-input input {
+    padding-left: 38px;
+}
+
+
+/* =========================================================
+   SEWA SECTION
+========================================================= */
+
+#jaringanSewaSection {
+    display: none;
+
+    margin-top: 20px;
+
+    padding: 18px;
+
+    background: #f8fafc;
+
+    border: 1px solid #e2e8f0;
+
+    border-radius: 10px;
+}
+
+#jaringanSewaSection.show {
+    display: block;
+}
+
+.jaringan-sewa-title {
+    margin-bottom: 15px;
+
+    font-size: 12px;
+    font-weight: 700;
+
+    color: #075985;
+}
+
+.jaringan-sewa-grid {
+    display: grid;
+
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+
+    gap: 16px;
+}
+
+
+/* =========================================================
+   CUSTOM PERIOD
+========================================================= */
+
+#jaringanCustomPeriod {
+    display: none;
+
+    margin-top: 16px;
+}
+
+#jaringanCustomPeriod.show {
+    display: grid;
+
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+
+    gap: 16px;
+}
+
+
+/* =========================================================
+   INFO
+========================================================= */
+
+.jaringan-form-info {
+    margin-top: 6px;
+
+    font-size: 10px;
+
+    line-height: 1.5;
+
+    color: #9ca3af;
+}
+
+.jaringan-form-info i {
+    margin-right: 3px;
+}
+
+
+/* =========================================================
+   MODAL FOOTER
+========================================================= */
+
+.jaringan-modal-footer {
     display: flex;
+
     justify-content: flex-end;
+
     align-items: center;
-    gap: 15px;
-    padding: 14px 0 4px;
-    margin-top: 8px;
+
+    gap: 10px;
+
+    padding: 16px 24px;
+
     border-top: 1px solid #e5e7eb;
+
     background: white;
+
+    flex-shrink: 0;
+}
+
+.jaringan-btn-batal,
+.jaringan-btn-simpan {
+    height: 40px;
+
+    padding: 0 18px;
+
+    border-radius: 8px;
+
+    font-size: 12px;
+
+    font-weight: 600;
+
+    cursor: pointer;
+
+    transition: 0.2s ease;
+}
+
+.jaringan-btn-batal {
+    border: 1px solid #d1d5db;
+
+    background: white;
+
+    color: #4b5563;
+}
+
+.jaringan-btn-batal:hover {
+    background: #f8fafc;
+}
+
+.jaringan-btn-simpan {
+    border: none;
+
+    background: #079bd8;
+
+    color: white;
+}
+
+.jaringan-btn-simpan:hover {
+    background: #075985;
+}
+
+.jaringan-btn-simpan i {
+    margin-right: 5px;
 }
 
 
 /* =========================================================
-   BUTTON
+   DELETE CONFIRM
 ========================================================= */
 
-.cancel-btn {
-    height: 39px;
-    min-width: 79px;
-    padding: 0 18px;
-    border: 1px solid #d6dbea;
-    background: white;
-    color: #111111;
-    border-radius: 7px;
-    cursor: pointer;
-    font-size: 11px;
-    font-weight: 600;
-}
-
-.cancel-btn:hover {
-    background: #f8f9fb;
-}
-
-.save-btn {
-    height: 39px;
-    min-width: 79px;
-    padding: 0 18px;
-    border: none;
-    background: #17146b;
-    color: white;
-    border-radius: 7px;
-    cursor: pointer;
-    font-size: 11px;
-    font-weight: 600;
-    box-shadow: 0 2px 5px rgba(23, 20, 107, 0.20);
-}
-
-.save-btn:hover {
-    background: #100e58;
+.jaringan-delete-form {
+    display: inline;
 }
 
 
@@ -1000,19 +1219,10 @@
    RESPONSIVE
 ========================================================= */
 
-@media (max-width: 1100px) {
+@media (max-width: 1200px) {
 
-    .filter-form {
-        flex-wrap: wrap;
-    }
-
-    .filter-group {
-        flex: 1 1 calc(50% - 12px);
-    }
-
-    .filter-actions {
-        width: 100%;
-        justify-content: flex-end;
+    .jaringan-stats {
+        grid-template-columns: repeat(3, 1fr);
     }
 
 }
@@ -1020,16 +1230,38 @@
 
 @media (max-width: 900px) {
 
-    .statistics {
-        grid-template-columns: 1fr;
+    .jaringan-header {
+        align-items: flex-start;
+
+        flex-direction: column;
+
+        gap: 15px;
     }
 
-    .top-tools {
-        flex-wrap: wrap;
+    .add-jaringan-button {
+        width: 100%;
     }
 
-    .modal-content {
-        width: 760px;
+    .jaringan-stats {
+        grid-template-columns: repeat(2, 1fr);
+    }
+
+    .jaringan-table-header {
+        align-items: flex-start;
+
+        flex-direction: column;
+    }
+
+    .jaringan-toolbar {
+        width: 100%;
+    }
+
+    .jaringan-search {
+        flex: 1;
+    }
+
+    .jaringan-search input {
+        width: 100%;
     }
 
 }
@@ -1037,101 +1269,174 @@
 
 @media (max-width: 700px) {
 
-    .modal {
-        padding: 12px;
+    .jaringan-modal-overlay {
+        padding: 15px;
     }
 
-    .modal-content {
-        width: 100%;
-        max-height: 94vh;
-        border-radius: 12px;
+    .jaringan-modal {
+        height: calc(100vh - 30px);
+
+        max-height: calc(100vh - 30px);
     }
 
-    .modal-header {
-        padding: 16px 20px 12px;
+    .jaringan-modal-body {
+        padding: 15px;
     }
 
-    .modal-body {
-        padding: 25px 20px 10px;
+    .jaringan-form-card {
+        padding: 18px;
     }
 
-    .form-row {
+    .jaringan-form-grid,
+    .jaringan-sewa-grid {
         grid-template-columns: 1fr;
-        gap: 0;
+
+        gap: 15px;
     }
 
-    .form-row .form-group {
-        margin-bottom: 20px;
-    }
-
-    .custom-period {
+    #jaringanCustomPeriod.show {
         grid-template-columns: 1fr;
-        gap: 0;
     }
 
-    .filter-group {
-        flex: 1 1 100%;
+    .jaringan-modal-footer {
+        padding: 14px 15px;
     }
 
 }
 
 
-@media (max-width: 600px) {
+@media (max-width: 500px) {
 
-    .top-tools {
+    .jaringan-stats {
+        grid-template-columns: 1fr;
+    }
+
+    .jaringan-toolbar {
         flex-direction: column;
+
         align-items: stretch;
     }
 
-    .left-tools,
-    .right-tools {
+    .jaringan-filter-select {
         width: 100%;
     }
 
-    .search-box {
-        width: 100%;
+    .jaringan-modal-header {
+        padding: 15px;
     }
 
-    .right-tools {
-        justify-content: flex-end;
-    }
+}
 
+
+/* =========================================================
+   BODY LOCK WHEN MODAL OPEN
+========================================================= */
+
+body.jaringan-modal-open {
+    overflow: hidden;
 }
 
 </style>
 
 
-<div class="infrastruktur-page">
+<div class="jaringan-page">
 
 
     {{-- =====================================================
-         SUCCESS MESSAGE
+         HEADER
     ====================================================== --}}
 
-    @if (session('success'))
+    <div class="jaringan-header">
 
-        <div class="success-message">
-            {{ session('success') }}
+        <div class="jaringan-heading">
+
+            <h2>
+                Jaringan
+            </h2>
+
+            <p>
+                Kelola data infrastruktur jaringan yang tersedia.
+            </p>
+
+        </div>
+
+
+        <button
+            type="button"
+            class="add-jaringan-button"
+            onclick="openAddJaringanModal()"
+        >
+
+            <i class="bi bi-plus-lg"></i>
+
+            <span>
+                Tambah Jaringan
+            </span>
+
+        </button>
+
+    </div>
+
+
+    {{-- =====================================================
+         SUCCESS
+    ====================================================== --}}
+
+    @if(session('success'))
+
+        <div class="alert-success">
+
+            <i class="bi bi-check-circle-fill"></i>
+
+            <span>
+                {{ session('success') }}
+            </span>
+
         </div>
 
     @endif
 
 
     {{-- =====================================================
-         ERROR MESSAGE
+         ERROR
     ====================================================== --}}
 
-    @if ($errors->any())
+    @if(session('error'))
 
-        <div class="error-message">
+        <div class="alert-error">
 
-            @foreach ($errors->all() as $error)
+            <i class="bi bi-exclamation-circle-fill"></i>
 
-                <div>
-                    {{ $error }}
+            <span>
+                {{ session('error') }}
+            </span>
+
+        </div>
+
+    @endif
+
+
+    {{-- =====================================================
+         VALIDATION ERROR
+    ====================================================== --}}
+
+    @if($errors->any())
+
+        <div class="alert-error">
+
+            <i class="bi bi-exclamation-triangle-fill"></i>
+
+            <div>
+
+                <strong>
+                    Data belum dapat disimpan.
+                </strong>
+
+                <div style="margin-top:3px;">
+                    Silakan periksa kembali isian form.
                 </div>
 
-            @endforeach
+            </div>
 
         </div>
 
@@ -1142,59 +1447,125 @@
          STATISTICS
     ====================================================== --}}
 
-    <div class="statistics">
+    <div class="jaringan-stats">
 
-        {{-- TOTAL --}}
 
-        <div class="stat-card">
+        {{-- TOTAL JARINGAN --}}
 
-            <div class="stat-title">
-                JUMLAH JARINGAN
+        <div class="jaringan-stat-card">
+
+            <div class="jaringan-stat-icon blue">
+
+                <i class="bi bi-wifi"></i>
+
             </div>
 
-            <div class="stat-value">
-                {{ $totalJaringan }}
+            <div class="jaringan-stat-content">
+
+                <span class="jaringan-stat-label">
+                    Total Jaringan
+                </span>
+
+                <span class="jaringan-stat-value">
+
+                    {{ $totalJaringan ?? $jaringans->count() }}
+
+                </span>
+
+                <span class="jaringan-stat-description">
+                    Infrastruktur jaringan terdaftar
+                </span>
+
             </div>
 
         </div>
 
 
-        {{-- AKAN HABIS --}}
+        {{-- AKAN BERAKHIR --}}
 
-        <div class="stat-card">
+        <div class="jaringan-stat-card">
 
-            <div class="stat-title">
-                AKAN HABIS
+            <div class="jaringan-stat-icon orange">
+
+                <i class="bi bi-clock-history"></i>
+
             </div>
 
-            <div class="stat-value">
-                {{ $akanHabis }}
+            <div class="jaringan-stat-content">
+
+                <span class="jaringan-stat-label">
+                    Akan Berakhir
+                </span>
+
+                <span class="jaringan-stat-value">
+
+                    {{ $akanHabis ?? $akanBerakhir ?? 0 }}
+
+                </span>
+
+                <span class="jaringan-stat-description">
+                    Berakhir dalam 30 hari
+                </span>
+
             </div>
 
         </div>
 
 
-        {{-- PENGELUARAN --}}
+        {{-- TIDAK BERAKHIR --}}
 
-        <div class="stat-card">
+        <div class="jaringan-stat-card">
 
-            <div class="stat-title">
+            <div class="jaringan-stat-icon green">
 
-                @if (request('tahun'))
-
-                    PENGELUARAN {{ request('tahun') }}
-
-                @else
-
-                    PENGELUARAN TAHUNAN
-
-                @endif
+                <i class="bi bi-infinity"></i>
 
             </div>
 
-            <div class="stat-value">
+            <div class="jaringan-stat-content">
 
-                Rp {{ number_format($jaringans->sum('harga'), 0, ',', '.') }}
+                <span class="jaringan-stat-label">
+                    Tidak Berakhir
+                </span>
+
+                <span class="jaringan-stat-value">
+                    {{ $tersedia ?? 0 }}
+                </span>
+
+                <span class="jaringan-stat-description">
+                    Jaringan tanpa tanggal berakhir
+                </span>
+
+            </div>
+
+        </div>
+
+
+        {{-- EXPIRED --}}
+
+        <div class="jaringan-stat-card">
+
+            <div class="jaringan-stat-icon red">
+
+                <i class="bi bi-x-circle-fill"></i>
+
+            </div>
+
+            <div class="jaringan-stat-content">
+
+                <span class="jaringan-stat-label">
+                    Expired
+                </span>
+
+                <span class="jaringan-stat-value">
+
+                    {{ $expired ?? 0 }}
+
+                </span>
+
+                <span class="jaringan-stat-description">
+                    Jaringan sudah berakhir
+                </span>
 
             </div>
 
@@ -1207,300 +1578,110 @@
          TABLE
     ====================================================== --}}
 
-    <div class="table-container">
+    <div class="jaringan-table-card">
 
 
         {{-- =================================================
              TABLE HEADER
         ================================================== --}}
 
-        <div class="table-header">
+        <div class="jaringan-table-header">
 
 
-            {{-- BARIS SEARCH + FILTER + ADD --}}
+            <div class="jaringan-table-header-left">
 
-            <div class="top-tools">
+                <h3 class="jaringan-table-title">
+                    Data Jaringan
+                </h3>
+
+                <span class="jaringan-table-count">
+                    ({{ $jaringans->count() }} data)
+                </span>
+
+            </div>
+
+
+            {{-- TOOLBAR --}}
+
+            <div class="jaringan-toolbar">
 
 
                 {{-- SEARCH --}}
 
-                <div class="left-tools">
+                <div class="jaringan-search">
 
-                    <div class="search-box">
+                    <i class="bi bi-search"></i>
 
-                        <i class="bi bi-search"></i>
-
-                        <input
-                            type="text"
-                            id="searchInput"
-                            placeholder="Search..."
-                        >
-
-                    </div>
-
-                </div>
-
-
-                {{-- FILTER + ADD --}}
-
-                <div class="right-tools">
-
-
-                    {{-- FILTER BUTTON --}}
-
-                    <div class="filter-wrapper">
-
-                        <button
-                            type="button"
-                            class="filter-btn"
-                            id="filterButton"
-                            onclick="toggleFilter()"
-                        >
-
-                            <i class="bi bi-funnel"></i>
-
-                            Filter
-
-                            <i
-                                class="bi bi-chevron-down"
-                                id="filterArrow"
-                            ></i>
-
-                        </button>
-
-                    </div>
-
-
-                    {{-- ADD --}}
-
-                    <button
-                        type="button"
-                        class="add-btn"
-                        onclick="openAddModal()"
+                    <input
+                        type="text"
+                        id="jaringanSearch"
+                        placeholder="Cari jaringan..."
                     >
 
-                        <i class="bi bi-plus-lg"></i>
-
-                        Add
-
-                    </button>
-
                 </div>
 
-            </div>
 
+                {{-- FILTER STATUS --}}
 
-            {{-- =================================================
-                 FILTER PANEL
-            ================================================== --}}
-
-            <div
-                class="filter-panel"
-                id="filterPanel"
-            >
-
-                <form
-                    action="{{ route('jaringan.index') }}"
-                    method="GET"
-                    class="filter-form"
+                <select
+                    id="jaringanStatusFilter"
+                    class="jaringan-filter-select"
                 >
 
+                    <option value="">
+                        Semua Status
+                    </option>
 
-                    {{-- STATUS --}}
+                    <option value="tidak berakhir">
+                        Tidak Berakhir
+                    </option>
 
-                    <div class="filter-group">
+                    <option value="segera berakhir">
+                        Segera Berakhir
+                    </option>
 
-                        <label class="filter-label">
-                            Status
-                        </label>
+                    <option value="expired">
+                        Expired
+                    </option>
 
-                        <select
-                            name="status"
-                            class="filter-select"
-                        >
-
-                            <option value="">
-                                Semua Status
-                            </option>
-
-                            <option
-                                value="Tersedia"
-                                {{ request('status') == 'Tersedia' ? 'selected' : '' }}
-                            >
-                                Tersedia
-                            </option>
-
-                            <option
-                                value="Digunakan"
-                                {{ request('status') == 'Digunakan' ? 'selected' : '' }}
-                            >
-                                Digunakan
-                            </option>
-
-                            <option
-                                value="Akan Habis"
-                                {{ request('status') == 'Akan Habis' ? 'selected' : '' }}
-                            >
-                                Akan Habis
-                            </option>
-
-                            <option
-                                value="Expired"
-                                {{ request('status') == 'Expired' ? 'selected' : '' }}
-                            >
-                                Expired
-                            </option>
-
-                        </select>
-
-                    </div>
+                </select>
 
 
-                    {{-- PENGADAAN --}}
+                {{-- FILTER VERIFIKASI --}}
 
-                    <div class="filter-group">
+                <select
+                    id="jaringanVerifikasiFilter"
+                    class="jaringan-filter-select"
+                >
 
-                        <label class="filter-label">
-                            Pengadaan
-                        </label>
+                    <option value="">
+                        Semua Verifikasi
+                    </option>
 
-                        <select
-                            name="pengadaan"
-                            class="filter-select"
-                        >
+                    <option value="menunggu">
+                        Menunggu
+                    </option>
 
-                            <option value="">
-                                Semua Pengadaan
-                            </option>
+                    <option value="disetujui">
+                        Disetujui
+                    </option>
 
-                            <option
-                                value="Beli"
-                                {{ request('pengadaan') == 'Beli' ? 'selected' : '' }}
-                            >
-                                Beli
-                            </option>
+                    <option value="ditolak">
+                        Ditolak
+                    </option>
 
-                            <option
-                                value="Sewa"
-                                {{ request('pengadaan') == 'Sewa' ? 'selected' : '' }}
-                            >
-                                Sewa
-                            </option>
-
-                        </select>
-
-                    </div>
-
-
-                    {{-- VERIFIKASI --}}
-
-                    <div class="filter-group">
-
-                        <label class="filter-label">
-                            Verifikasi
-                        </label>
-
-                        <select
-                            name="verifikasi"
-                            class="filter-select"
-                        >
-
-                            <option value="">
-                                Semua Verifikasi
-                            </option>
-
-                            <option
-                                value="Menunggu disetujui"
-                                {{ request('verifikasi') == 'Menunggu disetujui' ? 'selected' : '' }}
-                            >
-                                Menunggu disetujui
-                            </option>
-
-                            <option
-                                value="Disetujui"
-                                {{ request('verifikasi') == 'Disetujui' ? 'selected' : '' }}
-                            >
-                                Disetujui
-                            </option>
-
-                            <option
-                                value="Ditolak"
-                                {{ request('verifikasi') == 'Ditolak' ? 'selected' : '' }}
-                            >
-                                Ditolak
-                            </option>
-
-                        </select>
-
-                    </div>
-
-
-                    {{-- TAHUN --}}
-
-                    <div class="filter-group">
-
-                        <label class="filter-label">
-                            Tahun
-                        </label>
-
-                        <select
-                            name="tahun"
-                            class="filter-select"
-                        >
-
-                            <option value="">
-                                Semua Tahun
-                            </option>
-
-                            @foreach ($tahuns as $item)
-
-                                <option
-                                    value="{{ $item }}"
-                                    {{ request('tahun') == $item ? 'selected' : '' }}
-                                >
-                                    {{ $item }}
-                                </option>
-
-                            @endforeach
-
-                        </select>
-
-                    </div>
-
-
-                    {{-- ACTION --}}
-
-                    <div class="filter-actions">
-
-                        <a
-                            href="{{ route('jaringan.index') }}"
-                            class="filter-reset"
-                        >
-                            Reset
-                        </a>
-
-                        <button
-                            type="submit"
-                            class="filter-apply"
-                        >
-                            Terapkan
-                        </button>
-
-                    </div>
-
-                </form>
+                </select>
 
             </div>
-
 
         </div>
 
 
         {{-- =================================================
-             TABLE
+             TABLE WRAPPER
         ================================================== --}}
 
-        <div class="table-wrapper">
+        <div class="jaringan-table-wrapper">
 
             <table class="jaringan-table">
 
@@ -1508,49 +1689,44 @@
 
                     <tr>
 
-                        <th>ID</th>
-
                         <th>
-                            NAMA<br>
-                            INFRASTRUKTUR
+                            No
                         </th>
 
                         <th>
-                            SPESIFIKASI
+                            ID
                         </th>
 
                         <th>
-                            PENGADAAN
+                            Nama Infrastruktur
                         </th>
 
                         <th>
-                            TGL.<br>
-                            PENGADAAN
+                            Pengadaan
                         </th>
 
                         <th>
-                            TGL.<br>
-                            BERAKHIR
+                            Harga
                         </th>
 
                         <th>
-                            HARGA
+                            Tanggal Pengadaan
                         </th>
 
                         <th>
-                            STATUS
+                            Tanggal Berakhir
                         </th>
 
                         <th>
-                            VERIFIKASI
+                            Status
                         </th>
 
                         <th>
-                            KOMENTAR
+                            Verifikasi
                         </th>
 
                         <th>
-                            AKSI
+                            Aksi
                         </th>
 
                     </tr>
@@ -1558,99 +1734,153 @@
                 </thead>
 
 
-                <tbody id="jaringanTable">
+                <tbody id="jaringanTableBody">
 
 
-                    @forelse ($jaringans as $jaringan)
+                    @forelse($jaringans as $jaringan)
 
                         @php
 
-                            $statusValue =
-                                $jaringan->status_otomatis
-                                ?? $jaringan->status
-                                ?? 'Tersedia';
+                            /*
+                             * STATUS BERDASARKAN TANGGAL
+                             */
+
+                            $statusLabel = 'Tidak Berakhir';
+                            $statusClass = 'status-perpetual';
+
+                            if ($jaringan->tanggal_berakhir) {
+
+                                $today = now()->startOfDay();
+
+                                $endDate =
+                                    \Carbon\Carbon::parse(
+                                        $jaringan->tanggal_berakhir
+                                    )->startOfDay();
+
+                                $daysLeft =
+                                    $today->diffInDays(
+                                        $endDate,
+                                        false
+                                    );
+
+                                if ($daysLeft < 0) {
+
+                                    $statusLabel = 'Expired';
+                                    $statusClass = 'status-expired';
+
+                                } elseif ($daysLeft <= 30) {
+
+                                    $statusLabel = 'Segera Berakhir';
+                                    $statusClass = 'status-warning';
+
+                                }
+
+                            }
 
 
-                            $statusClass = match (
-                                strtolower(trim($statusValue))
-                            ) {
+                            /*
+                             * VERIFIKASI
+                             */
 
-                                'tersedia' =>
-                                    'status-tersedia',
+                            $verifikasi =
+                                strtolower(
+                                    (string) (
+                                        $jaringan->verifikasi
+                                        ?? 'menunggu'
+                                    )
+                                );
 
-                                'digunakan' =>
-                                    'status-digunakan',
+                            $verifikasiLabel =
+                                match ($verifikasi) {
 
-                                'akan habis' =>
-                                    'status-akan-habis',
+                                    'disetujui',
+                                    'approved',
+                                    'approve'
+                                        => 'Disetujui',
 
-                                'expired' =>
-                                    'status-expired',
+                                    'ditolak',
+                                    'rejected',
+                                    'reject'
+                                        => 'Ditolak',
 
-                                default =>
-                                    'status-default',
+                                    default
+                                        => 'Menunggu',
 
-                            };
-
-
-                            $verifikasiValue =
-                                $jaringan->verifikasi
-                                ?? 'Menunggu disetujui';
+                                };
 
 
-                            $verifikasiClass = match (
-                                strtolower(trim($verifikasiValue))
-                            ) {
+                            $verifikasiClass =
+                                match ($verifikasi) {
 
-                                'menunggu disetujui' =>
-                                    'verifikasi-menunggu',
+                                    'disetujui',
+                                    'approved',
+                                    'approve'
+                                        => 'verifikasi-disetujui',
 
-                                'disetujui' =>
-                                    'verifikasi-disetujui',
+                                    'ditolak',
+                                    'rejected',
+                                    'reject'
+                                        => 'verifikasi-ditolak',
 
-                                'ditolak' =>
-                                    'verifikasi-ditolak',
+                                    default
+                                        => 'verifikasi-menunggu',
 
-                                default =>
-                                    'verifikasi-menunggu',
-
-                            };
+                                };
 
                         @endphp
 
 
-                        <tr>
+                        <tr
+                            data-search="{{ strtolower(
+                                ($jaringan->id ?? '') . ' ' .
+                                ($jaringan->nama_infrastruktur ?? '') . ' ' .
+                                ($jaringan->spesifikasi ?? '') . ' ' .
+                                ($jaringan->pengadaan ?? '') . ' ' .
+                                ($verifikasiLabel ?? '')
+                            ) }}"
+                            data-status="{{ strtolower($statusLabel) }}"
+                            data-verifikasi="{{ strtolower($verifikasiLabel) }}"
+                        >
+
+
+                            {{-- NO --}}
+
+                            <td>
+                                {{ $loop->iteration }}
+                            </td>
 
 
                             {{-- ID --}}
 
-                            <td class="id">
-                                {{ $jaringan->id }}
+                            <td>
+
+                                <span class="jaringan-code">
+
+                                    {{ $jaringan->id }}
+
+                                </span>
+
                             </td>
 
 
                             {{-- NAMA --}}
 
-                            <td
-                                title="{{ $jaringan->nama_infrastruktur }}"
-                            >
-                                {{ $jaringan->nama_infrastruktur }}
-                            </td>
+                            <td>
+
+                                <div class="jaringan-name">
+
+                                    {{ $jaringan->nama_infrastruktur }}
+
+                                </div>
 
 
-                            {{-- SPESIFIKASI --}}
+                                @if($jaringan->spesifikasi)
 
-                            <td
-                                title="{{ $jaringan->spesifikasi }}"
-                            >
+                                    <div class="jaringan-spec">
 
-                                @if ($jaringan->spesifikasi)
+                                        {{ $jaringan->spesifikasi }}
 
-                                    {{ $jaringan->spesifikasi }}
-
-                                @else
-
-                                    -
+                                    </div>
 
                                 @endif
 
@@ -1660,38 +1890,26 @@
                             {{-- PENGADAAN --}}
 
                             <td>
-                                {{ $jaringan->pengadaan }}
-                            </td>
 
+                                @if(
+                                    strtolower(
+                                        $jaringan->pengadaan ?? ''
+                                    ) === 'sewa'
+                                )
 
-                            {{-- TANGGAL PENGADAAN --}}
-
-                            <td>
-
-                                @if ($jaringan->tanggal_pengadaan)
-
-                                    {{ $jaringan->tanggal_pengadaan->format('d/m/Y') }}
-
-                                @else
-
-                                    -
-
-                                @endif
-
-                            </td>
-
-
-                            {{-- TANGGAL BERAKHIR --}}
-
-                            <td>
-
-                                @if ($jaringan->tanggal_berakhir)
-
-                                    {{ $jaringan->tanggal_berakhir->format('d/m/Y') }}
+                                    <span
+                                        class="procurement-badge procurement-sewa"
+                                    >
+                                        Sewa
+                                    </span>
 
                                 @else
 
-                                    -
+                                    <span
+                                        class="procurement-badge procurement-beli"
+                                    >
+                                        Beli
+                                    </span>
 
                                 @endif
 
@@ -1702,8 +1920,67 @@
 
                             <td>
 
-                                Rp
-                                {{ number_format($jaringan->harga, 0, ',', '.') }}
+                                <span class="jaringan-price">
+
+                                    Rp
+                                    {{ number_format(
+                                        (float) ($jaringan->harga ?? 0),
+                                        0,
+                                        ',',
+                                        '.'
+                                    ) }}
+
+                                </span>
+
+                            </td>
+
+
+                            {{-- TANGGAL PENGADAAN --}}
+
+                            <td>
+
+                                @if($jaringan->tanggal_pengadaan)
+
+                                    <span class="jaringan-date">
+
+                                        {{ \Carbon\Carbon::parse(
+                                            $jaringan->tanggal_pengadaan
+                                        )->format('d M Y') }}
+
+                                    </span>
+
+                                @else
+
+                                    <span class="jaringan-date-empty">
+                                        -
+                                    </span>
+
+                                @endif
+
+                            </td>
+
+
+                            {{-- TANGGAL BERAKHIR --}}
+
+                            <td>
+
+                                @if($jaringan->tanggal_berakhir)
+
+                                    <span class="jaringan-date">
+
+                                        {{ \Carbon\Carbon::parse(
+                                            $jaringan->tanggal_berakhir
+                                        )->format('d M Y') }}
+
+                                    </span>
+
+                                @else
+
+                                    <span class="jaringan-date-empty">
+                                        Tidak Berakhir
+                                    </span>
+
+                                @endif
 
                             </td>
 
@@ -1712,9 +1989,11 @@
 
                             <td>
 
-                                <span class="status {{ $statusClass }}">
+                                <span
+                                    class="jaringan-status-badge {{ $statusClass }}"
+                                >
 
-                                    {{ $statusValue }}
+                                    {{ $statusLabel }}
 
                                 </span>
 
@@ -1725,31 +2004,13 @@
 
                             <td>
 
-                                <span class="verifikasi {{ $verifikasiClass }}">
+                                <span
+                                    class="verifikasi-badge {{ $verifikasiClass }}"
+                                >
 
-                                    {{ $verifikasiValue }}
+                                    {{ $verifikasiLabel }}
 
                                 </span>
-
-                            </td>
-
-
-                            {{-- KOMENTAR --}}
-
-                            <td
-                                class="komentar-cell {{ !$jaringan->komentar ? 'empty' : '' }}"
-                                title="{{ $jaringan->komentar ?? '' }}"
-                            >
-
-                                @if ($jaringan->komentar)
-
-                                    {{ $jaringan->komentar }}
-
-                                @else
-
-                                    -
-
-                                @endif
 
                             </td>
 
@@ -1758,25 +2019,16 @@
 
                             <td>
 
-                                <div class="action">
+                                <div class="jaringan-action-buttons">
 
 
                                     {{-- EDIT --}}
 
                                     <button
                                         type="button"
-                                        class="edit-btn"
+                                        class="jaringan-action-button jaringan-edit-button"
                                         title="Edit"
-                                        onclick='openEditModal(
-                                            @json($jaringan->id),
-                                            @json($jaringan->nama_infrastruktur),
-                                            @json($jaringan->spesifikasi),
-                                            @json($jaringan->pengadaan),
-                                            @json($jaringan->tanggal_pengadaan ? $jaringan->tanggal_pengadaan->format("Y-m-d") : ""),
-                                            @json($jaringan->tanggal_berakhir ? $jaringan->tanggal_berakhir->format("Y-m-d") : ""),
-                                            @json($jaringan->harga),
-                                            @json($jaringan->status)
-                                        )'
+                                        onclick="openEditJaringanModal(@js($jaringan->id))"
                                     >
 
                                         <i class="bi bi-pencil-fill"></i>
@@ -1787,10 +2039,15 @@
                                     {{-- DELETE --}}
 
                                     <form
-                                        action="{{ route('jaringan.destroy', $jaringan->id) }}"
+                                        action="{{ route(
+                                            'jaringan.destroy',
+                                            $jaringan->id
+                                        ) }}"
                                         method="POST"
-                                        onsubmit="return confirm('Yakin ingin mengajukan penghapusan data ini?')"
-                                        style="display: inline;"
+                                        class="jaringan-delete-form"
+                                        onsubmit="return confirm(
+                                            'Yakin ingin menghapus data jaringan ini?'
+                                        );"
                                     >
 
                                         @csrf
@@ -1799,8 +2056,8 @@
 
                                         <button
                                             type="submit"
-                                            class="delete-btn"
-                                            title="Ajukan Penghapusan"
+                                            class="jaringan-action-button jaringan-delete-button"
+                                            title="Hapus"
                                         >
 
                                             <i class="bi bi-trash-fill"></i>
@@ -1809,40 +2066,45 @@
 
                                     </form>
 
-
                                 </div>
 
                             </td>
 
-
                         </tr>
+
 
                     @empty
 
                         <tr>
 
                             <td
-                                colspan="11"
-                                class="empty-data"
+                                colspan="10"
+                                style="padding:0;"
                             >
 
-                                @if (request('tahun'))
+                                <div class="jaringan-empty-state">
 
-                                    Tidak ada data jaringan untuk tahun
-                                    {{ request('tahun') }}.
+                                    <div class="jaringan-empty-icon">
 
-                                @else
+                                        <i class="bi bi-wifi-off"></i>
 
-                                    Belum ada data jaringan.
+                                    </div>
 
-                                @endif
+                                    <h3>
+                                        Belum ada data jaringan
+                                    </h3>
+
+                                    <p>
+                                        Data infrastruktur jaringan belum tersedia.
+                                    </p>
+
+                                </div>
 
                             </td>
 
                         </tr>
 
                     @endforelse
-
 
                 </tbody>
 
@@ -1855,64 +2117,33 @@
              TABLE FOOTER
         ================================================== --}}
 
-        <div class="table-footer">
+        @if(
+            method_exists($jaringans, 'links')
+            &&
+            $jaringans->hasPages()
+        )
 
-            <div class="showing-info">
+            <div class="jaringan-table-footer">
 
-                Showing
-                {{ $jaringans->count() }}
-                entries
+                <span class="jaringan-showing-text">
 
-                @if (request('tahun'))
+                    Menampilkan
+                    {{ $jaringans->firstItem() }}
+                    -
+                    {{ $jaringans->lastItem() }}
+                    dari
+                    {{ $jaringans->total() }}
+                    data
 
-                    — Tahun {{ request('tahun') }}
+                </span>
 
-                @endif
-
-            </div>
-
-
-            <div class="pagination">
-
-                <button
-                    type="button"
-                    class="page-btn"
-                >
-                    <i class="bi bi-chevron-left"></i>
-                </button>
-
-                <button
-                    type="button"
-                    class="page-btn active"
-                >
-                    1
-                </button>
-
-                <button
-                    type="button"
-                    class="page-btn"
-                >
-                    2
-                </button>
-
-                <button
-                    type="button"
-                    class="page-btn"
-                >
-                    3
-                </button>
-
-                <button
-                    type="button"
-                    class="page-btn"
-                >
-                    <i class="bi bi-chevron-right"></i>
-                </button>
+                <div>
+                    {{ $jaringans->links() }}
+                </div>
 
             </div>
 
-        </div>
-
+        @endif
 
     </div>
 
@@ -1920,320 +2151,554 @@
 
 
 {{-- =========================================================
-     MODAL TAMBAH
+     MODAL TAMBAH / EDIT JARINGAN
 ========================================================= --}}
 
 <div
-    class="modal"
-    id="addModal"
+    id="jaringanModal"
+    class="jaringan-modal-overlay"
+    aria-hidden="true"
 >
 
-    <div class="modal-content">
+    <div
+        class="jaringan-modal"
+        role="dialog"
+        aria-modal="true"
+        aria-labelledby="jaringanModalTitle"
+    >
 
-        <div class="modal-header">
 
-            <div class="modal-title-wrapper">
+        {{-- =================================================
+             MODAL HEADER
+        ================================================== --}}
 
-                <h2>
-                    Tambah Data Infrastruktur
-                </h2>
+        <div class="jaringan-modal-header">
 
-                <p class="modal-subtitle">
-                    Masukan detail aset infrastruktur baru ke dalam sistem.
-                </p>
+            <div class="jaringan-modal-header-left">
+
+                <div class="jaringan-modal-icon">
+
+                    <i class="bi bi-wifi"></i>
+
+                </div>
+
+
+                <div class="jaringan-modal-header-text">
+
+                    <h2 id="jaringanModalTitle">
+                        Tambah Jaringan
+                    </h2>
+
+                    <p id="jaringanModalDescription">
+                        Masukan detail infrastruktur jaringan baru ke dalam sistem.
+                    </p>
+
+                </div>
 
             </div>
 
+
             <button
                 type="button"
-                class="close"
-                onclick="closeAddModal()"
+                class="jaringan-modal-close"
+                onclick="closeJaringanModal()"
+                title="Tutup"
             >
 
-                &times;
+                <i class="bi bi-x-lg"></i>
 
             </button>
 
         </div>
 
 
-        <div class="modal-body">
+        {{-- =================================================
+             FORM
+        ================================================== --}}
 
-            <form
-                action="{{ route('jaringan.store') }}"
-                method="POST"
-                id="addForm"
+        <form
+            id="jaringanForm"
+            method="POST"
+        >
+
+            @csrf
+
+            <input
+                type="hidden"
+                name="_method"
+                id="jaringanMethod"
+                value="POST"
             >
 
-                @csrf
+
+            {{-- =================================================
+                 MODAL BODY
+            ================================================== --}}
+
+            <div class="jaringan-modal-body">
 
 
-                <div class="form-group">
+                {{-- =================================================
+                     INFORMASI JARINGAN
+                ================================================== --}}
 
-                    <label>
-                        Nama Infrastruktur
-                        <span>*</span>
-                    </label>
-
-                    <input
-                        type="text"
-                        name="nama_infrastruktur"
-                        placeholder="Router TP-Link"
-                        value="{{ old('nama_infrastruktur') }}"
-                        required
-                    >
-
-                </div>
+                <div class="jaringan-form-card">
 
 
-                <div class="form-group">
+                    <div class="jaringan-form-card-header">
 
-                    <label>
-                        Spesifikasi
-                    </label>
+                        <i class="bi bi-diagram-3-fill"></i>
 
-                    <textarea
-                        name="spesifikasi"
-                        placeholder="Masukkan spesifikasi"
-                    >{{ old('spesifikasi') }}</textarea>
-
-                    <small class="form-info">
-                        Spesifikasi dapat dikosongkan jika tidak tersedia.
-                    </small>
-
-                </div>
-
-
-                <div class="form-group">
-
-                    <label>
-                        Pengadaan
-                        <span>*</span>
-                    </label>
-
-                    <select
-                        id="pengadaan"
-                        name="pengadaan"
-                        required
-                    >
-
-                        <option value="">
-                            Pilih Jenis Pengadaan
-                        </option>
-
-                        <option
-                            value="Sewa"
-                            {{ old('pengadaan') === 'Sewa' ? 'selected' : '' }}
-                        >
-                            Sewa
-                        </option>
-
-                        <option
-                            value="Beli"
-                            {{ old('pengadaan') === 'Beli' ? 'selected' : '' }}
-                        >
-                            Beli
-                        </option>
-
-                    </select>
-
-                </div>
-
-
-                <div class="form-row">
-
-
-                    <div class="form-group">
-
-                        <label>
-                            Harga
-                            <span>*</span>
-                        </label>
-
-                        <input
-                            type="number"
-                            name="harga"
-                            placeholder="Rp"
-                            value="{{ old('harga', 0) }}"
-                            min="0"
-                            required
-                        >
+                        <h3>
+                            Informasi Jaringan
+                        </h3>
 
                     </div>
 
 
-                    <div class="form-group">
+                    <div class="jaringan-form-grid">
 
-                        <label>
-                            Status
-                            <span>*</span>
-                        </label>
 
-                        <select
-                            name="status"
-                            id="addStatus"
-                            required
-                        >
+                        {{-- ID --}}
 
-                            <option value="">
-                                Pilih Status
-                            </option>
+                        <div class="jaringan-form-group">
 
-                            <option
-                                value="Tersedia"
-                                {{ old('status') === 'Tersedia' ? 'selected' : '' }}
+                            <label for="jaringan_id">
+
+                                ID Jaringan
+
+                            </label>
+
+                            <input
+                                type="text"
+                                id="jaringan_id"
+                                name="id"
+                                value="{{ old('id') }}"
+                                placeholder="ID jaringan"
+                                readonly
                             >
-                                Tersedia
-                            </option>
 
-                            <option
-                                value="Digunakan"
-                                {{ old('status') === 'Digunakan' ? 'selected' : '' }}
+                            <small class="jaringan-form-info">
+
+                                <i class="bi bi-info-circle"></i>
+
+                                ID dibuat otomatis oleh sistem.
+
+                            </small>
+
+                        </div>
+
+
+                        {{-- NAMA --}}
+
+                        <div class="jaringan-form-group">
+
+                            <label for="jaringan_nama_infrastruktur">
+
+                                Nama Infrastruktur
+
+                                <span>*</span>
+
+                            </label>
+
+                            <input
+                                type="text"
+                                id="jaringan_nama_infrastruktur"
+                                name="nama_infrastruktur"
+                                value="{{ old('nama_infrastruktur') }}"
+                                placeholder="Masukkan nama infrastruktur jaringan"
+                                required
                             >
-                                Digunakan
-                            </option>
 
-                        </select>
+                            @error('nama_infrastruktur')
+
+                                <small class="jaringan-form-error">
+                                    {{ $message }}
+                                </small>
+
+                            @enderror
+
+                        </div>
+
+
+                        {{-- SPESIFIKASI --}}
+
+                        <div class="jaringan-form-group full">
+
+                            <label for="jaringan_spesifikasi">
+
+                                Spesifikasi
+
+                            </label>
+
+                            <textarea
+                                id="jaringan_spesifikasi"
+                                name="spesifikasi"
+                                placeholder="Masukkan spesifikasi jaringan"
+                            >{{ old('spesifikasi') }}</textarea>
+
+                            @error('spesifikasi')
+
+                                <small class="jaringan-form-error">
+                                    {{ $message }}
+                                </small>
+
+                            @enderror
+
+                        </div>
+
+
+                    </div>
+
+                </div>
+
+
+                {{-- =================================================
+                     PENGADAAN
+                ================================================== --}}
+
+                <div class="jaringan-form-card">
+
+
+                    <div class="jaringan-form-card-header">
+
+                        <i class="bi bi-receipt"></i>
+
+                        <h3>
+                            Pengadaan
+                        </h3>
 
                     </div>
 
 
-                    <div class="form-group">
+                    <div class="jaringan-form-grid">
 
-                        <label>
-                            Tanggal Pengadaan
-                            <span>*</span>
-                        </label>
 
-                        <div class="date-input">
+                        {{-- PENGADAAN --}}
 
-                            <i class="bi bi-calendar3"></i>
+                        <div class="jaringan-form-group">
+
+                            <label for="jaringan_pengadaan">
+
+                                Pengadaan
+
+                                <span>*</span>
+
+                            </label>
+
+                            <select
+                                id="jaringan_pengadaan"
+                                name="pengadaan"
+                                onchange="updateJaringanPengadaan()"
+                                required
+                            >
+
+                                <option value="">
+                                    Pilih pengadaan
+                                </option>
+
+                                <option
+                                    value="Beli"
+                                    {{ old('pengadaan') === 'Beli' ? 'selected' : '' }}
+                                >
+                                    Beli
+                                </option>
+
+                                <option
+                                    value="Sewa"
+                                    {{ old('pengadaan') === 'Sewa' ? 'selected' : '' }}
+                                >
+                                    Sewa
+                                </option>
+
+                            </select>
+
+                            @error('pengadaan')
+
+                                <small class="jaringan-form-error">
+                                    {{ $message }}
+                                </small>
+
+                            @enderror
+
+                        </div>
+
+
+                        {{-- HARGA --}}
+
+                        <div class="jaringan-form-group">
+
+                            <label for="jaringan_harga">
+
+                                Harga
+
+                                <span>*</span>
+
+                            </label>
+
+                            <div class="jaringan-price-input">
+
+                                <span class="jaringan-price-prefix">
+                                    Rp
+                                </span>
+
+                                <input
+                                    type="number"
+                                    id="jaringan_harga"
+                                    name="harga"
+                                    value="{{ old('harga') }}"
+                                    placeholder="0"
+                                    min="0"
+                                    step="0.01"
+                                    required
+                                >
+
+                            </div>
+
+                            @error('harga')
+
+                                <small class="jaringan-form-error">
+                                    {{ $message }}
+                                </small>
+
+                            @enderror
+
+                        </div>
+
+
+                        {{-- TANGGAL PENGADAAN --}}
+
+                        <div class="jaringan-form-group">
+
+                            <label for="jaringan_tanggal_pengadaan">
+
+                                Tanggal Pengadaan
+
+                                <span>*</span>
+
+                            </label>
 
                             <input
                                 type="date"
-                                id="tanggal_pengadaan"
+                                id="jaringan_tanggal_pengadaan"
                                 name="tanggal_pengadaan"
                                 value="{{ old('tanggal_pengadaan') }}"
+                                onchange="calculateJaringanEndDate()"
                                 required
                             >
 
+                            @error('tanggal_pengadaan')
+
+                                <small class="jaringan-form-error">
+                                    {{ $message }}
+                                </small>
+
+                            @enderror
+
                         </div>
 
-                    </div>
 
+                        {{-- TANGGAL BERAKHIR --}}
 
-                </div>
+                        <div class="jaringan-form-group">
 
+                            <label for="jaringan_tanggal_berakhir">
 
-                <div class="form-group">
+                                Tanggal Berakhir
 
-                    <label>
-                        Tanggal Berakhir
-                    </label>
-
-                    <div class="date-input">
-
-                        <i class="bi bi-calendar3"></i>
-
-                        <input
-                            type="date"
-                            id="tanggal_berakhir"
-                            name="tanggal_berakhir"
-                            value="{{ old('tanggal_berakhir') }}"
-                        >
-
-                    </div>
-
-                    <small
-                        id="tanggal-info"
-                        class="form-info"
-                    >
-                        Untuk pengadaan Beli, tanggal berakhir dapat dikosongkan.
-                    </small>
-
-                </div>
-
-
-                <div
-                    id="sewa-section"
-                    class="sewa-section"
-                >
-
-                    <div class="form-group">
-
-                        <label>
-                            Periode Sewa
-                        </label>
-
-                        <select id="periode_sewa">
-
-                            <option value="">
-                                Pilih Periode
-                            </option>
-
-                            <option value="1">
-                                1 Bulan
-                            </option>
-
-                            <option value="3">
-                                3 Bulan
-                            </option>
-
-                            <option value="6">
-                                6 Bulan
-                            </option>
-
-                            <option value="12">
-                                12 Bulan
-                            </option>
-
-                            <option value="custom">
-                                Lainnya
-                            </option>
-
-                        </select>
-
-                    </div>
-
-
-                    <div
-                        id="custom-period"
-                        class="custom-period"
-                    >
-
-                        <div class="form-group">
-
-                            <label>
-                                Jumlah
                             </label>
 
                             <input
-                                type="number"
-                                id="custom_jumlah"
-                                min="1"
-                                placeholder="Contoh: 2"
+                                type="date"
+                                id="jaringan_tanggal_berakhir"
+                                name="tanggal_berakhir"
+                                value="{{ old('tanggal_berakhir') }}"
                             >
+
+                            <small class="jaringan-form-info">
+
+                                <i class="bi bi-info-circle"></i>
+
+                                Untuk pembelian, tanggal berakhir dapat dikosongkan.
+
+                            </small>
+
+                            @error('tanggal_berakhir')
+
+                                <small class="jaringan-form-error">
+                                    {{ $message }}
+                                </small>
+
+                            @enderror
 
                         </div>
 
 
-                        <div class="form-group">
+                    </div>
 
-                            <label>
-                                Satuan
-                            </label>
 
-                            <select id="custom_satuan">
+                    {{-- =================================================
+                         SEWA
+                    ================================================== --}}
 
-                                <option value="months">
-                                    Bulan
-                                </option>
+                    <div
+                        id="jaringanSewaSection"
+                        class="{{ old('pengadaan') === 'Sewa' ? 'show' : '' }}"
+                    >
 
-                                <option value="years">
-                                    Tahun
-                                </option>
+                        <div class="jaringan-sewa-title">
 
-                            </select>
+                            Periode Sewa
+
+                        </div>
+
+
+                        <div class="jaringan-sewa-grid">
+
+
+                            {{-- PERIODE --}}
+
+                            <div class="jaringan-form-group">
+
+                                <label for="jaringan_periode_sewa">
+
+                                    Periode Pembayaran
+
+                                </label>
+
+                                <select
+                                    id="jaringan_periode_sewa"
+                                    name="periode_sewa"
+                                    onchange="updateJaringanCustomPeriod(); calculateJaringanEndDate();"
+                                >
+
+                                    <option value="">
+                                        Pilih periode
+                                    </option>
+
+                                    <option
+                                        value="Monthly"
+                                        {{ old('periode_sewa') === 'Monthly' ? 'selected' : '' }}
+                                    >
+                                        Monthly
+                                    </option>
+
+                                    <option
+                                        value="3 Months"
+                                        {{ old('periode_sewa') === '3 Months' ? 'selected' : '' }}
+                                    >
+                                        3 Months
+                                    </option>
+
+                                    <option
+                                        value="6 Months"
+                                        {{ old('periode_sewa') === '6 Months' ? 'selected' : '' }}
+                                    >
+                                        6 Months
+                                    </option>
+
+                                    <option
+                                        value="Yearly"
+                                        {{ old('periode_sewa') === 'Yearly' ? 'selected' : '' }}
+                                    >
+                                        Yearly
+                                    </option>
+
+                                    <option
+                                        value="Custom"
+                                        {{ old('periode_sewa') === 'Custom' ? 'selected' : '' }}
+                                    >
+                                        Custom
+                                    </option>
+
+                                </select>
+
+                            </div>
+
+
+                            {{-- KETERANGAN --}}
+
+                            <div class="jaringan-form-group">
+
+                                <label>
+                                    Keterangan
+                                </label>
+
+                                <div
+                                    class="jaringan-form-info"
+                                    style="margin-top:10px;"
+                                >
+
+                                    <i class="bi bi-info-circle"></i>
+
+                                    Pilih periode sesuai dengan kontrak atau pembayaran jaringan.
+
+                                </div>
+
+                            </div>
+
+
+                        </div>
+
+
+                        {{-- CUSTOM --}}
+
+                        <div
+                            id="jaringanCustomPeriod"
+                            class="{{ old('periode_sewa') === 'Custom' ? 'show' : '' }}"
+                        >
+
+
+                            <div class="jaringan-form-group">
+
+                                <label for="jaringan_durasi_sewa">
+
+                                    Durasi
+
+                                </label>
+
+                                <input
+                                    type="number"
+                                    id="jaringan_durasi_sewa"
+                                    name="durasi_sewa"
+                                    value="{{ old('durasi_sewa') }}"
+                                    min="1"
+                                    placeholder="Contoh: 18"
+                                    onchange="calculateJaringanEndDate()"
+                                >
+
+                            </div>
+
+
+                            <div class="jaringan-form-group">
+
+                                <label for="jaringan_satuan_sewa">
+
+                                    Satuan
+
+                                </label>
+
+                                <select
+                                    id="jaringan_satuan_sewa"
+                                    name="satuan_sewa"
+                                    onchange="calculateJaringanEndDate()"
+                                >
+
+                                    <option value="Months">
+                                        Bulan
+                                    </option>
+
+                                    <option
+                                        value="Years"
+                                        {{ old('satuan_sewa') === 'Years' ? 'selected' : '' }}
+                                    >
+                                        Tahun
+                                    </option>
+
+                                </select>
+
+                            </div>
+
 
                         </div>
 
@@ -2241,30 +2706,41 @@
 
                 </div>
 
-
-                <div class="form-actions">
-
-                    <button
-                        type="button"
-                        class="cancel-btn"
-                        onclick="closeAddModal()"
-                    >
-                        Batal
-                    </button>
-
-                    <button
-                        type="submit"
-                        class="save-btn"
-                    >
-                        Simpan
-                    </button>
-
-                </div>
+            </div>
 
 
-            </form>
+            {{-- =================================================
+                 FOOTER
+            ================================================== --}}
 
-        </div>
+            <div class="jaringan-modal-footer">
+
+                <button
+                    type="button"
+                    class="jaringan-btn-batal"
+                    onclick="closeJaringanModal()"
+                >
+
+                    Batal
+
+                </button>
+
+
+                <button
+                    type="submit"
+                    class="jaringan-btn-simpan"
+                    id="jaringanSaveButton"
+                >
+
+                    <i class="bi bi-check-lg"></i>
+
+                    Simpan Jaringan
+
+                </button>
+
+            </div>
+
+        </form>
 
     </div>
 
@@ -2272,541 +2748,558 @@
 
 
 {{-- =========================================================
-     MODAL EDIT
+     JAVASCRIPT
 ========================================================= --}}
 
-<div
-    class="modal"
-    id="editModal"
->
-
-    <div class="modal-content">
-
-        <div class="modal-header">
-
-            <div class="modal-title-wrapper">
-
-                <h2>
-                    Edit Data Infrastruktur
-                </h2>
-
-                <p class="modal-subtitle">
-                    Ubah detail aset infrastruktur yang sudah tersimpan.
-                </p>
-
-            </div>
-
-            <button
-                type="button"
-                class="close"
-                onclick="closeEditModal()"
-            >
-
-                &times;
-
-            </button>
-
-        </div>
-
-
-        <div class="modal-body">
-
-            <form
-                id="editForm"
-                method="POST"
-            >
-
-                @csrf
-
-                @method('PUT')
-
-
-                <div class="form-group">
-
-                    <label>
-                        ID Jaringan
-                    </label>
-
-                    <input
-                        type="text"
-                        id="editId"
-                        readonly
-                    >
-
-                </div>
-
-
-                <div class="form-group">
-
-                    <label>
-                        Nama Infrastruktur
-                        <span>*</span>
-                    </label>
-
-                    <input
-                        type="text"
-                        name="nama_infrastruktur"
-                        id="editNama"
-                        required
-                    >
-
-                </div>
-
-
-                <div class="form-group">
-
-                    <label>
-                        Spesifikasi
-                    </label>
-
-                    <textarea
-                        name="spesifikasi"
-                        id="editSpesifikasi"
-                    ></textarea>
-
-                    <small class="form-info">
-                        Spesifikasi dapat dikosongkan jika tidak tersedia.
-                    </small>
-
-                </div>
-
-
-                <div class="form-group">
-
-                    <label>
-                        Pengadaan
-                        <span>*</span>
-                    </label>
-
-                    <select
-                        name="pengadaan"
-                        id="editPengadaan"
-                        required
-                    >
-
-                        <option value="Sewa">
-                            Sewa
-                        </option>
-
-                        <option value="Beli">
-                            Beli
-                        </option>
-
-                    </select>
-
-                </div>
-
-
-                <div class="form-row">
-
-
-                    <div class="form-group">
-
-                        <label>
-                            Harga
-                            <span>*</span>
-                        </label>
-
-                        <input
-                            type="number"
-                            name="harga"
-                            id="editHarga"
-                            min="0"
-                            required
-                        >
-
-                    </div>
-
-
-                    <div class="form-group">
-
-                        <label>
-                            Status
-                            <span>*</span>
-                        </label>
-
-                        <select
-                            name="status"
-                            id="editStatus"
-                            required
-                        >
-
-                            <option value="Tersedia">
-                                Tersedia
-                            </option>
-
-                            <option value="Digunakan">
-                                Digunakan
-                            </option>
-
-                        </select>
-
-                    </div>
-
-
-                    <div class="form-group">
-
-                        <label>
-                            Tanggal Pengadaan
-                            <span>*</span>
-                        </label>
-
-                        <div class="date-input">
-
-                            <i class="bi bi-calendar3"></i>
-
-                            <input
-                                type="date"
-                                name="tanggal_pengadaan"
-                                id="editTanggalPengadaan"
-                                required
-                            >
-
-                        </div>
-
-                    </div>
-
-
-                </div>
-
-
-                <div class="form-group">
-
-                    <label>
-                        Tanggal Berakhir
-                    </label>
-
-                    <div class="date-input">
-
-                        <i class="bi bi-calendar3"></i>
-
-                        <input
-                            type="date"
-                            name="tanggal_berakhir"
-                            id="editTanggalBerakhir"
-                        >
-
-                    </div>
-
-                    <small
-                        id="editTanggalInfo"
-                        class="form-info"
-                    >
-                        Untuk pengadaan Beli, tanggal berakhir dapat dikosongkan.
-                    </small>
-
-                </div>
-
-
-                <div
-                    id="editSewaSection"
-                    class="sewa-section"
-                >
-
-                    <div class="form-group">
-
-                        <label>
-                            Periode Sewa
-                        </label>
-
-                        <select id="editPeriodeSewa">
-
-                            <option value="">
-                                Tidak mengubah periode
-                            </option>
-
-                            <option value="1">
-                                1 Bulan
-                            </option>
-
-                            <option value="3">
-                                3 Bulan
-                            </option>
-
-                            <option value="6">
-                                6 Bulan
-                            </option>
-
-                            <option value="12">
-                                12 Bulan
-                            </option>
-
-                            <option value="custom">
-                                Lainnya
-                            </option>
-
-                        </select>
-
-                    </div>
-
-
-                    <div
-                        id="editCustomPeriod"
-                        class="custom-period"
-                    >
-
-                        <div class="form-group">
-
-                            <label>
-                                Jumlah
-                            </label>
-
-                            <input
-                                type="number"
-                                id="editCustomJumlah"
-                                min="1"
-                                placeholder="Contoh: 2"
-                            >
-
-                        </div>
-
-
-                        <div class="form-group">
-
-                            <label>
-                                Satuan
-                            </label>
-
-                            <select id="editCustomSatuan">
-
-                                <option value="months">
-                                    Bulan
-                                </option>
-
-                                <option value="years">
-                                    Tahun
-                                </option>
-
-                            </select>
-
-                        </div>
-
-                    </div>
-
-                </div>
-
-
-                <div class="form-actions">
-
-                    <button
-                        type="button"
-                        class="cancel-btn"
-                        onclick="closeEditModal()"
-                    >
-                        Batal
-                    </button>
-
-                    <button
-                        type="submit"
-                        class="save-btn"
-                    >
-                        Update
-                    </button>
-
-                </div>
-
-
-            </form>
-
-        </div>
-
-    </div>
-
-</div>
-
+@push('scripts')
 
 <script>
 
+document.addEventListener('DOMContentLoaded', function () {
+
+
+    /* =====================================================
+       SEARCH
+    ===================================================== */
+
+    const searchInput =
+        document.getElementById('jaringanSearch');
+
+    const statusFilter =
+        document.getElementById('jaringanStatusFilter');
+
+    const verifikasiFilter =
+        document.getElementById('jaringanVerifikasiFilter');
+
+    const tableBody =
+        document.getElementById('jaringanTableBody');
+
+
+    function filterJaringanTable() {
+
+        if (!tableBody) {
+            return;
+        }
+
+
+        const rows =
+            tableBody.querySelectorAll(
+                'tr[data-search]'
+            );
+
+
+        const searchValue =
+            (searchInput?.value || '')
+                .toLowerCase()
+                .trim();
+
+
+        const statusValue =
+            (statusFilter?.value || '')
+                .toLowerCase()
+                .trim();
+
+
+        const verifikasiValue =
+            (verifikasiFilter?.value || '')
+                .toLowerCase()
+                .trim();
+
+
+        rows.forEach(function (row) {
+
+            const rowSearch =
+                row.dataset.search || '';
+
+
+            const rowStatus =
+                row.dataset.status || '';
+
+
+            const rowVerifikasi =
+                row.dataset.verifikasi || '';
+
+
+            const matchSearch =
+                !searchValue ||
+                rowSearch.includes(
+                    searchValue
+                );
+
+
+            const matchStatus =
+                !statusValue ||
+                rowStatus === statusValue;
+
+
+            const matchVerifikasi =
+                !verifikasiValue ||
+                rowVerifikasi === verifikasiValue;
+
+
+            row.style.display =
+                matchSearch &&
+                matchStatus &&
+                matchVerifikasi
+                    ? ''
+                    : 'none';
+
+        });
+
+    }
+
+
+    if (searchInput) {
+
+        searchInput.addEventListener(
+            'input',
+            filterJaringanTable
+        );
+
+    }
+
+
+    if (statusFilter) {
+
+        statusFilter.addEventListener(
+            'change',
+            filterJaringanTable
+        );
+
+    }
+
+
+    if (verifikasiFilter) {
+
+        verifikasiFilter.addEventListener(
+            'change',
+            filterJaringanTable
+        );
+
+    }
+
+
+    /* =====================================================
+       MODAL OVERLAY
+    ===================================================== */
+
+    const modal =
+        document.getElementById(
+            'jaringanModal'
+        );
+
+
+    if (modal) {
+
+        modal.addEventListener(
+            'click',
+            function (event) {
+
+                if (event.target === modal) {
+
+                    closeJaringanModal();
+
+                }
+
+            }
+        );
+
+    }
+
+
+    /* =====================================================
+       ESCAPE
+    ===================================================== */
+
+    document.addEventListener(
+        'keydown',
+        function (event) {
+
+            if (
+                event.key === 'Escape' &&
+                modal?.classList.contains('show')
+            ) {
+
+                closeJaringanModal();
+
+            }
+
+        }
+    );
+
+
+    /* =====================================================
+       INITIAL PENGADAAN
+    ===================================================== */
+
+    updateJaringanPengadaan();
+
+
+    /* =====================================================
+       VALIDATION ERROR
+    ===================================================== */
+
+    @if($errors->any())
+
+        openAddJaringanModal();
+
+    @endif
+
+});
+
+
 /* =========================================================
-   FILTER
-   FILTER MUNCUL DI BAWAH SEARCH SAAT DIKLIK
+   OPEN ADD MODAL
 ========================================================= */
 
-function toggleFilter()
+function openAddJaringanModal()
 {
-    const panel =
-        document.getElementById('filterPanel');
 
-    const button =
-        document.getElementById('filterButton');
+    const modal =
+        document.getElementById(
+            'jaringanModal'
+        );
 
-    const arrow =
-        document.getElementById('filterArrow');
 
-    if (!panel || !button || !arrow)
-    {
+    const form =
+        document.getElementById(
+            'jaringanForm'
+        );
+
+
+    if (!modal || !form) {
         return;
     }
 
 
-    if (panel.classList.contains('show'))
-    {
-        panel.classList.remove('show');
+    form.action =
+        "{{ route('jaringan.store') }}";
 
-        button.classList.remove('active');
 
-        arrow.classList.remove('bi-chevron-up');
+    document.getElementById(
+        'jaringanMethod'
+    ).value = 'POST';
 
-        arrow.classList.add('bi-chevron-down');
+
+    document.getElementById(
+        'jaringanModalTitle'
+    ).textContent =
+        'Tambah Jaringan';
+
+
+    document.getElementById(
+        'jaringanModalDescription'
+    ).textContent =
+        'Masukan detail infrastruktur jaringan baru ke dalam sistem.';
+
+
+    document.getElementById(
+        'jaringanSaveButton'
+    ).innerHTML =
+        '<i class="bi bi-check-lg"></i> Simpan Jaringan';
+
+
+    /*
+     * Jangan reset ketika validation error
+     */
+
+    @if(!$errors->any())
+
+        form.reset();
+
+
+        document.getElementById(
+            'jaringan_id'
+        ).value = '';
+
+
+        document.getElementById(
+            'jaringanSewaSection'
+        ).classList.remove('show');
+
+
+        document.getElementById(
+            'jaringanCustomPeriod'
+        ).classList.remove('show');
+
+    @endif
+
+
+    modal.classList.add('show');
+
+
+    modal.setAttribute(
+        'aria-hidden',
+        'false'
+    );
+
+
+    document.body.classList.add(
+        'jaringan-modal-open'
+    );
+
+}
+
+
+/* =========================================================
+   OPEN EDIT MODAL
+========================================================= */
+
+function openEditJaringanModal(id)
+{
+
+    const jaringans =
+        @json($jaringans->values());
+
+
+    const jaringan =
+        jaringans.find(
+            function (item) {
+
+                return String(item.id) === String(id);
+
+            }
+        );
+
+
+    if (!jaringan) {
+
+        alert(
+            'Data jaringan tidak ditemukan.'
+        );
+
+        return;
+
     }
-    else
-    {
-        panel.classList.add('show');
-
-        button.classList.add('active');
-
-        arrow.classList.remove('bi-chevron-down');
-
-        arrow.classList.add('bi-chevron-up');
-    }
-}
 
 
-/* =========================================================
-   ADD MODAL
-========================================================= */
-
-function openAddModal()
-{
-    document.getElementById('addModal').style.display = 'flex';
-}
-
-function closeAddModal()
-{
-    document.getElementById('addModal').style.display = 'none';
-}
+    const modal =
+        document.getElementById(
+            'jaringanModal'
+        );
 
 
-/* =========================================================
-   ADD ELEMENT
-========================================================= */
-
-const pengadaan =
-    document.getElementById('pengadaan');
-
-const tanggalPengadaan =
-    document.getElementById('tanggal_pengadaan');
-
-const tanggalBerakhir =
-    document.getElementById('tanggal_berakhir');
-
-const sewaSection =
-    document.getElementById('sewa-section');
-
-const periodeSewa =
-    document.getElementById('periode_sewa');
-
-const customPeriod =
-    document.getElementById('custom-period');
-
-const customJumlah =
-    document.getElementById('custom_jumlah');
-
-const customSatuan =
-    document.getElementById('custom_satuan');
-
-const tanggalInfo =
-    document.getElementById('tanggal-info');
+    const form =
+        document.getElementById(
+            'jaringanForm'
+        );
 
 
-/* =========================================================
-   HITUNG TANGGAL SEWA
-========================================================= */
-
-function calculateEndDate()
-{
-    if (!pengadaan || pengadaan.value !== 'Sewa')
-    {
+    if (!modal || !form) {
         return;
     }
 
-    if (!tanggalPengadaan.value)
-    {
-        tanggalBerakhir.value = '';
-        return;
+
+    form.action =
+        "{{ url('/infrastruktur/jaringan') }}/" +
+        encodeURIComponent(id);
+
+
+    document.getElementById(
+        'jaringanMethod'
+    ).value = 'PUT';
+
+
+    document.getElementById(
+        'jaringanModalTitle'
+    ).textContent =
+        'Edit Jaringan';
+
+
+    document.getElementById(
+        'jaringanModalDescription'
+    ).textContent =
+        'Perbarui data infrastruktur jaringan yang dipilih.';
+
+
+    document.getElementById(
+        'jaringanSaveButton'
+    ).innerHTML =
+        '<i class="bi bi-check-lg"></i> Simpan Perubahan';
+
+
+    /*
+     * Isi form
+     */
+
+    document.getElementById(
+        'jaringan_id'
+    ).value =
+        jaringan.id ?? '';
+
+
+    document.getElementById(
+        'jaringan_nama_infrastruktur'
+    ).value =
+        jaringan.nama_infrastruktur ?? '';
+
+
+    document.getElementById(
+        'jaringan_spesifikasi'
+    ).value =
+        jaringan.spesifikasi ?? '';
+
+
+    document.getElementById(
+        'jaringan_pengadaan'
+    ).value =
+        jaringan.pengadaan ?? '';
+
+
+    document.getElementById(
+        'jaringan_harga'
+    ).value =
+        jaringan.harga ?? '';
+
+
+    document.getElementById(
+        'jaringan_tanggal_pengadaan'
+    ).value =
+        formatDateForInput(
+            jaringan.tanggal_pengadaan
+        );
+
+
+    document.getElementById(
+        'jaringan_tanggal_berakhir'
+    ).value =
+        formatDateForInput(
+            jaringan.tanggal_berakhir
+        );
+
+
+    document.getElementById(
+        'jaringan_periode_sewa'
+    ).value =
+        jaringan.periode_sewa ?? '';
+
+
+    document.getElementById(
+        'jaringan_durasi_sewa'
+    ).value =
+        jaringan.durasi_sewa ?? '';
+
+
+    document.getElementById(
+        'jaringan_satuan_sewa'
+    ).value =
+        jaringan.satuan_sewa ?? 'Months';
+
+
+    updateJaringanPengadaan();
+
+    updateJaringanCustomPeriod();
+
+
+    modal.classList.add('show');
+
+
+    modal.setAttribute(
+        'aria-hidden',
+        'false'
+    );
+
+
+    document.body.classList.add(
+        'jaringan-modal-open'
+    );
+
+}
+
+
+/* =========================================================
+   FORMAT DATE
+========================================================= */
+
+function formatDateForInput(value)
+{
+
+    if (!value) {
+        return '';
     }
 
-    let jumlah = 0;
-    let satuan = 'months';
+
+    /*
+     * Kalau sudah YYYY-MM-DD
+     */
 
     if (
-        periodeSewa.value &&
-        periodeSewa.value !== 'custom'
-    )
-    {
-        jumlah =
-            parseInt(periodeSewa.value);
+        typeof value === 'string' &&
+        /^\d{4}-\d{2}-\d{2}$/.test(value)
+    ) {
+
+        return value;
+
     }
 
-    if (periodeSewa.value === 'custom')
-    {
-        jumlah =
-            parseInt(customJumlah.value) || 0;
-
-        satuan =
-            customSatuan.value;
-    }
-
-    if (jumlah <= 0)
-    {
-        tanggalBerakhir.value = '';
-        return;
-    }
 
     const date =
-        new Date(
-            tanggalPengadaan.value + 'T00:00:00'
-        );
+        new Date(value);
 
-    if (satuan === 'years')
-    {
-        date.setFullYear(
-            date.getFullYear() + jumlah
-        );
+
+    if (isNaN(date.getTime())) {
+        return '';
     }
-    else
-    {
-        date.setMonth(
-            date.getMonth() + jumlah
-        );
-    }
+
 
     const year =
         date.getFullYear();
+
 
     const month =
         String(
             date.getMonth() + 1
         ).padStart(2, '0');
 
+
     const day =
         String(
             date.getDate()
         ).padStart(2, '0');
 
-    tanggalBerakhir.value =
-        `${year}-${month}-${day}`;
+
+    return (
+        year +
+        '-' +
+        month +
+        '-' +
+        day
+    );
+
 }
 
 
 /* =========================================================
-   CUSTOM PERIOD
+   CLOSE MODAL
 ========================================================= */
 
-function updateCustomPeriod()
+function closeJaringanModal()
 {
-    if (
-        periodeSewa.value === 'custom'
-    )
-    {
-        customPeriod.classList.add('show');
-    }
-    else
-    {
-        customPeriod.classList.remove('show');
+
+    const modal =
+        document.getElementById(
+            'jaringanModal'
+        );
+
+
+    if (!modal) {
+        return;
     }
 
-    calculateEndDate();
+
+    modal.classList.remove('show');
+
+
+    modal.setAttribute(
+        'aria-hidden',
+        'true'
+    );
+
+
+    document.body.classList.remove(
+        'jaringan-modal-open'
+    );
+
 }
 
 
@@ -2814,520 +3307,321 @@ function updateCustomPeriod()
    PENGADAAN
 ========================================================= */
 
-function updatePengadaan()
+function updateJaringanPengadaan()
 {
-    if (pengadaan.value === 'Sewa')
-    {
-        sewaSection.classList.add('show');
 
-        tanggalBerakhir.readOnly = true;
+    const pengadaan =
+        document.getElementById(
+            'jaringan_pengadaan'
+        )?.value;
 
-        tanggalBerakhir.classList.add('date-readonly');
 
-        tanggalInfo.textContent =
-            'Tanggal berakhir dihitung otomatis berdasarkan periode sewa.';
+    const sewaSection =
+        document.getElementById(
+            'jaringanSewaSection'
+        );
 
-        calculateEndDate();
+
+    const tanggalBerakhir =
+        document.getElementById(
+            'jaringan_tanggal_berakhir'
+        );
+
+
+    if (!sewaSection) {
+        return;
     }
-    else
-    {
-        sewaSection.classList.remove('show');
 
-        customPeriod.classList.remove('show');
 
-        periodeSewa.value = '';
+    if (
+        String(pengadaan).toLowerCase()
+        === 'sewa'
+    ) {
 
-        customJumlah.value = '';
+        sewaSection.classList.add(
+            'show'
+        );
 
-        tanggalBerakhir.value = '';
 
-        tanggalBerakhir.readOnly = false;
+        if (tanggalBerakhir) {
 
-        tanggalBerakhir.classList.remove('date-readonly');
+            tanggalBerakhir.readOnly =
+                true;
 
-        tanggalInfo.textContent =
-            'Untuk pengadaan Beli, tanggal berakhir dapat dikosongkan.';
+            tanggalBerakhir.style.background =
+                '#f8fafc';
+
+        }
+
+
+        calculateJaringanEndDate();
+
+    } else {
+
+        sewaSection.classList.remove(
+            'show'
+        );
+
+
+        if (tanggalBerakhir) {
+
+            tanggalBerakhir.readOnly =
+                false;
+
+            tanggalBerakhir.style.background =
+                'white';
+
+        }
+
     }
-}
 
-
-if (pengadaan)
-{
-    pengadaan.addEventListener(
-        'change',
-        updatePengadaan
-    );
-}
-
-if (periodeSewa)
-{
-    periodeSewa.addEventListener(
-        'change',
-        updateCustomPeriod
-    );
-}
-
-if (customJumlah)
-{
-    customJumlah.addEventListener(
-        'input',
-        calculateEndDate
-    );
-}
-
-if (customSatuan)
-{
-    customSatuan.addEventListener(
-        'change',
-        calculateEndDate
-    );
-}
-
-if (tanggalPengadaan)
-{
-    tanggalPengadaan.addEventListener(
-        'change',
-        calculateEndDate
-    );
 }
 
 
 /* =========================================================
-   EDIT MODAL
+   CUSTOM PERIOD
 ========================================================= */
 
-function openEditModal(
-    id,
-    nama,
-    spesifikasi,
-    pengadaanValue,
-    tanggalPengadaanValue,
-    tanggalBerakhirValue,
-    harga,
-    status
-)
+function updateJaringanCustomPeriod()
 {
-    document.getElementById('editModal').style.display = 'flex';
 
-    document.getElementById('editId').value =
-        id;
-
-    document.getElementById('editNama').value =
-        nama;
-
-    document.getElementById('editSpesifikasi').value =
-        spesifikasi ?? '';
-
-    document.getElementById('editPengadaan').value =
-        pengadaanValue;
-
-    document.getElementById('editTanggalPengadaan').value =
-        tanggalPengadaanValue;
-
-    document.getElementById('editTanggalBerakhir').value =
-        tanggalBerakhirValue;
-
-    document.getElementById('editHarga').value =
-        harga;
-
-    document.getElementById('editStatus').value =
-        status;
+    const periode =
+        document.getElementById(
+            'jaringan_periode_sewa'
+        )?.value;
 
 
-    document.getElementById('editForm').action =
-        "{{ url('/infrastruktur/jaringan') }}/" + id;
+    const custom =
+        document.getElementById(
+            'jaringanCustomPeriod'
+        );
 
 
-    document.getElementById('editPeriodeSewa').value = '';
+    if (!custom) {
+        return;
+    }
 
-    document.getElementById('editCustomPeriod')
-        .classList.remove('show');
 
-    document.getElementById('editCustomJumlah').value = '';
+    if (periode === 'Custom') {
 
-    updateEditPengadaan();
+        custom.classList.add(
+            'show'
+        );
+
+    } else {
+
+        custom.classList.remove(
+            'show'
+        );
+
+    }
+
 }
 
 
 /* =========================================================
-   EDIT ELEMENT
+   CALCULATE END DATE
 ========================================================= */
 
-const editPengadaan =
-    document.getElementById('editPengadaan');
-
-const editTanggalPengadaan =
-    document.getElementById('editTanggalPengadaan');
-
-const editTanggalBerakhir =
-    document.getElementById('editTanggalBerakhir');
-
-const editSewaSection =
-    document.getElementById('editSewaSection');
-
-const editPeriodeSewa =
-    document.getElementById('editPeriodeSewa');
-
-const editCustomPeriod =
-    document.getElementById('editCustomPeriod');
-
-const editCustomJumlah =
-    document.getElementById('editCustomJumlah');
-
-const editCustomSatuan =
-    document.getElementById('editCustomSatuan');
-
-const editTanggalInfo =
-    document.getElementById('editTanggalInfo');
-
-
-/* =========================================================
-   HITUNG TANGGAL EDIT
-========================================================= */
-
-function calculateEditEndDate()
+function calculateJaringanEndDate()
 {
-    if (
-        editPengadaan.value !== 'Sewa'
-    )
-    {
-        return;
-    }
 
-    if (!editTanggalPengadaan.value)
-    {
-        editTanggalBerakhir.value = '';
-        return;
-    }
+    const pengadaan =
+        document.getElementById(
+            'jaringan_pengadaan'
+        )?.value;
 
-    let jumlah = 0;
-    let satuan = 'months';
 
     if (
-        editPeriodeSewa.value &&
-        editPeriodeSewa.value !== 'custom'
-    )
-    {
-        jumlah =
-            parseInt(editPeriodeSewa.value);
+        String(pengadaan).toLowerCase()
+        !== 'sewa'
+    ) {
+
+        return;
+
     }
+
+
+    const tanggalMulai =
+        document.getElementById(
+            'jaringan_tanggal_pengadaan'
+        )?.value;
+
+
+    const periode =
+        document.getElementById(
+            'jaringan_periode_sewa'
+        )?.value;
+
+
+    const tanggalBerakhir =
+        document.getElementById(
+            'jaringan_tanggal_berakhir'
+        );
+
 
     if (
-        editPeriodeSewa.value === 'custom'
-    )
-    {
-        jumlah =
-            parseInt(editCustomJumlah.value) || 0;
+        !tanggalMulai ||
+        !periode ||
+        !tanggalBerakhir
+    ) {
 
-        satuan =
-            editCustomSatuan.value;
-    }
-
-    if (jumlah <= 0)
-    {
         return;
+
     }
+
 
     const date =
         new Date(
-            editTanggalPengadaan.value + 'T00:00:00'
+            tanggalMulai + 'T00:00:00'
         );
 
-    if (satuan === 'years')
-    {
-        date.setFullYear(
-            date.getFullYear() + jumlah
-        );
+
+    if (isNaN(date.getTime())) {
+        return;
     }
-    else
-    {
-        date.setMonth(
-            date.getMonth() + jumlah
-        );
+
+
+    switch (periode) {
+
+
+        case 'Monthly':
+
+            date.setMonth(
+                date.getMonth() + 1
+            );
+
+            break;
+
+
+        case '3 Months':
+
+            date.setMonth(
+                date.getMonth() + 3
+            );
+
+            break;
+
+
+        case '6 Months':
+
+            date.setMonth(
+                date.getMonth() + 6
+            );
+
+            break;
+
+
+        case 'Yearly':
+
+            date.setFullYear(
+                date.getFullYear() + 1
+            );
+
+            break;
+
+
+        case 'Custom':
+
+            const duration =
+                parseInt(
+                    document.getElementById(
+                        'jaringan_durasi_sewa'
+                    )?.value || 0
+                );
+
+
+            const unit =
+                document.getElementById(
+                    'jaringan_satuan_sewa'
+                )?.value;
+
+
+            if (
+                !duration ||
+                duration < 1
+            ) {
+
+                return;
+
+            }
+
+
+            if (unit === 'Years') {
+
+                date.setFullYear(
+                    date.getFullYear() +
+                    duration
+                );
+
+            } else {
+
+                date.setMonth(
+                    date.getMonth() +
+                    duration
+                );
+
+            }
+
+            break;
+
+
+        default:
+
+            return;
+
     }
+
+
+    /*
+     * Format YYYY-MM-DD
+     */
 
     const year =
         date.getFullYear();
+
 
     const month =
         String(
             date.getMonth() + 1
         ).padStart(2, '0');
 
+
     const day =
         String(
             date.getDate()
         ).padStart(2, '0');
 
-    editTanggalBerakhir.value =
-        `${year}-${month}-${day}`;
+
+    tanggalBerakhir.value =
+        year +
+        '-' +
+        month +
+        '-' +
+        day;
+
 }
 
 
 /* =========================================================
-   CUSTOM EDIT
+   AUTO OPEN AFTER VALIDATION ERROR
 ========================================================= */
 
-function updateEditCustomPeriod()
-{
-    if (
-        editPeriodeSewa.value === 'custom'
-    )
-    {
-        editCustomPeriod.classList.add('show');
-    }
-    else
-    {
-        editCustomPeriod.classList.remove('show');
-    }
-
-    calculateEditEndDate();
-}
-
-
-/* =========================================================
-   UPDATE EDIT PENGADAAN
-========================================================= */
-
-function updateEditPengadaan()
-{
-    if (
-        editPengadaan.value === 'Sewa'
-    )
-    {
-        editSewaSection.classList.add('show');
-
-        editTanggalBerakhir.readOnly = true;
-
-        editTanggalBerakhir.classList.add(
-            'date-readonly'
-        );
-
-        editTanggalInfo.textContent =
-            'Tanggal berakhir dihitung otomatis berdasarkan periode sewa. Pilih periode jika ingin mengubahnya.';
-    }
-    else
-    {
-        editSewaSection.classList.remove('show');
-
-        editCustomPeriod.classList.remove('show');
-
-        editPeriodeSewa.value = '';
-
-        editCustomJumlah.value = '';
-
-        editTanggalBerakhir.value = '';
-
-        editTanggalBerakhir.readOnly = false;
-
-        editTanggalBerakhir.classList.remove(
-            'date-readonly'
-        );
-
-        editTanggalInfo.textContent =
-            'Untuk pengadaan Beli, tanggal berakhir dapat dikosongkan.';
-    }
-}
-
-
-if (editPengadaan)
-{
-    editPengadaan.addEventListener(
-        'change',
-        updateEditPengadaan
-    );
-}
-
-if (editPeriodeSewa)
-{
-    editPeriodeSewa.addEventListener(
-        'change',
-        updateEditCustomPeriod
-    );
-}
-
-if (editCustomJumlah)
-{
-    editCustomJumlah.addEventListener(
-        'input',
-        calculateEditEndDate
-    );
-}
-
-if (editCustomSatuan)
-{
-    editCustomSatuan.addEventListener(
-        'change',
-        calculateEditEndDate
-    );
-}
-
-if (editTanggalPengadaan)
-{
-    editTanggalPengadaan.addEventListener(
-        'change',
-        function()
-        {
-            if (
-                editPeriodeSewa &&
-                editPeriodeSewa.value
-            )
-            {
-                calculateEditEndDate();
-            }
-        }
-    );
-}
-
-
-/* =========================================================
-   CLOSE EDIT
-========================================================= */
-
-function closeEditModal()
-{
-    document.getElementById('editModal').style.display = 'none';
-}
-
-
-/* =========================================================
-   CLOSE MODAL KLIK LUAR
-========================================================= */
-
-window.addEventListener('click', function(event)
-{
-    const addModal =
-        document.getElementById('addModal');
-
-    const editModal =
-        document.getElementById('editModal');
-
-    if (event.target === addModal)
-    {
-        closeAddModal();
-    }
-
-    if (event.target === editModal)
-    {
-        closeEditModal();
-    }
-});
-
-
-/* =========================================================
-   SEARCH
-========================================================= */
-
-const searchInput =
-    document.getElementById('searchInput');
-
-if (searchInput)
-{
-    searchInput.addEventListener(
-        'keyup',
-        function()
-        {
-            const keyword =
-                this.value.toLowerCase();
-
-            const rows =
-                document.querySelectorAll(
-                    '#jaringanTable tr'
-                );
-
-            rows.forEach(function(row)
-            {
-                const text =
-                    row.innerText.toLowerCase();
-
-                if (text.includes(keyword))
-                {
-                    row.style.display = '';
-                }
-                else
-                {
-                    row.style.display = 'none';
-                }
-            });
-        }
-    );
-}
-
-
-/* =========================================================
-   BUKA MODAL JIKA ERROR
-========================================================= */
-
-@if ($errors->any())
+@if($errors->any())
 
     document.addEventListener(
         'DOMContentLoaded',
-        function()
-        {
-            openAddModal();
+        function () {
 
-            if (pengadaan)
-            {
-                updatePengadaan();
-            }
+            openAddJaringanModal();
+
         }
     );
 
 @endif
 
-
-/* =========================================================
-   INITIAL STATE
-========================================================= */
-
-document.addEventListener(
-    'DOMContentLoaded',
-    function()
-    {
-        if (pengadaan)
-        {
-            updatePengadaan();
-        }
-
-        /*
-        |------------------------------------------------------
-        | Jika ada filter aktif dari URL,
-        | filter panel otomatis dibuka.
-        |------------------------------------------------------
-        */
-
-        const hasActiveFilter =
-            {{ request()->hasAny(['status', 'pengadaan', 'verifikasi', 'tahun']) ? 'true' : 'false' }};
-
-        if (hasActiveFilter)
-        {
-            const panel =
-                document.getElementById('filterPanel');
-
-            const button =
-                document.getElementById('filterButton');
-
-            const arrow =
-                document.getElementById('filterArrow');
-
-            if (panel && button && arrow)
-            {
-                panel.classList.add('show');
-
-                button.classList.add('active');
-
-                arrow.classList.remove(
-                    'bi-chevron-down'
-                );
-
-                arrow.classList.add(
-                    'bi-chevron-up'
-                );
-            }
-        }
-    }
-);
-
 </script>
+
+@endpush
 
 @endsection

@@ -3,65 +3,49 @@
 namespace App\Http\Controllers;
 
 use App\Models\Jaringan;
+use App\Models\VerificationRequest;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\DB;
 use Carbon\Carbon;
 
 class JaringanController extends Controller
 {
-    /*
-    |--------------------------------------------------------------------------
-    | HITUNG STATUS OTOMATIS
-    |--------------------------------------------------------------------------
-    */
-
+    /**
+     * Menentukan status jaringan secara otomatis.
+     *
+     * Beli:
+     * - Tersedia
+     *
+     * Sewa:
+     * - Digunakan
+     * - Akan Habis (30 hari sebelum berakhir)
+     * - Expired
+     */
     private function getStatusOtomatis($jaringan)
     {
-        /*
-        |--------------------------------------------------------------------------
-        | JIKA BELI
-        |--------------------------------------------------------------------------
-        */
-
+        // Jika pengadaan Beli,
+        // tidak membutuhkan tanggal berakhir.
         if ($jaringan->pengadaan === 'Beli') {
-            return $jaringan->status ?? 'Tersedia';
+            return 'Tersedia';
         }
 
-
-        /*
-        |--------------------------------------------------------------------------
-        | JIKA SEWA
-        |--------------------------------------------------------------------------
-        */
-
+        // Jika pengadaan Sewa dan memiliki tanggal berakhir.
         if (
             $jaringan->pengadaan === 'Sewa' &&
             $jaringan->tanggal_berakhir
         ) {
-
             $today = Carbon::today();
 
             $tanggalBerakhir = Carbon::parse(
                 $jaringan->tanggal_berakhir
             );
 
-
-            /*
-            |--------------------------------------------------------------------------
-            | EXPIRED
-            |--------------------------------------------------------------------------
-            */
-
+            // Sudah lewat tanggal berakhir.
             if ($tanggalBerakhir->lt($today)) {
                 return 'Expired';
             }
 
-
-            /*
-            |--------------------------------------------------------------------------
-            | AKAN HABIS
-            |--------------------------------------------------------------------------
-            */
-
+            // Akan berakhir dalam 30 hari.
             if (
                 $tanggalBerakhir->gte($today) &&
                 $tanggalBerakhir->lte(
@@ -71,51 +55,31 @@ class JaringanController extends Controller
                 return 'Akan Habis';
             }
 
-
-            /*
-            |--------------------------------------------------------------------------
-            | DIGUNAKAN
-            |--------------------------------------------------------------------------
-            */
-
+            // Masih aktif digunakan.
             return 'Digunakan';
         }
 
-
-        /*
-        |--------------------------------------------------------------------------
-        | FALLBACK
-        |--------------------------------------------------------------------------
-        */
-
-        return $jaringan->status ?? 'Tersedia';
+        // Fallback.
+        return 'Tersedia';
     }
 
-
-    /*
-    |--------------------------------------------------------------------------
-    | INDEX
-    |--------------------------------------------------------------------------
-    */
-
+    /**
+     * Menampilkan halaman jaringan.
+     */
     public function index(Request $request)
     {
         $query = Jaringan::query();
 
-
-        /*
-        |--------------------------------------------------------------------------
-        | SEARCH
-        |--------------------------------------------------------------------------
-        */
-
+        // Search
         if ($request->filled('search')) {
-
             $search = $request->search;
 
             $query->where(function ($q) use ($search) {
-
-                $q->where('id', 'like', "%{$search}%")
+                $q->where(
+                    'id',
+                    'like',
+                    "%{$search}%"
+                )
                     ->orWhere(
                         'nama_infrastruktur',
                         'like',
@@ -129,132 +93,61 @@ class JaringanController extends Controller
             });
         }
 
-
-        /*
-        |--------------------------------------------------------------------------
-        | FILTER PENGADAAN
-        |--------------------------------------------------------------------------
-        */
-
+        // Filter pengadaan
         if ($request->filled('pengadaan')) {
-
             $query->where(
                 'pengadaan',
                 $request->pengadaan
             );
         }
 
-
-        /*
-        |--------------------------------------------------------------------------
-        | FILTER VERIFIKASI
-        |--------------------------------------------------------------------------
-        */
-
+        // Filter verifikasi
         if ($request->filled('verifikasi')) {
-
             $query->where(
                 'verifikasi',
                 $request->verifikasi
             );
         }
 
-
-        /*
-        |--------------------------------------------------------------------------
-        | FILTER TAHUN
-        |--------------------------------------------------------------------------
-        |
-        | Filter berdasarkan tahun dari tanggal_pengadaan.
-        |
-        */
-
+        // Filter tahun
         if ($request->filled('tahun')) {
-
             $query->whereYear(
                 'tanggal_pengadaan',
                 $request->tahun
             );
         }
 
-
-        /*
-        |--------------------------------------------------------------------------
-        | AMBIL DATA
-        |--------------------------------------------------------------------------
-        */
-
+        // Ambil data
         $jaringans = $query
             ->orderByDesc('created_at')
             ->orderBy('id')
             ->get();
 
-
-        /*
-        |--------------------------------------------------------------------------
-        | HITUNG STATUS OTOMATIS
-        |--------------------------------------------------------------------------
-        */
-
+        // Hitung status otomatis
         foreach ($jaringans as $jaringan) {
-
             $jaringan->status_otomatis =
                 $this->getStatusOtomatis($jaringan);
         }
 
-
-        /*
-        |--------------------------------------------------------------------------
-        | FILTER STATUS
-        |--------------------------------------------------------------------------
-        |
-        | Status tidak langsung diambil dari database karena:
-        |
-        | Beli  -> Tersedia / Digunakan
-        | Sewa  -> Digunakan / Akan Habis / Expired
-        |
-        | Jadi status dihitung terlebih dahulu.
-        |
-        */
-
+        // Filter status otomatis
         if ($request->filled('status')) {
-
             $jaringans = $jaringans
                 ->filter(function ($jaringan) use ($request) {
-
                     return $jaringan->status_otomatis ===
                         $request->status;
                 })
                 ->values();
         }
 
-
-        /*
-        |--------------------------------------------------------------------------
-        | DATA UNTUK CARD
-        |--------------------------------------------------------------------------
-        |
-        | Card selalu menghitung seluruh data,
-        | tidak mengikuti filter tabel.
-        |
-        */
-
+        // Semua data untuk statistik
         $allJaringans = Jaringan::all();
 
-
         foreach ($allJaringans as $jaringan) {
-
             $jaringan->status_otomatis =
                 $this->getStatusOtomatis($jaringan);
         }
 
-
-        /*
-        |--------------------------------------------------------------------------
-        | JUMLAH STATUS
-        |--------------------------------------------------------------------------
-        */
-
+        // Statistik
         $tersedia = $allJaringans
             ->where('status_otomatis', 'Tersedia')
             ->count();
@@ -273,16 +166,7 @@ class JaringanController extends Controller
 
         $totalJaringan = $allJaringans->count();
 
-
-        /*
-        |--------------------------------------------------------------------------
-        | DATA TAHUN UNTUK FILTER
-        |--------------------------------------------------------------------------
-        |
-        | Mengambil tahun unik dari tanggal_pengadaan.
-        |
-        */
-
+        // Daftar tahun pengadaan
         $tahuns = Jaringan::query()
             ->whereNotNull('tanggal_pengadaan')
             ->selectRaw(
@@ -292,26 +176,13 @@ class JaringanController extends Controller
             ->orderByDesc('tahun')
             ->pluck('tahun');
 
-
-        /*
-        |--------------------------------------------------------------------------
-        | DATA FILTER VERIFIKASI
-        |--------------------------------------------------------------------------
-        */
-
+        // Daftar status verifikasi
         $verifikasis = Jaringan::query()
             ->whereNotNull('verifikasi')
             ->select('verifikasi')
             ->distinct()
             ->orderBy('verifikasi')
             ->pluck('verifikasi');
-
-
-        /*
-        |--------------------------------------------------------------------------
-        | KIRIM KE VIEW
-        |--------------------------------------------------------------------------
-        */
 
         return view(
             'infrastruktur.jaringan.index',
@@ -328,17 +199,12 @@ class JaringanController extends Controller
         );
     }
 
-
-    /*
-    |--------------------------------------------------------------------------
-    | STORE
-    |--------------------------------------------------------------------------
-    */
-
+    /**
+     * Menyimpan jaringan baru.
+     */
     public function store(Request $request)
     {
         $validated = $request->validate([
-
             'nama_infrastruktur' => [
                 'required',
                 'string',
@@ -371,44 +237,23 @@ class JaringanController extends Controller
                 'date',
                 'after_or_equal:tanggal_pengadaan',
             ],
-
-            'status' => [
-                'nullable',
-                'in:Tersedia,Digunakan',
-            ],
-
-            'komentar' => [
-                'nullable',
-                'string',
-            ],
         ]);
 
-
-        /*
-        |--------------------------------------------------------------------------
-        | JIKA BELI
-        |--------------------------------------------------------------------------
-        */
-
+        /**
+         * Jika Beli:
+         * tanggal berakhir tidak diperlukan.
+         */
         if ($validated['pengadaan'] === 'Beli') {
-
             $validated['tanggal_berakhir'] = null;
-
-            $validated['status'] =
-                $validated['status'] ?? 'Tersedia';
         }
 
-
-        /*
-        |--------------------------------------------------------------------------
-        | JIKA SEWA
-        |--------------------------------------------------------------------------
-        */
-
+        /**
+         * Jika Sewa:
+         * tanggal berakhir wajib diisi.
+         */
         if ($validated['pengadaan'] === 'Sewa') {
 
             if (empty($validated['tanggal_berakhir'])) {
-
                 return back()
                     ->withErrors([
                         'tanggal_berakhir' =>
@@ -416,18 +261,17 @@ class JaringanController extends Controller
                     ])
                     ->withInput();
             }
-
-            $validated['status'] = 'Digunakan';
         }
 
-
-        /*
-        |--------------------------------------------------------------------------
-        | GENERATE ID OTOMATIS
-        |--------------------------------------------------------------------------
-        */
-
-        $prefix = 'INFJ-';
+        /**
+         * Generate ID otomatis.
+         *
+         * Contoh:
+         * INFJAR-001
+         * INFJAR-002
+         * INFJAR-003
+         */
+        $prefix = 'INFJAR-';
 
         $lastJaringan = Jaringan::where(
             'id',
@@ -435,25 +279,18 @@ class JaringanController extends Controller
             $prefix . '%'
         )
             ->orderByRaw(
-                'CAST(SUBSTRING(id, 6) AS UNSIGNED) DESC'
+                'CAST(SUBSTRING(id, 8) AS UNSIGNED) DESC'
             )
             ->first();
 
-
-        if ($lastJaringan) {
-
-            $lastNumber = (int) substr(
-                $lastJaringan->id,
-                strlen($prefix)
-            );
-
-            $newNumber = $lastNumber + 1;
-
-        } else {
-
-            $newNumber = 1;
-        }
-
+        $newNumber = $lastJaringan
+            ? (
+                (int) substr(
+                    $lastJaringan->id,
+                    strlen($prefix)
+                )
+            ) + 1
+            : 1;
 
         $validated['id'] =
             $prefix .
@@ -464,63 +301,50 @@ class JaringanController extends Controller
                 STR_PAD_LEFT
             );
 
-
-        /*
-        |--------------------------------------------------------------------------
-        | VERIFIKASI
-        |--------------------------------------------------------------------------
-        */
-
-        $validated['verifikasi'] =
-            'Menunggu disetujui';
-
-
-        /*
-        |--------------------------------------------------------------------------
-        | KOMENTAR
-        |--------------------------------------------------------------------------
-        */
-
+        /**
+         * Status verifikasi selalu menunggu
+         * ketika data baru dibuat.
+         */
+        $validated['verifikasi'] = 'menunggu';
         $validated['komentar'] = null;
 
+        DB::transaction(function () use ($validated) {
 
-        /*
-        |--------------------------------------------------------------------------
-        | SIMPAN
-        |--------------------------------------------------------------------------
-        */
+            // Simpan jaringan
+            $jaringan = Jaringan::create($validated);
 
-        Jaringan::create($validated);
+            // Buat request verifikasi
+            VerificationRequest::create([
+                'module' => 'jaringan',
 
+                'record_id' => $jaringan->id,
 
-        /*
-        |--------------------------------------------------------------------------
-        | REDIRECT
-        |--------------------------------------------------------------------------
-        */
+                'action' => 'create',
+
+                'data' => $jaringan->toArray(),
+
+                'status' => 'menunggu',
+
+                'submitted_by' => auth()->id(),
+            ]);
+        });
 
         return redirect()
             ->route('jaringan.index')
             ->with(
                 'success',
-                'Data jaringan berhasil diajukan dan menunggu disetujui verifikator.'
+                'Data jaringan berhasil ditambahkan dan menunggu verifikasi.'
             );
     }
 
-
-    /*
-    |--------------------------------------------------------------------------
-    | UPDATE
-    |--------------------------------------------------------------------------
-    */
-
+    /**
+     * Memperbarui jaringan.
+     */
     public function update(
         Request $request,
         $id
     ) {
-
         $validated = $request->validate([
-
             'nama_infrastruktur' => [
                 'required',
                 'string',
@@ -553,49 +377,28 @@ class JaringanController extends Controller
                 'date',
                 'after_or_equal:tanggal_pengadaan',
             ],
-
-            'status' => [
-                'nullable',
-                'in:Tersedia,Digunakan',
-            ],
-
         ]);
 
-
-        /*
-        |--------------------------------------------------------------------------
-        | CARI DATA
-        |--------------------------------------------------------------------------
-        */
-
+        /**
+         * Cari data jaringan.
+         */
         $jaringan = Jaringan::findOrFail($id);
 
-
-        /*
-        |--------------------------------------------------------------------------
-        | JIKA BELI
-        |--------------------------------------------------------------------------
-        */
-
+        /**
+         * Jika Beli:
+         * tanggal berakhir dikosongkan.
+         */
         if ($validated['pengadaan'] === 'Beli') {
-
             $validated['tanggal_berakhir'] = null;
-
-            $validated['status'] =
-                $validated['status'] ?? 'Tersedia';
         }
 
-
-        /*
-        |--------------------------------------------------------------------------
-        | JIKA SEWA
-        |--------------------------------------------------------------------------
-        */
-
+        /**
+         * Jika Sewa:
+         * tanggal berakhir wajib diisi.
+         */
         if ($validated['pengadaan'] === 'Sewa') {
 
             if (empty($validated['tanggal_berakhir'])) {
-
                 return back()
                     ->withErrors([
                         'tanggal_berakhir' =>
@@ -603,88 +406,99 @@ class JaringanController extends Controller
                     ])
                     ->withInput();
             }
-
-            $validated['status'] = 'Digunakan';
         }
 
+        DB::transaction(function () use (
+            $jaringan,
+            $validated
+        ) {
 
-        /*
-        |--------------------------------------------------------------------------
-        | VERIFIKASI ULANG
-        |--------------------------------------------------------------------------
-        */
+            /**
+             * Update data jaringan.
+             *
+             * Setiap perubahan kembali
+             * membutuhkan verifikasi.
+             */
+            $jaringan->update([
+                ...$validated,
 
-        $validated['verifikasi'] =
-            'Menunggu disetujui';
+                'verifikasi' => 'menunggu',
 
+                'komentar' => null,
+            ]);
 
-        /*
-        |--------------------------------------------------------------------------
-        | HAPUS KOMENTAR LAMA
-        |--------------------------------------------------------------------------
-        */
+            /**
+             * Buat request verifikasi update.
+             */
+            VerificationRequest::create([
+                'module' => 'jaringan',
 
-        $validated['komentar'] = null;
+                'record_id' => $jaringan->id,
 
+                'action' => 'update',
 
-        /*
-        |--------------------------------------------------------------------------
-        | UPDATE
-        |--------------------------------------------------------------------------
-        */
+                'data' => $jaringan
+                    ->fresh()
+                    ->toArray(),
 
-        $jaringan->update($validated);
+                'status' => 'menunggu',
 
-
-        /*
-        |--------------------------------------------------------------------------
-        | REDIRECT
-        |--------------------------------------------------------------------------
-        */
+                'submitted_by' => auth()->id(),
+            ]);
+        });
 
         return redirect()
             ->route('jaringan.index')
             ->with(
                 'success',
-                'Perubahan data jaringan berhasil diajukan dan menunggu disetujui verifikator.'
+                'Perubahan jaringan berhasil disimpan dan menunggu verifikasi.'
             );
     }
 
-
-    /*
-    |--------------------------------------------------------------------------
-    | DESTROY
-    |--------------------------------------------------------------------------
-    */
-
+    /**
+     * Mengajukan penghapusan jaringan.
+     *
+     * Data tidak langsung dihapus.
+     * Penghapusan menunggu verifikasi.
+     */
     public function destroy($id)
     {
         $jaringan = Jaringan::findOrFail($id);
 
+        DB::transaction(function () use ($jaringan) {
 
-        /*
-        |--------------------------------------------------------------------------
-        | AJUKAN PENGHAPUSAN
-        |--------------------------------------------------------------------------
-        */
+            /**
+             * Tandai data sedang menunggu verifikasi.
+             */
+            $jaringan->update([
+                'verifikasi' => 'menunggu',
 
-        $jaringan->update([
-            'verifikasi' => 'Menunggu disetujui',
-            'komentar' => null,
-        ]);
+                'komentar' => null,
+            ]);
 
+            /**
+             * Buat request penghapusan.
+             */
+            VerificationRequest::create([
+                'module' => 'jaringan',
 
-        /*
-        |--------------------------------------------------------------------------
-        | REDIRECT
-        |--------------------------------------------------------------------------
-        */
+                'record_id' => $jaringan->id,
+
+                'action' => 'delete',
+
+                'data' => $jaringan->toArray(),
+
+                'status' => 'menunggu',
+
+                'submitted_by' => auth()->id(),
+            ]);
+        });
 
         return redirect()
             ->route('jaringan.index')
             ->with(
                 'success',
-                'Permintaan penghapusan data berhasil diajukan dan menunggu disetujui verifikator.'
+                'Pengajuan penghapusan jaringan berhasil dikirim dan menunggu verifikasi.'
             );
     }
 }

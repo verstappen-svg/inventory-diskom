@@ -4,172 +4,210 @@
 
 @section('page-title', 'Data Center')
 
-@section('header')
-
-    <div class="custom-header">
-
-        <div class="header-breadcrumb">
-
-            <span class="breadcrumb-main">
-                INFRASTRUKTUR
-            </span>
-
-            <i class="bi bi-chevron-right"></i>
-
-            <span class="breadcrumb-active">
-                DATA CENTER
-            </span>
-
-        </div>
-
-    </div>
-
-@endsection
-
-
 @section('content')
 
 <style>
 
 /* =========================================================
-   PAGE
+   DATA CENTER PAGE
 ========================================================= */
 
-.infrastruktur-page {
+.data-center-page {
     width: 100%;
 }
 
 
 /* =========================================================
-   CUSTOM HEADER
+   HEADER
 ========================================================= */
 
-.custom-header {
+.data-center-header {
     display: flex;
+    justify-content: space-between;
     align-items: center;
-    height: 100%;
+    margin-bottom: 24px;
 }
 
-.header-breadcrumb {
-    display: flex;
-    align-items: center;
-    gap: 10px;
-    font-size: 14px;
+.data-center-heading h2 {
+    margin: 0;
+    font-size: 24px;
     font-weight: 700;
     color: #1f2937;
 }
 
-.header-breadcrumb i {
+.data-center-heading p {
+    margin: 6px 0 0;
+    font-size: 13px;
+    color: #6b7280;
+}
+
+.add-data-center-button {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    gap: 8px;
+    padding: 11px 18px;
+    border: none;
+    border-radius: 10px;
+    background: #071b88;
+    color: white;
+    text-decoration: none;
+    font-size: 13px;
+    font-weight: 600;
+    cursor: pointer;
+    transition: 0.2s ease;
+}
+
+.add-data-center-button:hover {
+    background: #050f63;
+    color: white;
+    transform: translateY(-1px);
+}
+
+.add-data-center-button i {
+    font-size: 16px;
+}
+
+
+/* =========================================================
+   ALERT
+========================================================= */
+
+.alert-success,
+.alert-error {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    padding: 12px 15px;
+    border-radius: 9px;
+    margin-bottom: 20px;
+    font-size: 13px;
+}
+
+.alert-success {
+    background: #ecfdf5;
+    border: 1px solid #a7f3d0;
+    color: #047857;
+}
+
+.alert-error {
+    background: #fef2f2;
+    border: 1px solid #fecaca;
+    color: #b91c1c;
+}
+
+.alert-success i,
+.alert-error i {
+    font-size: 17px;
+}
+
+
+/* =========================================================
+   STATISTIC CARDS
+========================================================= */
+
+.data-center-stats {
+    display: grid;
+    grid-template-columns: repeat(4, minmax(0, 1fr));
+    gap: 18px;
+    margin-bottom: 25px;
+}
+
+.data-center-stat-card {
+    min-height: 135px;
+    background: white;
+    border: 1px solid #e5e7eb;
+    border-radius: 14px;
+    padding: 20px;
+    display: flex;
+    align-items: flex-start;
+    gap: 15px;
+    box-shadow: 0 2px 6px rgba(0, 0, 0, 0.05);
+    transition: all 0.2s ease;
+}
+
+.data-center-stat-card:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 5px 12px rgba(0, 0, 0, 0.08);
+}
+
+.data-center-stat-icon {
+    width: 45px;
+    height: 45px;
+    flex-shrink: 0;
+    border-radius: 12px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 20px;
+}
+
+.data-center-stat-icon.blue {
+    background: #e0f2fe;
+    color: #0284c7;
+}
+
+.data-center-stat-icon.purple {
+    background: #ede9fe;
+    color: #7c3aed;
+}
+
+.data-center-stat-icon.orange {
+    background: #ffedd5;
+    color: #ea580c;
+}
+
+.data-center-stat-icon.green {
+    background: #dcfce7;
+    color: #16a34a;
+}
+
+.data-center-stat-icon.red {
+    background: #fee2e2;
+    color: #dc2626;
+}
+
+.data-center-stat-content {
+    display: flex;
+    flex-direction: column;
+    min-width: 0;
+}
+
+.data-center-stat-label {
+    font-size: 12px;
+    color: #6b7280;
+    margin-bottom: 5px;
+}
+
+.data-center-stat-value {
+    font-size: 23px;
+    font-weight: 700;
+    color: #075985;
+    line-height: 1.2;
+}
+
+.data-center-stat-value.currency {
+    font-size: 17px;
+    white-space: nowrap;
+}
+
+.data-center-stat-description {
+    margin-top: 7px;
     font-size: 10px;
     color: #9ca3af;
 }
 
-.breadcrumb-main,
-.breadcrumb-active {
-    color: #1f2937;
-    letter-spacing: 0.2px;
-}
-
 
 /* =========================================================
-   MESSAGE
+   TABLE CARD
 ========================================================= */
 
-.success-message {
-    margin-bottom: 20px;
-    padding: 12px 15px;
-    background: #eff9e9;
-    border: 1px solid #c9e6ca;
-    border-radius: 8px;
-    color: #397542;
-    font-size: 12px;
-}
-
-.error-message {
-    margin-bottom: 20px;
-    padding: 12px 15px;
-    background: #fff1f2;
-    border: 1px solid #fecdd3;
-    border-radius: 8px;
-    color: #b42318;
-    font-size: 12px;
-}
-
-
-/* =========================================================
-   STATISTICS
-========================================================= */
-
-.statistics {
-    display: grid;
-    grid-template-columns: repeat(3, 1fr);
-    gap: 20px;
-    margin-bottom: 25px;
-}
-
-.stat-card {
+.data-center-table-card {
     background: white;
-    border-radius: 15px;
-    padding: 20px;
-    min-height: 80px;
-    display: flex;
-    flex-direction: column;
-    justify-content: center;
-    border: 1px solid #eef0f4;
-    box-shadow: 0 3px 10px rgba(0, 0, 0, 0.06);
-    box-sizing: border-box;
-}
-
-.stat-card:nth-child(1) {
-    background: #eef4ff;
-}
-
-.stat-card:nth-child(2) {
-    background: #fff8e7;
-}
-
-.stat-card:nth-child(3) {
-    background: #eff9e9;
-}
-
-.stat-title {
-    font-size: 11px;
-    font-weight: 600;
-    margin-bottom: 7px;
-    letter-spacing: 0.4px;
-    text-transform: uppercase;
-}
-
-.stat-card:nth-child(1) .stat-title {
-    color: #4f7da7;
-}
-
-.stat-card:nth-child(2) .stat-title {
-    color: #c38a19;
-}
-
-.stat-card:nth-child(3) .stat-title {
-    color: #4f8a5a;
-}
-
-.stat-value {
-    font-size: 24px;
-    line-height: 1;
-    font-weight: 700;
-    color: #1f2937;
-}
-
-
-/* =========================================================
-   TABLE CONTAINER
-========================================================= */
-
-.table-container {
-    background: white;
-    border-radius: 15px;
-    border: 1px solid #eef0f4;
+    border: 1px solid #e5e7eb;
+    border-radius: 14px;
     overflow: hidden;
-    box-shadow: 0 3px 10px rgba(0, 0, 0, 0.06);
+    box-shadow: 0 2px 7px rgba(0, 0, 0, 0.04);
 }
 
 
@@ -177,235 +215,89 @@
    TABLE HEADER
 ========================================================= */
 
-.table-header {
+.data-center-table-header {
+    padding: 20px 22px;
     display: flex;
-    flex-direction: column;
-    gap: 12px;
-    padding: 18px 20px;
-}
-
-.top-tools {
-    display: flex;
-    align-items: center;
     justify-content: space-between;
-    gap: 15px;
-}
-
-.left-tools,
-.right-tools {
-    display: flex;
     align-items: center;
+    gap: 20px;
+    border-bottom: 1px solid #e5e7eb;
 }
 
-.right-tools {
-    gap: 10px;
-}
-
-
-/* =========================================================
-   SEARCH
-========================================================= */
-
-.search-box {
-    position: relative;
-    width: 210px;
-    height: 36px;
-}
-
-.search-box i {
-    position: absolute;
-    left: 13px;
-    top: 50%;
-    transform: translateY(-50%);
-    color: #6b7280;
-    font-size: 13px;
-    z-index: 2;
-    pointer-events: none;
-}
-
-.search-box input {
-    width: 100%;
-    height: 36px;
-    display: block;
-    background: #f3f4f6;
-    border: 1px solid #eef0f4;
-    outline: none;
-    border-radius: 18px;
-    padding: 0 14px 0 36px;
-    font-size: 11px;
-    color: #374151;
-    box-sizing: border-box;
-}
-
-.search-box input:focus {
-    border-color: #d1d5db;
-    background: #f9fafb;
-}
-
-.search-box input::placeholder {
-    color: #9ca3af;
-    opacity: 1;
-}
-
-
-/* =========================================================
-   FILTER
-========================================================= */
-
-.filter-wrapper {
-    position: relative;
-    display: flex;
-    align-items: center;
-}
-
-.filter-btn {
-    height: 36px;
-    padding: 0 13px;
-    background: white;
-    border: 1px solid #d9dee7;
-    border-radius: 8px;
-    color: #374151;
-    cursor: pointer;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    gap: 6px;
-    font-size: 11px;
-    font-weight: 600;
-    text-decoration: none;
-    box-sizing: border-box;
-}
-
-.filter-btn:hover {
-    background: #f8fafc;
-}
-
-.filter-panel {
-    display: none;
-    width: 100%;
-    padding: 15px 0 3px;
-    border-top: 1px solid #eef0f4;
-    margin-top: 2px;
-}
-
-.filter-panel.show {
-    display: block;
-}
-
-.filter-form {
-    display: flex;
-    align-items: flex-end;
-    gap: 12px;
-    width: 100%;
-}
-
-.filter-group {
-    flex: 1;
-    min-width: 150px;
-}
-
-.filter-label {
-    display: block;
-    margin-bottom: 6px;
-    font-size: 10px;
-    font-weight: 600;
-    color: #374151;
-}
-
-.filter-select {
-    width: 100%;
-    height: 35px;
-    padding: 0 10px;
-    border: 1px solid #d9dee7;
-    border-radius: 7px;
-    background: white;
-    color: #374151;
-    font-size: 10px;
-    outline: none;
-    cursor: pointer;
-    box-sizing: border-box;
-}
-
-.filter-select:focus {
-    border-color: #17146b;
-    box-shadow: 0 0 0 2px rgba(23, 20, 107, 0.06);
-}
-
-.filter-actions {
+.data-center-table-header-left {
     display: flex;
     align-items: center;
     gap: 8px;
-    padding-bottom: 0;
 }
 
-.filter-apply {
-    height: 35px;
-    padding: 0 14px;
-    border: none;
-    border-radius: 7px;
-    background: #17146b;
-    color: white;
-    font-size: 10px;
-    font-weight: 600;
-    cursor: pointer;
-    white-space: nowrap;
+.data-center-table-title {
+    margin: 0;
+    font-size: 16px;
+    font-weight: 700;
+    color: #1f2937;
 }
 
-.filter-apply:hover {
-    background: #100e58;
-}
-
-.filter-reset {
-    height: 35px;
-    padding: 0 14px;
-    border: 1px solid #d9dee7;
-    border-radius: 7px;
-    background: white;
-    color: #374151;
-    font-size: 10px;
-    font-weight: 600;
-    text-decoration: none;
-    display: inline-flex;
-    align-items: center;
-    justify-content: center;
-    box-sizing: border-box;
-    white-space: nowrap;
-}
-
-.filter-reset:hover {
-    background: #f8fafc;
-}
-
-.filter-btn.active {
-    background: #f4f3ff;
-    border-color: #17146b;
-    color: #17146b;
+.data-center-table-count {
+    font-size: 12px;
+    color: #6b7280;
 }
 
 
 /* =========================================================
-   ADD BUTTON
+   TOOLBAR
 ========================================================= */
 
-.add-btn {
-    height: 36px;
-    padding: 0 15px;
-    border: none;
-    border-radius: 8px;
-    background: #17146b;
-    color: white;
-    cursor: pointer;
+.data-center-toolbar {
     display: flex;
     align-items: center;
-    justify-content: center;
-    gap: 6px;
-    font-size: 11px;
-    font-weight: 600;
-    box-shadow: 0 3px 7px rgba(23, 20, 107, 0.20);
+    gap: 9px;
 }
 
-.add-btn:hover {
-    background: #100e58;
+.data-center-search {
+    position: relative;
+}
+
+.data-center-search i {
+    position: absolute;
+    left: 12px;
+    top: 50%;
+    transform: translateY(-50%);
+    color: #94a3b8;
+    font-size: 14px;
+}
+
+.data-center-search input {
+    width: 220px;
+    height: 38px;
+    padding: 0 12px 0 35px;
+    border: 1px solid #d1d5db;
+    border-radius: 8px;
+    outline: none;
+    font-size: 12px;
+    color: #374151;
+    background: white;
+    transition: 0.2s ease;
+}
+
+.data-center-search input:focus {
+    border-color: #079bd8;
+    box-shadow: 0 0 0 3px rgba(7, 155, 216, 0.10);
+}
+
+.data-center-filter-select {
+    height: 38px;
+    padding: 0 32px 0 12px;
+    border: 1px solid #d1d5db;
+    border-radius: 8px;
+    background: white;
+    color: #374151;
+    font-size: 12px;
+    outline: none;
+    cursor: pointer;
+}
+
+.data-center-filter-select:focus {
+    border-color: #079bd8;
 }
 
 
@@ -413,53 +305,125 @@
    TABLE
 ========================================================= */
 
-.table-wrapper {
+.data-center-table-wrapper {
+    width: 100%;
     overflow-x: auto;
 }
 
-.datacenter-table {
+.data-center-table {
     width: 100%;
-    min-width: 1250px;
     border-collapse: collapse;
+    min-width: 1450px;
 }
 
-.datacenter-table th {
-    background: #f8f9fb;
-    color: #4b5563;
-    font-size: 10px;
-    font-weight: 700;
-    text-align: center;
-    padding: 13px 10px;
-    border-top: 1px solid #eef0f4;
+.data-center-table th {
+    padding: 14px 16px;
+    background: #f8fafc;
     border-bottom: 1px solid #e5e7eb;
+    color: #475569;
+    font-size: 12px;
+    font-weight: 700;
+    text-align: left;
     white-space: nowrap;
-    letter-spacing: 0.2px;
 }
 
-.datacenter-table td {
-    height: 50px;
-    padding: 8px 10px;
-    border-bottom: 1px solid #f0f1f3;
-    font-size: 10px;
-    color: #4b5563;
+.data-center-table td {
+    padding: 15px 16px;
+    border-bottom: 1px solid #f1f5f9;
+    color: #374151;
+    font-size: 13px;
+    vertical-align: middle;
+}
+
+.data-center-table tbody tr {
+    transition: 0.15s ease;
+}
+
+.data-center-table tbody tr:hover {
+    background: #f8fafc;
+}
+
+.data-center-table tbody tr:last-child td {
+    border-bottom: none;
+}
+
+
+/* =========================================================
+   ID
+========================================================= */
+
+.data-center-code {
+    font-weight: 700;
+    color: #075985;
     white-space: nowrap;
-    text-align: center;
 }
 
-.datacenter-table tbody tr:hover {
-    background: #fafafa;
-}
 
-.datacenter-table td:nth-child(2),
-.datacenter-table td:nth-child(3) {
-    max-width: 180px;
-    overflow: hidden;
-    text-overflow: ellipsis;
-}
+/* =========================================================
+   NAME
+========================================================= */
 
-.id {
+.data-center-name {
     font-weight: 600;
+    color: #1f2937;
+}
+
+.data-center-spec {
+    margin-top: 3px;
+    font-size: 11px;
+    color: #9ca3af;
+    max-width: 250px;
+}
+
+
+/* =========================================================
+   PENGADAAN
+========================================================= */
+
+.procurement-badge {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    padding: 5px 10px;
+    border-radius: 20px;
+    font-size: 11px;
+    font-weight: 600;
+    white-space: nowrap;
+}
+
+.procurement-sewa {
+    background: #fef3c7;
+    color: #92400e;
+}
+
+.procurement-beli {
+    background: #dcfce7;
+    color: #166534;
+}
+
+
+/* =========================================================
+   PRICE
+========================================================= */
+
+.data-center-price {
+    font-weight: 600;
+    color: #374151;
+    white-space: nowrap;
+}
+
+
+/* =========================================================
+   DATE
+========================================================= */
+
+.data-center-date {
+    white-space: nowrap;
     color: #4b5563;
+}
+
+.data-center-date-empty {
+    color: #9ca3af;
 }
 
 
@@ -467,43 +431,35 @@
    STATUS
 ========================================================= */
 
-.status {
+.data-center-status-badge {
     display: inline-flex;
     align-items: center;
     justify-content: center;
-    min-width: 75px;
-    padding: 7px 14px;
+    padding: 5px 10px;
     border-radius: 20px;
-    font-size: 10px;
+    font-size: 11px;
     font-weight: 600;
-    line-height: 1;
     white-space: nowrap;
-    box-sizing: border-box;
 }
 
-.status-tersedia {
-    background: #d9f8e5;
-    color: #247a47;
+.status-perpetual {
+    background: #dcfce7;
+    color: #166534;
 }
 
-.status-digunakan {
-    background: #dce9ff;
-    color: #315ea8;
+.status-active {
+    background: #e0f2fe;
+    color: #075985;
 }
 
-.status-akan-habis {
-    background: #ffeb91;
-    color: #966315;
+.status-warning {
+    background: #fef3c7;
+    color: #92400e;
 }
 
 .status-expired {
-    background: #ffe0e0;
-    color: #b42318;
-}
-
-.status-default {
-    background: #e5e7eb;
-    color: #4b5563;
+    background: #fee2e2;
+    color: #991b1b;
 }
 
 
@@ -511,32 +467,30 @@
    VERIFIKASI
 ========================================================= */
 
-.verifikasi {
+.verifikasi-badge {
     display: inline-flex;
     align-items: center;
     justify-content: center;
-    min-width: 110px;
-    padding: 6px 10px;
-    border-radius: 15px;
-    font-size: 9px;
+    padding: 5px 10px;
+    border-radius: 20px;
+    font-size: 11px;
     font-weight: 600;
-    line-height: 1.2;
     white-space: nowrap;
 }
 
 .verifikasi-menunggu {
-    background: #fff4cc;
-    color: #946200;
+    background: #fef3c7;
+    color: #92400e;
 }
 
 .verifikasi-disetujui {
-    background: #d9f8e5;
-    color: #247a47;
+    background: #dcfce7;
+    color: #166534;
 }
 
 .verifikasi-ditolak {
-    background: #ffe0e0;
-    color: #b42318;
+    background: #fee2e2;
+    color: #991b1b;
 }
 
 
@@ -544,14 +498,11 @@
    KOMENTAR
 ========================================================= */
 
-.komentar-cell {
-    max-width: 180px;
-    overflow: hidden;
-    text-overflow: ellipsis;
-}
-
-.komentar-cell.empty {
-    color: #9ca3af;
+.data-center-comment {
+    max-width: 220px;
+    font-size: 11px;
+    color: #6b7280;
+    line-height: 1.5;
 }
 
 
@@ -559,104 +510,128 @@
    ACTION
 ========================================================= */
 
-.action {
+.data-center-action-buttons {
     display: flex;
-    justify-content: center;
     align-items: center;
-    gap: 10px;
+    gap: 7px;
 }
 
-.action button {
-    width: 20px;
-    height: 20px;
-    padding: 0;
+.data-center-action-button {
+    width: 32px;
+    height: 32px;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    border-radius: 7px;
     border: none;
-    background: transparent;
+    text-decoration: none;
     cursor: pointer;
+    transition: 0.2s ease;
+}
+
+.data-center-edit-button {
+    background: #e0f2fe;
+    color: #071b88;
+}
+
+.data-center-edit-button:hover {
+    background: #bae6fd;
+    color: #071b88;
+}
+
+.data-center-delete-button {
+    background: #fee2e2;
+    color: #dc2626;
+}
+
+.data-center-delete-button:hover {
+    background: #fecaca;
+    color: #dc2626;
+}
+
+.data-center-action-button i {
+    font-size: 14px;
+}
+
+.data-center-delete-form {
+    display: inline;
+}
+
+
+/* =========================================================
+   EMPTY STATE
+========================================================= */
+
+.data-center-empty-state {
+    padding: 55px 20px;
+    text-align: center;
+}
+
+.data-center-empty-icon {
+    width: 60px;
+    height: 60px;
+    margin: 0 auto 15px;
+    border-radius: 50%;
     display: flex;
     align-items: center;
     justify-content: center;
+    background: #f1f5f9;
+    color: #94a3b8;
+}
+
+.data-center-empty-icon i {
+    font-size: 27px;
+}
+
+.data-center-empty-state h3 {
+    margin: 0 0 6px;
+    font-size: 15px;
+    color: #374151;
+}
+
+.data-center-empty-state p {
+    margin: 0;
     font-size: 12px;
-    transition: 0.15s ease;
-}
-
-.edit-btn {
-    color: #198754;
-}
-
-.edit-btn:hover {
-    color: #146c43;
-    transform: scale(1.08);
-}
-
-.delete-btn {
-    color: #dc3545;
-}
-
-.delete-btn:hover {
-    color: #b02a37;
-    transform: scale(1.08);
+    color: #9ca3af;
 }
 
 
 /* =========================================================
-   EMPTY DATA
+   PAGINATION
 ========================================================= */
 
-.empty-data {
-    text-align: center !important;
-    padding: 40px !important;
-    color: #6b7280 !important;
-    font-size: 11px !important;
-}
-
-
-/* =========================================================
-   TABLE FOOTER
-========================================================= */
-
-.table-footer {
+.data-center-table-footer {
     display: flex;
     justify-content: space-between;
     align-items: center;
-    padding: 13px 20px;
-    min-height: 35px;
-    border-top: 1px solid #eef0f4;
+    padding: 15px 20px;
+    border-top: 1px solid #e5e7eb;
 }
 
-.showing-info {
-    font-size: 10px;
+.data-center-showing-text {
+    font-size: 11px;
     color: #6b7280;
 }
 
-.pagination {
-    display: flex;
-    align-items: center;
-    gap: 4px;
-}
 
-.page-btn {
-    width: 25px;
-    height: 25px;
-    border: 1px solid #e1e5eb;
-    background: white;
-    color: #8b95a1;
-    border-radius: 5px;
-    font-size: 9px;
-    cursor: pointer;
-    display: flex;
+/* =========================================================
+   MODAL OVERLAY
+========================================================= */
+
+.data-center-modal-overlay {
+    position: fixed;
+    inset: 0;
+    z-index: 9999;
+    display: none;
     align-items: center;
     justify-content: center;
+    padding: 30px;
+    background: rgba(15, 23, 42, 0.55);
+    overflow-y: auto;
 }
 
-.page-btn:hover {
-    background: #f5f6f8;
-}
-
-.page-btn.active {
-    background: #17146b;
-    border-color: #17146b;
-    color: white;
+.data-center-modal-overlay.show {
+    display: flex;
 }
 
 
@@ -664,300 +639,385 @@
    MODAL
 ========================================================= */
 
-.modal {
-    display: none;
-    position: fixed;
-    z-index: 9999;
-    inset: 0;
-    background: rgba(0, 0, 0, 0.78);
-    align-items: center;
-    justify-content: center;
-    padding: 20px;
-    box-sizing: border-box;
-    overflow: hidden;
-}
-
-.modal-content {
-    width: 780px;
-    max-width: 100%;
-    max-height: 92vh;
+.data-center-modal {
+    width: 100%;
+    max-width: 1050px;
+    height: min(720px, calc(100vh - 60px));
+    max-height: calc(100vh - 60px);
     background: white;
-    border-radius: 14px;
-    box-shadow: 0 10px 40px rgba(0, 0, 0, 0.18);
+    border-radius: 16px;
+    box-shadow:
+        0 25px 60px rgba(15, 23, 42, 0.25);
+    overflow: hidden;
     display: flex;
     flex-direction: column;
-    overflow: hidden;
+    min-height: 0;
+    animation: dataCenterModalIn 0.18s ease;
 }
 
-.modal-header {
-    flex-shrink: 0;
+@keyframes dataCenterModalIn {
+
+    from {
+        opacity: 0;
+        transform: translateY(10px) scale(0.99);
+    }
+
+    to {
+        opacity: 1;
+        transform: translateY(0) scale(1);
+    }
+
+}
+
+
+/* =========================================================
+   MODAL HEADER
+========================================================= */
+
+.data-center-modal-header {
+    min-height: 78px;
+    padding: 18px 22px;
     display: flex;
-    align-items: flex-start;
+    align-items: center;
     justify-content: space-between;
-    padding: 18px 30px 15px;
     border-bottom: 1px solid #e5e7eb;
-    background: white;
-}
-
-.modal-title-wrapper {
-    display: flex;
-    flex-direction: column;
-    gap: 4px;
-}
-
-.modal-header h2 {
-    margin: 0;
-    font-size: 22px;
-    line-height: 1.2;
-    font-weight: 700;
-    color: #111111;
-}
-
-.modal-subtitle {
-    margin: 0;
-    font-size: 11px;
-    line-height: 1.4;
-    color: #374151;
-}
-
-.close {
     flex-shrink: 0;
-    border: none;
-    background: transparent;
-    font-size: 27px;
-    line-height: 1;
-    cursor: pointer;
-    color: #555555;
-    padding: 0;
-    width: 25px;
-    height: 25px;
+}
+
+.data-center-modal-header-left {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+}
+
+.data-center-modal-icon {
+    width: 40px;
+    height: 40px;
+    border-radius: 10px;
     display: flex;
     align-items: center;
     justify-content: center;
+    background: #e0f2fe;
+    color: #075985;
+    flex-shrink: 0;
+}
+
+.data-center-modal-icon i {
+    font-size: 18px;
+}
+
+.data-center-modal-header-text h2 {
+    margin: 0;
+    font-size: 17px;
+    font-weight: 700;
+    color: #1f2937;
+}
+
+.data-center-modal-header-text p {
+    margin: 4px 0 0;
+    font-size: 11px;
+    color: #6b7280;
+}
+
+.data-center-modal-close {
+    width: 34px;
+    height: 34px;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    border: none;
+    border-radius: 8px;
+    background: #f1f5f9;
+    color: #64748b;
+    cursor: pointer;
     transition: 0.2s ease;
 }
 
-.close:hover {
-    color: #111111;
-    transform: scale(1.05);
-}
-
-.modal-body {
-    flex: 1;
-    min-height: 0;
-    padding: 28px 30px 20px;
-    overflow-y: auto;
-    overflow-x: hidden;
-    box-sizing: border-box;
-    scrollbar-width: thin;
-    scrollbar-color: #c7cbd4 transparent;
-}
-
-.modal-body::-webkit-scrollbar {
-    width: 7px;
-}
-
-.modal-body::-webkit-scrollbar-track {
-    background: transparent;
-}
-
-.modal-body::-webkit-scrollbar-thumb {
-    background: #c7cbd4;
-    border-radius: 10px;
-}
-
-.modal-body::-webkit-scrollbar-thumb:hover {
-    background: #aeb4bf;
+.data-center-modal-close:hover {
+    background: #e2e8f0;
+    color: #1f2937;
 }
 
 
 /* =========================================================
-   FORM
+   MODAL FORM
 ========================================================= */
 
-.form-group {
-    margin-bottom: 20px;
+#dataCenterForm {
+    display: flex;
+    flex-direction: column;
+    flex: 1 1 auto;
+    min-height: 0;
+    height: 100%;
+    overflow: hidden;
 }
 
-.form-group label {
-    display: block;
-    margin-bottom: 8px;
-    font-size: 11px;
-    font-weight: 500;
-    color: #374151;
+.data-center-modal-body {
+    padding: 24px;
+    flex: 1 1 0%;
+    min-height: 0;
+    height: 0;
+    overflow-y: scroll;
+    overflow-x: hidden;
+    -webkit-overflow-scrolling: touch;
+    overscroll-behavior: contain;
+    scrollbar-width: thin;
+    scrollbar-color: #cbd5e1 transparent;
 }
 
-.form-group label span {
-    color: #ef4444;
-}
 
-.form-group input,
-.form-group textarea,
-.form-group select {
-    width: 100%;
-    height: 39px;
-    padding: 0 11px;
-    border: 1px solid #e5e7eb;
-    border-radius: 7px;
-    outline: none;
-    font-family: inherit;
-    font-size: 11px;
-    color: #374151;
+/* =========================================================
+   FORM CARD
+========================================================= */
+
+.data-center-form-card {
     background: white;
-    box-sizing: border-box;
-    transition:
-        border-color 0.2s ease,
-        box-shadow 0.2s ease;
+    border: 1px solid #e5e7eb;
+    border-radius: 14px;
+    padding: 24px;
+    margin-bottom: 18px;
+    box-shadow: 0 2px 7px rgba(0, 0, 0, 0.03);
 }
 
-.form-group input::placeholder,
-.form-group textarea::placeholder {
-    color: #d1d5db;
-    opacity: 1;
-}
-
-.form-group input:focus,
-.form-group textarea:focus,
-.form-group select:focus {
-    border-color: #17146b;
-    box-shadow: 0 0 0 2px rgba(23, 20, 107, 0.06);
-}
-
-.form-group textarea {
-    height: 87px;
-    padding: 10px 11px;
-    resize: vertical;
-    min-height: 87px;
-}
-
-.form-row {
-    display: grid;
-    grid-template-columns: 1fr 1fr 1fr;
-    gap: 20px;
+.data-center-form-card:last-child {
     margin-bottom: 0;
 }
 
-.form-row .form-group {
+.data-center-form-card-header {
+    display: flex;
+    align-items: center;
+    gap: 9px;
+    padding-bottom: 13px;
     margin-bottom: 20px;
+    border-bottom: 1px solid #e5e7eb;
 }
 
-.date-input {
-    position: relative;
+.data-center-form-card-header i {
+    color: #075985;
+    font-size: 16px;
 }
 
-.date-input i {
-    position: absolute;
-    left: 11px;
-    top: 50%;
-    transform: translateY(-50%);
-    color: #6b7280;
-    font-size: 12px;
-    pointer-events: none;
-    z-index: 2;
-}
-
-.date-input input {
-    padding-left: 32px;
-}
-
-.date-readonly {
-    background: #f8f9fb !important;
+.data-center-form-card-header h3 {
+    margin: 0;
+    font-size: 14px;
+    font-weight: 700;
+    color: #1f2937;
 }
 
 
 /* =========================================================
-   SEWA
+   FORM GRID
 ========================================================= */
 
-.sewa-section {
-    display: none;
-    margin-top: 0;
-    padding-top: 0;
-}
-
-.sewa-section.show {
-    display: block;
-}
-
-.custom-period {
-    display: none;
-    grid-template-columns: 1fr 1fr;
-    gap: 20px;
-    margin-top: 2px;
-}
-
-.custom-period.show {
+.data-center-form-grid {
     display: grid;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    gap: 20px;
 }
 
-.form-info {
-    display: block;
-    margin-top: 5px;
-    font-size: 9px;
-    color: #6b7280;
-    line-height: 1.4;
+.data-center-form-group {
+    display: flex;
+    flex-direction: column;
 }
 
+.data-center-form-group.full {
+    grid-column: 1 / -1;
+}
 
-/* =========================================================
-   EDIT ID
-========================================================= */
+.data-center-form-group label {
+    margin-bottom: 7px;
+    font-size: 12px;
+    font-weight: 600;
+    color: #374151;
+}
 
-#editId {
-    background: #f8f9fb;
-    color: #6b7280;
+.data-center-form-group label span {
+    color: #dc2626;
+}
+
+.data-center-form-group input,
+.data-center-form-group select,
+.data-center-form-group textarea {
+    width: 100%;
+    box-sizing: border-box;
+    border: 1px solid #d1d5db;
+    border-radius: 8px;
+    background: white;
+    color: #374151;
+    outline: none;
+    font-family: inherit;
+    font-size: 12px;
+    transition: 0.2s ease;
+}
+
+.data-center-form-group input,
+.data-center-form-group select {
+    height: 40px;
+    padding: 0 12px;
+}
+
+.data-center-form-group textarea {
+    min-height: 85px;
+    padding: 10px 12px;
+    resize: vertical;
+}
+
+.data-center-form-group input:focus,
+.data-center-form-group select:focus,
+.data-center-form-group textarea:focus {
+    border-color: #079bd8;
+    box-shadow:
+        0 0 0 3px rgba(7, 155, 216, 0.10);
+}
+
+.data-center-form-group input[readonly] {
+    background: #f8fafc;
+    color: #64748b;
     cursor: not-allowed;
 }
 
+.data-center-form-error {
+    margin-top: 5px;
+    font-size: 10px;
+    color: #dc2626;
+}
+
 
 /* =========================================================
-   FORM FOOTER
+   PRICE INPUT
 ========================================================= */
 
-.form-actions {
+.data-center-price-input {
+    position: relative;
+}
+
+.data-center-price-prefix {
+    position: absolute;
+    left: 12px;
+    top: 50%;
+    transform: translateY(-50%);
+    font-size: 12px;
+    font-weight: 600;
+    color: #64748b;
+    pointer-events: none;
+}
+
+.data-center-price-input input {
+    padding-left: 38px;
+}
+
+
+/* =========================================================
+   SEWA SECTION
+========================================================= */
+
+#dataCenterSewaSection {
+    display: none;
+    margin-top: 20px;
+    padding: 18px;
+    background: #f8fafc;
+    border: 1px solid #e2e8f0;
+    border-radius: 10px;
+}
+
+#dataCenterSewaSection.show {
+    display: block;
+}
+
+.data-center-sewa-title {
+    margin-bottom: 15px;
+    font-size: 12px;
+    font-weight: 700;
+    color: #075985;
+}
+
+.data-center-sewa-grid {
+    display: grid;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    gap: 16px;
+}
+
+
+/* =========================================================
+   CUSTOM PERIOD
+========================================================= */
+
+#dataCenterCustomPeriod {
+    display: none;
+    margin-top: 16px;
+}
+
+#dataCenterCustomPeriod.show {
+    display: grid;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    gap: 16px;
+}
+
+
+/* =========================================================
+   INFO
+========================================================= */
+
+.data-center-form-info {
+    margin-top: 6px;
+    font-size: 10px;
+    line-height: 1.5;
+    color: #9ca3af;
+}
+
+.data-center-form-info i {
+    margin-right: 3px;
+}
+
+
+/* =========================================================
+   MODAL FOOTER
+========================================================= */
+
+.data-center-modal-footer {
     display: flex;
     justify-content: flex-end;
     align-items: center;
-    gap: 15px;
-    padding: 14px 0 4px;
-    margin-top: 8px;
+    gap: 10px;
+    padding: 16px 24px;
     border-top: 1px solid #e5e7eb;
     background: white;
+    flex-shrink: 0;
 }
 
-.cancel-btn {
-    height: 39px;
-    min-width: 79px;
+.data-center-btn-batal,
+.data-center-btn-simpan {
+    height: 40px;
     padding: 0 18px;
-    border: 1px solid #d6dbea;
+    border-radius: 8px;
+    font-size: 12px;
+    font-weight: 600;
+    cursor: pointer;
+    transition: 0.2s ease;
+}
+
+.data-center-btn-batal {
+    border: 1px solid #d1d5db;
     background: white;
-    color: #111111;
-    border-radius: 7px;
-    cursor: pointer;
-    font-size: 11px;
-    font-weight: 600;
+    color: #4b5563;
 }
 
-.cancel-btn:hover {
-    background: #f8f9fb;
+.data-center-btn-batal:hover {
+    background: #f8fafc;
 }
 
-.save-btn {
-    height: 39px;
-    min-width: 79px;
-    padding: 0 18px;
+.data-center-btn-simpan {
     border: none;
-    background: #17146b;
+    background: #079bd8;
     color: white;
-    border-radius: 7px;
-    cursor: pointer;
-    font-size: 11px;
-    font-weight: 600;
-    box-shadow: 0 2px 5px rgba(23, 20, 107, 0.20);
 }
 
-.save-btn:hover {
-    background: #100e58;
+.data-center-btn-simpan:hover {
+    background: #075985;
+}
+
+.data-center-btn-simpan i {
+    margin-right: 5px;
 }
 
 
@@ -965,135 +1025,216 @@
    RESPONSIVE
 ========================================================= */
 
-@media (max-width: 1100px) {
+@media (max-width: 1200px) {
 
-    .filter-form {
-        flex-wrap: wrap;
-    }
-
-    .filter-group {
-        flex: 1 1 calc(50% - 12px);
-    }
-
-    .filter-actions {
-        width: 100%;
-        justify-content: flex-end;
+    .data-center-stats {
+        grid-template-columns: repeat(3, 1fr);
     }
 
 }
 
 @media (max-width: 900px) {
 
-    .statistics {
-        grid-template-columns: 1fr;
+    .data-center-header {
+        align-items: flex-start;
+        flex-direction: column;
+        gap: 15px;
     }
 
-    .top-tools {
+    .add-data-center-button {
+        width: 100%;
+    }
+
+    .data-center-stats {
+        grid-template-columns: repeat(2, 1fr);
+    }
+
+    .data-center-table-header {
+        align-items: flex-start;
+        flex-direction: column;
+    }
+
+    .data-center-toolbar {
+        width: 100%;
         flex-wrap: wrap;
     }
 
-    .modal-content {
-        width: 760px;
+    .data-center-search {
+        flex: 1;
+        min-width: 220px;
+    }
+
+    .data-center-search input {
+        width: 100%;
     }
 
 }
 
 @media (max-width: 700px) {
 
-    .modal {
-        padding: 12px;
+    .data-center-modal-overlay {
+        padding: 15px;
     }
 
-    .modal-content {
-        width: 100%;
-        max-height: 94vh;
-        border-radius: 12px;
+    .data-center-modal {
+        height: calc(100vh - 30px);
+        max-height: calc(100vh - 30px);
     }
 
-    .modal-header {
-        padding: 16px 20px 12px;
+    .data-center-modal-body {
+        padding: 15px;
     }
 
-    .modal-body {
-        padding: 25px 20px 10px;
+    .data-center-form-card {
+        padding: 18px;
     }
 
-    .form-row {
+    .data-center-form-grid,
+    .data-center-sewa-grid {
         grid-template-columns: 1fr;
-        gap: 0;
+        gap: 15px;
     }
 
-    .form-row .form-group {
-        margin-bottom: 20px;
-    }
-
-    .custom-period {
+    #dataCenterCustomPeriod.show {
         grid-template-columns: 1fr;
-        gap: 0;
     }
 
-    .filter-group {
-        flex: 1 1 100%;
+    .data-center-modal-footer {
+        padding: 14px 15px;
     }
 
 }
 
-@media (max-width: 600px) {
+@media (max-width: 500px) {
 
-    .top-tools {
+    .data-center-stats {
+        grid-template-columns: 1fr;
+    }
+
+    .data-center-toolbar {
         flex-direction: column;
         align-items: stretch;
     }
 
-    .left-tools,
-    .right-tools {
+    .data-center-filter-select {
         width: 100%;
     }
 
-    .search-box {
-        width: 100%;
+    .data-center-modal-header {
+        padding: 15px;
     }
 
-    .right-tools {
-        justify-content: flex-end;
-    }
+}
 
+
+/* =========================================================
+   BODY LOCK WHEN MODAL OPEN
+========================================================= */
+
+body.data-center-modal-open {
+    overflow: hidden;
 }
 
 </style>
 
 
-<div class="infrastruktur-page">
+<div class="data-center-page">
+
+    {{-- =====================================================
+         HEADER
+    ====================================================== --}}
+
+    <div class="data-center-header">
+
+        <div class="data-center-heading">
+
+            <h2>
+                Data Center
+            </h2>
+
+            <p>
+                Kelola data infrastruktur data center yang tersedia.
+            </p>
+
+        </div>
+
+
+        <button
+            type="button"
+            class="add-data-center-button"
+            onclick="openAddDataCenterModal()"
+        >
+
+            <i class="bi bi-plus-lg"></i>
+
+            <span>
+                Tambah Data Center
+            </span>
+
+        </button>
+
+    </div>
 
 
     {{-- =====================================================
-         SUCCESS MESSAGE
+         SUCCESS
     ====================================================== --}}
 
-    @if (session('success'))
+    @if(session('success'))
 
-        <div class="success-message">
-            {{ session('success') }}
+        <div class="alert-success">
+
+            <i class="bi bi-check-circle-fill"></i>
+
+            <span>
+                {{ session('success') }}
+            </span>
+
         </div>
 
     @endif
 
 
     {{-- =====================================================
-         ERROR MESSAGE
+         ERROR
     ====================================================== --}}
 
-    @if ($errors->any())
+    @if(session('error'))
 
-        <div class="error-message">
+        <div class="alert-error">
 
-            @foreach ($errors->all() as $error)
+            <i class="bi bi-exclamation-circle-fill"></i>
 
-                <div>
-                    {{ $error }}
+            <span>
+                {{ session('error') }}
+            </span>
+
+        </div>
+
+    @endif
+
+
+    {{-- =====================================================
+         VALIDATION ERROR
+    ====================================================== --}}
+
+    @if($errors->any())
+
+        <div class="alert-error">
+
+            <i class="bi bi-exclamation-triangle-fill"></i>
+
+            <div>
+
+                <strong>
+                    Data belum dapat disimpan.
+                </strong>
+
+                <div style="margin-top:3px;">
+                    Silakan periksa kembali isian form.
                 </div>
 
-            @endforeach
+            </div>
 
         </div>
 
@@ -1104,53 +1245,127 @@
          STATISTICS
     ====================================================== --}}
 
-    <div class="statistics">
+    <div class="data-center-stats">
 
-        <div class="stat-card">
 
-            <div class="stat-title">
-                JUMLAH DATA CENTER
+        {{-- TOTAL --}}
+
+        <div class="data-center-stat-card">
+
+            <div class="data-center-stat-icon blue">
+
+                <i class="bi bi-server"></i>
+
             </div>
 
-            <div class="stat-value">
-                {{ $totalDataCenter }}
+            <div class="data-center-stat-content">
+
+                <span class="data-center-stat-label">
+                    Total Data Center
+                </span>
+
+                <span class="data-center-stat-value">
+
+                    {{ $totalDataCenter ?? $dataCenters->count() }}
+
+                </span>
+
+                <span class="data-center-stat-description">
+                    Infrastruktur data center terdaftar
+                </span>
+
             </div>
 
         </div>
 
 
-        <div class="stat-card">
+        {{-- AKAN HABIS --}}
 
-            <div class="stat-title">
-                AKAN HABIS
+        <div class="data-center-stat-card">
+
+            <div class="data-center-stat-icon orange">
+
+                <i class="bi bi-clock-history"></i>
+
             </div>
 
-            <div class="stat-value">
-                {{ $akanHabis }}
+            <div class="data-center-stat-content">
+
+                <span class="data-center-stat-label">
+                    Akan Habis
+                </span>
+
+                <span class="data-center-stat-value">
+
+                    {{ $akanHabis ?? $akanBerakhir ?? 0 }}
+
+                </span>
+
+                <span class="data-center-stat-description">
+                    Sewa berakhir dalam 30 hari
+                </span>
+
             </div>
 
         </div>
 
 
-        <div class="stat-card">
+        {{-- TIDAK BERAKHIR --}}
 
-            <div class="stat-title">
+        <div class="data-center-stat-card">
 
-                @if (request('tahun'))
+            <div class="data-center-stat-icon green">
 
-                    PENGELUARAN {{ request('tahun') }}
-
-                @else
-
-                    PENGELUARAN TAHUNAN
-
-                @endif
+                <i class="bi bi-infinity"></i>
 
             </div>
 
-            <div class="stat-value">
+            <div class="data-center-stat-content">
 
-                Rp {{ number_format($dataCenters->sum('harga'), 0, ',', '.') }}
+                <span class="data-center-stat-label">
+                    Tidak Berakhir
+                </span>
+
+                <span class="data-center-stat-value">
+
+                    {{ $tidakBerakhir ?? 0 }}
+
+                </span>
+
+                <span class="data-center-stat-description">
+                    Data center hasil pembelian
+                </span>
+
+            </div>
+
+        </div>
+
+
+        {{-- EXPIRED --}}
+
+        <div class="data-center-stat-card">
+
+            <div class="data-center-stat-icon red">
+
+                <i class="bi bi-x-circle-fill"></i>
+
+            </div>
+
+            <div class="data-center-stat-content">
+
+                <span class="data-center-stat-label">
+                    Expired
+                </span>
+
+                <span class="data-center-stat-value">
+
+                    {{ $expired ?? 0 }}
+
+                </span>
+
+                <span class="data-center-stat-description">
+                    Data center sudah berakhir
+                </span>
 
             </div>
 
@@ -1163,264 +1378,151 @@
          TABLE
     ====================================================== --}}
 
-    <div class="table-container">
+    <div class="data-center-table-card">
 
 
-        <div class="table-header">
+        {{-- =================================================
+             TABLE HEADER
+        ================================================== --}}
+
+        <div class="data-center-table-header">
 
 
-            <div class="top-tools">
+            <div class="data-center-table-header-left">
 
+                <h3 class="data-center-table-title">
+                    Data Data Center
+                </h3>
 
-                <div class="left-tools">
-
-                    <div class="search-box">
-
-                        <i class="bi bi-search"></i>
-
-                        <input
-                            type="text"
-                            id="searchInput"
-                            placeholder="Search..."
-                        >
-
-                    </div>
-
-                </div>
-
-
-                <div class="right-tools">
-
-
-                    <div class="filter-wrapper">
-
-                        <button
-                            type="button"
-                            class="filter-btn"
-                            id="filterButton"
-                            onclick="toggleFilter()"
-                        >
-
-                            <i class="bi bi-funnel"></i>
-
-                            Filter
-
-                            <i
-                                class="bi bi-chevron-down"
-                                id="filterArrow"
-                            ></i>
-
-                        </button>
-
-                    </div>
-
-
-                    <button
-                        type="button"
-                        class="add-btn"
-                        onclick="openAddModal()"
-                    >
-
-                        <i class="bi bi-plus-lg"></i>
-
-                        Add
-
-                    </button>
-
-                </div>
+                <span class="data-center-table-count">
+                    ({{ $dataCenters->count() }} data)
+                </span>
 
             </div>
 
 
-            {{-- =================================================
-                 FILTER PANEL
-            ================================================== --}}
+            {{-- TOOLBAR --}}
 
-            <div
-                class="filter-panel"
-                id="filterPanel"
-            >
+            <div class="data-center-toolbar">
 
-                <form
-                    action="{{ route('data-center.index') }}"
-                    method="GET"
-                    class="filter-form"
+
+                {{-- SEARCH --}}
+
+                <div class="data-center-search">
+
+                    <i class="bi bi-search"></i>
+
+                    <input
+                        type="text"
+                        id="dataCenterSearch"
+                        placeholder="Cari data center..."
+                    >
+
+                </div>
+
+
+                {{-- FILTER STATUS --}}
+
+                <select
+                    id="dataCenterStatusFilter"
+                    class="data-center-filter-select"
                 >
 
+                    <option value="">
+                        Semua Status
+                    </option>
 
-                    <div class="filter-group">
+                    <option value="tidak berakhir">
+                        Tidak Berakhir
+                    </option>
 
-                        <label class="filter-label">
-                            Status
-                        </label>
+                    <option value="digunakan">
+                        Digunakan
+                    </option>
 
-                        <select
-                            name="status"
-                            class="filter-select"
-                        >
+                    <option value="akan habis">
+                        Akan Habis
+                    </option>
 
-                            <option value="">
-                                Semua Status
+                    <option value="expired">
+                        Expired
+                    </option>
+
+                </select>
+
+
+                {{-- FILTER PENGADAAN --}}
+
+                <select
+                    id="dataCenterPengadaanFilter"
+                    class="data-center-filter-select"
+                >
+
+                    <option value="">
+                        Semua Pengadaan
+                    </option>
+
+                    <option value="beli">
+                        Beli
+                    </option>
+
+                    <option value="sewa">
+                        Sewa
+                    </option>
+
+                </select>
+
+
+                {{-- FILTER VERIFIKASI --}}
+
+                <select
+                    id="dataCenterVerifikasiFilter"
+                    class="data-center-filter-select"
+                >
+
+                    <option value="">
+                        Semua Verifikasi
+                    </option>
+
+                    <option value="menunggu">
+                        Menunggu
+                    </option>
+
+                    <option value="disetujui">
+                        Disetujui
+                    </option>
+
+                    <option value="ditolak">
+                        Ditolak
+                    </option>
+
+                </select>
+
+
+                {{-- FILTER TAHUN --}}
+
+                @if(isset($tahuns) && count($tahuns))
+
+                    <select
+                        id="dataCenterTahunFilter"
+                        class="data-center-filter-select"
+                    >
+
+                        <option value="">
+                            Semua Tahun
+                        </option>
+
+                        @foreach($tahuns as $tahun)
+
+                            <option value="{{ $tahun }}">
+                                {{ $tahun }}
                             </option>
 
-                            <option
-                                value="Tersedia"
-                                {{ request('status') == 'Tersedia' ? 'selected' : '' }}
-                            >
-                                Tersedia
-                            </option>
+                        @endforeach
 
-                            <option
-                                value="Digunakan"
-                                {{ request('status') == 'Digunakan' ? 'selected' : '' }}
-                            >
-                                Digunakan
-                            </option>
+                    </select>
 
-                            <option
-                                value="Akan Habis"
-                                {{ request('status') == 'Akan Habis' ? 'selected' : '' }}
-                            >
-                                Akan Habis
-                            </option>
-
-                            <option
-                                value="Expired"
-                                {{ request('status') == 'Expired' ? 'selected' : '' }}
-                            >
-                                Expired
-                            </option>
-
-                        </select>
-
-                    </div>
-
-
-                    <div class="filter-group">
-
-                        <label class="filter-label">
-                            Pengadaan
-                        </label>
-
-                        <select
-                            name="pengadaan"
-                            class="filter-select"
-                        >
-
-                            <option value="">
-                                Semua Pengadaan
-                            </option>
-
-                            <option
-                                value="Beli"
-                                {{ request('pengadaan') == 'Beli' ? 'selected' : '' }}
-                            >
-                                Beli
-                            </option>
-
-                            <option
-                                value="Sewa"
-                                {{ request('pengadaan') == 'Sewa' ? 'selected' : '' }}
-                            >
-                                Sewa
-                            </option>
-
-                        </select>
-
-                    </div>
-
-
-                    <div class="filter-group">
-
-                        <label class="filter-label">
-                            Verifikasi
-                        </label>
-
-                        <select
-                            name="verifikasi"
-                            class="filter-select"
-                        >
-
-                            <option value="">
-                                Semua Verifikasi
-                            </option>
-
-                            <option
-                                value="Menunggu disetujui"
-                                {{ request('verifikasi') == 'Menunggu disetujui' ? 'selected' : '' }}
-                            >
-                                Menunggu disetujui
-                            </option>
-
-                            <option
-                                value="Disetujui"
-                                {{ request('verifikasi') == 'Disetujui' ? 'selected' : '' }}
-                            >
-                                Disetujui
-                            </option>
-
-                            <option
-                                value="Ditolak"
-                                {{ request('verifikasi') == 'Ditolak' ? 'selected' : '' }}
-                            >
-                                Ditolak
-                            </option>
-
-                        </select>
-
-                    </div>
-
-
-                    <div class="filter-group">
-
-                        <label class="filter-label">
-                            Tahun
-                        </label>
-
-                        <select
-                            name="tahun"
-                            class="filter-select"
-                        >
-
-                            <option value="">
-                                Semua Tahun
-                            </option>
-
-                            @foreach ($tahuns as $item)
-
-                                <option
-                                    value="{{ $item }}"
-                                    {{ request('tahun') == $item ? 'selected' : '' }}
-                                >
-                                    {{ $item }}
-                                </option>
-
-                            @endforeach
-
-                        </select>
-
-                    </div>
-
-
-                    <div class="filter-actions">
-
-                        <a
-                            href="{{ route('data-center.index') }}"
-                            class="filter-reset"
-                        >
-                            Reset
-                        </a>
-
-                        <button
-                            type="submit"
-                            class="filter-apply"
-                        >
-                            Terapkan
-                        </button>
-
-                    </div>
-
-                </form>
+                @endif
 
             </div>
 
@@ -1428,60 +1530,63 @@
 
 
         {{-- =================================================
-             TABLE
+             TABLE WRAPPER
         ================================================== --}}
 
-        <div class="table-wrapper">
+        <div class="data-center-table-wrapper">
 
-            <table class="datacenter-table">
+            <table class="data-center-table">
 
                 <thead>
 
                     <tr>
 
-                        <th>ID</th>
-
                         <th>
-                            NAMA<br>
-                            INFRASTRUKTUR
+                            No
                         </th>
 
                         <th>
-                            SPESIFIKASI
+                            ID
                         </th>
 
                         <th>
-                            PENGADAAN
+                            Nama Infrastruktur
                         </th>
 
                         <th>
-                            TGL.<br>
-                            PENGADAAN
+                            Spesifikasi
                         </th>
 
                         <th>
-                            TGL.<br>
-                            BERAKHIR
+                            Pengadaan
                         </th>
 
                         <th>
-                            HARGA
+                            Harga
                         </th>
 
                         <th>
-                            STATUS
+                            Tanggal Pengadaan
                         </th>
 
                         <th>
-                            VERIFIKASI
+                            Tanggal Berakhir
                         </th>
 
                         <th>
-                            KOMENTAR
+                            Status
                         </th>
 
                         <th>
-                            AKSI
+                            Verifikasi
+                        </th>
+
+                        <th>
+                            Komentar
+                        </th>
+
+                        <th>
+                            Aksi
                         </th>
 
                     </tr>
@@ -1489,201 +1594,400 @@
                 </thead>
 
 
-                <tbody id="dataCenterTable">
+                <tbody id="dataCenterTableBody">
 
 
-                    @forelse ($dataCenters as $dataCenter)
+                    @forelse($dataCenters as $dataCenter)
 
                         @php
 
-                            $statusValue =
-                                $dataCenter->status_otomatis
-                                ?? $dataCenter->status
-                                ?? 'Tersedia';
+                            /*
+                             * STATUS OTOMATIS
+                             *
+                             * Beli
+                             *      -> Tidak Berakhir
+                             *
+                             * Sewa > 30 hari
+                             *      -> Digunakan
+                             *
+                             * Sewa <= 30 hari
+                             *      -> Akan Habis
+                             *
+                             * Sewa lewat tanggal
+                             *      -> Expired
+                             */
+
+                            $pengadaanLower =
+                                strtolower(
+                                    trim(
+                                        $dataCenter->pengadaan ?? ''
+                                    )
+                                );
+
+                            $statusLabel =
+                                'Tidak Berakhir';
+
+                            $statusClass =
+                                'status-perpetual';
 
 
-                            $statusClass = match (
-                                strtolower(trim($statusValue))
+                            if (
+                                $pengadaanLower === 'sewa' &&
+                                $dataCenter->tanggal_berakhir
                             ) {
 
-                                'tersedia' =>
-                                    'status-tersedia',
+                                $today =
+                                    now()->startOfDay();
 
-                                'digunakan' =>
-                                    'status-digunakan',
+                                $endDate =
+                                    \Carbon\Carbon::parse(
+                                        $dataCenter->tanggal_berakhir
+                                    )->startOfDay();
 
-                                'akan habis' =>
-                                    'status-akan-habis',
-
-                                'expired' =>
-                                    'status-expired',
-
-                                default =>
-                                    'status-default',
-
-                            };
+                                $daysLeft =
+                                    $today->diffInDays(
+                                        $endDate,
+                                        false
+                                    );
 
 
-                            $verifikasiValue =
-                                $dataCenter->verifikasi
-                                ?? 'Menunggu disetujui';
+                                if ($daysLeft < 0) {
+
+                                    $statusLabel =
+                                        'Expired';
+
+                                    $statusClass =
+                                        'status-expired';
+
+                                } elseif ($daysLeft <= 30) {
+
+                                    $statusLabel =
+                                        'Akan Habis';
+
+                                    $statusClass =
+                                        'status-warning';
+
+                                } else {
+
+                                    $statusLabel =
+                                        'Digunakan';
+
+                                    $statusClass =
+                                        'status-active';
+
+                                }
+
+                            }
 
 
-                            $verifikasiClass = match (
-                                strtolower(trim($verifikasiValue))
+                            /*
+                             * VERIFIKASI
+                             */
+
+                            $verifikasi =
+                                strtolower(
+                                    $dataCenter->verifikasi
+                                    ?? 'menunggu'
+                                );
+
+
+                            $verifikasiLabel =
+                                match ($verifikasi) {
+
+                                    'disetujui',
+                                    'approved',
+                                    'approve'
+                                        => 'Disetujui',
+
+                                    'ditolak',
+                                    'rejected',
+                                    'reject'
+                                        => 'Ditolak',
+
+                                    default
+                                        => 'Menunggu',
+
+                                };
+
+
+                            $verifikasiClass =
+                                match ($verifikasi) {
+
+                                    'disetujui',
+                                    'approved',
+                                    'approve'
+                                        => 'verifikasi-disetujui',
+
+                                    'ditolak',
+                                    'rejected',
+                                    'reject'
+                                        => 'verifikasi-ditolak',
+
+                                    default
+                                        => 'verifikasi-menunggu',
+
+                                };
+
+
+                            /*
+                             * TAHUN
+                             */
+
+                            $tahunData = null;
+
+                            if (
+                                $dataCenter->tanggal_pengadaan
                             ) {
 
-                                'menunggu disetujui' =>
-                                    'verifikasi-menunggu',
+                                $tahunData =
+                                    \Carbon\Carbon::parse(
+                                        $dataCenter->tanggal_pengadaan
+                                    )->format('Y');
 
-                                'disetujui' =>
-                                    'verifikasi-disetujui',
-
-                                'ditolak' =>
-                                    'verifikasi-ditolak',
-
-                                default =>
-                                    'verifikasi-menunggu',
-
-                            };
+                            }
 
                         @endphp
 
 
-                        <tr>
+                        <tr
+                            data-search="{{ strtolower(
+                                ($dataCenter->id ?? '') . ' ' .
+                                ($dataCenter->nama_infrastruktur ?? '') . ' ' .
+                                ($dataCenter->spesifikasi ?? '') . ' ' .
+                                ($dataCenter->pengadaan ?? '') . ' ' .
+                                ($dataCenter->harga ?? '') . ' ' .
+                                ($statusLabel ?? '') . ' ' .
+                                ($verifikasiLabel ?? '') . ' ' .
+                                ($dataCenter->komentar ?? '')
+                            ) }}"
+                            data-status="{{ strtolower($statusLabel) }}"
+                            data-pengadaan="{{ strtolower($dataCenter->pengadaan ?? '') }}"
+                            data-verifikasi="{{ strtolower($verifikasiLabel) }}"
+                            data-tahun="{{ $tahunData }}"
+                        >
 
 
-                            <td class="id">
-                                {{ $dataCenter->id }}
-                            </td>
-
-
-                            <td
-                                title="{{ $dataCenter->nama_infrastruktur }}"
-                            >
-                                {{ $dataCenter->nama_infrastruktur }}
-                            </td>
-
-
-                            <td
-                                title="{{ $dataCenter->spesifikasi }}"
-                            >
-
-                                @if ($dataCenter->spesifikasi)
-
-                                    {{ $dataCenter->spesifikasi }}
-
-                                @else
-
-                                    -
-
-                                @endif
-
-                            </td>
-
+                            {{-- NO --}}
 
                             <td>
-                                {{ $dataCenter->pengadaan }}
+                                {{ $loop->iteration }}
                             </td>
 
+
+                            {{-- ID --}}
 
                             <td>
 
-                                @if ($dataCenter->tanggal_pengadaan)
+                                <span class="data-center-code">
 
-                                    {{ $dataCenter->tanggal_pengadaan->format('d/m/Y') }}
-
-                                @else
-
-                                    -
-
-                                @endif
-
-                            </td>
-
-
-                            <td>
-
-                                @if ($dataCenter->tanggal_berakhir)
-
-                                    {{ $dataCenter->tanggal_berakhir->format('d/m/Y') }}
-
-                                @else
-
-                                    -
-
-                                @endif
-
-                            </td>
-
-
-                            <td>
-
-                                Rp
-                                {{ number_format($dataCenter->harga, 0, ',', '.') }}
-
-                            </td>
-
-
-                            <td>
-
-                                <span class="status {{ $statusClass }}">
-
-                                    {{ $statusValue }}
+                                    {{ $dataCenter->id }}
 
                                 </span>
 
                             </td>
 
 
+                            {{-- NAMA --}}
+
                             <td>
 
-                                <span class="verifikasi {{ $verifikasiClass }}">
+                                <div class="data-center-name">
 
-                                    {{ $verifikasiValue }}
+                                    {{ $dataCenter->nama_infrastruktur }}
 
-                                </span>
+                                </div>
 
                             </td>
 
 
-                            <td
-                                class="komentar-cell {{ !$dataCenter->komentar ? 'empty' : '' }}"
-                                title="{{ $dataCenter->komentar ?? '' }}"
-                            >
+                            {{-- SPESIFIKASI --}}
 
-                                @if ($dataCenter->komentar)
+                            <td>
 
-                                    {{ $dataCenter->komentar }}
+                                @if($dataCenter->spesifikasi)
+
+                                    <div class="data-center-spec">
+
+                                        {{ $dataCenter->spesifikasi }}
+
+                                    </div>
 
                                 @else
 
-                                    -
+                                    <span class="data-center-date-empty">
+                                        -
+                                    </span>
 
                                 @endif
 
                             </td>
 
 
+                            {{-- PENGADAAN --}}
+
                             <td>
 
-                                <div class="action">
+                                @if(
+                                    strtolower(
+                                        $dataCenter->pengadaan ?? ''
+                                    ) === 'sewa'
+                                )
 
+                                    <span
+                                        class="procurement-badge procurement-sewa"
+                                    >
+                                        Sewa
+                                    </span>
+
+                                @else
+
+                                    <span
+                                        class="procurement-badge procurement-beli"
+                                    >
+                                        Beli
+                                    </span>
+
+                                @endif
+
+                            </td>
+
+
+                            {{-- HARGA --}}
+
+                            <td>
+
+                                <span class="data-center-price">
+
+                                    Rp
+                                    {{ number_format(
+                                        (float) ($dataCenter->harga ?? 0),
+                                        0,
+                                        ',',
+                                        '.'
+                                    ) }}
+
+                                </span>
+
+                            </td>
+
+
+                            {{-- TANGGAL PENGADAAN --}}
+
+                            <td>
+
+                                @if($dataCenter->tanggal_pengadaan)
+
+                                    <span class="data-center-date">
+
+                                        {{ \Carbon\Carbon::parse(
+                                            $dataCenter->tanggal_pengadaan
+                                        )->format('d M Y') }}
+
+                                    </span>
+
+                                @else
+
+                                    <span class="data-center-date-empty">
+                                        -
+                                    </span>
+
+                                @endif
+
+                            </td>
+
+
+                            {{-- TANGGAL BERAKHIR --}}
+
+                            <td>
+
+                                @if($dataCenter->tanggal_berakhir)
+
+                                    <span class="data-center-date">
+
+                                        {{ \Carbon\Carbon::parse(
+                                            $dataCenter->tanggal_berakhir
+                                        )->format('d M Y') }}
+
+                                    </span>
+
+                                @else
+
+                                    <span class="data-center-date-empty">
+                                        Tidak Berakhir
+                                    </span>
+
+                                @endif
+
+                            </td>
+
+
+                            {{-- STATUS --}}
+
+                            <td>
+
+                                <span
+                                    class="data-center-status-badge {{ $statusClass }}"
+                                >
+
+                                    {{ $statusLabel }}
+
+                                </span>
+
+                            </td>
+
+
+                            {{-- VERIFIKASI --}}
+
+                            <td>
+
+                                <span
+                                    class="verifikasi-badge {{ $verifikasiClass }}"
+                                >
+
+                                    {{ $verifikasiLabel }}
+
+                                </span>
+
+                            </td>
+
+
+                            {{-- KOMENTAR --}}
+
+                            <td>
+
+                                @if($dataCenter->komentar)
+
+                                    <div class="data-center-comment">
+
+                                        {{ $dataCenter->komentar }}
+
+                                    </div>
+
+                                @else
+
+                                    <span class="data-center-date-empty">
+                                        -
+                                    </span>
+
+                                @endif
+
+                            </td>
+
+
+                            {{-- AKSI --}}
+
+                            <td>
+
+                                <div class="data-center-action-buttons">
+
+
+                                    {{-- EDIT --}}
 
                                     <button
                                         type="button"
-                                        class="edit-btn"
+                                        class="data-center-action-button data-center-edit-button"
                                         title="Edit"
-                                        onclick='openEditModal(
-                                            @json($dataCenter->id),
-                                            @json($dataCenter->nama_infrastruktur),
-                                            @json($dataCenter->spesifikasi),
-                                            @json($dataCenter->pengadaan),
-                                            @json($dataCenter->tanggal_pengadaan ? $dataCenter->tanggal_pengadaan->format("Y-m-d") : ""),
-                                            @json($dataCenter->tanggal_berakhir ? $dataCenter->tanggal_berakhir->format("Y-m-d") : ""),
-                                            @json($dataCenter->harga),
-                                            @json($dataCenter->status)
-                                        )'
+                                        onclick="openEditDataCenterModal(@js($dataCenter->id))"
                                     >
 
                                         <i class="bi bi-pencil-fill"></i>
@@ -1691,11 +1995,18 @@
                                     </button>
 
 
+                                    {{-- DELETE --}}
+
                                     <form
-                                        action="{{ route('data-center.destroy', $dataCenter->id) }}"
+                                        action="{{ route(
+                                            'data-center.destroy',
+                                            $dataCenter->id
+                                        ) }}"
                                         method="POST"
-                                        onsubmit="return confirm('Yakin ingin mengajukan penghapusan data ini?')"
-                                        style="display: inline;"
+                                        class="data-center-delete-form"
+                                        onsubmit="return confirm(
+                                            'Yakin ingin menghapus data Data Center ini?'
+                                        );"
                                     >
 
                                         @csrf
@@ -1704,8 +2015,8 @@
 
                                         <button
                                             type="submit"
-                                            class="delete-btn"
-                                            title="Ajukan Penghapusan"
+                                            class="data-center-action-button data-center-delete-button"
+                                            title="Hapus"
                                         >
 
                                             <i class="bi bi-trash-fill"></i>
@@ -1714,40 +2025,45 @@
 
                                     </form>
 
-
                                 </div>
 
                             </td>
 
-
                         </tr>
+
 
                     @empty
 
                         <tr>
 
                             <td
-                                colspan="11"
-                                class="empty-data"
+                                colspan="12"
+                                style="padding:0;"
                             >
 
-                                @if (request('tahun'))
+                                <div class="data-center-empty-state">
 
-                                    Tidak ada data data center untuk tahun
-                                    {{ request('tahun') }}.
+                                    <div class="data-center-empty-icon">
 
-                                @else
+                                        <i class="bi bi-server"></i>
 
-                                    Belum ada data dalam Data Center.
+                                    </div>
 
-                                @endif
+                                    <h3>
+                                        Belum ada data Data Center
+                                    </h3>
+
+                                    <p>
+                                        Data infrastruktur Data Center belum tersedia.
+                                    </p>
+
+                                </div>
 
                             </td>
 
                         </tr>
 
                     @endforelse
-
 
                 </tbody>
 
@@ -1760,64 +2076,33 @@
              TABLE FOOTER
         ================================================== --}}
 
-        <div class="table-footer">
+        @if(
+            method_exists($dataCenters, 'links')
+            &&
+            $dataCenters->hasPages()
+        )
 
-            <div class="showing-info">
+            <div class="data-center-table-footer">
 
-                Showing
-                {{ $dataCenters->count() }}
-                entries
+                <span class="data-center-showing-text">
 
-                @if (request('tahun'))
+                    Menampilkan
+                    {{ $dataCenters->firstItem() }}
+                    -
+                    {{ $dataCenters->lastItem() }}
+                    dari
+                    {{ $dataCenters->total() }}
+                    data
 
-                    — Tahun {{ request('tahun') }}
+                </span>
 
-                @endif
-
-            </div>
-
-
-            <div class="pagination">
-
-                <button
-                    type="button"
-                    class="page-btn"
-                >
-                    <i class="bi bi-chevron-left"></i>
-                </button>
-
-                <button
-                    type="button"
-                    class="page-btn active"
-                >
-                    1
-                </button>
-
-                <button
-                    type="button"
-                    class="page-btn"
-                >
-                    2
-                </button>
-
-                <button
-                    type="button"
-                    class="page-btn"
-                >
-                    3
-                </button>
-
-                <button
-                    type="button"
-                    class="page-btn"
-                >
-                    <i class="bi bi-chevron-right"></i>
-                </button>
+                <div>
+                    {{ $dataCenters->links() }}
+                </div>
 
             </div>
 
-        </div>
-
+        @endif
 
     </div>
 
@@ -1825,320 +2110,554 @@
 
 
 {{-- =========================================================
-     MODAL TAMBAH
+     MODAL TAMBAH / EDIT DATA CENTER
 ========================================================= --}}
 
 <div
-    class="modal"
-    id="addModal"
+    id="dataCenterModal"
+    class="data-center-modal-overlay"
+    aria-hidden="true"
 >
 
-    <div class="modal-content">
+    <div
+        class="data-center-modal"
+        role="dialog"
+        aria-modal="true"
+        aria-labelledby="dataCenterModalTitle"
+    >
 
-        <div class="modal-header">
 
-            <div class="modal-title-wrapper">
+        {{-- =================================================
+             MODAL HEADER
+        ================================================== --}}
 
-                <h2>
-                    Tambah Data Infrastruktur
-                </h2>
+        <div class="data-center-modal-header">
 
-                <p class="modal-subtitle">
-                    Masukan detail aset infrastruktur baru ke dalam sistem.
-                </p>
+            <div class="data-center-modal-header-left">
+
+                <div class="data-center-modal-icon">
+
+                    <i class="bi bi-server"></i>
+
+                </div>
+
+
+                <div class="data-center-modal-header-text">
+
+                    <h2 id="dataCenterModalTitle">
+                        Tambah Data Center
+                    </h2>
+
+                    <p id="dataCenterModalDescription">
+                        Masukan detail infrastruktur Data Center baru ke dalam sistem.
+                    </p>
+
+                </div>
 
             </div>
 
+
             <button
                 type="button"
-                class="close"
-                onclick="closeAddModal()"
+                class="data-center-modal-close"
+                onclick="closeDataCenterModal()"
+                title="Tutup"
             >
 
-                &times;
+                <i class="bi bi-x-lg"></i>
 
             </button>
 
         </div>
 
 
-        <div class="modal-body">
+        {{-- =================================================
+             FORM
+        ================================================== --}}
 
-            <form
-                action="{{ route('data-center.store') }}"
-                method="POST"
-                id="addForm"
+        <form
+            id="dataCenterForm"
+            method="POST"
+        >
+
+            @csrf
+
+            <input
+                type="hidden"
+                name="_method"
+                id="dataCenterMethod"
+                value="POST"
             >
 
-                @csrf
+
+            {{-- =================================================
+                 MODAL BODY
+            ================================================== --}}
+
+            <div class="data-center-modal-body">
 
 
-                <div class="form-group">
+                {{-- =================================================
+                     INFORMASI DATA CENTER
+                ================================================== --}}
 
-                    <label>
-                        Nama Infrastruktur
-                        <span>*</span>
-                    </label>
-
-                    <input
-                        type="text"
-                        name="nama_infrastruktur"
-                        placeholder="Server Rack"
-                        value="{{ old('nama_infrastruktur') }}"
-                        required
-                    >
-
-                </div>
+                <div class="data-center-form-card">
 
 
-                <div class="form-group">
+                    <div class="data-center-form-card-header">
 
-                    <label>
-                        Spesifikasi
-                    </label>
+                        <i class="bi bi-server"></i>
 
-                    <textarea
-                        name="spesifikasi"
-                        placeholder="Masukkan spesifikasi"
-                    >{{ old('spesifikasi') }}</textarea>
-
-                    <small class="form-info">
-                        Spesifikasi dapat dikosongkan jika tidak tersedia.
-                    </small>
-
-                </div>
-
-
-                <div class="form-group">
-
-                    <label>
-                        Pengadaan
-                        <span>*</span>
-                    </label>
-
-                    <select
-                        id="pengadaan"
-                        name="pengadaan"
-                        required
-                    >
-
-                        <option value="">
-                            Pilih Jenis Pengadaan
-                        </option>
-
-                        <option
-                            value="Sewa"
-                            {{ old('pengadaan') === 'Sewa' ? 'selected' : '' }}
-                        >
-                            Sewa
-                        </option>
-
-                        <option
-                            value="Beli"
-                            {{ old('pengadaan') === 'Beli' ? 'selected' : '' }}
-                        >
-                            Beli
-                        </option>
-
-                    </select>
-
-                </div>
-
-
-                <div class="form-row">
-
-
-                    <div class="form-group">
-
-                        <label>
-                            Harga
-                            <span>*</span>
-                        </label>
-
-                        <input
-                            type="number"
-                            name="harga"
-                            placeholder="Rp"
-                            value="{{ old('harga', 0) }}"
-                            min="0"
-                            required
-                        >
+                        <h3>
+                            Informasi Data Center
+                        </h3>
 
                     </div>
 
 
-                    <div class="form-group">
+                    <div class="data-center-form-grid">
 
-                        <label>
-                            Status
-                            <span>*</span>
-                        </label>
 
-                        <select
-                            name="status"
-                            id="addStatus"
-                            required
-                        >
+                        {{-- ID --}}
 
-                            <option value="">
-                                Pilih Status
-                            </option>
+                        <div class="data-center-form-group">
 
-                            <option
-                                value="Tersedia"
-                                {{ old('status') === 'Tersedia' ? 'selected' : '' }}
+                            <label for="data_center_id">
+
+                                ID Data Center
+
+                            </label>
+
+                            <input
+                                type="text"
+                                id="data_center_id"
+                                name="id"
+                                value="{{ old('id') }}"
+                                placeholder="ID Data Center"
+                                readonly
                             >
-                                Tersedia
-                            </option>
 
-                            <option
-                                value="Digunakan"
-                                {{ old('status') === 'Digunakan' ? 'selected' : '' }}
+                            <small class="data-center-form-info">
+
+                                <i class="bi bi-info-circle"></i>
+
+                                ID dibuat otomatis oleh sistem.
+
+                            </small>
+
+                        </div>
+
+
+                        {{-- NAMA --}}
+
+                        <div class="data-center-form-group">
+
+                            <label for="data_center_nama_infrastruktur">
+
+                                Nama Infrastruktur
+
+                                <span>*</span>
+
+                            </label>
+
+                            <input
+                                type="text"
+                                id="data_center_nama_infrastruktur"
+                                name="nama_infrastruktur"
+                                value="{{ old('nama_infrastruktur') }}"
+                                placeholder="Masukkan nama infrastruktur Data Center"
+                                required
                             >
-                                Digunakan
-                            </option>
 
-                        </select>
+                            @error('nama_infrastruktur')
+
+                                <small class="data-center-form-error">
+                                    {{ $message }}
+                                </small>
+
+                            @enderror
+
+                        </div>
+
+
+                        {{-- SPESIFIKASI --}}
+
+                        <div class="data-center-form-group full">
+
+                            <label for="data_center_spesifikasi">
+
+                                Spesifikasi
+
+                            </label>
+
+                            <textarea
+                                id="data_center_spesifikasi"
+                                name="spesifikasi"
+                                placeholder="Masukkan spesifikasi Data Center"
+                            >{{ old('spesifikasi') }}</textarea>
+
+                            @error('spesifikasi')
+
+                                <small class="data-center-form-error">
+                                    {{ $message }}
+                                </small>
+
+                            @enderror
+
+                        </div>
+
+
+                    </div>
+
+                </div>
+
+
+                {{-- =================================================
+                     PENGADAAN
+                ================================================== --}}
+
+                <div class="data-center-form-card">
+
+
+                    <div class="data-center-form-card-header">
+
+                        <i class="bi bi-receipt"></i>
+
+                        <h3>
+                            Pengadaan
+                        </h3>
 
                     </div>
 
 
-                    <div class="form-group">
+                    <div class="data-center-form-grid">
 
-                        <label>
-                            Tanggal Pengadaan
-                            <span>*</span>
-                        </label>
 
-                        <div class="date-input">
+                        {{-- PENGADAAN --}}
 
-                            <i class="bi bi-calendar3"></i>
+                        <div class="data-center-form-group">
+
+                            <label for="data_center_pengadaan">
+
+                                Pengadaan
+
+                                <span>*</span>
+
+                            </label>
+
+                            <select
+                                id="data_center_pengadaan"
+                                name="pengadaan"
+                                onchange="updateDataCenterPengadaan()"
+                                required
+                            >
+
+                                <option value="">
+                                    Pilih pengadaan
+                                </option>
+
+                                <option
+                                    value="Beli"
+                                    {{ old('pengadaan') === 'Beli' ? 'selected' : '' }}
+                                >
+                                    Beli
+                                </option>
+
+                                <option
+                                    value="Sewa"
+                                    {{ old('pengadaan') === 'Sewa' ? 'selected' : '' }}
+                                >
+                                    Sewa
+                                </option>
+
+                            </select>
+
+                            @error('pengadaan')
+
+                                <small class="data-center-form-error">
+                                    {{ $message }}
+                                </small>
+
+                            @enderror
+
+                        </div>
+
+
+                        {{-- HARGA --}}
+
+                        <div class="data-center-form-group">
+
+                            <label for="data_center_harga">
+
+                                Harga
+
+                                <span>*</span>
+
+                            </label>
+
+                            <div class="data-center-price-input">
+
+                                <span class="data-center-price-prefix">
+                                    Rp
+                                </span>
+
+                                <input
+                                    type="number"
+                                    id="data_center_harga"
+                                    name="harga"
+                                    value="{{ old('harga') }}"
+                                    placeholder="0"
+                                    min="0"
+                                    step="0.01"
+                                    required
+                                >
+
+                            </div>
+
+                            @error('harga')
+
+                                <small class="data-center-form-error">
+                                    {{ $message }}
+                                </small>
+
+                            @enderror
+
+                        </div>
+
+
+                        {{-- TANGGAL PENGADAAN --}}
+
+                        <div class="data-center-form-group">
+
+                            <label for="data_center_tanggal_pengadaan">
+
+                                Tanggal Pengadaan
+
+                                <span>*</span>
+
+                            </label>
 
                             <input
                                 type="date"
-                                id="tanggal_pengadaan"
+                                id="data_center_tanggal_pengadaan"
                                 name="tanggal_pengadaan"
                                 value="{{ old('tanggal_pengadaan') }}"
+                                onchange="calculateDataCenterEndDate()"
                                 required
                             >
 
+                            @error('tanggal_pengadaan')
+
+                                <small class="data-center-form-error">
+                                    {{ $message }}
+                                </small>
+
+                            @enderror
+
                         </div>
 
-                    </div>
 
+                        {{-- TANGGAL BERAKHIR --}}
 
-                </div>
+                        <div class="data-center-form-group">
 
+                            <label for="data_center_tanggal_berakhir">
 
-                <div class="form-group">
+                                Tanggal Berakhir
 
-                    <label>
-                        Tanggal Berakhir
-                    </label>
-
-                    <div class="date-input">
-
-                        <i class="bi bi-calendar3"></i>
-
-                        <input
-                            type="date"
-                            id="tanggal_berakhir"
-                            name="tanggal_berakhir"
-                            value="{{ old('tanggal_berakhir') }}"
-                        >
-
-                    </div>
-
-                    <small
-                        id="tanggal-info"
-                        class="form-info"
-                    >
-                        Untuk pengadaan Beli, tanggal berakhir dapat dikosongkan.
-                    </small>
-
-                </div>
-
-
-                <div
-                    id="sewa-section"
-                    class="sewa-section"
-                >
-
-                    <div class="form-group">
-
-                        <label>
-                            Periode Sewa
-                        </label>
-
-                        <select id="periode_sewa">
-
-                            <option value="">
-                                Pilih Periode
-                            </option>
-
-                            <option value="1">
-                                1 Bulan
-                            </option>
-
-                            <option value="3">
-                                3 Bulan
-                            </option>
-
-                            <option value="6">
-                                6 Bulan
-                            </option>
-
-                            <option value="12">
-                                12 Bulan
-                            </option>
-
-                            <option value="custom">
-                                Lainnya
-                            </option>
-
-                        </select>
-
-                    </div>
-
-
-                    <div
-                        id="custom-period"
-                        class="custom-period"
-                    >
-
-                        <div class="form-group">
-
-                            <label>
-                                Jumlah
                             </label>
 
                             <input
-                                type="number"
-                                id="custom_jumlah"
-                                min="1"
-                                placeholder="Contoh: 2"
+                                type="date"
+                                id="data_center_tanggal_berakhir"
+                                name="tanggal_berakhir"
+                                value="{{ old('tanggal_berakhir') }}"
                             >
+
+                            <small class="data-center-form-info">
+
+                                <i class="bi bi-info-circle"></i>
+
+                                Untuk pembelian, tanggal berakhir dapat dikosongkan.
+
+                            </small>
+
+                            @error('tanggal_berakhir')
+
+                                <small class="data-center-form-error">
+                                    {{ $message }}
+                                </small>
+
+                            @enderror
 
                         </div>
 
 
-                        <div class="form-group">
+                    </div>
 
-                            <label>
-                                Satuan
-                            </label>
 
-                            <select id="custom_satuan">
+                    {{-- =================================================
+                         SEWA
+                    ================================================== --}}
 
-                                <option value="months">
-                                    Bulan
-                                </option>
+                    <div
+                        id="dataCenterSewaSection"
+                        class="{{ old('pengadaan') === 'Sewa' ? 'show' : '' }}"
+                    >
 
-                                <option value="years">
-                                    Tahun
-                                </option>
+                        <div class="data-center-sewa-title">
 
-                            </select>
+                            Periode Sewa
+
+                        </div>
+
+
+                        <div class="data-center-sewa-grid">
+
+
+                            {{-- PERIODE --}}
+
+                            <div class="data-center-form-group">
+
+                                <label for="data_center_periode_sewa">
+
+                                    Periode Pembayaran
+
+                                </label>
+
+                                <select
+                                    id="data_center_periode_sewa"
+                                    name="periode_sewa"
+                                    onchange="updateDataCenterCustomPeriod(); calculateDataCenterEndDate();"
+                                >
+
+                                    <option value="">
+                                        Pilih periode
+                                    </option>
+
+                                    <option
+                                        value="Monthly"
+                                        {{ old('periode_sewa') === 'Monthly' ? 'selected' : '' }}
+                                    >
+                                        Monthly
+                                    </option>
+
+                                    <option
+                                        value="3 Months"
+                                        {{ old('periode_sewa') === '3 Months' ? 'selected' : '' }}
+                                    >
+                                        3 Months
+                                    </option>
+
+                                    <option
+                                        value="6 Months"
+                                        {{ old('periode_sewa') === '6 Months' ? 'selected' : '' }}
+                                    >
+                                        6 Months
+                                    </option>
+
+                                    <option
+                                        value="Yearly"
+                                        {{ old('periode_sewa') === 'Yearly' ? 'selected' : '' }}
+                                    >
+                                        Yearly
+                                    </option>
+
+                                    <option
+                                        value="Custom"
+                                        {{ old('periode_sewa') === 'Custom' ? 'selected' : '' }}
+                                    >
+                                        Custom
+                                    </option>
+
+                                </select>
+
+                            </div>
+
+
+                            {{-- KETERANGAN --}}
+
+                            <div class="data-center-form-group">
+
+                                <label>
+                                    Keterangan
+                                </label>
+
+                                <div
+                                    class="data-center-form-info"
+                                    style="margin-top:10px;"
+                                >
+
+                                    <i class="bi bi-info-circle"></i>
+
+                                    Pilih periode sesuai dengan kontrak atau pembayaran Data Center.
+
+                                </div>
+
+                            </div>
+
+
+                        </div>
+
+
+                        {{-- CUSTOM --}}
+
+                        <div
+                            id="dataCenterCustomPeriod"
+                            class="{{ old('periode_sewa') === 'Custom' ? 'show' : '' }}"
+                        >
+
+
+                            <div class="data-center-form-group">
+
+                                <label for="data_center_durasi_sewa">
+
+                                    Durasi
+
+                                </label>
+
+                                <input
+                                    type="number"
+                                    id="data_center_durasi_sewa"
+                                    name="durasi_sewa"
+                                    value="{{ old('durasi_sewa') }}"
+                                    min="1"
+                                    placeholder="Contoh: 18"
+                                    onchange="calculateDataCenterEndDate()"
+                                >
+
+                            </div>
+
+
+                            <div class="data-center-form-group">
+
+                                <label for="data_center_satuan_sewa">
+
+                                    Satuan
+
+                                </label>
+
+                                <select
+                                    id="data_center_satuan_sewa"
+                                    name="satuan_sewa"
+                                    onchange="calculateDataCenterEndDate()"
+                                >
+
+                                    <option value="Months">
+                                        Bulan
+                                    </option>
+
+                                    <option
+                                        value="Years"
+                                        {{ old('satuan_sewa') === 'Years' ? 'selected' : '' }}
+                                    >
+                                        Tahun
+                                    </option>
+
+                                </select>
+
+                            </div>
+
 
                         </div>
 
@@ -2146,30 +2665,41 @@
 
                 </div>
 
-
-                <div class="form-actions">
-
-                    <button
-                        type="button"
-                        class="cancel-btn"
-                        onclick="closeAddModal()"
-                    >
-                        Batal
-                    </button>
-
-                    <button
-                        type="submit"
-                        class="save-btn"
-                    >
-                        Simpan
-                    </button>
-
-                </div>
+            </div>
 
 
-            </form>
+            {{-- =================================================
+                 FOOTER
+            ================================================== --}}
 
-        </div>
+            <div class="data-center-modal-footer">
+
+                <button
+                    type="button"
+                    class="data-center-btn-batal"
+                    onclick="closeDataCenterModal()"
+                >
+
+                    Batal
+
+                </button>
+
+
+                <button
+                    type="submit"
+                    class="data-center-btn-simpan"
+                    id="dataCenterSaveButton"
+                >
+
+                    <i class="bi bi-check-lg"></i>
+
+                    Simpan Data Center
+
+                </button>
+
+            </div>
+
+        </form>
 
     </div>
 
@@ -2177,912 +2707,596 @@
 
 
 {{-- =========================================================
-     MODAL EDIT
+     JAVASCRIPT
 ========================================================= --}}
 
-<div
-    class="modal"
-    id="editModal"
->
-
-    <div class="modal-content">
-
-        <div class="modal-header">
-
-            <div class="modal-title-wrapper">
-
-                <h2>
-                    Edit Data Infrastruktur
-                </h2>
-
-                <p class="modal-subtitle">
-                    Ubah detail aset infrastruktur yang sudah tersimpan.
-                </p>
-
-            </div>
-
-            <button
-                type="button"
-                class="close"
-                onclick="closeEditModal()"
-            >
-
-                &times;
-
-            </button>
-
-        </div>
-
-
-        <div class="modal-body">
-
-            <form
-                id="editForm"
-                method="POST"
-            >
-
-                @csrf
-
-                @method('PUT')
-
-
-                <div class="form-group">
-
-                    <label>
-                        ID Data Center
-                    </label>
-
-                    <input
-                        type="text"
-                        id="editId"
-                        readonly
-                    >
-
-                </div>
-
-
-                <div class="form-group">
-
-                    <label>
-                        Nama Infrastruktur
-                        <span>*</span>
-                    </label>
-
-                    <input
-                        type="text"
-                        name="nama_infrastruktur"
-                        id="editNama"
-                        required
-                    >
-
-                </div>
-
-
-                <div class="form-group">
-
-                    <label>
-                        Spesifikasi
-                    </label>
-
-                    <textarea
-                        name="spesifikasi"
-                        id="editSpesifikasi"
-                    ></textarea>
-
-                    <small class="form-info">
-                        Spesifikasi dapat dikosongkan jika tidak tersedia.
-                    </small>
-
-                </div>
-
-
-                <div class="form-group">
-
-                    <label>
-                        Pengadaan
-                        <span>*</span>
-                    </label>
-
-                    <select
-                        name="pengadaan"
-                        id="editPengadaan"
-                        required
-                    >
-
-                        <option value="Sewa">
-                            Sewa
-                        </option>
-
-                        <option value="Beli">
-                            Beli
-                        </option>
-
-                    </select>
-
-                </div>
-
-
-                <div class="form-row">
-
-
-                    <div class="form-group">
-
-                        <label>
-                            Harga
-                            <span>*</span>
-                        </label>
-
-                        <input
-                            type="number"
-                            name="harga"
-                            id="editHarga"
-                            min="0"
-                            required
-                        >
-
-                    </div>
-
-
-                    <div class="form-group">
-
-                        <label>
-                            Status
-                            <span>*</span>
-                        </label>
-
-                        <select
-                            name="status"
-                            id="editStatus"
-                            required
-                        >
-
-                            <option value="Tersedia">
-                                Tersedia
-                            </option>
-
-                            <option value="Digunakan">
-                                Digunakan
-                            </option>
-
-                        </select>
-
-                    </div>
-
-
-                    <div class="form-group">
-
-                        <label>
-                            Tanggal Pengadaan
-                        </label>
-
-                        <div class="date-input">
-
-                            <i class="bi bi-calendar3"></i>
-
-                            <input
-                                type="date"
-                                name="tanggal_pengadaan"
-                                id="editTanggalPengadaan"
-                                required
-                            >
-
-                        </div>
-
-                    </div>
-
-
-                </div>
-
-
-                <div class="form-group">
-
-                    <label>
-                        Tanggal Berakhir
-                    </label>
-
-                    <div class="date-input">
-
-                        <i class="bi bi-calendar3"></i>
-
-                        <input
-                            type="date"
-                            name="tanggal_berakhir"
-                            id="editTanggalBerakhir"
-                        >
-
-                    </div>
-
-                    <small
-                        id="editTanggalInfo"
-                        class="form-info"
-                    >
-                        Untuk pengadaan Beli, tanggal berakhir dapat dikosongkan.
-                    </small>
-
-                </div>
-
-
-                <div
-                    id="editSewaSection"
-                    class="sewa-section"
-                >
-
-                    <div class="form-group">
-
-                        <label>
-                            Periode Sewa
-                        </label>
-
-                        <select id="editPeriodeSewa">
-
-                            <option value="">
-                                Tidak mengubah periode
-                            </option>
-
-                            <option value="1">
-                                1 Bulan
-                            </option>
-
-                            <option value="3">
-                                3 Bulan
-                            </option>
-
-                            <option value="6">
-                                6 Bulan
-                            </option>
-
-                            <option value="12">
-                                12 Bulan
-                            </option>
-
-                            <option value="custom">
-                                Lainnya
-                            </option>
-
-                        </select>
-
-                    </div>
-
-
-                    <div
-                        id="editCustomPeriod"
-                        class="custom-period"
-                    >
-
-                        <div class="form-group">
-
-                            <label>
-                                Jumlah
-                            </label>
-
-                            <input
-                                type="number"
-                                id="editCustomJumlah"
-                                min="1"
-                                placeholder="Contoh: 2"
-                            >
-
-                        </div>
-
-
-                        <div class="form-group">
-
-                            <label>
-                                Satuan
-                            </label>
-
-                            <select id="editCustomSatuan">
-
-                                <option value="months">
-                                    Bulan
-                                </option>
-
-                                <option value="years">
-                                    Tahun
-                                </option>
-
-                            </select>
-
-                        </div>
-
-                    </div>
-
-                </div>
-
-
-                <div class="form-actions">
-
-                    <button
-                        type="button"
-                        class="cancel-btn"
-                        onclick="closeEditModal()"
-                    >
-                        Batal
-                    </button>
-
-                    <button
-                        type="submit"
-                        class="save-btn"
-                    >
-                        Update
-                    </button>
-
-                </div>
-
-
-            </form>
-
-        </div>
-
-    </div>
-
-</div>
-
+@push('scripts')
 
 <script>
 
-/* =========================================================
-   FILTER
-========================================================= */
+document.addEventListener('DOMContentLoaded', function () {
 
-function toggleFilter()
-{
-    const panel =
-        document.getElementById('filterPanel');
 
-    const button =
-        document.getElementById('filterButton');
+    /* =====================================================
+       SEARCH & FILTER
+    ===================================================== */
 
-    const arrow =
-        document.getElementById('filterArrow');
+    const searchInput =
+        document.getElementById('dataCenterSearch');
 
-    if (!panel || !button || !arrow)
-    {
-        return;
+    const statusFilter =
+        document.getElementById('dataCenterStatusFilter');
+
+    const pengadaanFilter =
+        document.getElementById('dataCenterPengadaanFilter');
+
+    const verifikasiFilter =
+        document.getElementById('dataCenterVerifikasiFilter');
+
+    const tahunFilter =
+        document.getElementById('dataCenterTahunFilter');
+
+    const tableBody =
+        document.getElementById('dataCenterTableBody');
+
+
+    function filterDataCenterTable() {
+
+        if (!tableBody) {
+            return;
+        }
+
+
+        const rows =
+            tableBody.querySelectorAll(
+                'tr[data-search]'
+            );
+
+
+        const searchValue =
+            (searchInput?.value || '')
+                .toLowerCase()
+                .trim();
+
+
+        const statusValue =
+            (statusFilter?.value || '')
+                .toLowerCase()
+                .trim();
+
+
+        const pengadaanValue =
+            (pengadaanFilter?.value || '')
+                .toLowerCase()
+                .trim();
+
+
+        const verifikasiValue =
+            (verifikasiFilter?.value || '')
+                .toLowerCase()
+                .trim();
+
+
+        const tahunValue =
+            (tahunFilter?.value || '')
+                .toLowerCase()
+                .trim();
+
+
+        rows.forEach(function (row) {
+
+            const rowSearch =
+                row.dataset.search || '';
+
+            const rowStatus =
+                row.dataset.status || '';
+
+            const rowPengadaan =
+                row.dataset.pengadaan || '';
+
+            const rowVerifikasi =
+                row.dataset.verifikasi || '';
+
+            const rowTahun =
+                row.dataset.tahun || '';
+
+
+            const matchSearch =
+                !searchValue ||
+                rowSearch.includes(searchValue);
+
+
+            const matchStatus =
+                !statusValue ||
+                rowStatus === statusValue;
+
+
+            const matchPengadaan =
+                !pengadaanValue ||
+                rowPengadaan === pengadaanValue;
+
+
+            const matchVerifikasi =
+                !verifikasiValue ||
+                rowVerifikasi === verifikasiValue;
+
+
+            const matchTahun =
+                !tahunValue ||
+                rowTahun === tahunValue;
+
+
+            row.style.display =
+                matchSearch &&
+                matchStatus &&
+                matchPengadaan &&
+                matchVerifikasi &&
+                matchTahun
+                    ? ''
+                    : 'none';
+
+        });
+
     }
 
-    if (panel.classList.contains('show'))
-    {
-        panel.classList.remove('show');
-        button.classList.remove('active');
 
-        arrow.classList.remove('bi-chevron-up');
-        arrow.classList.add('bi-chevron-down');
-    }
-    else
-    {
-        panel.classList.add('show');
-        button.classList.add('active');
+    if (searchInput) {
 
-        arrow.classList.remove('bi-chevron-down');
-        arrow.classList.add('bi-chevron-up');
-    }
-}
-
-
-/* =========================================================
-   ADD MODAL
-========================================================= */
-
-function openAddModal()
-{
-    document.getElementById('addModal').style.display = 'flex';
-}
-
-function closeAddModal()
-{
-    document.getElementById('addModal').style.display = 'none';
-}
-
-
-/* =========================================================
-   ADD ELEMENT
-========================================================= */
-
-const pengadaan =
-    document.getElementById('pengadaan');
-
-const tanggalPengadaan =
-    document.getElementById('tanggal_pengadaan');
-
-const tanggalBerakhir =
-    document.getElementById('tanggal_berakhir');
-
-const sewaSection =
-    document.getElementById('sewa-section');
-
-const periodeSewa =
-    document.getElementById('periode_sewa');
-
-const customPeriod =
-    document.getElementById('custom-period');
-
-const customJumlah =
-    document.getElementById('custom_jumlah');
-
-const customSatuan =
-    document.getElementById('custom_satuan');
-
-const tanggalInfo =
-    document.getElementById('tanggal-info');
-
-
-/* =========================================================
-   HITUNG TANGGAL SEWA
-========================================================= */
-
-function calculateEndDate()
-{
-    if (!pengadaan || pengadaan.value !== 'Sewa')
-    {
-        return;
-    }
-
-    if (!tanggalPengadaan.value)
-    {
-        tanggalBerakhir.value = '';
-        return;
-    }
-
-    let jumlah = 0;
-    let satuan = 'months';
-
-    if (
-        periodeSewa.value &&
-        periodeSewa.value !== 'custom'
-    )
-    {
-        jumlah =
-            parseInt(periodeSewa.value);
-    }
-
-    if (periodeSewa.value === 'custom')
-    {
-        jumlah =
-            parseInt(customJumlah.value) || 0;
-
-        satuan =
-            customSatuan.value;
-    }
-
-    if (jumlah <= 0)
-    {
-        tanggalBerakhir.value = '';
-        return;
-    }
-
-    const date =
-        new Date(
-            tanggalPengadaan.value + 'T00:00:00'
+        searchInput.addEventListener(
+            'input',
+            filterDataCenterTable
         );
 
-    if (satuan === 'years')
-    {
-        date.setFullYear(
-            date.getFullYear() + jumlah
-        );
-    }
-    else
-    {
-        date.setMonth(
-            date.getMonth() + jumlah
-        );
     }
 
-    const year =
-        date.getFullYear();
 
-    const month =
-        String(
-            date.getMonth() + 1
-        ).padStart(2, '0');
+    if (statusFilter) {
 
-    const day =
-        String(
-            date.getDate()
-        ).padStart(2, '0');
-
-    tanggalBerakhir.value =
-        `${year}-${month}-${day}`;
-}
-
-
-/* =========================================================
-   CUSTOM PERIOD
-========================================================= */
-
-function updateCustomPeriod()
-{
-    if (
-        periodeSewa.value === 'custom'
-    )
-    {
-        customPeriod.classList.add('show');
-    }
-    else
-    {
-        customPeriod.classList.remove('show');
-    }
-
-    calculateEndDate();
-}
-
-
-/* =========================================================
-   PENGADAAN
-========================================================= */
-
-function updatePengadaan()
-{
-    if (pengadaan.value === 'Sewa')
-    {
-        sewaSection.classList.add('show');
-
-        tanggalBerakhir.readOnly = true;
-
-        tanggalBerakhir.classList.add('date-readonly');
-
-        tanggalInfo.textContent =
-            'Tanggal berakhir dihitung otomatis berdasarkan periode sewa.';
-
-        calculateEndDate();
-    }
-    else
-    {
-        sewaSection.classList.remove('show');
-
-        customPeriod.classList.remove('show');
-
-        periodeSewa.value = '';
-
-        customJumlah.value = '';
-
-        tanggalBerakhir.value = '';
-
-        tanggalBerakhir.readOnly = false;
-
-        tanggalBerakhir.classList.remove('date-readonly');
-
-        tanggalInfo.textContent =
-            'Untuk pengadaan Beli, tanggal berakhir dapat dikosongkan.';
-    }
-}
-
-
-if (pengadaan)
-{
-    pengadaan.addEventListener(
-        'change',
-        updatePengadaan
-    );
-}
-
-if (periodeSewa)
-{
-    periodeSewa.addEventListener(
-        'change',
-        updateCustomPeriod
-    );
-}
-
-if (customJumlah)
-{
-    customJumlah.addEventListener(
-        'input',
-        calculateEndDate
-    );
-}
-
-if (customSatuan)
-{
-    customSatuan.addEventListener(
-        'change',
-        calculateEndDate
-    );
-}
-
-if (tanggalPengadaan)
-{
-    tanggalPengadaan.addEventListener(
-        'change',
-        calculateEndDate
-    );
-}
-
-
-/* =========================================================
-   EDIT MODAL
-========================================================= */
-
-function openEditModal(
-    id,
-    nama,
-    spesifikasi,
-    pengadaanValue,
-    tanggalPengadaanValue,
-    tanggalBerakhirValue,
-    harga,
-    status
-)
-{
-    document.getElementById('editModal').style.display = 'flex';
-
-    document.getElementById('editId').value =
-        id;
-
-    document.getElementById('editNama').value =
-        nama;
-
-    document.getElementById('editSpesifikasi').value =
-        spesifikasi ?? '';
-
-    document.getElementById('editPengadaan').value =
-        pengadaanValue;
-
-    document.getElementById('editTanggalPengadaan').value =
-        tanggalPengadaanValue;
-
-    document.getElementById('editTanggalBerakhir').value =
-        tanggalBerakhirValue;
-
-    document.getElementById('editHarga').value =
-        harga;
-
-    document.getElementById('editStatus').value =
-        status;
-
-    document.getElementById('editForm').action =
-        "{{ url('/infrastruktur/data-center') }}/" + id;
-
-    document.getElementById('editPeriodeSewa').value = '';
-
-    document.getElementById('editCustomPeriod')
-        .classList.remove('show');
-
-    document.getElementById('editCustomJumlah').value = '';
-
-    updateEditPengadaan();
-}
-
-
-/* =========================================================
-   EDIT ELEMENT
-========================================================= */
-
-const editPengadaan =
-    document.getElementById('editPengadaan');
-
-const editTanggalPengadaan =
-    document.getElementById('editTanggalPengadaan');
-
-const editTanggalBerakhir =
-    document.getElementById('editTanggalBerakhir');
-
-const editSewaSection =
-    document.getElementById('editSewaSection');
-
-const editPeriodeSewa =
-    document.getElementById('editPeriodeSewa');
-
-const editCustomPeriod =
-    document.getElementById('editCustomPeriod');
-
-const editCustomJumlah =
-    document.getElementById('editCustomJumlah');
-
-const editCustomSatuan =
-    document.getElementById('editCustomSatuan');
-
-const editTanggalInfo =
-    document.getElementById('editTanggalInfo');
-
-
-/* =========================================================
-   HITUNG TANGGAL EDIT
-========================================================= */
-
-function calculateEditEndDate()
-{
-    if (
-        editPengadaan.value !== 'Sewa'
-    )
-    {
-        return;
-    }
-
-    if (!editTanggalPengadaan.value)
-    {
-        editTanggalBerakhir.value = '';
-        return;
-    }
-
-    let jumlah = 0;
-    let satuan = 'months';
-
-    if (
-        editPeriodeSewa.value &&
-        editPeriodeSewa.value !== 'custom'
-    )
-    {
-        jumlah =
-            parseInt(editPeriodeSewa.value);
-    }
-
-    if (
-        editPeriodeSewa.value === 'custom'
-    )
-    {
-        jumlah =
-            parseInt(editCustomJumlah.value) || 0;
-
-        satuan =
-            editCustomSatuan.value;
-    }
-
-    if (jumlah <= 0)
-    {
-        return;
-    }
-
-    const date =
-        new Date(
-            editTanggalPengadaan.value + 'T00:00:00'
+        statusFilter.addEventListener(
+            'change',
+            filterDataCenterTable
         );
 
-    if (satuan === 'years')
-    {
-        date.setFullYear(
-            date.getFullYear() + jumlah
-        );
-    }
-    else
-    {
-        date.setMonth(
-            date.getMonth() + jumlah
-        );
     }
 
-    const year =
-        date.getFullYear();
 
-    const month =
-        String(
-            date.getMonth() + 1
-        ).padStart(2, '0');
+    if (pengadaanFilter) {
 
-    const day =
-        String(
-            date.getDate()
-        ).padStart(2, '0');
-
-    editTanggalBerakhir.value =
-        `${year}-${month}-${day}`;
-}
-
-
-/* =========================================================
-   CUSTOM EDIT
-========================================================= */
-
-function updateEditCustomPeriod()
-{
-    if (
-        editPeriodeSewa.value === 'custom'
-    )
-    {
-        editCustomPeriod.classList.add('show');
-    }
-    else
-    {
-        editCustomPeriod.classList.remove('show');
-    }
-
-    calculateEditEndDate();
-}
-
-
-/* =========================================================
-   UPDATE EDIT PENGADAAN
-========================================================= */
-
-function updateEditPengadaan()
-{
-    if (
-        editPengadaan.value === 'Sewa'
-    )
-    {
-        editSewaSection.classList.add('show');
-
-        editTanggalBerakhir.readOnly = true;
-
-        editTanggalBerakhir.classList.add(
-            'date-readonly'
+        pengadaanFilter.addEventListener(
+            'change',
+            filterDataCenterTable
         );
 
-        editTanggalInfo.textContent =
-            'Tanggal berakhir dihitung otomatis berdasarkan periode sewa. Pilih periode jika ingin mengubahnya.';
     }
-    else
-    {
-        editSewaSection.classList.remove('show');
 
-        editCustomPeriod.classList.remove('show');
 
-        editPeriodeSewa.value = '';
+    if (verifikasiFilter) {
 
-        editCustomJumlah.value = '';
-
-        editTanggalBerakhir.value = '';
-
-        editTanggalBerakhir.readOnly = false;
-
-        editTanggalBerakhir.classList.remove(
-            'date-readonly'
+        verifikasiFilter.addEventListener(
+            'change',
+            filterDataCenterTable
         );
 
-        editTanggalInfo.textContent =
-            'Untuk pengadaan Beli, tanggal berakhir dapat dikosongkan.';
     }
-}
 
 
-if (editPengadaan)
-{
-    editPengadaan.addEventListener(
-        'change',
-        updateEditPengadaan
-    );
-}
+    if (tahunFilter) {
 
-if (editPeriodeSewa)
-{
-    editPeriodeSewa.addEventListener(
-        'change',
-        updateEditCustomPeriod
-    );
-}
+        tahunFilter.addEventListener(
+            'change',
+            filterDataCenterTable
+        );
 
-if (editCustomJumlah)
-{
-    editCustomJumlah.addEventListener(
-        'input',
-        calculateEditEndDate
-    );
-}
+    }
 
-if (editCustomSatuan)
-{
-    editCustomSatuan.addEventListener(
-        'change',
-        calculateEditEndDate
-    );
-}
 
-if (editTanggalPengadaan)
-{
-    editTanggalPengadaan.addEventListener(
-        'change',
-        function()
-        {
-            if (
-                editPeriodeSewa &&
-                editPeriodeSewa.value
-            )
-            {
-                calculateEditEndDate();
+    /* =====================================================
+       MODAL OVERLAY
+    ===================================================== */
+
+    const modal =
+        document.getElementById(
+            'dataCenterModal'
+        );
+
+
+    if (modal) {
+
+        modal.addEventListener(
+            'click',
+            function (event) {
+
+                if (
+                    event.target === modal
+                ) {
+
+                    closeDataCenterModal();
+
+                }
+
             }
+        );
+
+    }
+
+
+    /* =====================================================
+       ESCAPE
+    ===================================================== */
+
+    document.addEventListener(
+        'keydown',
+        function (event) {
+
+            if (
+                event.key === 'Escape' &&
+                modal?.classList.contains('show')
+            ) {
+
+                closeDataCenterModal();
+
+            }
+
         }
     );
+
+
+    /* =====================================================
+       INITIAL PENGADAAN
+    ===================================================== */
+
+    updateDataCenterPengadaan();
+
+
+    /* =====================================================
+       VALIDATION ERROR
+    ===================================================== */
+
+    @if($errors->any())
+
+        openAddDataCenterModal();
+
+    @endif
+
+});
+
+
+/* =========================================================
+   OPEN ADD MODAL
+========================================================= */
+
+function openAddDataCenterModal()
+{
+
+    const modal =
+        document.getElementById(
+            'dataCenterModal'
+        );
+
+    const form =
+        document.getElementById(
+            'dataCenterForm'
+        );
+
+
+    if (!modal || !form) {
+        return;
+    }
+
+
+    form.action =
+        "{{ route('data-center.store') }}";
+
+
+    document.getElementById(
+        'dataCenterMethod'
+    ).value = 'POST';
+
+
+    document.getElementById(
+        'dataCenterModalTitle'
+    ).textContent =
+        'Tambah Data Center';
+
+
+    document.getElementById(
+        'dataCenterModalDescription'
+    ).textContent =
+        'Masukan detail infrastruktur Data Center baru ke dalam sistem.';
+
+
+    document.getElementById(
+        'dataCenterSaveButton'
+    ).innerHTML =
+        '<i class="bi bi-check-lg"></i> Simpan Data Center';
+
+
+    /*
+     * Jangan reset ketika validation error
+     */
+
+    @if(!$errors->any())
+
+        form.reset();
+
+
+        document.getElementById(
+            'data_center_id'
+        ).value = '';
+
+
+        document.getElementById(
+            'dataCenterSewaSection'
+        ).classList.remove('show');
+
+
+        document.getElementById(
+            'dataCenterCustomPeriod'
+        ).classList.remove('show');
+
+
+        const tanggalBerakhir =
+            document.getElementById(
+                'data_center_tanggal_berakhir'
+            );
+
+
+        if (tanggalBerakhir) {
+
+            tanggalBerakhir.readOnly = false;
+
+            tanggalBerakhir.style.background =
+                'white';
+
+        }
+
+    @endif
+
+
+    modal.classList.add('show');
+
+    modal.setAttribute(
+        'aria-hidden',
+        'false'
+    );
+
+    document.body.classList.add(
+        'data-center-modal-open'
+    );
+
 }
 
 
 /* =========================================================
-   CLOSE EDIT
+   OPEN EDIT MODAL
 ========================================================= */
 
-function closeEditModal()
+function openEditDataCenterModal(id)
 {
-    document.getElementById('editModal').style.display = 'none';
+
+    const dataCenters =
+        @php
+
+            $dataCenterJson =
+                method_exists(
+                    $dataCenters,
+                    'getCollection'
+                )
+                    ? $dataCenters->getCollection()
+                    : collect($dataCenters);
+
+        @endphp
+
+        @json($dataCenterJson->values());
+
+
+    const dataCenter =
+        dataCenters.find(
+            function (item) {
+
+                return String(item.id) === String(id);
+
+            }
+        );
+
+
+    if (!dataCenter) {
+
+        alert(
+            'Data Data Center tidak ditemukan.'
+        );
+
+        return;
+
+    }
+
+
+    const modal =
+        document.getElementById(
+            'dataCenterModal'
+        );
+
+    const form =
+        document.getElementById(
+            'dataCenterForm'
+        );
+
+
+    if (!modal || !form) {
+        return;
+    }
+
+
+    form.action =
+        "{{ url('/infrastruktur/data-center') }}/" +
+        encodeURIComponent(id);
+
+
+    document.getElementById(
+        'dataCenterMethod'
+    ).value = 'PUT';
+
+
+    document.getElementById(
+        'dataCenterModalTitle'
+    ).textContent =
+        'Edit Data Center';
+
+
+    document.getElementById(
+        'dataCenterModalDescription'
+    ).textContent =
+        'Perbarui data infrastruktur Data Center yang dipilih.';
+
+
+    document.getElementById(
+        'dataCenterSaveButton'
+    ).innerHTML =
+        '<i class="bi bi-check-lg"></i> Simpan Perubahan';
+
+
+    /* =====================================================
+       ISI FORM
+    ===================================================== */
+
+    document.getElementById(
+        'data_center_id'
+    ).value =
+        dataCenter.id ?? '';
+
+
+    document.getElementById(
+        'data_center_nama_infrastruktur'
+    ).value =
+        dataCenter.nama_infrastruktur ?? '';
+
+
+    document.getElementById(
+        'data_center_spesifikasi'
+    ).value =
+        dataCenter.spesifikasi ?? '';
+
+
+    document.getElementById(
+        'data_center_pengadaan'
+    ).value =
+        dataCenter.pengadaan ?? '';
+
+
+    document.getElementById(
+        'data_center_harga'
+    ).value =
+        dataCenter.harga ?? '';
+
+
+    document.getElementById(
+        'data_center_tanggal_pengadaan'
+    ).value =
+        formatDataCenterDate(
+            dataCenter.tanggal_pengadaan
+        );
+
+
+    document.getElementById(
+        'data_center_tanggal_berakhir'
+    ).value =
+        formatDataCenterDate(
+            dataCenter.tanggal_berakhir
+        );
+
+
+    document.getElementById(
+        'data_center_periode_sewa'
+    ).value =
+        dataCenter.periode_sewa ?? '';
+
+
+    document.getElementById(
+        'data_center_durasi_sewa'
+    ).value =
+        dataCenter.durasi_sewa ?? '';
+
+
+    document.getElementById(
+        'data_center_satuan_sewa'
+    ).value =
+        dataCenter.satuan_sewa ?? 'Months';
+
+
+    updateDataCenterPengadaan();
+
+    updateDataCenterCustomPeriod();
+
+
+    modal.classList.add('show');
+
+    modal.setAttribute(
+        'aria-hidden',
+        'false'
+    );
+
+    document.body.classList.add(
+        'data-center-modal-open'
+    );
+
+}
+
+
+/* =========================================================
+   FORMAT DATE
+========================================================= */
+
+function formatDataCenterDate(value)
+{
+
+    if (!value) {
+        return '';
+    }
+
+
+    if (
+        typeof value === 'string' &&
+        /^\d{4}-\d{2}-\d{2}$/.test(value)
+    ) {
+
+        return value;
+
+    }
+
+
+    const date =
+        new Date(value);
+
+
+    if (isNaN(date.getTime())) {
+        return '';
+    }
+
+
+    const year =
+        date.getFullYear();
+
+
+    const month =
+        String(
+            date.getMonth() + 1
+        ).padStart(2, '0');
+
+
+    const day =
+        String(
+            date.getDate()
+        ).padStart(2, '0');
+
+
+    return (
+        year +
+        '-' +
+        month +
+        '-' +
+        day
+    );
+
 }
 
 
@@ -3090,133 +3304,341 @@ function closeEditModal()
    CLOSE MODAL
 ========================================================= */
 
-window.addEventListener('click', function(event)
+function closeDataCenterModal()
 {
-    const addModal =
-        document.getElementById('addModal');
 
-    const editModal =
-        document.getElementById('editModal');
+    const modal =
+        document.getElementById(
+            'dataCenterModal'
+        );
 
-    if (event.target === addModal)
-    {
-        closeAddModal();
+
+    if (!modal) {
+        return;
     }
 
-    if (event.target === editModal)
-    {
-        closeEditModal();
-    }
-});
+
+    modal.classList.remove('show');
 
 
-/* =========================================================
-   SEARCH
-========================================================= */
-
-const searchInput =
-    document.getElementById('searchInput');
-
-if (searchInput)
-{
-    searchInput.addEventListener(
-        'keyup',
-        function()
-        {
-            const keyword =
-                this.value.toLowerCase();
-
-            const rows =
-                document.querySelectorAll(
-                    '#dataCenterTable tr'
-                );
-
-            rows.forEach(function(row)
-            {
-                const text =
-                    row.innerText.toLowerCase();
-
-                if (text.includes(keyword))
-                {
-                    row.style.display = '';
-                }
-                else
-                {
-                    row.style.display = 'none';
-                }
-            });
-        }
+    modal.setAttribute(
+        'aria-hidden',
+        'true'
     );
+
+
+    document.body.classList.remove(
+        'data-center-modal-open'
+    );
+
 }
 
 
 /* =========================================================
-   BUKA MODAL JIKA ERROR
+   PENGADAAN
 ========================================================= */
 
-@if ($errors->any())
+function updateDataCenterPengadaan()
+{
 
-    document.addEventListener(
-        'DOMContentLoaded',
-        function()
-        {
-            openAddModal();
+    const pengadaan =
+        document.getElementById(
+            'data_center_pengadaan'
+        )?.value;
 
-            if (pengadaan)
-            {
-                updatePengadaan();
-            }
+
+    const sewaSection =
+        document.getElementById(
+            'dataCenterSewaSection'
+        );
+
+
+    const tanggalBerakhir =
+        document.getElementById(
+            'data_center_tanggal_berakhir'
+        );
+
+
+    if (!sewaSection) {
+        return;
+    }
+
+
+    if (
+        String(pengadaan).toLowerCase()
+        === 'sewa'
+    ) {
+
+        sewaSection.classList.add(
+            'show'
+        );
+
+
+        if (tanggalBerakhir) {
+
+            tanggalBerakhir.readOnly =
+                true;
+
+            tanggalBerakhir.style.background =
+                '#f8fafc';
+
         }
-    );
 
-@endif
+
+        calculateDataCenterEndDate();
+
+    } else {
+
+        sewaSection.classList.remove(
+            'show'
+        );
+
+
+        document.getElementById(
+            'dataCenterCustomPeriod'
+        )?.classList.remove('show');
+
+
+        if (tanggalBerakhir) {
+
+            tanggalBerakhir.readOnly =
+                false;
+
+            tanggalBerakhir.style.background =
+                'white';
+
+        }
+
+    }
+
+}
 
 
 /* =========================================================
-   INITIAL STATE
+   CUSTOM PERIOD
 ========================================================= */
 
-document.addEventListener(
-    'DOMContentLoaded',
-    function()
-    {
-        if (pengadaan)
-        {
-            updatePengadaan();
-        }
+function updateDataCenterCustomPeriod()
+{
 
-        const hasActiveFilter =
-            {{ request()->hasAny(['status', 'pengadaan', 'verifikasi', 'tahun']) ? 'true' : 'false' }};
+    const periode =
+        document.getElementById(
+            'data_center_periode_sewa'
+        )?.value;
 
-        if (hasActiveFilter)
-        {
-            const panel =
-                document.getElementById('filterPanel');
 
-            const button =
-                document.getElementById('filterButton');
+    const custom =
+        document.getElementById(
+            'dataCenterCustomPeriod'
+        );
 
-            const arrow =
-                document.getElementById('filterArrow');
 
-            if (panel && button && arrow)
-            {
-                panel.classList.add('show');
-
-                button.classList.add('active');
-
-                arrow.classList.remove(
-                    'bi-chevron-down'
-                );
-
-                arrow.classList.add(
-                    'bi-chevron-up'
-                );
-            }
-        }
+    if (!custom) {
+        return;
     }
-);
+
+
+    if (periode === 'Custom') {
+
+        custom.classList.add(
+            'show'
+        );
+
+    } else {
+
+        custom.classList.remove(
+            'show'
+        );
+
+    }
+
+}
+
+
+/* =========================================================
+   CALCULATE END DATE
+========================================================= */
+
+function calculateDataCenterEndDate()
+{
+
+    const pengadaan =
+        document.getElementById(
+            'data_center_pengadaan'
+        )?.value;
+
+
+    if (
+        String(pengadaan).toLowerCase()
+        !== 'sewa'
+    ) {
+
+        return;
+
+    }
+
+
+    const tanggalMulai =
+        document.getElementById(
+            'data_center_tanggal_pengadaan'
+        )?.value;
+
+
+    const periode =
+        document.getElementById(
+            'data_center_periode_sewa'
+        )?.value;
+
+
+    const tanggalBerakhir =
+        document.getElementById(
+            'data_center_tanggal_berakhir'
+        );
+
+
+    if (
+        !tanggalMulai ||
+        !periode ||
+        !tanggalBerakhir
+    ) {
+
+        return;
+
+    }
+
+
+    const date =
+        new Date(
+            tanggalMulai + 'T00:00:00'
+        );
+
+
+    if (isNaN(date.getTime())) {
+        return;
+    }
+
+
+    switch (periode) {
+
+        case 'Monthly':
+
+            date.setMonth(
+                date.getMonth() + 1
+            );
+
+            break;
+
+
+        case '3 Months':
+
+            date.setMonth(
+                date.getMonth() + 3
+            );
+
+            break;
+
+
+        case '6 Months':
+
+            date.setMonth(
+                date.getMonth() + 6
+            );
+
+            break;
+
+
+        case 'Yearly':
+
+            date.setFullYear(
+                date.getFullYear() + 1
+            );
+
+            break;
+
+
+        case 'Custom':
+
+            const duration =
+                parseInt(
+                    document.getElementById(
+                        'data_center_durasi_sewa'
+                    )?.value || 0
+                );
+
+
+            const unit =
+                document.getElementById(
+                    'data_center_satuan_sewa'
+                )?.value;
+
+
+            if (
+                !duration ||
+                duration < 1
+            ) {
+
+                return;
+
+            }
+
+
+            if (unit === 'Years') {
+
+                date.setFullYear(
+                    date.getFullYear() +
+                    duration
+                );
+
+            } else {
+
+                date.setMonth(
+                    date.getMonth() +
+                    duration
+                );
+
+            }
+
+            break;
+
+
+        default:
+
+            return;
+
+    }
+
+
+    /* =====================================================
+       FORMAT YYYY-MM-DD
+    ===================================================== */
+
+    const year =
+        date.getFullYear();
+
+
+    const month =
+        String(
+            date.getMonth() + 1
+        ).padStart(2, '0');
+
+
+    const day =
+        String(
+            date.getDate()
+        ).padStart(2, '0');
+
+
+    tanggalBerakhir.value =
+        year +
+        '-' +
+        month +
+        '-' +
+        day;
+
+}
 
 </script>
+
+@endpush
 
 @endsection

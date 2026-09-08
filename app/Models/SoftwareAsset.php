@@ -21,6 +21,8 @@ class SoftwareAsset extends Model
         'harga',
         'tanggal_pengadaan',
         'tanggal_berakhir',
+        'verifikasi',
+        'komentar',
     ];
 
     protected $casts = [
