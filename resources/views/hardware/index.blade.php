@@ -17,145 +17,209 @@
 
     .hardware-page-header h2 {
         margin: 0;
-        font-size: 24px;
+        font-size: 22px;
         font-weight: 700;
-        color: #172033;
-        line-height: 1.25;
+        color: #202735;
     }
 
     .hardware-page-header p {
         margin: 6px 0 0;
-        font-size: 13px;
-        color: #7b8495;
+        color: #8a93a3;
+        font-size: 12px;
     }
 
+    /* =========================
+       ALERT
+    ========================= */
+
     .hardware-alert {
-        display: flex;
-        align-items: flex-start;
-        gap: 10px;
-        padding: 12px 15px;
-        margin-bottom: 20px;
-        border-radius: 10px;
-        font-size: 13px;
-        font-weight: 500;
+        padding: 12px 16px;
+        margin-bottom: 18px;
+        border-radius: 8px;
+        font-size: 12px;
     }
 
     .hardware-alert-success {
         background: #ecfdf3;
-        border: 1px solid #bbf7d0;
-        color: #166534;
+        color: #18794e;
+        border: 1px solid #c7f0d8;
     }
 
     .hardware-alert-error {
-        background: #fef2f2;
-        border: 1px solid #fecaca;
-        color: #991b1b;
-    }
-
-    .hardware-alert i {
-        margin-top: 1px;
-        font-size: 16px;
+        background: #fff1f2;
+        color: #be123c;
+        border: 1px solid #fecdd3;
     }
 
     /* =========================
-       STATISTICS
+       SUMMARY CARD
     ========================= */
 
-    .stats-grid {
+    .hardware-summary {
         display: grid;
-        grid-template-columns: repeat(3, minmax(0, 1fr));
-        gap: 16px;
+        grid-template-columns: repeat(3, 1fr);
+        gap: 14px;
         margin-bottom: 22px;
     }
 
-    .stat-card {
-        min-height: 135px;
-        padding: 20px;
-        background: #ffffff;
-        border: 1px solid #e7eaf0;
-        border-radius: 14px;
-        box-shadow: 0 3px 12px rgba(16, 24, 40, 0.04);
+    .hardware-summary-card {
+        background: #fff;
+        border: 1px solid #e8ebf0;
+        border-radius: 10px;
+        padding: 17px 18px;
+        min-height: 92px;
         display: flex;
         align-items: center;
-        gap: 15px;
-        transition: 0.2s ease;
+        gap: 14px;
+        box-sizing: border-box;
     }
 
-    .stat-card:hover {
-        transform: translateY(-1px);
-        box-shadow: 0 5px 16px rgba(16, 24, 40, 0.07);
-    }
-
-    .stat-icon {
+    .hardware-summary-icon {
         width: 45px;
         height: 45px;
         min-width: 45px;
-        border-radius: 12px;
-        display: flex;
+        border-radius: 11px;
+        display: inline-flex;
         align-items: center;
         justify-content: center;
-        font-size: 20px;
+        font-size: 19px;
     }
 
-    .stat-icon.blue {
+    .summary-icon-blue {
         background: #eaf2ff;
-        color: #2563eb;
+        color: #3b82f6;
     }
 
-    .stat-icon.purple {
-        background: #f2eaff;
-        color: #7c3aed;
+    .summary-icon-purple {
+        background: #f1e8ff;
+        color: #9333ea;
     }
 
-    .stat-icon.orange {
-        background: #fff3df;
+    .summary-icon-orange {
+        background: #fff4df;
         color: #f59e0b;
     }
 
-    .stat-icon.red {
-        background: #feecec;
+    .summary-icon-red {
+        background: #feecef;
         color: #dc2626;
     }
 
-    .stat-icon.green {
-        background: #eaf9f0;
+    .summary-icon-green {
+        background: #e9f8ef;
         color: #16a34a;
     }
 
-    .stat-icon.cyan {
-        background: #e7f8fb;
+    .summary-icon-cyan {
+        background: #e5f7fa;
         color: #0891b2;
     }
 
-    .stat-content {
+    .hardware-summary-content {
         min-width: 0;
     }
 
-    .stat-label {
-        display: block;
-        margin-bottom: 5px;
+    .hardware-summary-label {
+        font-size: 11px;
+        color: #8992a3;
+        margin-bottom: 6px;
+        font-weight: 600;
+    }
+
+    .hardware-summary-value {
+        font-size: 22px;
+        font-weight: 700;
+        color: #252d3a;
+        line-height: 1.15;
+    }
+
+    .hardware-summary-desc {
+        margin-top: 4px;
+        font-size: 10px;
+        color: #a0a8b5;
+    }
+
+    /* =========================
+       TOOLBAR
+    ========================= */
+
+    .hardware-toolbar {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        gap: 14px;
+        margin-bottom: 16px;
+        flex-wrap: wrap;
+    }
+
+    .hardware-toolbar-left {
+        display: flex;
+        align-items: center;
+        gap: 10px;
+        flex: 1;
+        min-width: 280px;
+    }
+
+    .hardware-search {
+        position: relative;
+        width: 320px;
+        max-width: 100%;
+    }
+
+    .hardware-search input {
+        width: 100%;
+        height: 38px;
+        padding: 0 14px 0 38px;
+        border: 1px solid #dfe3e9;
+        border-radius: 7px;
+        outline: none;
+        font-size: 12px;
+        color: #374151;
+        background: #fff;
+        box-sizing: border-box;
+    }
+
+    .hardware-search input:focus {
+        border-color: #aeb8c8;
+    }
+
+    .hardware-search i {
+        position: absolute;
+        left: 13px;
+        top: 50%;
+        transform: translateY(-50%);
+        color: #98a1b1;
+        font-size: 14px;
+    }
+
+    .hardware-filter select {
+        height: 38px;
+        padding: 0 32px 0 12px;
+        border: 1px solid #dfe3e9;
+        border-radius: 7px;
+        background: #fff;
+        color: #4b5563;
+        font-size: 12px;
+        outline: none;
+    }
+
+    .hardware-btn-add {
+        height: 38px;
+        padding: 0 16px;
+        border: none;
+        border-radius: 7px;
+        background: #2563eb;
+        color: #fff;
         font-size: 12px;
         font-weight: 600;
-        color: #7b8495;
+        cursor: pointer;
+        display: inline-flex;
+        align-items: center;
+        gap: 7px;
     }
 
-    .stat-value {
-        display: block;
-        font-size: 21px;
-        font-weight: 700;
-        color: #172033;
-        line-height: 1.2;
-    }
-
-    .stat-value.currency {
-        font-size: 18px;
-    }
-
-    .stat-description {
-        display: block;
-        margin-top: 5px;
-        font-size: 11px;
-        color: #98a1b2;
+    .hardware-btn-add:hover {
+        background: #1d4ed8;
     }
 
     /* =========================
@@ -163,188 +227,33 @@
     ========================= */
 
     .hardware-table-card {
-        background: #ffffff;
-        border: 1px solid #e7eaf0;
-        border-radius: 14px;
-        box-shadow: 0 3px 12px rgba(16, 24, 40, 0.04);
+        background: #fff;
+        border: 1px solid #e8ebf0;
+        border-radius: 10px;
         overflow: hidden;
     }
 
-    .hardware-table-header {
-        min-height: 70px;
-        padding: 16px 18px;
-        border-bottom: 1px solid #edf0f4;
-        display: flex;
-        align-items: center;
-        justify-content: space-between;
-        gap: 15px;
-    }
-
-    .hardware-table-title {
-        min-width: 0;
-    }
-
-    .hardware-table-title h3 {
-        margin: 0;
-        font-size: 16px;
-        font-weight: 700;
-        color: #172033;
-    }
-
-    .hardware-table-title p {
-        margin: 4px 0 0;
-        font-size: 11px;
-        color: #8a93a3;
-    }
-
-    .hardware-table-toolbar {
-        display: flex;
-        align-items: center;
-        gap: 8px;
-        flex-shrink: 0;
-    }
-
-    .hardware-search {
-        position: relative;
-        width: 230px;
-    }
-
-    .hardware-search i {
-        position: absolute;
-        left: 12px;
-        top: 50%;
-        transform: translateY(-50%);
-        color: #9aa3b2;
-        font-size: 13px;
-        pointer-events: none;
-    }
-
-    .hardware-search input {
-        width: 100%;
-        height: 36px;
-        padding: 0 12px 0 34px;
-        border: 1px solid #dfe3ea;
-        border-radius: 8px;
-        outline: none;
-        background: #ffffff;
-        color: #30394b;
-        font-size: 11px;
-        box-sizing: border-box;
-    }
-
-    .hardware-search input:focus {
-        border-color: #26364f;
-        box-shadow: 0 0 0 3px rgba(38, 54, 79, 0.08);
-    }
-
-    .hardware-toolbar-button {
-        height: 36px;
-        padding: 0 12px;
-        border-radius: 8px;
-        border: 1px solid #dfe3ea;
-        background: #ffffff;
-        color: #465166;
-        font-size: 11px;
-        font-weight: 600;
-        cursor: pointer;
-        display: inline-flex;
-        align-items: center;
-        justify-content: center;
-        gap: 6px;
-        white-space: nowrap;
-    }
-
-    .hardware-toolbar-button:hover {
-        background: #f7f8fa;
-    }
-
-    .hardware-add-button {
-        border-color: #071b88;
-        background: #071b88;
-        color: #ffffff;
-    }
-
-    .hardware-add-button:hover {
-        background: #050f63;
-    }
-
-    /* =========================
-       FILTER
-    ========================= */
-
-    .hardware-filter-wrapper {
-        position: relative;
-    }
-
-    .hardware-filter-menu {
-        position: absolute;
-        right: 0;
-        top: calc(100% + 7px);
-        width: 220px;
-        padding: 12px;
-        background: #ffffff;
-        border: 1px solid #e5e8ee;
-        border-radius: 10px;
-        box-shadow: 0 10px 30px rgba(16, 24, 40, 0.12);
-        display: none;
-        z-index: 100;
-    }
-
-    .hardware-filter-menu.active {
-        display: block;
-    }
-
-    .hardware-filter-menu label {
-        display: block;
-        margin-bottom: 6px;
-        font-size: 11px;
-        font-weight: 600;
-        color: #596274;
-    }
-
-    .hardware-filter-menu select {
-        width: 100%;
-        height: 34px;
-        padding: 0 8px;
-        border: 1px solid #dfe3ea;
-        border-radius: 7px;
-        background: #ffffff;
-        color: #374151;
-        font-size: 11px;
-    }
-
-    .hardware-filter-reset {
-        width: 100%;
-        height: 32px;
-        margin-top: 10px;
-        border: 0;
-        border-radius: 7px;
-        background: #f1f3f6;
-        color: #4b5563;
-        font-size: 11px;
-        font-weight: 600;
-        cursor: pointer;
-    }
-
-    /* =========================
-       TABLE
-    ========================= */
-
+    /*
+     * Tabel dibuat lebih lebar agar kolom tidak dempet.
+     * Jika layar tidak cukup lebar, tabel bisa digeser horizontal.
+     */
     .hardware-table-wrapper {
         width: 100%;
         overflow-x: auto;
+        overflow-y: hidden;
+        -webkit-overflow-scrolling: touch;
     }
 
     .hardware-table {
         width: 100%;
-        min-width: 1250px;
+        min-width: 1550px;
         border-collapse: collapse;
-        table-layout: fixed;
+        table-layout: auto;
     }
 
     .hardware-table thead th {
         height: 52px;
-        padding: 0 12px;
+        padding: 0 14px;
         background: #fafbfc;
         border-bottom: 1px solid #e8ebf0;
         color: #697386;
@@ -356,200 +265,181 @@
     }
 
     .hardware-table tbody td {
-        padding: 13px 12px;
+        padding: 14px;
         border-bottom: 1px solid #f0f2f5;
         color: #3f4859;
         font-size: 11px;
         vertical-align: middle;
     }
 
-    .hardware-table tbody tr:hover {
-        background: #fafbfd;
+    .hardware-table tbody tr:last-child td {
+        border-bottom: none;
     }
 
-    .hardware-asset-id {
-        display: inline-flex;
-        align-items: center;
-        gap: 5px;
+    .hardware-table tbody tr:hover {
+        background: #fafcff;
+    }
+
+    /* =========================
+       LEBAR KOLOM
+    ========================= */
+
+    .hardware-table th:nth-child(1),
+    .hardware-table td:nth-child(1) {
+        width: 120px;
+        min-width: 120px;
+    }
+
+    .hardware-table th:nth-child(2),
+    .hardware-table td:nth-child(2) {
+        width: 190px;
+        min-width: 190px;
+    }
+
+    .hardware-table th:nth-child(3),
+    .hardware-table td:nth-child(3) {
+        width: 350px;
+        min-width: 350px;
+        max-width: 350px;
+    }
+
+    .hardware-table th:nth-child(4),
+    .hardware-table td:nth-child(4) {
+        width: 140px;
+        min-width: 140px;
+    }
+
+    .hardware-table th:nth-child(5),
+    .hardware-table td:nth-child(5) {
+        width: 190px;
+        min-width: 190px;
+    }
+
+    .hardware-table th:nth-child(6),
+    .hardware-table td:nth-child(6) {
+        width: 160px;
+        min-width: 160px;
+    }
+
+    .hardware-table th:nth-child(7),
+    .hardware-table td:nth-child(7) {
+        width: 130px;
+        min-width: 130px;
+    }
+
+    .hardware-table th:nth-child(8),
+    .hardware-table td:nth-child(8) {
+        width: 160px;
+        min-width: 160px;
+    }
+
+    .hardware-table th:nth-child(9),
+    .hardware-table td:nth-child(9) {
+        width: 130px;
+        min-width: 130px;
+    }
+
+    .hardware-table th:nth-child(10),
+    .hardware-table td:nth-child(10) {
+        width: 130px;
+        min-width: 130px;
+    }
+
+    .hardware-table th:nth-child(11),
+    .hardware-table td:nth-child(11) {
+        width: 110px;
+        min-width: 110px;
+    }
+
+    .hardware-table th:nth-child(12),
+    .hardware-table td:nth-child(12) {
+        width: 110px;
+        min-width: 110px;
+    }
+
+    /* =========================
+       ISI TABEL
+    ========================= */
+
+    .asset-id {
         font-weight: 700;
-        color: #26364f;
+        color: #2563eb;
         white-space: nowrap;
     }
 
     .hardware-name {
         font-weight: 600;
-        color: #30394b;
+        color: #303847;
+        line-height: 1.5;
+    }
+
+    /*
+     * SPESIFIKASI:
+     * Hanya 1 baris.
+     * Kalau terlalu panjang otomatis menjadi ...
+     */
+    .hardware-spec {
+        color: #687385;
+        line-height: 1.5;
+        white-space: nowrap;
         overflow: hidden;
         text-overflow: ellipsis;
+        max-width: 350px;
+    }
+
+    .hardware-nowrap {
         white-space: nowrap;
-    }
-
-    .hardware-spec {
-        color: #687386;
-        line-height: 1.5;
-        display: -webkit-box;
-        -webkit-line-clamp: 2;
-        -webkit-box-orient: vertical;
-        overflow: hidden;
-    }
-
-    .hardware-type,
-    .hardware-year {
-        color: #596274;
     }
 
     .hardware-price {
         white-space: nowrap;
         font-weight: 600;
+        color: #3d4655;
     }
 
     /* =========================
-       BADGES
+       BADGE
     ========================= */
 
     .hardware-badge {
         display: inline-flex;
         align-items: center;
         justify-content: center;
-        max-width: 100%;
-        min-height: 25px;
-        padding: 4px 8px;
+        padding: 5px 9px;
         border-radius: 999px;
-        font-size: 9px;
-        font-weight: 700;
+        font-size: 10px;
+        font-weight: 600;
         white-space: nowrap;
     }
 
-    .hardware-condition-baru,
-    .hardware-verification-disetujui {
-        background: #eaf9f0;
+    .badge-baik {
+        background: #ecfdf3;
         color: #15803d;
     }
 
-    .hardware-condition-baik {
-        background: #eaf2ff;
-        color: #2563eb;
+    .badge-perbaikan {
+        background: #fff7ed;
+        color: #c2410c;
     }
 
-    .hardware-condition-perbaikan,
-    .hardware-verification-menunggu {
-        background: #fff3df;
-        color: #b45309;
-    }
-
-    .hardware-condition-rusak,
-    .hardware-verification-ditolak {
-        background: #feecec;
+    .badge-rusak {
+        background: #fef2f2;
         color: #dc2626;
     }
 
-    .hardware-condition-default,
-    .hardware-verification-default {
-        background: #f1f3f6;
-        color: #667085;
+    .badge-menunggu {
+        background: #fff7ed;
+        color: #c2410c;
     }
 
-    /* =========================
-       COMMENT
-    ========================= */
-
-    .comment-button {
-        width: 30px;
-        height: 30px;
-        border: 1px solid #e0e4ea;
-        border-radius: 7px;
-        background: #ffffff;
-        cursor: pointer;
+    .badge-disetujui {
+        background: #ecfdf3;
+        color: #15803d;
     }
 
-    .comment-button:hover {
-        background: #eef4ff;
-        border-color: #c8d8ff;
-    }
-
-    .no-comment {
-        color: #b0b7c3;
-    }
-
-    .comment-modal-overlay {
-        position: fixed;
-        inset: 0;
-        background: rgba(15, 23, 42, 0.55);
-        display: none;
-        align-items: center;
-        justify-content: center;
-        z-index: 10000;
-        padding: 20px;
-    }
-
-    .comment-modal-overlay.active {
-        display: flex;
-    }
-
-    .comment-modal {
-        width: min(500px, 100%);
-        background: #ffffff;
-        border-radius: 14px;
-        box-shadow: 0 25px 60px rgba(15, 23, 42, 0.2);
-        overflow: hidden;
-    }
-
-    .comment-modal-header {
-        padding: 16px 20px;
-        border-bottom: 1px solid #edf0f4;
-        display: flex;
-        justify-content: space-between;
-        align-items: center;
-    }
-
-    .comment-modal-header h3 {
-        margin: 0;
-        font-size: 16px;
-        color: #172033;
-    }
-
-    .comment-modal-close {
-        width: 32px;
-        height: 32px;
-        border: 0;
-        border-radius: 7px;
-        background: #f3f4f6;
-        cursor: pointer;
-        font-size: 20px;
-    }
-
-    .comment-modal-body {
-        padding: 20px;
-    }
-
-    .comment-box {
-        padding: 15px;
-        background: #f8fafc;
-        border: 1px solid #e5e7eb;
-        border-radius: 10px;
-    }
-
-    .comment-box p {
-        margin: 0;
-        color: #475569;
-        font-size: 13px;
-        line-height: 1.6;
-        white-space: pre-wrap;
-    }
-
-    .comment-modal-footer {
-        padding: 13px 20px;
-        border-top: 1px solid #edf0f4;
-        display: flex;
-        justify-content: flex-end;
-    }
-
-    .comment-close-btn {
-        padding: 9px 15px;
-        border: 1px solid #dfe3ea;
-        border-radius: 8px;
-        background: #ffffff;
-        cursor: pointer;
+    .badge-ditolak {
+        background: #fef2f2;
+        color: #dc2626;
     }
 
     /* =========================
@@ -559,31 +449,41 @@
     .hardware-actions {
         display: flex;
         align-items: center;
-        justify-content: center;
-        gap: 5px;
+        gap: 6px;
+        white-space: nowrap;
     }
 
-    .hardware-action-button {
-        width: 30px;
-        height: 30px;
-        border-radius: 7px;
-        border: 1px solid #e0e4ea;
-        background: #ffffff;
-        color: #5f697a;
+    .hardware-action-btn {
+        width: 31px;
+        height: 31px;
+        border: 1px solid #e1e5eb;
+        border-radius: 6px;
+        background: #fff;
+        color: #687385;
+        cursor: pointer;
         display: inline-flex;
         align-items: center;
         justify-content: center;
-        cursor: pointer;
+        font-size: 13px;
     }
 
-    .hardware-edit-button:hover {
-        background: #eef4ff;
+    .hardware-action-btn:hover {
+        background: #f8fafc;
+    }
+
+    .hardware-action-edit:hover {
         color: #2563eb;
+        border-color: #bfdbfe;
     }
 
-    .hardware-delete-button:hover {
-        background: #fff0f0;
+    .hardware-action-delete:hover {
         color: #dc2626;
+        border-color: #fecaca;
+    }
+
+    .hardware-action-comment:hover {
+        color: #7c3aed;
+        border-color: #ddd6fe;
     }
 
     /* =========================
@@ -591,34 +491,9 @@
     ========================= */
 
     .hardware-empty {
-        padding: 55px 20px !important;
         text-align: center;
-    }
-
-    .hardware-empty-icon {
-        width: 52px;
-        height: 52px;
-        margin: 0 auto 12px;
-        border-radius: 50%;
-        background: #f2f4f7;
-        color: #98a2b3;
-        display: flex;
-        align-items: center;
-        justify-content: center;
-        font-size: 22px;
-    }
-
-    .hardware-empty-title {
-        margin: 0;
-        font-size: 13px;
-        font-weight: 700;
-        color: #4b5563;
-    }
-
-    .hardware-empty-text {
-        margin: 5px 0 0;
-        font-size: 11px;
-        color: #98a2b3;
+        padding: 45px 20px !important;
+        color: #9aa3b2 !important;
     }
 
     /* =========================
@@ -627,15 +502,50 @@
 
     .hardware-pagination {
         padding: 14px 18px;
-        border-top: 1px solid #edf0f4;
+        border-top: 1px solid #f0f2f5;
         display: flex;
-        align-items: center;
         justify-content: space-between;
+        align-items: center;
+        gap: 15px;
+        flex-wrap: wrap;
     }
 
     .hardware-pagination-info {
-        font-size: 10px;
+        font-size: 11px;
         color: #8a93a3;
+    }
+
+    .hardware-pagination-links {
+        display: flex;
+        align-items: center;
+        gap: 4px;
+    }
+
+    .hardware-pagination-links a,
+    .hardware-pagination-links span {
+        min-width: 30px;
+        height: 30px;
+        padding: 0 8px;
+        display: inline-flex;
+        align-items: center;
+        justify-content: center;
+        border: 1px solid #e2e6ec;
+        border-radius: 6px;
+        text-decoration: none;
+        color: #697386;
+        font-size: 11px;
+        background: #fff;
+    }
+
+    .hardware-pagination-links .active span {
+        background: #2563eb;
+        border-color: #2563eb;
+        color: #fff;
+    }
+
+    .hardware-pagination-links .disabled span {
+        color: #c1c7d0;
+        background: #f9fafb;
     }
 
     /* =========================
@@ -643,100 +553,135 @@
     ========================= */
 
     .hardware-modal-overlay {
-        position: fixed;
-        inset: 0;
-        background: rgba(15, 23, 42, 0.55);
-        display: none;
-        align-items: center;
-        justify-content: center;
-        padding: 20px;
-        z-index: 9999;
+    position: fixed;
+    inset: 0;
+    background: rgba(15, 23, 42, .48);
+    z-index: 9999;
+    display: none;
+    align-items: center;
+    justify-content: center;
+    padding: 20px;
+    box-sizing: border-box;
+}
+
+.hardware-modal-overlay.show {
+    display: flex;
+}
+
+    .hardware-modal-overlay {
+    position: fixed;
+    inset: 0;
+    background: rgba(15, 23, 42, .48);
+    z-index: 9999;
+    display: none;
+    align-items: center;
+    justify-content: center;
+    padding: 20px;
+    box-sizing: border-box;
+}
+
+.hardware-modal-overlay.show {
+    display: flex;
+}
+
+.hardware-modal {
+    width: 100%;
+    max-width: 1050px;
+    height: 88vh;
+    max-height: 88vh;
+    background: #fff;
+    border-radius: 12px;
+    overflow: hidden;
+    box-shadow: 0 20px 50px rgba(0, 0, 0, .18);
+    display: flex;
+    flex-direction: column;
+    min-height: 0;
+}
+
+/* PENTING */
+.hardware-modal > form {
+    display: flex;
+    flex-direction: column;
+    flex: 1 1 auto;
+    min-height: 0;
+    overflow: hidden;
+}
+
+.hardware-modal-header {
+    padding: 18px 22px;
+    border-bottom: 1px solid #edf0f4;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    flex-shrink: 0;
+}
+
+.hardware-modal-header h3 {
+    margin: 0;
+    font-size: 16px;
+    color: #252d3a;
+}
+
+.hardware-modal-close {
+    width: 32px;
+    height: 32px;
+    border: none;
+    background: transparent;
+    color: #8992a3;
+    font-size: 20px;
+    cursor: pointer;
+    border-radius: 6px;
+}
+
+.hardware-modal-close:hover {
+    background: #f3f4f6;
+    color: #374151;
+}
+
+/* PENTING: BAGIAN INI YANG SCROLL */
+.hardware-modal-body {
+    padding: 20px 22px;
+    overflow-y: auto;
+    overflow-x: hidden;
+    flex: 1 1 auto;
+    min-height: 0;
+    box-sizing: border-box;
+    scrollbar-width: thin;
+}
+
+/* FOOTER TIDAK IKUT SCROLL */
+.hardware-modal-footer {
+    flex-shrink: 0;
+    padding: 14px 22px;
+    border-top: 1px solid #edf0f4;
+    display: flex;
+    justify-content: flex-end;
+    gap: 9px;
+    background: #fff;
+}
+
+    .hardware-form-grid {
+        display: grid;
+        grid-template-columns: repeat(2, 1fr);
+        gap: 16px;
     }
 
-    .hardware-modal-overlay.active {
-        display: flex;
-    }
-
-    .hardware-modal {
-        width: min(1050px, 100%);
-        height: min(720px, calc(100vh - 40px));
-        max-height: calc(100vh - 40px);
-        background: #ffffff;
-        border-radius: 15px;
-        box-shadow: 0 25px 60px rgba(15, 23, 42, 0.2);
-        overflow: hidden;
+    .hardware-form-group {
         display: flex;
         flex-direction: column;
+        gap: 7px;
     }
 
-    .hardware-modal > form {
-        display: flex;
-        flex-direction: column;
-        flex: 1;
-        min-height: 0;
-        overflow: hidden;
-    }
-
-    .hardware-modal-header {
-        min-height: 70px;
-        padding: 15px 20px;
-        border-bottom: 1px solid #edf0f4;
-        display: flex;
-        align-items: center;
-        justify-content: space-between;
-    }
-
-    .hardware-modal-title-wrapper {
-        display: flex;
-        align-items: center;
-        gap: 12px;
-    }
-
-    .hardware-modal-icon {
-        width: 40px;
-        height: 40px;
-        border-radius: 10px;
-        background: #eaf2ff;
-        color: #2563eb;
-        display: flex;
-        align-items: center;
-        justify-content: center;
-    }
-
-    .hardware-modal-title h3 {
-        margin: 0;
-        font-size: 17px;
-        color: #172033;
-    }
-
-    .hardware-modal-title p {
-        margin: 4px 0 0;
-        font-size: 11px;
-        color: #8a93a3;
-    }
-
-    .hardware-modal-close {
-        width: 32px;
-        height: 32px;
-        border: 0;
-        border-radius: 7px;
-        background: #f3f4f6;
-        cursor: pointer;
-    }
-
-    .hardware-modal-body {
-        flex: 1;
-        min-height: 0;
-        overflow-y: auto;
-        padding: 20px;
+    .hardware-form-group.full {
+        grid-column: 1 / -1;
     }
 
     .hardware-form-section {
-        padding: 17px;
-        margin-bottom: 15px;
-        background: #ffffff;
-        border: 1px solid #e7eaf0;
-        border-radius: 14px;
+        border: 1px solid #e8ebf0;
+        border-radius: 10px;
+        padding: 18px;
+        margin-bottom: 16px;
+        background: #fff;
     }
 
     .hardware-form-section:last-child {
@@ -744,109 +689,159 @@
     }
 
     .hardware-form-section-title {
-        margin: 0 0 14px;
+        margin: 0 0 16px;
         font-size: 13px;
         font-weight: 700;
-        color: #26364f;
+        color: #374151;
     }
 
-    .hardware-form-grid {
-        display: grid;
-        grid-template-columns: repeat(2, minmax(0, 1fr));
-        gap: 15px;
-    }
-
-    .hardware-form-group.full {
-        grid-column: 1 / -1;
-    }
-
-    .hardware-form-label {
+    .hardware-form-section-title span {
         display: block;
-        margin-bottom: 7px;
-        font-size: 11px;
-        font-weight: 700;
-        color: #4b5563;
+        margin-top: 3px;
+        font-size: 10px;
+        font-weight: 400;
+        color: #a0a8b5;
+    }
+
+    .hardware-form-group input[readonly] {
+        background: #f7f8fa;
+        color: #8b95a5;
+        cursor: not-allowed;
     }
 
     .hardware-required {
         color: #dc2626;
     }
 
-    .hardware-form-control {
-        width: 100%;
-        height: 40px;
-        padding: 0 11px;
-        border: 1px solid #dfe3ea;
-        border-radius: 8px;
-        outline: none;
-        box-sizing: border-box;
+    .hardware-form-group label {
         font-size: 11px;
+        font-weight: 600;
+        color: #4b5563;
     }
 
-    textarea.hardware-form-control {
-        height: 100px;
-        padding-top: 10px;
+    .hardware-form-group input,
+    .hardware-form-group select,
+    .hardware-form-group textarea {
+        width: 100%;
+        border: 1px solid #dfe3e9;
+        border-radius: 7px;
+        padding: 10px 11px;
+        font-size: 12px;
+        color: #374151;
+        outline: none;
+        background: #fff;
+        box-sizing: border-box;
+    }
+
+    .hardware-form-group input,
+    .hardware-form-group select {
+        height: 39px;
+    }
+
+    .hardware-form-group textarea {
+        min-height: 90px;
         resize: vertical;
     }
 
-    .hardware-form-control:focus {
-        border-color: #26364f;
-        box-shadow: 0 0 0 3px rgba(38, 54, 79, 0.08);
+    .hardware-form-group input:focus,
+    .hardware-form-group select:focus,
+    .hardware-form-group textarea:focus {
+        border-color: #93b4f5;
+        box-shadow: 0 0 0 3px rgba(37, 99, 235, .08);
     }
 
-    .hardware-auto-id {
-        width: 100%;
-        height: 40px;
-        padding: 0 11px;
-        box-sizing: border-box;
-        border: 1px solid #e5e7eb;
-        border-radius: 8px;
-        background: #f8fafc;
-        color: #8a93a3;
-        display: flex;
-        align-items: center;
-        gap: 7px;
-        font-size: 11px;
+    .hardware-form-error {
+        color: #dc2626;
+        font-size: 10px;
     }
 
     .hardware-modal-footer {
-        min-height: 66px;
-        padding: 13px 20px;
+        padding: 14px 22px;
         border-top: 1px solid #edf0f4;
         display: flex;
         justify-content: flex-end;
-        gap: 8px;
+        gap: 9px;
     }
 
-    .hardware-modal-button {
-        height: 36px;
+    .hardware-btn-cancel,
+    .hardware-btn-save {
+        height: 37px;
         padding: 0 15px;
-        border-radius: 8px;
-        border: 1px solid #dfe3ea;
-        background: #ffffff;
+        border-radius: 7px;
+        font-size: 12px;
+        font-weight: 600;
         cursor: pointer;
-        font-size: 11px;
     }
 
-    .hardware-modal-submit {
-        border-color: #071b88;
-        background: #071b88;
-        color: #ffffff;
+    .hardware-btn-cancel {
+        background: #fff;
+        border: 1px solid #dfe3e9;
+        color: #697386;
     }
 
-    @media (max-width: 800px) {
-        .stats-grid {
+    .hardware-btn-save {
+        background: #2563eb;
+        border: 1px solid #2563eb;
+        color: #fff;
+    }
+
+    .hardware-btn-save:hover {
+        background: #1d4ed8;
+    }
+
+    /* =========================
+       COMMENT MODAL
+    ========================= */
+
+    .comment-modal {
+        max-width: 520px;
+    }
+
+    .comment-content {
+        background: #f8fafc;
+        border: 1px solid #e5e7eb;
+        border-radius: 8px;
+        padding: 13px;
+        font-size: 12px;
+        color: #4b5563;
+        line-height: 1.6;
+        white-space: pre-wrap;
+        word-break: break-word;
+    }
+
+    /* =========================
+       RESPONSIVE
+    ========================= */
+
+    @media (max-width: 900px) {
+
+        .hardware-summary {
+            grid-template-columns: repeat(2, 1fr);
+        }
+
+    }
+
+    @media (max-width: 650px) {
+
+        .hardware-summary {
             grid-template-columns: 1fr;
         }
 
-        .hardware-table-header {
-            align-items: flex-start;
+        .hardware-toolbar-left {
             flex-direction: column;
+            align-items: stretch;
         }
 
-        .hardware-table-toolbar {
+        .hardware-search {
             width: 100%;
-            flex-wrap: wrap;
+        }
+
+        .hardware-filter {
+            width: 100%;
+        }
+
+        .hardware-filter select {
+            width: 100%;
         }
 
         .hardware-form-grid {
@@ -856,6 +851,7 @@
         .hardware-form-group.full {
             grid-column: auto;
         }
+
     }
 </style>
 
@@ -864,179 +860,234 @@
 
     {{-- HEADER --}}
     <div class="hardware-page-header">
+
         <h2>Hardware</h2>
+
         <p>
-            Kelola dan pantau seluruh aset hardware yang tersedia.
+            Kelola data inventaris hardware perangkat
         </p>
+
     </div>
 
 
-    {{-- ALERT --}}
+    {{-- ALERT SUCCESS --}}
     @if(session('success'))
+
         <div class="hardware-alert hardware-alert-success">
-            <i class="bi bi-check-circle-fill"></i>
-            <span>{{ session('success') }}</span>
+            {{ session('success') }}
         </div>
+
     @endif
 
+
+    {{-- ALERT ERROR --}}
     @if(session('error'))
+
         <div class="hardware-alert hardware-alert-error">
-            <i class="bi bi-exclamation-circle-fill"></i>
-            <span>{{ session('error') }}</span>
+            {{ session('error') }}
         </div>
+
     @endif
 
+
+    {{-- VALIDATION ERROR --}}
     @if($errors->any())
+
         <div class="hardware-alert hardware-alert-error">
-            <i class="bi bi-exclamation-triangle-fill"></i>
 
-            <div>
-                <strong>Terjadi kesalahan.</strong>
+            <strong>Terjadi kesalahan:</strong>
 
-                <ul style="margin:4px 0 0 18px;padding:0;">
-                    @foreach($errors->all() as $error)
-                        <li>{{ $error }}</li>
-                    @endforeach
-                </ul>
-            </div>
+            <ul style="margin: 6px 0 0 18px; padding: 0;">
+
+                @foreach($errors->all() as $error)
+
+                    <li>
+                        {{ $error }}
+                    </li>
+
+                @endforeach
+
+            </ul>
+
         </div>
+
     @endif
 
 
     {{-- SUMMARY --}}
     @php
+
         $hardwareData = $hardwares->getCollection();
 
-        $jumlahBarang = $hardwares->total();
+        $jumlahBarang = $hardwareData->count();
 
-        $hargaBarang = $hardwareData->sum(function ($hardware) {
-            return (float) ($hardware->harga ?? 0);
-        });
+        $totalHarga = $hardwareData->sum(
+            fn($item) => (float) $item->harga
+        );
 
-        $perluPerbaikan = $hardwareData->filter(function ($hardware) {
-            return strtolower(trim($hardware->kondisi ?? '')) === 'perlu perbaikan';
-        })->count();
+        $jumlahPerbaikan =
+            $hardwareData
+                ->where('kondisi', 'Perlu Perbaikan')
+                ->count();
 
-        $rusak = $hardwareData->filter(function ($hardware) {
-            return strtolower(trim($hardware->kondisi ?? '')) === 'rusak';
-        })->count();
+        $jumlahRusak =
+            $hardwareData
+                ->where('kondisi', 'Rusak')
+                ->count();
 
-        $tersedia = $hardwareData->filter(function ($hardware) {
-            $kondisi = strtolower(trim($hardware->kondisi ?? ''));
-
-            return in_array($kondisi, ['baru', 'baik']);
-        })->count();
-
-        $tahunTerbaru = $hardwareData
-            ->pluck('tahun_pembelian')
-            ->filter()
-            ->max();
     @endphp
 
 
-    <div class="stats-grid">
+    <div class="hardware-summary">
 
-        <div class="stat-card">
-            <div class="stat-icon blue">
+        <div class="hardware-summary-card">
+            <div class="hardware-summary-icon summary-icon-blue">
                 <i class="bi bi-pc-display"></i>
             </div>
-
-            <div class="stat-content">
-                <span class="stat-label">Jumlah Barang</span>
-                <span class="stat-value">{{ $jumlahBarang }}</span>
-                <span class="stat-description">
-                    Total aset hardware
-                </span>
+            <div class="hardware-summary-content">
+                <div class="hardware-summary-label">Jumlah Barang</div>
+                <div class="hardware-summary-value">{{ $jumlahBarang }}</div>
+                <div class="hardware-summary-desc">Total aset hardware</div>
             </div>
         </div>
 
-
-        <div class="stat-card">
-            <div class="stat-icon purple">
+        <div class="hardware-summary-card">
+            <div class="hardware-summary-icon summary-icon-purple">
                 <i class="bi bi-cash-stack"></i>
             </div>
-
-            <div class="stat-content">
-                <span class="stat-label">Harga Barang</span>
-
-                <span class="stat-value currency">
-                    Rp {{ number_format($hargaBarang, 0, ',', '.') }}
-                </span>
-
-                <span class="stat-description">
-                    Total nilai hardware
-                </span>
+            <div class="hardware-summary-content">
+                <div class="hardware-summary-label">Harga Barang</div>
+                <div class="hardware-summary-value">Rp {{ number_format($totalHarga, 0, ',', '.') }}</div>
+                <div class="hardware-summary-desc">Total nilai hardware</div>
             </div>
         </div>
 
-
-        <div class="stat-card">
-            <div class="stat-icon orange">
+        <div class="hardware-summary-card">
+            <div class="hardware-summary-icon summary-icon-orange">
                 <i class="bi bi-tools"></i>
             </div>
-
-            <div class="stat-content">
-                <span class="stat-label">Perlu Perbaikan</span>
-                <span class="stat-value">{{ $perluPerbaikan }}</span>
-
-                <span class="stat-description">
-                    Hardware perlu diperbaiki
-                </span>
+            <div class="hardware-summary-content">
+                <div class="hardware-summary-label">Perlu Perbaikan</div>
+                <div class="hardware-summary-value">{{ $jumlahPerbaikan }}</div>
+                <div class="hardware-summary-desc">Hardware perlu diperbaiki</div>
             </div>
         </div>
 
-
-        <div class="stat-card">
-            <div class="stat-icon red">
+        <div class="hardware-summary-card">
+            <div class="hardware-summary-icon summary-icon-red">
                 <i class="bi bi-x-octagon-fill"></i>
             </div>
-
-            <div class="stat-content">
-                <span class="stat-label">Rusak</span>
-                <span class="stat-value">{{ $rusak }}</span>
-
-                <span class="stat-description">
-                    Hardware dalam kondisi rusak
-                </span>
+            <div class="hardware-summary-content">
+                <div class="hardware-summary-label">Rusak</div>
+                <div class="hardware-summary-value">{{ $jumlahRusak }}</div>
+                <div class="hardware-summary-desc">Hardware dalam kondisi rusak</div>
             </div>
         </div>
 
-
-        <div class="stat-card">
-            <div class="stat-icon green">
+        <div class="hardware-summary-card">
+            <div class="hardware-summary-icon summary-icon-green">
                 <i class="bi bi-check-circle-fill"></i>
             </div>
-
-            <div class="stat-content">
-                <span class="stat-label">Tersedia</span>
-                <span class="stat-value">{{ $tersedia }}</span>
-
-                <span class="stat-description">
-                    Hardware siap digunakan
-                </span>
+            <div class="hardware-summary-content">
+                <div class="hardware-summary-label">Tersedia</div>
+                <div class="hardware-summary-value">{{ $jumlahBarang - $jumlahRusak }}</div>
+                <div class="hardware-summary-desc">Hardware siap digunakan</div>
             </div>
         </div>
 
-
-        <div class="stat-card">
-            <div class="stat-icon cyan">
+        <div class="hardware-summary-card">
+            <div class="hardware-summary-icon summary-icon-cyan">
                 <i class="bi bi-calendar3"></i>
             </div>
-
-            <div class="stat-content">
-                <span class="stat-label">
-                    Tahun Pembelian Terbaru
-                </span>
-
-                <span class="stat-value">
-                    {{ $tahunTerbaru ?: '-' }}
-                </span>
-
-                <span class="stat-description">
-                    Tahun pembelian terakhir
-                </span>
+            <div class="hardware-summary-content">
+                <div class="hardware-summary-label">Tahun Pembelian Terbaru</div>
+                <div class="hardware-summary-value">
+                    {{ $hardwareData->max('tahun_pembelian') ?? '-' }}
+                </div>
+                <div class="hardware-summary-desc">Tahun pembelian terakhir</div>
             </div>
         </div>
+
+    </div>
+
+
+    {{-- TOOLBAR --}}
+    <div class="hardware-toolbar">
+
+        <div class="hardware-toolbar-left">
+
+            {{-- SEARCH --}}
+            <form
+                method="GET"
+                action="{{ route('hardware.index') }}"
+                class="hardware-search"
+            >
+
+                <i class="bi bi-search"></i>
+
+                <input
+                    type="text"
+                    name="search"
+                    value="{{ request('search') }}"
+                    placeholder="Cari hardware..."
+                >
+
+            </form>
+
+
+            {{-- FILTER --}}
+            <div class="hardware-filter">
+
+                <select id="conditionFilter">
+
+                    <option value="">
+                        Semua Kondisi
+                    </option>
+
+                    <option value="Baik">
+                        Baik
+                    </option>
+
+                    <option value="Perlu Perbaikan">
+                        Perlu Perbaikan
+                    </option>
+
+                    <option value="Rusak">
+                        Rusak
+                    </option>
+
+                </select>
+
+            </div>
+
+        </div>
+
+
+        {{-- AKSI --}}
+<div style="display:flex; gap:8px; align-items:center;">
+
+    {{-- IMPORT --}}
+    <button
+        type="button"
+        class="hardware-btn-add"
+        onclick="openImportModal()"
+        style="background:#16a34a;"
+    >
+        <i class="bi bi-file-earmark-excel"></i>
+        Import Data
+    </button>
+
+    {{-- TAMBAH --}}
+    <button
+        type="button"
+        class="hardware-btn-add"
+        onclick="openHardwareModal()"
+    >
+        <i class="bi bi-plus-lg"></i>
+        Tambah Hardware
+    </button>
+
+</div>
 
     </div>
 
@@ -1044,127 +1095,40 @@
     {{-- TABLE --}}
     <div class="hardware-table-card">
 
-        <div class="hardware-table-header">
-
-            <div class="hardware-table-title">
-                <h3>Daftar Hardware</h3>
-
-                <p>
-                    Menampilkan
-                    <strong>{{ $hardwares->count() }}</strong>
-                    dari
-                    <strong>{{ $hardwares->total() }}</strong>
-                    data hardware
-                </p>
-            </div>
-
-
-            <div class="hardware-table-toolbar">
-
-                {{-- SEARCH --}}
-                <form
-                    method="GET"
-                    action="{{ route('hardware.index') }}"
-                    class="hardware-search"
-                >
-                    <i class="bi bi-search"></i>
-
-                    <input
-                        type="text"
-                        name="search"
-                        value="{{ request('search') }}"
-                        placeholder="Cari hardware..."
-                        autocomplete="off"
-                    >
-                </form>
-
-
-                {{-- FILTER --}}
-                <div class="hardware-filter-wrapper">
-
-                    <button
-                        type="button"
-                        class="hardware-toolbar-button"
-                        onclick="toggleHardwareFilter(event)"
-                    >
-                        <i class="bi bi-funnel"></i>
-                        Filter
-                    </button>
-
-                    <div
-                        class="hardware-filter-menu"
-                        id="hardwareFilterMenu"
-                    >
-                        <label for="hardwareConditionFilter">
-                            Kondisi
-                        </label>
-
-                        <select id="hardwareConditionFilter">
-                            <option value="">
-                                Semua Kondisi
-                            </option>
-
-                            <option value="baru">
-                                Baru
-                            </option>
-
-                            <option value="baik">
-                                Baik
-                            </option>
-
-                            <option value="perlu perbaikan">
-                                Perlu Perbaikan
-                            </option>
-
-                            <option value="rusak">
-                                Rusak
-                            </option>
-                        </select>
-
-                        <button
-                            type="button"
-                            class="hardware-filter-reset"
-                            onclick="resetHardwareFilter()"
-                        >
-                            Reset Filter
-                        </button>
-                    </div>
-
-                </div>
-
-
-                {{-- ADD --}}
-                <button
-                    type="button"
-                    class="hardware-toolbar-button hardware-add-button"
-                    onclick="openCreateHardwareModal()"
-                >
-                    <i class="bi bi-plus-lg"></i>
-                    Tambah Hardware
-                </button>
-
-            </div>
-
-        </div>
-
-
         <div class="hardware-table-wrapper">
 
             <table class="hardware-table">
 
                 <thead>
+
                     <tr>
+
                         <th>Asset ID</th>
+
                         <th>Nama Barang</th>
+
                         <th>Spesifikasi</th>
+
                         <th>Jenis Barang</th>
+
+                        <th>Lokasi</th>
+
+                        <th>Sistem Operasi</th>
+
                         <th>Tahun Pembelian</th>
+
                         <th>Harga</th>
+
                         <th>Kondisi</th>
+
                         <th>Verifikasi</th>
+
                         <th>Komentar</th>
+
                         <th>Aksi</th>
+
                     </tr>
+
                 </thead>
 
 
@@ -1173,143 +1137,202 @@
                     @forelse($hardwares as $hardware)
 
                         @php
-                            $kondisi = strtolower(
-                                trim($hardware->kondisi ?? '')
-                            );
 
-                            $verificationRequest =
+                            $verification =
                                 $hardware->latestVerificationRequest;
 
-                            $verifikasi = strtolower(
-                                trim(
-                                    $verificationRequest?->status
-                                    ?? 'menunggu'
-                                )
-                            );
+                            $verificationStatus =
+                                $verification->status ?? 'menunggu';
 
-                            $komentar =
-                                $verificationRequest?->rejection_reason
-                                ?? $verificationRequest?->catatan
-                                ?? null;
+                            $statusClass = match(
+                                strtolower($verificationStatus)
+                            ) {
 
-                            $conditionClass = match ($kondisi) {
-                                'baru' => 'hardware-condition-baru',
-                                'baik' => 'hardware-condition-baik',
-                                'perlu perbaikan' => 'hardware-condition-perbaikan',
-                                'rusak' => 'hardware-condition-rusak',
-                                default => 'hardware-condition-default',
+                                'disetujui' =>
+                                    'badge-disetujui',
+
+                                'ditolak' =>
+                                    'badge-ditolak',
+
+                                default =>
+                                    'badge-menunggu',
+
                             };
 
-                            $verificationClass = match ($verifikasi) {
-                                'menunggu',
-                                'menunggu persetujuan'
-                                    => 'hardware-verification-menunggu',
 
-                                'disetujui'
-                                    => 'hardware-verification-disetujui',
+                            $conditionClass = match(
+                                $hardware->kondisi
+                            ) {
 
-                                'ditolak'
-                                    => 'hardware-verification-ditolak',
+                                'Baik' =>
+                                    'badge-baik',
 
-                                default
-                                    => 'hardware-verification-default',
+                                'Perlu Perbaikan' =>
+                                    'badge-perbaikan',
+
+                                'Rusak' =>
+                                    'badge-rusak',
+
+                                default =>
+                                    '',
+
                             };
+
                         @endphp
 
 
                         <tr
-                            data-hardware-condition="{{ $kondisi }}"
+                            data-condition="{{ $hardware->kondisi }}"
+                            data-search="{{ strtolower(
+                                $hardware->asset_id . ' ' .
+                                $hardware->nama_barang . ' ' .
+                                $hardware->spesifikasi . ' ' .
+                                $hardware->jenis_barang . ' ' .
+                                ($hardware->lokasi->nama_lokasi ?? '') . ' ' .
+                                ($hardware->sistem_operasi ?? '') . ' ' .
+                                $hardware->tahun_pembelian . ' ' .
+                                $hardware->kondisi
+                            ) }}"
                         >
 
                             {{-- ASSET ID --}}
                             <td>
-                                <span class="hardware-asset-id">
-                                    <i class="bi bi-hash"></i>
+
+                                <span class="asset-id">
                                     {{ $hardware->asset_id }}
                                 </span>
+
                             </td>
 
 
                             {{-- NAMA --}}
                             <td>
-                                <div
-                                    class="hardware-name"
-                                    title="{{ $hardware->nama_barang }}"
-                                >
+
+                                <div class="hardware-name">
                                     {{ $hardware->nama_barang }}
                                 </div>
+
                             </td>
 
 
                             {{-- SPESIFIKASI --}}
                             <td>
+
                                 <div
                                     class="hardware-spec"
                                     title="{{ $hardware->spesifikasi }}"
                                 >
                                     {{ $hardware->spesifikasi }}
                                 </div>
+
                             </td>
 
 
                             {{-- JENIS --}}
                             <td>
-                                <span class="hardware-type">
+
+                                <span class="hardware-nowrap">
                                     {{ $hardware->jenis_barang }}
                                 </span>
+
+                            </td>
+
+
+                            {{-- LOKASI --}}
+                            <td>
+
+                                <span class="hardware-nowrap">
+                                    {{ $hardware->lokasi->nama_lokasi ?? '-' }}
+                                </span>
+
+                            </td>
+
+
+                            {{-- SISTEM OPERASI --}}
+                            <td>
+
+                                <span class="hardware-nowrap">
+                                    {{ $hardware->sistem_operasi ?? 'N/A' }}
+                                </span>
+
                             </td>
 
 
                             {{-- TAHUN --}}
                             <td>
-                                <span class="hardware-year">
+
+                                <span class="hardware-nowrap">
                                     {{ $hardware->tahun_pembelian }}
                                 </span>
+
                             </td>
 
 
                             {{-- HARGA --}}
                             <td>
+
                                 <span class="hardware-price">
-                                    Rp
-                                    {{ number_format((float) ($hardware->harga ?? 0), 0, ',', '.') }}
+                                    Rp {{ number_format($hardware->harga, 0, ',', '.') }}
                                 </span>
+
                             </td>
 
 
                             {{-- KONDISI --}}
                             <td>
-                                <span class="hardware-badge {{ $conditionClass }}">
+
+                                <span
+                                    class="hardware-badge {{ $conditionClass }}"
+                                >
                                     {{ $hardware->kondisi }}
                                 </span>
+
                             </td>
 
 
                             {{-- VERIFIKASI --}}
                             <td>
-                                <span class="hardware-badge {{ $verificationClass }}">
-                                    {{ ucfirst($verifikasi) }}
+
+                                <span
+                                    class="hardware-badge {{ $statusClass }}"
+                                >
+                                    {{ ucfirst($verificationStatus) }}
                                 </span>
+
                             </td>
 
 
                             {{-- KOMENTAR --}}
                             <td>
 
-                                @if($komentar)
+                                @if(
+                                    $verification &&
+                                    (
+                                        $verification->catatan ||
+                                        $verification->rejection_reason
+                                    )
+                                )
 
                                     <button
                                         type="button"
-                                        class="comment-button"
-                                        onclick="showComment(@js($komentar))"
+                                        class="hardware-action-btn hardware-action-comment"
                                         title="Lihat komentar"
+                                        onclick="openCommentModal(
+                                            @js($hardware->asset_id),
+                                            @js(
+                                                $verification->rejection_reason
+                                                ?? $verification->catatan
+                                            )
+                                        )"
                                     >
-                                        💬
+
+                                        <i class="bi bi-chat-left-text"></i>
+
                                     </button>
 
                                 @else
 
-                                    <span class="no-comment">
+                                    <span style="color:#b5bdc9;">
                                         -
                                     </span>
 
@@ -1326,20 +1349,23 @@
                                     {{-- EDIT --}}
                                     <button
                                         type="button"
-                                        class="hardware-action-button hardware-edit-button"
+                                        class="hardware-action-btn hardware-action-edit"
                                         title="Edit"
-
-                                        data-asset-id="{{ $hardware->asset_id }}"
-                                        data-nama-barang="{{ $hardware->nama_barang }}"
-                                        data-spesifikasi="{{ $hardware->spesifikasi }}"
-                                        data-jenis-barang="{{ $hardware->jenis_barang }}"
-                                        data-tahun-pembelian="{{ $hardware->tahun_pembelian }}"
-                                        data-harga="{{ $hardware->harga }}"
-                                        data-kondisi="{{ $hardware->kondisi }}"
-
-                                        onclick="openEditHardwareModal(this)"
+                                        onclick="openEditModal(
+                                            @js($hardware->asset_id),
+                                            @js($hardware->nama_barang),
+                                            @js($hardware->spesifikasi),
+                                            @js($hardware->jenis_barang),
+                                            @js($hardware->lokasi_id),
+                                            @js($hardware->sistem_operasi),
+                                            @js($hardware->tahun_pembelian),
+                                            @js($hardware->harga),
+                                            @js($hardware->kondisi)
+                                        )"
                                     >
-                                        <i class="bi bi-pencil-fill"></i>
+
+                                        <i class="bi bi-pencil"></i>
+
                                     </button>
 
 
@@ -1347,19 +1373,24 @@
                                     <form
                                         method="POST"
                                         action="{{ route('hardware.destroy', $hardware->asset_id) }}"
-                                        onsubmit="return confirm('Yakin ingin mengajukan penghapusan hardware ini?');"
-                                        style="margin:0;"
+                                        onsubmit="return confirm('Apakah Anda yakin ingin menghapus hardware ini?')"
+                                        style="display:inline;"
                                     >
+
                                         @csrf
+
                                         @method('DELETE')
 
                                         <button
                                             type="submit"
-                                            class="hardware-action-button hardware-delete-button"
+                                            class="hardware-action-btn hardware-action-delete"
                                             title="Hapus"
                                         >
-                                            <i class="bi bi-trash3-fill"></i>
+
+                                            <i class="bi bi-trash"></i>
+
                                         </button>
+
                                     </form>
 
                                 </div>
@@ -1371,22 +1402,25 @@
                     @empty
 
                         <tr>
+
                             <td
-                                colspan="10"
+                                colspan="12"
                                 class="hardware-empty"
                             >
-                                <div class="hardware-empty-icon">
-                                    <i class="bi bi-inbox"></i>
-                                </div>
 
-                                <p class="hardware-empty-title">
-                                    Belum ada data hardware
-                                </p>
+                                <i
+                                    class="bi bi-inbox"
+                                    style="
+                                        font-size:30px;
+                                        display:block;
+                                        margin-bottom:10px;
+                                    "
+                                ></i>
 
-                                <p class="hardware-empty-text">
-                                    Silakan tambahkan hardware baru untuk mulai mengelola aset.
-                                </p>
+                                Belum ada data hardware.
+
                             </td>
+
                         </tr>
 
                     @endforelse
@@ -1399,22 +1433,30 @@
 
 
         {{-- PAGINATION --}}
-        @if($hardwares->hasPages())
+        @if(
+            $hardwares->hasPages() ||
+            $hardwares->total() > 0
+        )
 
             <div class="hardware-pagination">
 
                 <div class="hardware-pagination-info">
+
                     Menampilkan
-                    <strong>{{ $hardwares->firstItem() }}</strong>
+                    {{ $hardwares->firstItem() ?? 0 }}
                     -
-                    <strong>{{ $hardwares->lastItem() }}</strong>
+                    {{ $hardwares->lastItem() ?? 0 }}
                     dari
-                    <strong>{{ $hardwares->total() }}</strong>
+                    {{ $hardwares->total() }}
                     data
+
                 </div>
 
-                <div>
-                    {{ $hardwares->onEachSide(1)->links('pagination::bootstrap-5') }}
+
+                <div class="hardware-pagination-links">
+
+                    {!! $hardwares->onEachSide(1)->links() !!}
+
                 </div>
 
             </div>
@@ -1427,345 +1469,336 @@
 
 
 {{-- =========================================================
-     COMMENT MODAL
+     MODAL TAMBAH HARDWARE
 ========================================================= --}}
 
 <div
-    id="commentModal"
-    class="comment-modal-overlay"
->
-    <div
-        class="comment-modal"
-        onclick="event.stopPropagation()"
-    >
-
-        <div class="comment-modal-header">
-
-            <h3>
-                Komentar Verifikator
-            </h3>
-
-            <button
-                type="button"
-                class="comment-modal-close"
-                onclick="closeCommentModal()"
-            >
-                ×
-            </button>
-
-        </div>
-
-
-        <div class="comment-modal-body">
-
-            <div class="comment-box">
-                <p id="commentText"></p>
-            </div>
-
-        </div>
-
-
-        <div class="comment-modal-footer">
-
-            <button
-                type="button"
-                class="comment-close-btn"
-                onclick="closeCommentModal()"
-            >
-                Tutup
-            </button>
-
-        </div>
-
-    </div>
-</div>
-
-
-{{-- =========================================================
-     CREATE MODAL
-========================================================= --}}
-
-<div
+    id="hardwareFormOverlay"
     class="hardware-modal-overlay"
-    id="createHardwareModal"
 >
 
-    <div
-        class="hardware-modal"
-        onclick="event.stopPropagation()"
-    >
+    <div class="hardware-modal">
 
         <div class="hardware-modal-header">
 
-            <div class="hardware-modal-title-wrapper">
-
-                <div class="hardware-modal-icon">
+            <div style="display:flex; align-items:center; gap:12px;">
+                <div style="
+                    width:40px;
+                    height:40px;
+                    border-radius:10px;
+                    background:#eaf2ff;
+                    color:#3b82f6;
+                    display:flex;
+                    align-items:center;
+                    justify-content:center;
+                    font-size:18px;
+                    flex-shrink:0;
+                ">
                     <i class="bi bi-pc-display"></i>
                 </div>
 
-                <div class="hardware-modal-title">
-
-                    <h3>
-                        Tambah Hardware
-                    </h3>
-
-                    <p>
+                <div>
+                    <h3>Tambah Hardware</h3>
+                    <div style="
+                        margin-top:4px;
+                        font-size:10px;
+                        color:#a0a8b5;
+                    ">
                         Tambahkan data hardware baru.
-                    </p>
-
+                    </div>
                 </div>
-
             </div>
-
 
             <button
                 type="button"
                 class="hardware-modal-close"
-                onclick="closeCreateHardwareModal()"
+                onclick="closeHardwareModal()"
             >
-                <i class="bi bi-x-lg"></i>
+                &times;
             </button>
 
         </div>
 
 
         <form
+            id="hardwareForm"
             method="POST"
             action="{{ route('hardware.store') }}"
-            id="createHardwareForm"
         >
 
             @csrf
 
             <div class="hardware-modal-body">
 
+                {{-- INFORMASI HARDWARE --}}
                 <div class="hardware-form-section">
-
                     <h4 class="hardware-form-section-title">
                         Informasi Hardware
                     </h4>
 
                     <div class="hardware-form-grid">
 
+                        {{-- ASSET ID --}}
                         <div class="hardware-form-group">
-
-                            <label class="hardware-form-label">
+                            <label for="asset_id">
                                 Asset ID
-                            </label>
-
-                            <div class="hardware-auto-id">
-                                <i class="bi bi-magic"></i>
-
-                                <span>
-                                    Otomatis dibuat oleh sistem
-                                </span>
-                            </div>
-
-                            <small>
-                                Asset ID akan dibuat otomatis saat data disimpan.
-                            </small>
-
-                        </div>
-
-
-                        <div class="hardware-form-group">
-
-                            <label
-                                for="create_nama_barang"
-                                class="hardware-form-label"
-                            >
-                                Nama Barang
-                                <span class="hardware-required">*</span>
                             </label>
 
                             <input
                                 type="text"
-                                id="create_nama_barang"
+                                id="asset_id"
+                                value="Otomatis dibuat oleh sistem"
+                                readonly
+                            >
+
+                            <div style="font-size:10px; color:#a0a8b5;">
+                                Asset ID akan dibuat otomatis saat data disimpan.
+                            </div>
+                        </div>
+
+                        {{-- NAMA --}}
+                        <div class="hardware-form-group">
+                            <label for="nama_barang">
+                                Nama Barang <span class="hardware-required">*</span>
+                            </label>
+
+                            <input
+                                type="text"
+                                id="nama_barang"
                                 name="nama_barang"
-                                class="hardware-form-control"
                                 value="{{ old('nama_barang') }}"
                                 placeholder="Contoh: Laptop"
                                 required
                             >
-
                         </div>
 
-
+                        {{-- JENIS --}}
                         <div class="hardware-form-group">
-
-                            <label
-                                for="create_jenis_barang"
-                                class="hardware-form-label"
-                            >
-                                Jenis Barang
-                                <span class="hardware-required">*</span>
-                            </label>
-
-                            <input
-                                type="text"
-                                id="create_jenis_barang"
-                                name="jenis_barang"
-                                class="hardware-form-control"
-                                value="{{ old('jenis_barang') }}"
-                                placeholder="Contoh: Laptop"
-                                required
-                            >
-
-                        </div>
-
-
-                        <div class="hardware-form-group">
-
-                            <label
-                                for="create_kondisi"
-                                class="hardware-form-label"
-                            >
-                                Kondisi
-                                <span class="hardware-required">*</span>
+                            <label for="jenis_barang">
+                                Jenis Barang <span class="hardware-required">*</span>
                             </label>
 
                             <select
-                                id="create_kondisi"
-                                name="kondisi"
-                                class="hardware-form-control"
+                                id="jenis_barang"
+                                name="jenis_barang"
                                 required
                             >
-
-                                <option value="">
-                                    Pilih kondisi
-                                </option>
-
-                                <option value="Baik">
-                                    Baik
-                                </option>
-
-                                <option value="Perlu Perbaikan">
-                                    Perlu Perbaikan
-                                </option>
-
-                                <option value="Rusak">
-                                    Rusak
-                                </option>
-
+                            <option value="PC All in One">PC All in One</option>
+                            <option value="PC Desktop">PC Desktop</option>
+                            <option value="Laptop">Laptop</option>
+                            <option value="NoteBook">NoteBook</option>
+                            <option value="Tablet">Tablet</option>
+                            <option value="Smartphone">Smartphone</option>
+                            <option value="Printer">Printer</option>
+                            <option value="Scanner">Scanner</option>
+                            <option value="Monitor">Monitor</option>
+                            <option value="CCTV">CCTV</option>
+                            <option value="Kamera">Kamera</option>
+                            <option value="Perangkat Audio">Perangkat Audio</option>
+                            <option value="Perangkat Video">Perangkat Video</option>
+                            <option value="Perangkat Komunikasi">Perangkat Komunikasi</option>
+                            <option value="Perangkat Pendukung">Perangkat Pendukung</option>
+                            <option value="Lainnya">Lainnya</option>
                             </select>
 
+                            <input
+                                type="text"
+                                id="jenis_barang_lainnya"
+                                placeholder="Masukkan jenis barang"
+                                style="display:none;"
+                            >
                         </div>
 
-                    </div>
+                        {{-- KONDISI --}}
+                        <div class="hardware-form-group">
+                            <label for="kondisi">
+                                Kondisi <span class="hardware-required">*</span>
+                            </label>
 
-                </div>
+                            <select
+                                id="kondisi"
+                                name="kondisi"
+                                required
+                            >
+                                <option value="">Pilih Kondisi</option>
+                                <option value="Baik" {{ old('kondisi') === 'Baik' ? 'selected' : '' }}>
+                                    Baik
+                                </option>
+                                <option value="Perlu Perbaikan" {{ old('kondisi') === 'Perlu Perbaikan' ? 'selected' : '' }}>
+                                    Perlu Perbaikan
+                                </option>
+                                <option value="Rusak" {{ old('kondisi') === 'Rusak' ? 'selected' : '' }}>
+                                    Rusak
+                                </option>
+                            </select>
+                        </div>
+
+                        {{-- LOKASI --}}
+                        <div class="hardware-form-group">
+                            <label for="lokasi_id">
+                                Lokasi <span class="hardware-required">*</span>
+                            </label>
+
+                            <select
+                                id="lokasi_id"
+                                name="lokasi_id"
+                                required
+                            >
+                                <option value="">Pilih Lokasi</option>
+
+                                @foreach($lokasis as $lokasi)
+                                    <option
+                                        value="{{ $lokasi->id }}"
+                                        {{ old('lokasi_id') == $lokasi->id ? 'selected' : '' }}
+                                    >
+                                        {{ $lokasi->nama_lokasi }}
+                                    </option>
+                                @endforeach
+                            </select>
+                        </div>
+
+                        {{-- SISTEM OPERASI --}}
+<div class="hardware-form-group">
+
+    <label for="edit_sistem_operasi">
+        Sistem Operasi
+    </label>
+
+    <select
+        id="edit_sistem_operasi"
+        name="sistem_operasi"
+    >
+        <option value="">Pilih Sistem Operasi</option>
+
+        <option value="Windows 11">
+            Windows 11
+        </option>
+
+        <option value="Windows 10">
+            Windows 10
+        </option>
+
+        <option value="Windows 7">
+            Windows 7
+        </option>
+
+        <option value="Linux">
+            Linux
+        </option>
+
+        <option value="Ubuntu">
+            Ubuntu
+        </option>
+
+        <option value="macOS">
+            macOS
+        </option>
+
+        <option value="Android">
+            Android
+        </option>
+
+        <option value="iOS">
+            iOS
+        </option>
+
+        <option value="N/A">
+            N/A
+        </option>
+    </select>
+
+</div>
+
+</div> {{-- tutup hardware-form-grid --}}
+
+</div> {{-- tutup hardware-form-section Informasi Hardware --}}
 
 
+{{-- DETAIL PEMBELIAN --}}
+                {{-- DETAIL PEMBELIAN --}}
                 <div class="hardware-form-section">
-
                     <h4 class="hardware-form-section-title">
                         Detail Pembelian
                     </h4>
 
                     <div class="hardware-form-grid">
 
+                        {{-- TAHUN --}}
                         <div class="hardware-form-group">
-
-                            <label
-                                for="create_tahun_pembelian"
-                                class="hardware-form-label"
-                            >
-                                Tahun Pembelian
-                                <span class="hardware-required">*</span>
+                            <label for="tahun_pembelian">
+                                Tahun Pembelian <span class="hardware-required">*</span>
                             </label>
 
                             <input
                                 type="number"
-                                id="create_tahun_pembelian"
+                                id="tahun_pembelian"
                                 name="tahun_pembelian"
-                                class="hardware-form-control"
                                 value="{{ old('tahun_pembelian') }}"
                                 min="1900"
                                 max="2100"
+                                placeholder="Contoh: 2025"
                                 required
                             >
-
                         </div>
 
-
+                        {{-- HARGA --}}
                         <div class="hardware-form-group">
-
-                            <label
-                                for="create_harga"
-                                class="hardware-form-label"
-                            >
-                                Harga
-                                <span class="hardware-required">*</span>
+                            <label for="harga">
+                                Harga <span class="hardware-required">*</span>
                             </label>
 
                             <input
                                 type="number"
-                                id="create_harga"
+                                id="harga"
                                 name="harga"
-                                class="hardware-form-control"
                                 value="{{ old('harga') }}"
                                 min="0"
                                 step="0.01"
+                                placeholder="Contoh: 10000000"
                                 required
                             >
-
                         </div>
 
                     </div>
-
                 </div>
 
-
+                {{-- SPESIFIKASI --}}
                 <div class="hardware-form-section">
-
                     <h4 class="hardware-form-section-title">
                         Spesifikasi
                     </h4>
 
-                    <div class="hardware-form-grid">
+                    <div class="hardware-form-group">
+                        <label for="spesifikasi">
+                            Spesifikasi <span class="hardware-required">*</span>
+                        </label>
 
-                        <div class="hardware-form-group full">
-
-                            <label
-                                for="create_spesifikasi"
-                                class="hardware-form-label"
-                            >
-                                Spesifikasi
-                                <span class="hardware-required">*</span>
-                            </label>
-
-                            <textarea
-                                id="create_spesifikasi"
-                                name="spesifikasi"
-                                class="hardware-form-control"
-                                placeholder="Masukkan spesifikasi hardware..."
-                                required
-                            >{{ old('spesifikasi') }}</textarea>
-
-                        </div>
-
+                        <textarea
+                            id="spesifikasi"
+                            name="spesifikasi"
+                            placeholder="Contoh: Intel Core i5, RAM 8GB, SSD 512GB, Lenovo ThinkPad..."
+                            required
+                        >{{ old('spesifikasi') }}</textarea>
                     </div>
-
                 </div>
 
             </div>
-
 
             <div class="hardware-modal-footer">
 
                 <button
                     type="button"
-                    class="hardware-modal-button"
-                    onclick="closeCreateHardwareModal()"
+                    class="hardware-btn-cancel"
+                    onclick="closeHardwareModal()"
                 >
                     Batal
                 </button>
 
                 <button
                     type="submit"
-                    class="hardware-modal-button hardware-modal-submit"
+                    class="hardware-btn-save"
                 >
-                    <i class="bi bi-check2"></i>
+                    <i class="bi bi-check-lg"></i>
                     Simpan
                 </button>
 
@@ -1779,36 +1812,49 @@
 
 
 {{-- =========================================================
-     EDIT MODAL
+     MODAL IMPORT HARDWARE
 ========================================================= --}}
 
 <div
+    id="importHardwareOverlay"
     class="hardware-modal-overlay"
-    id="editHardwareModal"
 >
 
     <div
         class="hardware-modal"
-        onclick="event.stopPropagation()"
+        style="max-width:650px; height:auto; max-height:90vh;"
     >
 
         <div class="hardware-modal-header">
 
-            <div class="hardware-modal-title-wrapper">
+            <div style="display:flex; align-items:center; gap:12px;">
 
-                <div class="hardware-modal-icon">
-                    <i class="bi bi-pencil-square"></i>
+                <div style="
+                    width:40px;
+                    height:40px;
+                    border-radius:10px;
+                    background:#ecfdf3;
+                    color:#16a34a;
+                    display:flex;
+                    align-items:center;
+                    justify-content:center;
+                    font-size:18px;
+                    flex-shrink:0;
+                ">
+                    <i class="bi bi-file-earmark-excel"></i>
                 </div>
 
-                <div class="hardware-modal-title">
+                <div>
 
-                    <h3>
-                        Edit Hardware
-                    </h3>
+                    <h3>Import Data Hardware</h3>
 
-                    <p>
-                        Perbarui informasi hardware.
-                    </p>
+                    <div style="
+                        margin-top:4px;
+                        font-size:10px;
+                        color:#a0a8b5;
+                    ">
+                        Import data hardware secara massal melalui Excel atau CSV.
+                    </div>
 
                 </div>
 
@@ -1818,9 +1864,9 @@
             <button
                 type="button"
                 class="hardware-modal-close"
-                onclick="closeEditHardwareModal()"
+                onclick="closeImportModal()"
             >
-                <i class="bi bi-x-lg"></i>
+                &times;
             </button>
 
         </div>
@@ -1828,119 +1874,46 @@
 
         <form
             method="POST"
-            action=""
-            id="editHardwareForm"
+            action="{{ route('hardware.import') }}"
+            enctype="multipart/form-data"
         >
 
             @csrf
-            @method('PUT')
 
             <div class="hardware-modal-body">
 
                 <div class="hardware-form-section">
 
                     <h4 class="hardware-form-section-title">
-                        Informasi Hardware
+                        Pilih File
+                        <span>
+                            Gunakan file Excel (.xlsx) atau CSV (.csv).
+                        </span>
                     </h4>
 
-                    <div class="hardware-form-grid">
 
-                        <div class="hardware-form-group">
+                    <div class="hardware-form-group">
 
-                            <label
-                                for="edit_asset_id"
-                                class="hardware-form-label"
-                            >
-                                Asset ID
-                            </label>
+                        <label for="import_file">
+                            File Data Hardware
+                            <span class="hardware-required">*</span>
+                        </label>
 
-                            <input
-                                type="text"
-                                id="edit_asset_id"
-                                class="hardware-form-control"
-                                readonly
-                            >
+                        <input
+                            type="file"
+                            id="import_file"
+                            name="file"
+                            accept=".xlsx,.csv"
+                            required
+                        >
 
-                        </div>
-
-
-                        <div class="hardware-form-group">
-
-                            <label
-                                for="edit_nama_barang"
-                                class="hardware-form-label"
-                            >
-                                Nama Barang
-                                <span class="hardware-required">*</span>
-                            </label>
-
-                            <input
-                                type="text"
-                                id="edit_nama_barang"
-                                name="nama_barang"
-                                class="hardware-form-control"
-                                required
-                            >
-
-                        </div>
-
-
-                        <div class="hardware-form-group">
-
-                            <label
-                                for="edit_jenis_barang"
-                                class="hardware-form-label"
-                            >
-                                Jenis Barang
-                                <span class="hardware-required">*</span>
-                            </label>
-
-                            <input
-                                type="text"
-                                id="edit_jenis_barang"
-                                name="jenis_barang"
-                                class="hardware-form-control"
-                                required
-                            >
-
-                        </div>
-
-
-                        <div class="hardware-form-group">
-
-                            <label
-                                for="edit_kondisi"
-                                class="hardware-form-label"
-                            >
-                                Kondisi
-                                <span class="hardware-required">*</span>
-                            </label>
-
-                            <select
-                                id="edit_kondisi"
-                                name="kondisi"
-                                class="hardware-form-control"
-                                required
-                            >
-
-                                <option value="">
-                                    Pilih kondisi
-                                </option>
-
-                                <option value="Baik">
-                                    Baik
-                                </option>
-
-                                <option value="Perlu Perbaikan">
-                                    Perlu Perbaikan
-                                </option>
-
-                                <option value="Rusak">
-                                    Rusak
-                                </option>
-
-                            </select>
-
+                        <div style="
+                            margin-top:6px;
+                            font-size:10px;
+                            color:#8a93a3;
+                            line-height:1.6;
+                        ">
+                            Maksimal ukuran file 10 MB.
                         </div>
 
                     </div>
@@ -1951,88 +1924,335 @@
                 <div class="hardware-form-section">
 
                     <h4 class="hardware-form-section-title">
-                        Detail Pembelian
+                        Format Kolom
+                        <span>
+                            Urutan kolom harus mengikuti format berikut.
+                        </span>
                     </h4>
 
-                    <div class="hardware-form-grid">
 
-                        <div class="hardware-form-group">
+                    <div style="
+                        background:#f8fafc;
+                        border:1px solid #e5e7eb;
+                        border-radius:8px;
+                        padding:13px;
+                        font-size:11px;
+                        color:#4b5563;
+                        line-height:1.8;
+                    ">
 
-                            <label
-                                for="edit_tahun_pembelian"
-                                class="hardware-form-label"
-                            >
-                                Tahun Pembelian
-                                <span class="hardware-required">*</span>
-                            </label>
+                        <strong>Kolom yang diperlukan:</strong>
 
-                            <input
-                                type="number"
-                                id="edit_tahun_pembelian"
-                                name="tahun_pembelian"
-                                class="hardware-form-control"
-                                min="1900"
-                                max="2100"
-                                required
-                            >
+                        <ol style="
+                            margin:7px 0 0 18px;
+                            padding:0;
+                        ">
 
-                        </div>
+                            <li>Nama Barang</li>
+                            <li>Lokasi</li>
+                            <li>Spesifikasi</li>
+                            <li>Jenis barang</li>
+                            <li>Sistem Operasi</li>
+                            <li>Tahun Perolehan</li>
+                            <li>Harga (Rp)</li>
+                            <li>Kondisi</li>
 
-
-                        <div class="hardware-form-group">
-
-                            <label
-                                for="edit_harga"
-                                class="hardware-form-label"
-                            >
-                                Harga
-                                <span class="hardware-required">*</span>
-                            </label>
-
-                            <input
-                                type="number"
-                                id="edit_harga"
-                                name="harga"
-                                class="hardware-form-control"
-                                min="0"
-                                step="0.01"
-                                required
-                            >
-
-                        </div>
+                        </ol>
 
                     </div>
 
                 </div>
 
 
-                <div class="hardware-form-section">
+                <div
+                    style="
+                        background:#eff6ff;
+                        border:1px solid #dbeafe;
+                        border-radius:8px;
+                        padding:12px 13px;
+                        font-size:11px;
+                        color:#1e40af;
+                        line-height:1.6;
+                    "
+                >
 
-                    <h4 class="hardware-form-section-title">
-                        Spesifikasi
-                    </h4>
+                    <i class="bi bi-info-circle"></i>
 
-                    <div class="hardware-form-grid">
+                    Asset ID akan dibuat otomatis oleh sistem.
+                    Data hasil import juga akan masuk ke proses
+                    <strong>menunggu verifikasi</strong>.
 
-                        <div class="hardware-form-group full">
+                </div>
 
-                            <label
-                                for="edit_spesifikasi"
-                                class="hardware-form-label"
-                            >
-                                Spesifikasi
-                                <span class="hardware-required">*</span>
-                            </label>
+            </div>
 
-                            <textarea
-                                id="edit_spesifikasi"
-                                name="spesifikasi"
-                                class="hardware-form-control"
-                                placeholder="Masukkan spesifikasi hardware..."
-                                required
-                            ></textarea>
 
-                        </div>
+            <div class="hardware-modal-footer">
+
+                <button
+                    type="button"
+                    class="hardware-btn-cancel"
+                    onclick="closeImportModal()"
+                >
+                    Batal
+                </button>
+
+
+                <button
+                    type="submit"
+                    class="hardware-btn-save"
+                    style="
+                        background:#16a34a;
+                        border-color:#16a34a;
+                    "
+                >
+                    <i class="bi bi-upload"></i>
+                    Import Data
+                </button>
+
+            </div>
+
+        </form>
+
+    </div>
+
+</div>
+
+{{-- =========================================================
+     MODAL EDIT HARDWARE
+========================================================= --}}
+
+<div
+    id="editHardwareOverlay"
+    class="hardware-modal-overlay"
+>
+
+    <div class="hardware-modal">
+
+        <div class="hardware-modal-header">
+
+            <h3>
+                Edit Hardware
+            </h3>
+
+            <button
+                type="button"
+                class="hardware-modal-close"
+                onclick="closeEditModal()"
+            >
+                &times;
+            </button>
+
+        </div>
+
+
+        <form
+            id="editHardwareForm"
+            method="POST"
+        >
+
+            @csrf
+
+            @method('PUT')
+
+            <div class="hardware-modal-body">
+
+                <div class="hardware-form-grid">
+
+                    {{-- NAMA --}}
+                    <div class="hardware-form-group">
+
+                        <label for="edit_nama_barang">
+                            Nama Barang
+                        </label>
+
+                        <input
+                            type="text"
+                            id="edit_nama_barang"
+                            name="nama_barang"
+                            required
+                        >
+
+                    </div>
+
+
+                    {{-- JENIS --}}
+                    <div class="hardware-form-group">
+
+                        <label for="edit_jenis_barang">
+                            Jenis Barang
+                        </label>
+
+                        <select
+                            id="edit_jenis_barang"
+                            name="jenis_barang"
+                            required
+                        >
+
+                            <option value="">
+                                Pilih Jenis Barang
+                            </option>
+
+                            <option value="PC All in One">PC All in One</option>
+                            <option value="PC Desktop">PC Desktop</option>
+                            <option value="Laptop">Laptop</option>
+                            <option value="NoteBook">NoteBok</option>
+                            <option value="Tablet">Tablet</option>
+                            <option value="Smartphone">Smartphone</option>
+                            <option value="Printer">Printer</option>
+                            <option value="Scanner">Scanner</option>
+                            <option value="Monitor">Monitor</option>
+                            <option value="CCTV">CCTV</option>
+                            <option value="Kamera">Kamera</option>
+                            <option value="Perangkat Audio">Perangkat Audio</option>
+                            <option value="Perangkat Video">Perangkat Video</option>
+                            <option value="Perangkat Komunikasi">Perangkat Komunikasi</option>
+                            <option value="Perangkat Pendukung">Perangkat Pendukung</option>
+                            <option value="Lainnya">Lainnya</option>
+                        </select>
+
+
+                        <input
+                            type="text"
+                            id="edit_jenis_barang_lainnya"
+                            placeholder="Masukkan jenis barang"
+                            style="display:none;"
+                        >
+
+                    </div>
+
+
+                    {{-- SPESIFIKASI --}}
+                    <div class="hardware-form-group full">
+
+                        <label for="edit_spesifikasi">
+                            Spesifikasi
+                        </label>
+
+                        <textarea
+                            id="edit_spesifikasi"
+                            name="spesifikasi"
+                            required
+                        ></textarea>
+
+                    </div>
+
+
+                    {{-- LOKASI --}}
+                    <div class="hardware-form-group">
+
+                        <label for="edit_lokasi_id">
+                            Lokasi
+                        </label>
+
+                        <select
+                            id="edit_lokasi_id"
+                            name="lokasi_id"
+                            required
+                        >
+
+                            <option value="">
+                                Pilih Lokasi
+                            </option>
+
+                            @foreach($lokasis as $lokasi)
+
+                                <option value="{{ $lokasi->id }}">
+                                    {{ $lokasi->nama_lokasi }}
+                                </option>
+
+                            @endforeach
+
+                        </select>
+
+                    </div>
+
+
+                    {{-- SISTEM OPERASI --}}
+                    <div class="hardware-form-group">
+
+                        <label for="edit_sistem_operasi">
+                            Sistem Operasi
+                        </label>
+
+                        <input
+                            type="text"
+                            id="edit_sistem_operasi"
+                            name="sistem_operasi"
+                            placeholder="Contoh: Windows 11 / Linux / N/A"
+                        >
+
+                    </div>
+
+
+                    {{-- TAHUN --}}
+                    <div class="hardware-form-group">
+
+                        <label for="edit_tahun_pembelian">
+                            Tahun Pembelian
+                        </label>
+
+                        <input
+                            type="number"
+                            id="edit_tahun_pembelian"
+                            name="tahun_pembelian"
+                            min="1900"
+                            max="2100"
+                            required
+                        >
+
+                    </div>
+
+
+                    {{-- HARGA --}}
+                    <div class="hardware-form-group">
+
+                        <label for="edit_harga">
+                            Harga
+                        </label>
+
+                        <input
+                            type="number"
+                            id="edit_harga"
+                            name="harga"
+                            min="0"
+                            step="0.01"
+                            required
+                        >
+
+                    </div>
+
+
+                    {{-- KONDISI --}}
+                    <div class="hardware-form-group">
+
+                        <label for="edit_kondisi">
+                            Kondisi
+                        </label>
+
+                        <select
+                            id="edit_kondisi"
+                            name="kondisi"
+                            required
+                        >
+
+                            <option value="">
+                                Pilih Kondisi
+                            </option>
+
+                            <option value="Baik">
+                                Baik
+                            </option>
+
+                            <option value="Perlu Perbaikan">
+                                Perlu Perbaikan
+                            </option>
+
+                            <option value="Rusak">
+                                Rusak
+                            </option>
+
+                        </select>
 
                     </div>
 
@@ -2045,17 +2265,16 @@
 
                 <button
                     type="button"
-                    class="hardware-modal-button"
-                    onclick="closeEditHardwareModal()"
+                    class="hardware-btn-cancel"
+                    onclick="closeEditModal()"
                 >
                     Batal
                 </button>
 
                 <button
                     type="submit"
-                    class="hardware-modal-button hardware-modal-submit"
+                    class="hardware-btn-save"
                 >
-                    <i class="bi bi-check2"></i>
                     Simpan Perubahan
                 </button>
 
@@ -2068,384 +2287,611 @@
 </div>
 
 
+{{-- =========================================================
+     MODAL KOMENTAR
+========================================================= --}}
+
+<div
+    id="commentModalOverlay"
+    class="hardware-modal-overlay"
+>
+
+    <div class="hardware-modal comment-modal">
+
+        <div class="hardware-modal-header">
+
+            <h3>
+                Komentar Verifikasi
+            </h3>
+
+            <button
+                type="button"
+                class="hardware-modal-close"
+                onclick="closeCommentModal()"
+            >
+                &times;
+            </button>
+
+        </div>
+
+
+        <div class="hardware-modal-body">
+
+            <div
+                style="
+                    font-size:11px;
+                    color:#8a93a3;
+                    margin-bottom:8px;
+                "
+            >
+                Asset ID
+            </div>
+
+
+            <div
+                id="commentAssetId"
+                style="
+                    font-size:13px;
+                    font-weight:700;
+                    color:#2563eb;
+                    margin-bottom:16px;
+                "
+            >
+            </div>
+
+
+            <div
+                class="comment-content"
+                id="commentContent"
+            >
+            </div>
+
+        </div>
+
+
+        <div class="hardware-modal-footer">
+
+            <button
+                type="button"
+                class="hardware-btn-cancel"
+                onclick="closeCommentModal()"
+            >
+                Tutup
+            </button>
+
+        </div>
+
+    </div>
+
+</div>
+
+
 <script>
 
     /* =====================================================
-       CREATE MODAL
+   IMPORT HARDWARE
+===================================================== */
+
+function openImportModal() {
+
+    const overlay =
+        document.getElementById(
+            'importHardwareOverlay'
+        );
+
+    if (overlay) {
+
+        overlay.classList.add('show');
+
+        document.body.style.overflow =
+            'hidden';
+
+    }
+
+}
+
+
+function closeImportModal() {
+
+    const overlay =
+        document.getElementById(
+            'importHardwareOverlay'
+        );
+
+    if (overlay) {
+
+        overlay.classList.remove('show');
+
+        document.body.style.overflow =
+            '';
+
+    }
+
+}
+
+    /* =====================================================
+       TAMBAH HARDWARE
     ===================================================== */
 
-    function openCreateHardwareModal() {
+    function openHardwareModal() {
 
-        const modal =
-            document.getElementById('createHardwareModal');
+        const overlay =
+            document.getElementById(
+                'hardwareFormOverlay'
+            );
 
-        if (!modal) {
-            return;
+        if (overlay) {
+
+            overlay.classList.add('show');
+
+            document.body.style.overflow =
+                'hidden';
+
         }
 
-        modal.classList.add('active');
-
-        document.body.style.overflow = 'hidden';
-
-        setTimeout(() => {
-
-            const input =
-                document.getElementById('create_nama_barang');
-
-            if (input) {
-                input.focus();
-            }
-
-        }, 100);
     }
 
 
-    function closeCreateHardwareModal() {
+    function closeHardwareModal() {
 
-        const modal =
-            document.getElementById('createHardwareModal');
+        const overlay =
+            document.getElementById(
+                'hardwareFormOverlay'
+            );
 
-        if (!modal) {
-            return;
+        if (overlay) {
+
+            overlay.classList.remove('show');
+
+            document.body.style.overflow =
+                '';
+
         }
 
-        modal.classList.remove('active');
-
-        document.body.style.overflow = '';
     }
 
 
     /* =====================================================
-       EDIT MODAL
+       EDIT HARDWARE
     ===================================================== */
 
-    function openEditHardwareModal(button) {
+    function openEditModal(
+        assetId,
+        namaBarang,
+        spesifikasi,
+        jenisBarang,
+        lokasiId,
+        sistemOperasi,
+        tahunPembelian,
+        harga,
+        kondisi
+    ) {
 
-        if (!button) {
-            return;
-        }
-
-        const modal =
-            document.getElementById('editHardwareModal');
+        const overlay =
+            document.getElementById(
+                'editHardwareOverlay'
+            );
 
         const form =
-            document.getElementById('editHardwareForm');
+            document.getElementById(
+                'editHardwareForm'
+            );
 
-        if (!modal || !form) {
-            return;
+
+        document.getElementById(
+            'edit_nama_barang'
+        ).value = namaBarang ?? '';
+
+
+        document.getElementById(
+            'edit_spesifikasi'
+        ).value = spesifikasi ?? '';
+
+
+        document.getElementById(
+            'edit_jenis_barang'
+        ).value = jenisBarang ?? '';
+
+
+        document.getElementById(
+            'edit_lokasi_id'
+        ).value = lokasiId ?? '';
+
+
+        document.getElementById(
+            'edit_sistem_operasi'
+        ).value = sistemOperasi ?? '';
+
+
+        document.getElementById(
+            'edit_tahun_pembelian'
+        ).value = tahunPembelian ?? '';
+
+
+        document.getElementById(
+            'edit_harga'
+        ).value = harga ?? '';
+
+
+        document.getElementById(
+            'edit_kondisi'
+        ).value = kondisi ?? '';
+
+
+        if (form) {
+
+            form.action =
+                "{{ url('/hardware') }}/" +
+                encodeURIComponent(assetId);
+
         }
 
-        const assetId =
-            button.dataset.assetId || '';
 
-        const namaBarang =
-            button.dataset.namaBarang || '';
-
-        const spesifikasi =
-            button.dataset.spesifikasi || '';
-
-        const jenisBarang =
-            button.dataset.jenisBarang || '';
-
-        const tahunPembelian =
-            button.dataset.tahunPembelian || '';
-
-        const harga =
-            button.dataset.harga || '';
-
-        const kondisi =
-            button.dataset.kondisi || '';
+        handleEditJenisBarang();
 
 
-        document.getElementById('edit_asset_id').value =
-            assetId;
+        if (overlay) {
 
-        document.getElementById('edit_nama_barang').value =
-            namaBarang;
+            overlay.classList.add('show');
 
-        document.getElementById('edit_spesifikasi').value =
-            spesifikasi;
+            document.body.style.overflow =
+                'hidden';
 
-        document.getElementById('edit_jenis_barang').value =
-            jenisBarang;
-
-        document.getElementById('edit_tahun_pembelian').value =
-            tahunPembelian;
-
-        document.getElementById('edit_harga').value =
-            harga;
-
-        document.getElementById('edit_kondisi').value =
-            kondisi;
-
-
-        form.action =
-            "{{ url('/hardware') }}/" +
-            encodeURIComponent(assetId);
-
-
-        modal.classList.add('active');
-
-        document.body.style.overflow = 'hidden';
+        }
 
     }
 
 
-    function closeEditHardwareModal() {
+    function closeEditModal() {
 
-        const modal =
-            document.getElementById('editHardwareModal');
+        const overlay =
+            document.getElementById(
+                'editHardwareOverlay'
+            );
 
-        if (!modal) {
-            return;
+        if (overlay) {
+
+            overlay.classList.remove('show');
+
+            document.body.style.overflow =
+                '';
+
         }
 
-        modal.classList.remove('active');
-
-        document.body.style.overflow = '';
     }
 
 
     /* =====================================================
-       FILTER
+       JENIS BARANG
     ===================================================== */
 
-    function toggleHardwareFilter(event) {
-
-        if (event) {
-            event.stopPropagation();
-        }
-
-        const menu =
-            document.getElementById('hardwareFilterMenu');
-
-        if (!menu) {
-            return;
-        }
-
-        menu.classList.toggle('active');
-    }
-
-
-    function filterHardwareRows() {
+    function handleJenisBarang() {
 
         const select =
             document.getElementById(
-                'hardwareConditionFilter'
+                'jenis_barang'
             );
 
-        const selected =
-            select
-                ? select.value.toLowerCase().trim()
-                : '';
-
-
-        const rows =
-            document.querySelectorAll(
-                '.hardware-table tbody tr[data-hardware-condition]'
+        const lainnya =
+            document.getElementById(
+                'jenis_barang_lainnya'
             );
 
 
-        rows.forEach(row => {
-
-            const condition =
-                (row.dataset.hardwareCondition || '')
-                    .toLowerCase()
-                    .trim();
+        if (!select || !lainnya) return;
 
 
-            if (!selected || condition === selected) {
-                row.style.display = '';
-            } else {
-                row.style.display = 'none';
+        if (select.value === 'Lainnya') {
+
+            lainnya.style.display =
+                'block';
+
+            lainnya.name =
+                'jenis_barang';
+
+            select.removeAttribute(
+                'name'
+            );
+
+            lainnya.required =
+                true;
+
+        } else {
+
+            lainnya.style.display =
+                'none';
+
+            lainnya.removeAttribute(
+                'name'
+            );
+
+            lainnya.required =
+                false;
+
+            select.name =
+                'jenis_barang';
+
+        }
+
+    }
+
+
+    function handleEditJenisBarang() {
+
+        const select =
+            document.getElementById(
+                'edit_jenis_barang'
+            );
+
+        const lainnya =
+            document.getElementById(
+                'edit_jenis_barang_lainnya'
+            );
+
+
+        if (!select || !lainnya) return;
+
+
+        if (select.value === 'Lainnya') {
+
+            lainnya.style.display =
+                'block';
+
+            lainnya.name =
+                'jenis_barang';
+
+            select.removeAttribute(
+                'name'
+            );
+
+            lainnya.required =
+                true;
+
+        } else {
+
+            lainnya.style.display =
+                'none';
+
+            lainnya.removeAttribute(
+                'name'
+            );
+
+            lainnya.required =
+                false;
+
+            select.name =
+                'jenis_barang';
+
+        }
+
+    }
+
+
+    const jenisBarang =
+        document.getElementById(
+            'jenis_barang'
+        );
+
+
+    if (jenisBarang) {
+
+        jenisBarang.addEventListener(
+            'change',
+            handleJenisBarang
+        );
+
+    }
+
+
+    const editJenisBarang =
+        document.getElementById(
+            'edit_jenis_barang'
+        );
+
+
+    if (editJenisBarang) {
+
+        editJenisBarang.addEventListener(
+            'change',
+            handleEditJenisBarang
+        );
+
+    }
+
+
+    /* =====================================================
+       FILTER KONDISI
+    ===================================================== */
+
+    const conditionFilter =
+        document.getElementById(
+            'conditionFilter'
+        );
+
+
+    if (conditionFilter) {
+
+        conditionFilter.addEventListener(
+            'change',
+            function () {
+
+                const selected =
+                    this.value.toLowerCase();
+
+
+                document
+                    .querySelectorAll(
+                        '.hardware-table tbody tr'
+                    )
+                    .forEach(
+                        function (row) {
+
+                            const condition =
+                                (
+                                    row.dataset.condition ||
+                                    ''
+                                ).toLowerCase();
+
+
+                            if (
+                                !selected ||
+                                condition === selected
+                            ) {
+
+                                row.style.display =
+                                    '';
+
+                            } else {
+
+                                row.style.display =
+                                    'none';
+
+                            }
+
+                        }
+                    );
+
             }
+        );
 
-        });
-
-    }
-
-
-    function resetHardwareFilter() {
-
-        const select =
-            document.getElementById(
-                'hardwareConditionFilter'
-            );
-
-        if (select) {
-            select.value = '';
-        }
-
-        filterHardwareRows();
     }
 
 
     /* =====================================================
-       COMMENT
+       COMMENT MODAL
     ===================================================== */
 
-    function showComment(comment) {
+    function openCommentModal(
+        assetId,
+        comment
+    ) {
 
-        const text =
-            document.getElementById('commentText');
+        const overlay =
+            document.getElementById(
+                'commentModalOverlay'
+            );
 
-        const modal =
-            document.getElementById('commentModal');
+        const assetElement =
+            document.getElementById(
+                'commentAssetId'
+            );
 
-        if (!text || !modal) {
-            return;
+        const commentElement =
+            document.getElementById(
+                'commentContent'
+            );
+
+
+        if (assetElement) {
+
+            assetElement.textContent =
+                assetId;
+
         }
 
-        text.textContent = comment;
 
-        modal.classList.add('active');
+        if (commentElement) {
 
-        document.body.style.overflow = 'hidden';
+            commentElement.textContent =
+                comment ||
+                'Tidak ada komentar.';
+
+        }
+
+
+        if (overlay) {
+
+            overlay.classList.add('show');
+
+            document.body.style.overflow =
+                'hidden';
+
+        }
+
     }
 
 
     function closeCommentModal() {
 
-        const modal =
-            document.getElementById('commentModal');
+        const overlay =
+            document.getElementById(
+                'commentModalOverlay'
+            );
 
-        if (!modal) {
-            return;
+
+        if (overlay) {
+
+            overlay.classList.remove(
+                'show'
+            );
+
+            document.body.style.overflow =
+                '';
+
         }
 
-        modal.classList.remove('active');
-
-        document.body.style.overflow = '';
     }
 
 
     /* =====================================================
-       EVENT LISTENER
+       CLICK OUTSIDE MODAL
     ===================================================== */
-
-    const hardwareConditionFilter =
-        document.getElementById(
-            'hardwareConditionFilter'
-        );
-
-    if (hardwareConditionFilter) {
-
-        hardwareConditionFilter.addEventListener(
-            'change',
-            filterHardwareRows
-        );
-
-    }
-
-
-    const createModal =
-        document.getElementById(
-            'createHardwareModal'
-        );
-
-    if (createModal) {
-
-        createModal.addEventListener(
-            'click',
-            function(event) {
-
-                if (event.target === createModal) {
-                    closeCreateHardwareModal();
-                }
-
-            }
-        );
-
-    }
-
-
-    const editModal =
-        document.getElementById(
-            'editHardwareModal'
-        );
-
-    if (editModal) {
-
-        editModal.addEventListener(
-            'click',
-            function(event) {
-
-                if (event.target === editModal) {
-                    closeEditHardwareModal();
-                }
-
-            }
-        );
-
-    }
-
-
-    const commentModal =
-        document.getElementById(
-            'commentModal'
-        );
-
-    if (commentModal) {
-
-        commentModal.addEventListener(
-            'click',
-            function(event) {
-
-                if (event.target === commentModal) {
-                    closeCommentModal();
-                }
-
-            }
-        );
-
-    }
-
 
     document.addEventListener(
         'click',
-        function(event) {
+        function (event) {
 
-            const wrapper =
-                document.querySelector(
-                    '.hardware-filter-wrapper'
-                );
-
-            const menu =
+            const addOverlay =
                 document.getElementById(
-                    'hardwareFilterMenu'
+                    'hardwareFormOverlay'
                 );
 
-            if (!wrapper || !menu) {
-                return;
-            }
+            const importOverlay =
+            document.getElementById(
+                'importHardwareOverlay'
+            );
 
-            if (!wrapper.contains(event.target)) {
-                menu.classList.remove('active');
-            }
-
-        }
-    );
-
-
-    document.addEventListener(
-        'keydown',
-        function(event) {
-
-            if (event.key !== 'Escape') {
-                return;
-            }
-
-            closeCreateHardwareModal();
-            closeEditHardwareModal();
-            closeCommentModal();
-
-            const filterMenu =
+            const editOverlay =
                 document.getElementById(
-                    'hardwareFilterMenu'
+                    'editHardwareOverlay'
                 );
 
-            if (filterMenu) {
-                filterMenu.classList.remove('active');
+            const commentOverlay =
+                document.getElementById(
+                    'commentModalOverlay'
+                );
+
+
+            if (
+                event.target === addOverlay
+            ) {
+
+                closeHardwareModal();
+
+            }
+
+            if (
+                event.target === importOverlay
+            ) {
+                closeImportModal();
+            
+            }
+
+            if (
+                event.target === editOverlay
+            ) {
+
+                closeEditModal();
+
+            }
+
+
+            if (
+                event.target === commentOverlay
+            ) {
+
+                closeCommentModal();
+
             }
 
         }
@@ -2453,15 +2899,42 @@
 
 
     /* =====================================================
-       AUTO OPEN CREATE MODAL AFTER VALIDATION ERROR
+       ESC CLOSE MODAL
     ===================================================== */
 
-    @if($errors->any() && old('_token') && !old('_method'))
+    document.addEventListener(
+        'keydown',
+        function (event) {
+
+            if (
+                event.key !== 'Escape'
+            ) return;
+
+
+            closeHardwareModal();
+
+            closeImportModal();
+
+            closeEditModal();
+
+            closeCommentModal();
+
+        }
+    );
+
+
+    /* =====================================================
+       AUTO OPEN MODAL JIKA VALIDATION ERROR
+    ===================================================== */
+
+    @if($errors->any())
 
         document.addEventListener(
             'DOMContentLoaded',
-            function() {
-                openCreateHardwareModal();
+            function () {
+
+                openHardwareModal();
+
             }
         );
 

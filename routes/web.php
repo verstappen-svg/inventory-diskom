@@ -192,38 +192,44 @@ Route::middleware('auth')->group(function () {
 
 
     /*
-    |--------------------------------------------------------------------------
-    | HARDWARE
-    |--------------------------------------------------------------------------
-    */
+|--------------------------------------------------------------------------
+| HARDWARE
+|--------------------------------------------------------------------------
+*/
 
-    Route::middleware('menu.permission:hardware')->group(function () {
+Route::middleware('menu.permission:hardware')->group(function () {
 
-        Route::get(
-            '/hardware',
-            [HardwareController::class, 'index']
-        )->name('hardware.index');
+    Route::get(
+        '/hardware',
+        [HardwareController::class, 'index']
+    )->name('hardware.index');
 
-        Route::post(
-            '/hardware',
-            [HardwareController::class, 'store']
-        )->name('hardware.store');
+    Route::post(
+        '/hardware',
+        [HardwareController::class, 'store']
+    )->name('hardware.store');
 
-        Route::put(
-            '/hardware/{hardware}',
-            [HardwareController::class, 'update']
-        )->name('hardware.update');
+    // IMPORT HARDWARE
+    Route::post(
+        '/hardware/import',
+        [HardwareController::class, 'import']
+    )->name('hardware.import');
 
-        Route::delete(
-            '/hardware/{hardware}',
-            [HardwareController::class, 'destroy']
-        )->name('hardware.destroy');
+    Route::put(
+        '/hardware/{hardware}',
+        [HardwareController::class, 'update']
+    )->name('hardware.update');
 
-        Route::patch(
-            '/hardware/{hardware}/verifikasi',
-            [VerifikasiHardwareController::class, 'update']
-        )->name('hardware.verifikasi.update');
-    });
+    Route::delete(
+        '/hardware/{hardware}',
+        [HardwareController::class, 'destroy']
+    )->name('hardware.destroy');
+
+    Route::patch(
+        '/hardware/{hardware}/verifikasi',
+        [VerifikasiHardwareController::class, 'update']
+    )->name('hardware.verifikasi.update');
+});
 
 
     /*
