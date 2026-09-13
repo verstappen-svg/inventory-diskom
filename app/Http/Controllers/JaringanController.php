@@ -6,102 +6,47 @@ use App\Models\Jaringan;
 use App\Models\VerificationRequest;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
-use Carbon\Carbon;
 
 class JaringanController extends Controller
 {
     /**
-     * Menentukan status jaringan secara otomatis.
-     *
-     * Beli:
-     * - Tersedia
-     *
-     * Sewa:
-     * - Digunakan
-     * - Akan Habis (30 hari sebelum berakhir)
-     * - Expired
-     */
-    private function getStatusOtomatis($jaringan)
-    {
-        // Jika pengadaan Beli,
-        // tidak membutuhkan tanggal berakhir.
-        if ($jaringan->pengadaan === 'Beli') {
-            return 'Tersedia';
-        }
-
-        // Jika pengadaan Sewa dan memiliki tanggal berakhir.
-        if (
-            $jaringan->pengadaan === 'Sewa' &&
-            $jaringan->tanggal_berakhir
-        ) {
-            $today = Carbon::today();
-
-            $tanggalBerakhir = Carbon::parse(
-                $jaringan->tanggal_berakhir
-            );
-
-            // Sudah lewat tanggal berakhir.
-            if ($tanggalBerakhir->lt($today)) {
-                return 'Expired';
-            }
-
-            // Akan berakhir dalam 30 hari.
-            if (
-                $tanggalBerakhir->gte($today) &&
-                $tanggalBerakhir->lte(
-                    $today->copy()->addDays(30)
-                )
-            ) {
-                return 'Akan Habis';
-            }
-
-            // Masih aktif digunakan.
-            return 'Digunakan';
-        }
-
-        // Fallback.
-        return 'Tersedia';
-    }
-
-    /**
-     * Menampilkan halaman jaringan.
+     * ============================================================
+     * INDEX
+     * ============================================================
      */
     public function index(Request $request)
     {
         $query = Jaringan::query();
 
-        // Search
+        // ========================================================
+        // SEARCH
+        // ========================================================
+
         if ($request->filled('search')) {
-            $search = $request->search;
+            $search = trim($request->search);
 
             $query->where(function ($q) use ($search) {
-                $q->where(
-                    'id',
-                    'like',
-                    "%{$search}%"
-                )
-                    ->orWhere(
-                        'nama_infrastruktur',
-                        'like',
-                        "%{$search}%"
-                    )
-                    ->orWhere(
-                        'spesifikasi',
-                        'like',
-                        "%{$search}%"
-                    );
+                $q->where('id', 'like', "%{$search}%")
+                    ->orWhere('jenis_data', 'like', "%{$search}%")
+                    ->orWhere('lokasi', 'like', "%{$search}%");
             });
         }
 
-        // Filter pengadaan
-        if ($request->filled('pengadaan')) {
+        // ========================================================
+        // FILTER JENIS DATA
+        // ========================================================
+
+        if ($request->filled('jenis_data')) {
             $query->where(
-                'pengadaan',
-                $request->pengadaan
+                'jenis_data',
+                $request->jenis_data
             );
         }
 
-        // Filter verifikasi
+        // ========================================================
+        // FILTER VERIFIKASI
+        // ========================================================
+
         if ($request->filled('verifikasi')) {
             $query->where(
                 'verifikasi',
@@ -109,169 +54,192 @@ class JaringanController extends Controller
             );
         }
 
-        // Filter tahun
-        if ($request->filled('tahun')) {
-            $query->whereYear(
-                'tanggal_pengadaan',
-                $request->tahun
-            );
-        }
+        // ========================================================
+        // AMBIL DATA
+        // ========================================================
 
-        // Ambil data
         $jaringans = $query
             ->orderByDesc('created_at')
             ->orderBy('id')
             ->get();
 
-        // Hitung status otomatis
-        foreach ($jaringans as $jaringan) {
-            $jaringan->status_otomatis =
-                $this->getStatusOtomatis($jaringan);
-        }
+        // ========================================================
+        // STATISTIK
+        // ========================================================
 
-        // Filter status otomatis
-        if ($request->filled('status')) {
-            $jaringans = $jaringans
-                ->filter(function ($jaringan) use ($request) {
-                    return $jaringan->status_otomatis ===
-                        $request->status;
-                })
-                ->values();
-        }
+        $totalJaringan = Jaringan::count();
 
-        // Semua data untuk statistik
-        $allJaringans = Jaringan::all();
+        $totalFO = Jaringan::where(
+            'jenis_data',
+            'Jalur Kabel FO'
+        )->count();
 
-        foreach ($allJaringans as $jaringan) {
-            $jaringan->status_otomatis =
-                $this->getStatusOtomatis($jaringan);
-        }
+        $totalLocalLoop = Jaringan::where(
+            'jenis_data',
+            'Local Loop Sewa'
+        )->count();
 
-        // Statistik
-        $tersedia = $allJaringans
-            ->where('status_otomatis', 'Tersedia')
-            ->count();
+        $menunggu = Jaringan::where(
+            'verifikasi',
+            'menunggu'
+        )->count();
 
-        $digunakan = $allJaringans
-            ->where('status_otomatis', 'Digunakan')
-            ->count();
+        $disetujui = Jaringan::where(
+            'verifikasi',
+            'disetujui'
+        )->count();
 
-        $akanHabis = $allJaringans
-            ->where('status_otomatis', 'Akan Habis')
-            ->count();
+        $ditolak = Jaringan::where(
+            'verifikasi',
+            'ditolak'
+        )->count();
 
-        $expired = $allJaringans
-            ->where('status_otomatis', 'Expired')
-            ->count();
+        // ========================================================
+        // DAFTAR JENIS DATA
+        // ========================================================
 
-        $totalJaringan = $allJaringans->count();
-
-        // Daftar tahun pengadaan
-        $tahuns = Jaringan::query()
-            ->whereNotNull('tanggal_pengadaan')
-            ->selectRaw(
-                'YEAR(tanggal_pengadaan) as tahun'
-            )
+        $jenisDatas = Jaringan::query()
+            ->select('jenis_data')
             ->distinct()
-            ->orderByDesc('tahun')
-            ->pluck('tahun');
+            ->orderBy('jenis_data')
+            ->pluck('jenis_data');
 
-        // Daftar status verifikasi
+        // ========================================================
+        // DAFTAR VERIFIKASI
+        // ========================================================
+
         $verifikasis = Jaringan::query()
-            ->whereNotNull('verifikasi')
             ->select('verifikasi')
             ->distinct()
             ->orderBy('verifikasi')
             ->pluck('verifikasi');
+
+        // ========================================================
+        // RETURN VIEW
+        // ========================================================
 
         return view(
             'infrastruktur.jaringan.index',
             compact(
                 'jaringans',
                 'totalJaringan',
-                'tersedia',
-                'digunakan',
-                'akanHabis',
-                'expired',
-                'tahuns',
+                'totalFO',
+                'totalLocalLoop',
+                'menunggu',
+                'disetujui',
+                'ditolak',
+                'jenisDatas',
                 'verifikasis'
             )
         );
     }
 
+
     /**
-     * Menyimpan jaringan baru.
+     * ============================================================
+     * STORE
+     * ============================================================
      */
     public function store(Request $request)
     {
+        // ========================================================
+        // VALIDASI
+        // ========================================================
+
         $validated = $request->validate([
-            'nama_infrastruktur' => [
+            'jenis_data' => [
+                'required',
+                'in:Jalur Kabel FO,Local Loop Sewa',
+            ],
+
+            'lokasi' => [
                 'required',
                 'string',
                 'max:255',
             ],
 
-            'spesifikasi' => [
+            'jarak_kabel' => [
                 'nullable',
-                'string',
-            ],
-
-            'pengadaan' => [
-                'required',
-                'in:Beli,Sewa',
-            ],
-
-            'harga' => [
-                'required',
                 'numeric',
                 'min:0',
             ],
 
-            'tanggal_pengadaan' => [
-                'required',
-                'date',
+            'jumlah_core' => [
+                'nullable',
+                'integer',
+                'min:1',
             ],
 
-            'tanggal_berakhir' => [
+            'jumlah_titik' => [
                 'nullable',
-                'date',
-                'after_or_equal:tanggal_pengadaan',
+                'integer',
+                'min:1',
             ],
         ]);
 
-        /**
-         * Jika Beli:
-         * tanggal berakhir tidak diperlukan.
-         */
-        if ($validated['pengadaan'] === 'Beli') {
-            $validated['tanggal_berakhir'] = null;
-        }
+        // ========================================================
+        // NORMALISASI DATA BERDASARKAN JENIS
+        // ========================================================
 
-        /**
-         * Jika Sewa:
-         * tanggal berakhir wajib diisi.
-         */
-        if ($validated['pengadaan'] === 'Sewa') {
+        if ($validated['jenis_data'] === 'Jalur Kabel FO') {
 
-            if (empty($validated['tanggal_berakhir'])) {
+            // Jarak kabel wajib
+            if (
+                !isset($validated['jarak_kabel']) ||
+                $validated['jarak_kabel'] === ''
+            ) {
                 return back()
                     ->withErrors([
-                        'tanggal_berakhir' =>
-                            'Tanggal berakhir wajib diisi untuk pengadaan sewa.',
+                        'jarak_kabel' =>
+                            'Jarak kabel wajib diisi untuk Jalur Kabel FO.',
                     ])
                     ->withInput();
             }
+
+            // Jumlah core wajib
+            if (
+                !isset($validated['jumlah_core']) ||
+                $validated['jumlah_core'] === ''
+            ) {
+                return back()
+                    ->withErrors([
+                        'jumlah_core' =>
+                            'Jumlah core wajib diisi untuk Jalur Kabel FO.',
+                    ])
+                    ->withInput();
+            }
+
+            // FO tidak menggunakan jumlah titik
+            $validated['jumlah_titik'] = null;
         }
 
-        /**
-         * Generate ID otomatis.
-         *
-         * Contoh:
-         * INFJAR-001
-         * INFJAR-002
-         * INFJAR-003
-         */
-        $prefix = 'INFJAR-';
+        if ($validated['jenis_data'] === 'Local Loop Sewa') {
+
+            // Jumlah titik wajib
+            if (
+                !isset($validated['jumlah_titik']) ||
+                $validated['jumlah_titik'] === ''
+            ) {
+                return back()
+                    ->withErrors([
+                        'jumlah_titik' =>
+                            'Jumlah titik wajib diisi untuk Local Loop Sewa.',
+                    ])
+                    ->withInput();
+            }
+
+            // Local Loop tidak menggunakan data FO
+            $validated['jarak_kabel'] = null;
+            $validated['jumlah_core'] = null;
+        }
+
+        // ========================================================
+        // GENERATE ID
+        // ========================================================
+
+        $prefix = $validated['jenis_data'] === 'Jalur Kabel FO'
+            ? 'FO-'
+            : 'LL-';
 
         $lastJaringan = Jaringan::where(
             'id',
@@ -279,18 +247,24 @@ class JaringanController extends Controller
             $prefix . '%'
         )
             ->orderByRaw(
-                'CAST(SUBSTRING(id, 8) AS UNSIGNED) DESC'
+                'CAST(SUBSTRING(id, ?) AS UNSIGNED) DESC',
+                [strlen($prefix) + 1]
             )
             ->first();
 
-        $newNumber = $lastJaringan
-            ? (
-                (int) substr(
-                    $lastJaringan->id,
-                    strlen($prefix)
-                )
-            ) + 1
-            : 1;
+        if ($lastJaringan) {
+
+            $lastNumber = (int) substr(
+                $lastJaringan->id,
+                strlen($prefix)
+            );
+
+            $newNumber = $lastNumber + 1;
+
+        } else {
+
+            $newNumber = 1;
+        }
 
         $validated['id'] =
             $prefix .
@@ -301,33 +275,53 @@ class JaringanController extends Controller
                 STR_PAD_LEFT
             );
 
-        /**
-         * Status verifikasi selalu menunggu
-         * ketika data baru dibuat.
-         */
+        // ========================================================
+        // DEFAULT VERIFIKASI
+        // ========================================================
+        //
+        // Komentar TIDAK diisi di sini.
+        // Komentar hanya untuk verifikator.
+        //
+
         $validated['verifikasi'] = 'menunggu';
-        $validated['komentar'] = null;
+
+        // ========================================================
+        // SIMPAN
+        // ========================================================
 
         DB::transaction(function () use ($validated) {
 
-            // Simpan jaringan
-            $jaringan = Jaringan::create($validated);
+            // ----------------------------------------------------
+            // SIMPAN JARINGAN
+            // ----------------------------------------------------
 
-            // Buat request verifikasi
+            $jaringan = Jaringan::create([
+                'id' => $validated['id'],
+                'jenis_data' => $validated['jenis_data'],
+                'lokasi' => $validated['lokasi'],
+                'jarak_kabel' => $validated['jarak_kabel'] ?? null,
+                'jumlah_core' => $validated['jumlah_core'] ?? null,
+                'jumlah_titik' => $validated['jumlah_titik'] ?? null,
+                'verifikasi' => 'menunggu',
+            ]);
+
+            // ----------------------------------------------------
+            // REQUEST VERIFIKASI
+            // ----------------------------------------------------
+
             VerificationRequest::create([
                 'module' => 'jaringan',
-
                 'record_id' => $jaringan->id,
-
                 'action' => 'create',
-
                 'data' => $jaringan->toArray(),
-
                 'status' => 'menunggu',
-
                 'submitted_by' => auth()->id(),
             ]);
         });
+
+        // ========================================================
+        // REDIRECT
+        // ========================================================
 
         return redirect()
             ->route('jaringan.index')
@@ -337,115 +331,190 @@ class JaringanController extends Controller
             );
     }
 
+
     /**
-     * Memperbarui jaringan.
+     * ============================================================
+     * UPDATE
+     * ============================================================
      */
     public function update(
         Request $request,
         $id
     ) {
+        // ========================================================
+        // CARI DATA
+        // ========================================================
+
+        $jaringan = Jaringan::findOrFail($id);
+
+        // ========================================================
+        // JENIS DATA TIDAK BOLEH BERUBAH
+        // ========================================================
+        //
+        // FO-001 harus tetap Jalur Kabel FO.
+        // LL-001 harus tetap Local Loop Sewa.
+        //
+
+        if (
+            $request->input('jenis_data') !==
+            $jaringan->jenis_data
+        ) {
+            return back()
+                ->withErrors([
+                    'jenis_data' =>
+                        'Jenis data tidak dapat diubah setelah data dibuat.',
+                ])
+                ->withInput();
+        }
+
+        // ========================================================
+        // VALIDASI
+        // ========================================================
+
         $validated = $request->validate([
-            'nama_infrastruktur' => [
+            'jenis_data' => [
+                'required',
+                'in:Jalur Kabel FO,Local Loop Sewa',
+            ],
+
+            'lokasi' => [
                 'required',
                 'string',
                 'max:255',
             ],
 
-            'spesifikasi' => [
+            'jarak_kabel' => [
                 'nullable',
-                'string',
-            ],
-
-            'pengadaan' => [
-                'required',
-                'in:Beli,Sewa',
-            ],
-
-            'harga' => [
-                'required',
                 'numeric',
                 'min:0',
             ],
 
-            'tanggal_pengadaan' => [
-                'required',
-                'date',
+            'jumlah_core' => [
+                'nullable',
+                'integer',
+                'min:1',
             ],
 
-            'tanggal_berakhir' => [
+            'jumlah_titik' => [
                 'nullable',
-                'date',
-                'after_or_equal:tanggal_pengadaan',
+                'integer',
+                'min:1',
             ],
         ]);
 
-        /**
-         * Cari data jaringan.
-         */
-        $jaringan = Jaringan::findOrFail($id);
+        // ========================================================
+        // NORMALISASI DATA
+        // ========================================================
 
-        /**
-         * Jika Beli:
-         * tanggal berakhir dikosongkan.
-         */
-        if ($validated['pengadaan'] === 'Beli') {
-            $validated['tanggal_berakhir'] = null;
-        }
+        if ($validated['jenis_data'] === 'Jalur Kabel FO') {
 
-        /**
-         * Jika Sewa:
-         * tanggal berakhir wajib diisi.
-         */
-        if ($validated['pengadaan'] === 'Sewa') {
-
-            if (empty($validated['tanggal_berakhir'])) {
+            // Jarak kabel wajib
+            if (
+                !isset($validated['jarak_kabel']) ||
+                $validated['jarak_kabel'] === ''
+            ) {
                 return back()
                     ->withErrors([
-                        'tanggal_berakhir' =>
-                            'Tanggal berakhir wajib diisi untuk pengadaan sewa.',
+                        'jarak_kabel' =>
+                            'Jarak kabel wajib diisi untuk Jalur Kabel FO.',
                     ])
                     ->withInput();
             }
+
+            // Jumlah core wajib
+            if (
+                !isset($validated['jumlah_core']) ||
+                $validated['jumlah_core'] === ''
+            ) {
+                return back()
+                    ->withErrors([
+                        'jumlah_core' =>
+                            'Jumlah core wajib diisi untuk Jalur Kabel FO.',
+                    ])
+                    ->withInput();
+            }
+
+            // FO tidak menggunakan jumlah titik
+            $validated['jumlah_titik'] = null;
         }
+
+        if ($validated['jenis_data'] === 'Local Loop Sewa') {
+
+            // Jumlah titik wajib
+            if (
+                !isset($validated['jumlah_titik']) ||
+                $validated['jumlah_titik'] === ''
+            ) {
+                return back()
+                    ->withErrors([
+                        'jumlah_titik' =>
+                            'Jumlah titik wajib diisi untuk Local Loop Sewa.',
+                    ])
+                    ->withInput();
+            }
+
+            // Local Loop tidak menggunakan data FO
+            $validated['jarak_kabel'] = null;
+            $validated['jumlah_core'] = null;
+        }
+
+        // ========================================================
+        // SIMPAN UPDATE
+        // ========================================================
 
         DB::transaction(function () use (
             $jaringan,
             $validated
         ) {
 
-            /**
-             * Update data jaringan.
-             *
-             * Setiap perubahan kembali
-             * membutuhkan verifikasi.
-             */
+            // ----------------------------------------------------
+            // UPDATE DATA JARINGAN
+            // ----------------------------------------------------
+            //
+            // Komentar TIDAK diubah.
+            // Komentar adalah milik verifikator.
+            //
+
             $jaringan->update([
-                ...$validated,
+                'jenis_data' => $validated['jenis_data'],
+                'lokasi' => $validated['lokasi'],
+                'jarak_kabel' => $validated['jarak_kabel'] ?? null,
+                'jumlah_core' => $validated['jumlah_core'] ?? null,
+                'jumlah_titik' => $validated['jumlah_titik'] ?? null,
 
+                // Perubahan harus diverifikasi ulang
                 'verifikasi' => 'menunggu',
-
-                'komentar' => null,
             ]);
 
-            /**
-             * Buat request verifikasi update.
-             */
+            // ----------------------------------------------------
+            // REQUEST VERIFIKASI UPDATE
+            // ----------------------------------------------------
+
             VerificationRequest::create([
                 'module' => 'jaringan',
-
                 'record_id' => $jaringan->id,
-
                 'action' => 'update',
-
-                'data' => $jaringan
-                    ->fresh()
-                    ->toArray(),
-
+                'data' => $jaringan->fresh()->toArray(),
                 'status' => 'menunggu',
-
                 'submitted_by' => auth()->id(),
             ]);
         });
+
+        // ========================================================
+        // REDIRECT
+        // ========================================================
+
+        Notification::create([
+            'judul' => 'Perubahan Jaringan Diajukan',
+            'pesan' =>
+                $request->user()->username .
+                ' memperbarui jaringan "' .
+                $jaringan->nama_infrastruktur .
+                '" dengan ID ' .
+                $jaringan->id .
+                ' dan mengajukannya kembali untuk persetujuan.',
+            'dibaca' => false,
+        ]);
 
         return redirect()
             ->route('jaringan.index')
@@ -455,44 +524,69 @@ class JaringanController extends Controller
             );
     }
 
+
     /**
-     * Mengajukan penghapusan jaringan.
+     * ============================================================
+     * DESTROY
+     * ============================================================
      *
      * Data tidak langsung dihapus.
-     * Penghapusan menunggu verifikasi.
+     * Penghapusan dikirim sebagai request verifikasi.
      */
     public function destroy($id)
     {
+        // ========================================================
+        // CARI DATA
+        // ========================================================
+
         $jaringan = Jaringan::findOrFail($id);
+
+        // ========================================================
+        // TRANSACTION
+        // ========================================================
 
         DB::transaction(function () use ($jaringan) {
 
-            /**
-             * Tandai data sedang menunggu verifikasi.
-             */
+            // ----------------------------------------------------
+            // TANDAI MENUNGGU VERIFIKASI
+            // ----------------------------------------------------
+            //
+            // Komentar tidak diubah.
+            //
+
             $jaringan->update([
                 'verifikasi' => 'menunggu',
-
-                'komentar' => null,
             ]);
 
-            /**
-             * Buat request penghapusan.
-             */
+            // ----------------------------------------------------
+            // REQUEST PENGHAPUSAN
+            // ----------------------------------------------------
+
             VerificationRequest::create([
                 'module' => 'jaringan',
-
                 'record_id' => $jaringan->id,
-
                 'action' => 'delete',
-
                 'data' => $jaringan->toArray(),
-
                 'status' => 'menunggu',
-
                 'submitted_by' => auth()->id(),
             ]);
         });
+
+        // ========================================================
+        // REDIRECT
+        // ========================================================
+
+        Notification::create([
+            'judul' => 'Penghapusan Jaringan Diajukan',
+            'pesan' =>
+                $username .
+                ' mengajukan penghapusan jaringan "' .
+                $namaJaringan .
+                '" dengan ID ' .
+                $idJaringan .
+                ' untuk persetujuan verifikator.',
+            'dibaca' => false,
+        ]);
 
         return redirect()
             ->route('jaringan.index')

@@ -116,6 +116,10 @@ class DataController extends Controller
             $show = 10;
         }
 
+        if (!in_array($show, [10, 25, 50, 100])) {
+            $show = 10;
+        }
+
         $data = $query
             ->latest()
             ->paginate($show)
@@ -146,28 +150,35 @@ class DataController extends Controller
             ->orderByDesc('tahun')
             ->pluck('tahun');
 
-        /*
-        |--------------------------------------------------------------------------
-        | SUMMARY
-        |--------------------------------------------------------------------------
-        */
+        // =====================================================
+        // SUMMARY CARD
+        // =====================================================
+
         $totalData = Data::count();
 
-        $totalJenis = Data::query()
-            ->whereNotNull('jenis_data')
-            ->distinct('jenis_data')
-            ->count('jenis_data');
+        $totalJenis = Data::distinct(
+            'jenis_data'
+        )->count('jenis_data');
 
         $totalPending = Data::where(
             'verifikasi',
             'Menunggu Disetujui'
         )->count();
 
-        /*
-        |--------------------------------------------------------------------------
-        | VIEW
-        |--------------------------------------------------------------------------
-        */
+        $totalDisetujui = Data::where(
+            'verifikasi',
+            'Disetujui'
+        )->count();
+
+        $totalDitolak = Data::where(
+            'verifikasi',
+            'Ditolak'
+        )->count();
+
+        // =====================================================
+        // RETURN VIEW
+        // =====================================================
+
         return view(
             'data.index',
             compact(
@@ -175,6 +186,8 @@ class DataController extends Controller
                 'totalData',
                 'totalJenis',
                 'totalPending',
+                'totalDisetujui',
+                'totalDitolak',
                 'jenisData',
                 'tahunData'
             )

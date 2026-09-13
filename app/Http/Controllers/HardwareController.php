@@ -159,6 +159,10 @@ private function generateAssetId(string $jenisBarang): string
 
     public function store(Request $request)
     {
+        // =====================================================
+        // VALIDASI
+        // =====================================================
+
         $validated = $request->validate([
 
             'nama_barang' => [

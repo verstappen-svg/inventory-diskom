@@ -210,6 +210,17 @@ class SplpController extends Controller
                 'status_otomatis',
                 'Tidak Berakhir'
             )
+        /*
+        |--------------------------------------------------------------------------
+        | JUMLAH STATUS
+        |--------------------------------------------------------------------------
+        */
+
+        $tersedia = $allSplps
+            ->where(
+                'status_otomatis',
+                'Tersedia'
+            )
             ->count();
 
         $digunakan = $allSplps
@@ -241,7 +252,9 @@ class SplpController extends Controller
         |--------------------------------------------------------------------------
         */
         $tahuns = Splp::query()
-            ->whereNotNull('tanggal_pengadaan')
+            ->whereNotNull(
+                'tanggal_pengadaan'
+            )
             ->selectRaw(
                 'YEAR(tanggal_pengadaan) as tahun'
             )
@@ -260,6 +273,12 @@ class SplpController extends Controller
             ->distinct()
             ->orderBy('verifikasi')
             ->pluck('verifikasi');
+
+        /*
+        |--------------------------------------------------------------------------
+        | KIRIM KE VIEW
+        |--------------------------------------------------------------------------
+        */
 
         return view(
             'infrastruktur.splp.index',
@@ -346,11 +365,47 @@ class SplpController extends Controller
         $validated['id'] =
             $this->generateSplpId();
 
+        $prefix = 'INFSPLP-';
+
+        $lastSplp = Splp::where(
+            'id',
+            'like',
+            $prefix . '%'
+        )
+            ->orderByRaw(
+                'CAST(SUBSTRING(id, 6) AS UNSIGNED) DESC'
+            )
+            ->first();
+
+        if ($lastSplp) {
+
+            $lastNumber = (int) substr(
+                $lastSplp->id,
+                strlen($prefix)
+            );
+
+            $newNumber = $lastNumber + 1;
+
+        } else {
+
+            $newNumber = 1;
+        }
+
+        $validated['id'] =
+            $prefix .
+            str_pad(
+                $newNumber,
+                3,
+                '0',
+                STR_PAD_LEFT
+            );
+
         /*
         |--------------------------------------------------------------------------
         | VERIFIKASI
         |--------------------------------------------------------------------------
         */
+
         $validated['verifikasi'] = 'menunggu';
         $validated['komentar'] = null;
 
@@ -373,7 +428,48 @@ class SplpController extends Controller
 
                 'submitted_by' => auth()->id(),
             ]);
+
         });
+
+        $validated['verifikasi'] =
+            'Menunggu disetujui';
+
+        /*
+        |--------------------------------------------------------------------------
+        | KOMENTAR
+        |--------------------------------------------------------------------------
+        */
+
+        $validated['komentar'] = null;
+
+        /*
+        |--------------------------------------------------------------------------
+        | SIMPAN
+        |--------------------------------------------------------------------------
+        */
+
+        $splp = Splp::create($validated);
+
+        /*
+        |--------------------------------------------------------------------------
+        | NOTIFIKASI
+        |--------------------------------------------------------------------------
+        */
+
+        Notification::create([
+            'judul' =>
+                'Pengajuan SPLP Baru',
+
+            'pesan' =>
+                $request->user()->username .
+                ' menambahkan SPLP "' .
+                $splp->nama_infrastruktur .
+                '" dengan ID ' .
+                $splp->id .
+                ' dan mengajukannya untuk persetujuan.',
+
+            'dibaca' => false,
+        ]);
 
         return redirect()
             ->route('splp.index')
@@ -422,6 +518,17 @@ class SplpController extends Controller
             ],
         ]);
 
+        $validated['status'] = [
+            'nullable',
+            'in:Tersedia,Digunakan',
+        ];
+
+        /*
+        |--------------------------------------------------------------------------
+        | CARI DATA
+        |--------------------------------------------------------------------------
+        */
+
         $splp = Splp::findOrFail($id);
 
         /*
@@ -467,7 +574,19 @@ class SplpController extends Controller
                 'komentar' => null,
             ]);
 
+            /*
+            |--------------------------------------------------------------------------
+            | HAPUS KOMENTAR LAMA
+            |--------------------------------------------------------------------------
+            */
+
             $splp->refresh();
+
+            /*
+            |--------------------------------------------------------------------------
+            | UPDATE
+            |--------------------------------------------------------------------------
+            */
 
             VerificationRequest::create([
                 'module' => 'splp',
@@ -485,6 +604,28 @@ class SplpController extends Controller
 
                 'submitted_by' => auth()->id(),
             ]);
+
+            /*
+            |--------------------------------------------------------------------------
+            | NOTIFIKASI
+            |--------------------------------------------------------------------------
+            */
+
+            Notification::create([
+                'judul' =>
+                    'Perubahan SPLP Diajukan',
+
+                'pesan' =>
+                    $request->user()->username .
+                    ' memperbarui SPLP "' .
+                    $splp->nama_infrastruktur .
+                    '" dengan ID ' .
+                    $splp->id .
+                    ' dan mengajukannya kembali untuk persetujuan.',
+
+                'dibaca' => false,
+            ]);
+
         });
 
         return redirect()
@@ -512,6 +653,34 @@ class SplpController extends Controller
                 'verifikasi' => 'menunggu',
 
                 'komentar' => null,
+            ]);
+
+            $splp->update([
+                'verifikasi' =>
+                    'Menunggu disetujui',
+
+                'komentar' => null,
+            ]);
+
+            /*
+            |--------------------------------------------------------------------------
+            | NOTIFIKASI
+            |--------------------------------------------------------------------------
+            */
+
+            Notification::create([
+                'judul' =>
+                    'Penghapusan SPLP Diajukan',
+
+                'pesan' =>
+                    $request->user()->username .
+                    ' mengajukan penghapusan SPLP "' .
+                    $namaSplp .
+                    '" dengan ID ' .
+                    $idSplp .
+                    ' untuk persetujuan verifikator.',
+
+                'dibaca' => false,
             ]);
 
             VerificationRequest::create([

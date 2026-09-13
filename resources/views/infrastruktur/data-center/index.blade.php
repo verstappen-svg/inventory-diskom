@@ -1,10 +1,40 @@
 @extends('layouts.app')
 
 @section('title', 'Data Center')
-
 @section('page-title', 'Data Center')
 
 @section('content')
+
+{{-- =========================================================
+NOTIFIKASI
+========================================================= --}}
+
+@if(session('success')) <div class="alert alert-success" style="
+     margin-bottom: 20px;
+     padding: 14px 18px;
+     border-radius: 10px;
+     background: #d1fae5;
+     color: #065f46;
+     border: 1px solid #a7f3d0;
+ "> <strong>Berhasil!</strong>
+{{ session('success') }} </div>
+@endif
+
+@if(session('error')) <div class="alert alert-danger" style="
+     margin-bottom: 20px;
+     padding: 14px 18px;
+     border-radius: 10px;
+     background: #fee2e2;
+     color: #991b1b;
+     border: 1px solid #fecaca;
+ "> <strong>Import Excel gagal.</strong>
+
+    <div style="margin-top: 8px; white-space: pre-line;">
+        {{ session('error') }}
+    </div>
+</div>
+
+@endif
 
 <style>
 
@@ -12,7 +42,7 @@
    DATA CENTER PAGE
 ========================================================= */
 
-.data-center-page {
+.dc-page {
     width: 100%;
 }
 
@@ -21,51 +51,121 @@
    HEADER
 ========================================================= */
 
-.data-center-header {
+.dc-header {
     display: flex;
     justify-content: space-between;
     align-items: center;
+    gap: 20px;
     margin-bottom: 24px;
 }
 
-.data-center-heading h2 {
+.dc-heading h2 {
     margin: 0;
     font-size: 24px;
     font-weight: 700;
     color: #1f2937;
 }
 
-.data-center-heading p {
+.dc-heading p {
     margin: 6px 0 0;
     font-size: 13px;
     color: #6b7280;
 }
 
-.add-data-center-button {
+
+/* =========================================================
+   BUTTON
+========================================================= */
+
+.add-dc-button,
+.import-dc-button,
+.download-dc-button {
     display: inline-flex;
     align-items: center;
     justify-content: center;
-    gap: 8px;
-    padding: 11px 18px;
-    border: none;
-    border-radius: 10px;
-    background: #071b88;
-    color: white;
-    text-decoration: none;
-    font-size: 13px;
+    gap: 7px;
+
+    height: 38px;
+    padding: 0 15px;
+
+    border-radius: 8px;
+
+    font-size: 12px;
     font-weight: 600;
+
     cursor: pointer;
+    white-space: nowrap;
+
     transition: 0.2s ease;
 }
 
-.add-data-center-button:hover {
+
+/* =========================================================
+   TAMBAH DATA CENTER
+========================================================= */
+
+.add-dc-button {
+    border: none;
+    background: #071b88;
+    color: #ffffff;
+
+    box-shadow:
+        0 2px 5px rgba(37, 99, 235, 0.18);
+}
+
+.add-dc-button:hover {
     background: #050f63;
-    color: white;
     transform: translateY(-1px);
 }
 
-.add-data-center-button i {
-    font-size: 16px;
+.add-dc-button i {
+    font-size: 13px;
+}
+
+
+/* =========================================================
+   IMPORT EXCEL
+========================================================= */
+
+.import-dc-button {
+    border: 1px solid #d1d5db;
+    background: #ffffff;
+    color: #374151;
+}
+
+.import-dc-button:hover {
+    background: #f8fafc;
+    border-color: #94a3b8;
+    color: #075985;
+    transform: translateY(-1px);
+}
+
+.import-dc-button i {
+    font-size: 14px;
+}
+
+
+/* =========================================================
+   DOWNLOAD TEMPLATE
+========================================================= */
+
+.download-dc-button {
+    border: 1px solid #bbf7d0;
+    background: #f0fdf4;
+    color: #15803d;
+
+    text-decoration: none;
+}
+
+.download-dc-button:hover {
+    background: #dcfce7;
+    border-color: #86efac;
+    color: #166534;
+    transform: translateY(-1px);
+}
+
+.download-dc-button i {
+    font-size: 14px;
 }
 
 
@@ -76,11 +176,14 @@
 .alert-success,
 .alert-error {
     display: flex;
-    align-items: center;
+    align-items: flex-start;
     gap: 10px;
+
     padding: 12px 15px;
+
     border-radius: 9px;
     margin-bottom: 20px;
+
     font-size: 13px;
 }
 
@@ -96,103 +199,100 @@
     color: #b91c1c;
 }
 
-.alert-success i,
-.alert-error i {
-    font-size: 17px;
+.alert-error ul {
+    margin: 5px 0 0 18px;
+    padding: 0;
 }
 
 
 /* =========================================================
-   STATISTIC CARDS
+   STATISTICS
 ========================================================= */
 
-.data-center-stats {
+.dc-stats {
     display: grid;
-    grid-template-columns: repeat(4, minmax(0, 1fr));
+
+    grid-template-columns:
+        repeat(3, minmax(0, 1fr));
+
     gap: 18px;
+
     margin-bottom: 25px;
 }
 
-.data-center-stat-card {
-    min-height: 135px;
-    background: white;
+.dc-stat-card {
+    width: 100%;
+    min-height: 125px;
+
+    box-sizing: border-box;
+
+    background: #ffffff;
+
     border: 1px solid #e5e7eb;
     border-radius: 14px;
+
     padding: 20px;
+
     display: flex;
     align-items: flex-start;
+
     gap: 15px;
-    box-shadow: 0 2px 6px rgba(0, 0, 0, 0.05);
-    transition: all 0.2s ease;
+
+    box-shadow:
+        0 2px 6px rgba(0, 0, 0, 0.05);
 }
 
-.data-center-stat-card:hover {
-    transform: translateY(-2px);
-    box-shadow: 0 5px 12px rgba(0, 0, 0, 0.08);
-}
-
-.data-center-stat-icon {
+.dc-stat-icon {
     width: 45px;
     height: 45px;
+
     flex-shrink: 0;
+
     border-radius: 12px;
+
     display: flex;
     align-items: center;
     justify-content: center;
+
     font-size: 20px;
 }
 
-.data-center-stat-icon.blue {
+.dc-stat-icon.blue {
     background: #e0f2fe;
     color: #0284c7;
 }
 
-.data-center-stat-icon.purple {
-    background: #ede9fe;
-    color: #7c3aed;
-}
-
-.data-center-stat-icon.orange {
+.dc-stat-icon.orange {
     background: #ffedd5;
     color: #ea580c;
 }
 
-.data-center-stat-icon.green {
+.dc-stat-icon.green {
     background: #dcfce7;
     color: #16a34a;
 }
 
-.data-center-stat-icon.red {
-    background: #fee2e2;
-    color: #dc2626;
-}
-
-.data-center-stat-content {
+.dc-stat-content {
     display: flex;
     flex-direction: column;
-    min-width: 0;
 }
 
-.data-center-stat-label {
+.dc-stat-label {
     font-size: 12px;
     color: #6b7280;
     margin-bottom: 5px;
 }
 
-.data-center-stat-value {
+.dc-stat-value {
     font-size: 23px;
     font-weight: 700;
     color: #075985;
     line-height: 1.2;
 }
 
-.data-center-stat-value.currency {
-    font-size: 17px;
-    white-space: nowrap;
-}
-
-.data-center-stat-description {
+.dc-stat-description {
     margin-top: 7px;
+
     font-size: 10px;
     color: #9ca3af;
 }
@@ -202,12 +302,16 @@
    TABLE CARD
 ========================================================= */
 
-.data-center-table-card {
-    background: white;
+.dc-table-card {
+    background: #ffffff;
+
     border: 1px solid #e5e7eb;
     border-radius: 14px;
+
     overflow: hidden;
-    box-shadow: 0 2px 7px rgba(0, 0, 0, 0.04);
+
+    box-shadow:
+        0 2px 7px rgba(0, 0, 0, 0.04);
 }
 
 
@@ -215,31 +319,57 @@
    TABLE HEADER
 ========================================================= */
 
-.data-center-table-header {
+.dc-table-header {
     padding: 20px 22px;
+
     display: flex;
-    justify-content: space-between;
     align-items: center;
-    gap: 20px;
+
+    gap: 15px;
+
     border-bottom: 1px solid #e5e7eb;
+
+    flex-wrap: wrap;
 }
 
-.data-center-table-header-left {
+.dc-table-header-left {
     display: flex;
     align-items: center;
+
     gap: 8px;
+
+    flex-shrink: 0;
 }
 
-.data-center-table-title {
+.dc-table-title {
     margin: 0;
+
     font-size: 16px;
     font-weight: 700;
+
     color: #1f2937;
 }
 
-.data-center-table-count {
+.dc-table-count {
     font-size: 12px;
     color: #6b7280;
+}
+
+
+/* =========================================================
+   TABLE HEADER ACTIONS
+========================================================= */
+
+.dc-table-header-actions {
+    display: flex;
+
+    align-items: center;
+
+    gap: 9px;
+
+    margin-left: auto;
+
+    flex-shrink: 0;
 }
 
 
@@ -247,57 +377,87 @@
    TOOLBAR
 ========================================================= */
 
-.data-center-toolbar {
+.dc-toolbar {
     display: flex;
     align-items: center;
+
     gap: 9px;
+
+    width: 100%;
+
+    flex-wrap: wrap;
+
+    margin-top: 2px;
 }
 
-.data-center-search {
+.dc-search {
     position: relative;
 }
 
-.data-center-search i {
+.dc-search i {
     position: absolute;
+
     left: 12px;
     top: 50%;
+
     transform: translateY(-50%);
+
     color: #94a3b8;
     font-size: 14px;
 }
 
-.data-center-search input {
-    width: 220px;
+.dc-search input {
+    width: 230px;
     height: 38px;
+
     padding: 0 12px 0 35px;
+
+    box-sizing: border-box;
+
     border: 1px solid #d1d5db;
     border-radius: 8px;
+
     outline: none;
+
     font-size: 12px;
     color: #374151;
-    background: white;
-    transition: 0.2s ease;
+
+    background: #ffffff;
 }
 
-.data-center-search input:focus {
+.dc-search input:focus {
     border-color: #079bd8;
-    box-shadow: 0 0 0 3px rgba(7, 155, 216, 0.10);
+
+    box-shadow:
+        0 0 0 3px
+        rgba(7, 155, 216, 0.10);
 }
 
-.data-center-filter-select {
+.dc-filter-select {
     height: 38px;
+
     padding: 0 32px 0 12px;
+
     border: 1px solid #d1d5db;
     border-radius: 8px;
-    background: white;
+
+    background: #ffffff;
+
     color: #374151;
+
     font-size: 12px;
+
     outline: none;
+
     cursor: pointer;
 }
 
-.data-center-filter-select:focus {
+.dc-filter-select:focus {
     border-color: #079bd8;
+
+    box-shadow:
+        0 0 0 3px
+        rgba(7, 155, 216, 0.10);
 }
 
 
@@ -305,45 +465,54 @@
    TABLE
 ========================================================= */
 
-.data-center-table-wrapper {
+.dc-table-wrapper {
     width: 100%;
+
     overflow-x: auto;
 }
 
-.data-center-table {
+.dc-table {
     width: 100%;
+
+    min-width: 2350px;
+
     border-collapse: collapse;
-    min-width: 1450px;
 }
 
-.data-center-table th {
+.dc-table th {
     padding: 14px 16px;
+
     background: #f8fafc;
+
     border-bottom: 1px solid #e5e7eb;
+
     color: #475569;
+
     font-size: 12px;
     font-weight: 700;
+
     text-align: left;
+
     white-space: nowrap;
 }
 
-.data-center-table td {
+.dc-table td {
     padding: 15px 16px;
+
     border-bottom: 1px solid #f1f5f9;
+
     color: #374151;
+
     font-size: 13px;
+
     vertical-align: middle;
 }
 
-.data-center-table tbody tr {
-    transition: 0.15s ease;
-}
-
-.data-center-table tbody tr:hover {
+.dc-table tbody tr:hover {
     background: #f8fafc;
 }
 
-.data-center-table tbody tr:last-child td {
+.dc-table tbody tr:last-child td {
     border-bottom: none;
 }
 
@@ -352,9 +521,11 @@
    ID
 ========================================================= */
 
-.data-center-code {
+.dc-code {
     font-weight: 700;
+
     color: #075985;
+
     white-space: nowrap;
 }
 
@@ -363,67 +534,42 @@
    NAME
 ========================================================= */
 
-.data-center-name {
+.dc-name {
     font-weight: 600;
     color: #1f2937;
 }
 
-.data-center-spec {
-    margin-top: 3px;
-    font-size: 11px;
-    color: #9ca3af;
-    max-width: 250px;
-}
-
 
 /* =========================================================
-   PENGADAAN
+   VALUE
 ========================================================= */
 
-.procurement-badge {
-    display: inline-flex;
-    align-items: center;
-    justify-content: center;
-    padding: 5px 10px;
-    border-radius: 20px;
-    font-size: 11px;
-    font-weight: 600;
-    white-space: nowrap;
-}
-
-.procurement-sewa {
-    background: #fef3c7;
-    color: #92400e;
-}
-
-.procurement-beli {
-    background: #dcfce7;
-    color: #166534;
-}
-
-
-/* =========================================================
-   PRICE
-========================================================= */
-
-.data-center-price {
-    font-weight: 600;
+.dc-value {
     color: #374151;
+
     white-space: nowrap;
+}
+
+.dc-empty-value {
+    color: #9ca3af;
 }
 
 
 /* =========================================================
-   DATE
+   DESCRIPTION
 ========================================================= */
 
-.data-center-date {
-    white-space: nowrap;
-    color: #4b5563;
-}
+.dc-description {
+    max-width: 280px;
+    min-width: 180px;
 
-.data-center-date-empty {
-    color: #9ca3af;
+    line-height: 1.5;
+
+    color: #475569;
+
+    white-space: normal;
+
+    word-break: break-word;
 }
 
 
@@ -431,33 +577,28 @@
    STATUS
 ========================================================= */
 
-.data-center-status-badge {
+.dc-status-badge {
     display: inline-flex;
+
     align-items: center;
     justify-content: center;
+
     padding: 5px 10px;
+
     border-radius: 20px;
+
     font-size: 11px;
     font-weight: 600;
+
     white-space: nowrap;
 }
 
-.status-perpetual {
+.dc-status-active {
     background: #dcfce7;
     color: #166534;
 }
 
-.status-active {
-    background: #e0f2fe;
-    color: #075985;
-}
-
-.status-warning {
-    background: #fef3c7;
-    color: #92400e;
-}
-
-.status-expired {
+.dc-status-offline {
     background: #fee2e2;
     color: #991b1b;
 }
@@ -467,28 +608,33 @@
    VERIFIKASI
 ========================================================= */
 
-.verifikasi-badge {
+.dc-verifikasi-badge {
     display: inline-flex;
+
     align-items: center;
     justify-content: center;
+
     padding: 5px 10px;
+
     border-radius: 20px;
+
     font-size: 11px;
     font-weight: 600;
+
     white-space: nowrap;
 }
 
-.verifikasi-menunggu {
+.dc-verifikasi-menunggu {
     background: #fef3c7;
     color: #92400e;
 }
 
-.verifikasi-disetujui {
+.dc-verifikasi-disetujui {
     background: #dcfce7;
     color: #166534;
 }
 
-.verifikasi-ditolak {
+.dc-verifikasi-ditolak {
     background: #fee2e2;
     color: #991b1b;
 }
@@ -498,11 +644,16 @@
    KOMENTAR
 ========================================================= */
 
-.data-center-comment {
-    max-width: 220px;
-    font-size: 11px;
-    color: #6b7280;
+.dc-komentar {
+    max-width: 260px;
+
     line-height: 1.5;
+
+    color: #64748b;
+
+    white-space: normal;
+
+    word-break: break-word;
 }
 
 
@@ -510,259 +661,286 @@
    ACTION
 ========================================================= */
 
-.data-center-action-buttons {
+.dc-action-buttons {
     display: flex;
+
     align-items: center;
+
     gap: 7px;
 }
 
-.data-center-action-button {
+.dc-action-button {
     width: 32px;
     height: 32px;
+
     display: inline-flex;
+
     align-items: center;
     justify-content: center;
+
     border-radius: 7px;
+
     border: none;
-    text-decoration: none;
+
     cursor: pointer;
+
     transition: 0.2s ease;
 }
 
-.data-center-edit-button {
+.dc-edit-button {
     background: #e0f2fe;
-    color: #071b88;
+    color: #075985;
 }
 
-.data-center-edit-button:hover {
+.dc-edit-button:hover {
     background: #bae6fd;
-    color: #071b88;
 }
 
-.data-center-delete-button {
+.dc-delete-button {
     background: #fee2e2;
     color: #dc2626;
 }
 
-.data-center-delete-button:hover {
+.dc-delete-button:hover {
     background: #fecaca;
-    color: #dc2626;
 }
 
-.data-center-action-button i {
+.dc-action-button i {
     font-size: 14px;
 }
 
-.data-center-delete-form {
+.dc-delete-form {
     display: inline;
 }
 
 
 /* =========================================================
-   EMPTY STATE
+   EMPTY
 ========================================================= */
 
-.data-center-empty-state {
+.dc-empty-state {
     padding: 55px 20px;
+
     text-align: center;
 }
 
-.data-center-empty-icon {
+.dc-empty-icon {
     width: 60px;
     height: 60px;
+
     margin: 0 auto 15px;
+
     border-radius: 50%;
+
     display: flex;
+
     align-items: center;
     justify-content: center;
+
     background: #f1f5f9;
+
     color: #94a3b8;
 }
 
-.data-center-empty-icon i {
+.dc-empty-icon i {
     font-size: 27px;
 }
 
-.data-center-empty-state h3 {
+.dc-empty-state h3 {
     margin: 0 0 6px;
+
     font-size: 15px;
+
     color: #374151;
 }
 
-.data-center-empty-state p {
+.dc-empty-state p {
     margin: 0;
+
     font-size: 12px;
+
     color: #9ca3af;
 }
 
 
 /* =========================================================
-   PAGINATION
+   GENERAL MODAL
 ========================================================= */
 
-.data-center-table-footer {
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-    padding: 15px 20px;
-    border-top: 1px solid #e5e7eb;
-}
-
-.data-center-showing-text {
-    font-size: 11px;
-    color: #6b7280;
-}
-
-
-/* =========================================================
-   MODAL OVERLAY
-========================================================= */
-
-.data-center-modal-overlay {
+.dc-modal-overlay {
     position: fixed;
+
     inset: 0;
+
     z-index: 9999;
+
     display: none;
+
     align-items: center;
     justify-content: center;
+
     padding: 30px;
-    background: rgba(15, 23, 42, 0.55);
+
+    background:
+        rgba(15, 23, 42, 0.55);
+
     overflow-y: auto;
 }
 
-.data-center-modal-overlay.show {
+.dc-modal-overlay.show {
     display: flex;
 }
 
-
-/* =========================================================
-   MODAL
-========================================================= */
-
-.data-center-modal {
+.dc-modal {
     width: 100%;
-    max-width: 1050px;
-    height: min(720px, calc(100vh - 60px));
-    max-height: calc(100vh - 60px);
-    background: white;
+    max-width: 1100px;
+
+    max-height:
+        calc(100vh - 60px);
+
+    background: #ffffff;
+
     border-radius: 16px;
+
     box-shadow:
-        0 25px 60px rgba(15, 23, 42, 0.25);
+        0 25px 60px
+        rgba(15, 23, 42, 0.25);
+
     overflow: hidden;
+
     display: flex;
+
     flex-direction: column;
-    min-height: 0;
-    animation: dataCenterModalIn 0.18s ease;
-}
-
-@keyframes dataCenterModalIn {
-
-    from {
-        opacity: 0;
-        transform: translateY(10px) scale(0.99);
-    }
-
-    to {
-        opacity: 1;
-        transform: translateY(0) scale(1);
-    }
-
 }
 
 
 /* =========================================================
-   MODAL HEADER
+   GENERAL MODAL HEADER
 ========================================================= */
 
-.data-center-modal-header {
+.dc-modal-header {
     min-height: 78px;
+
     padding: 18px 22px;
+
     display: flex;
+
     align-items: center;
     justify-content: space-between;
-    border-bottom: 1px solid #e5e7eb;
-    flex-shrink: 0;
+
+    border-bottom:
+        1px solid #e5e7eb;
 }
 
-.data-center-modal-header-left {
+.dc-modal-header-left {
     display: flex;
+
     align-items: center;
+
     gap: 12px;
 }
 
-.data-center-modal-icon {
+.dc-modal-icon {
     width: 40px;
     height: 40px;
+
     border-radius: 10px;
+
     display: flex;
+
     align-items: center;
     justify-content: center;
+
     background: #e0f2fe;
+
     color: #075985;
-    flex-shrink: 0;
 }
 
-.data-center-modal-icon i {
-    font-size: 18px;
+.dc-modal-icon i {
+    font-size: 17px;
 }
 
-.data-center-modal-header-text h2 {
+.dc-modal-header-text h2 {
     margin: 0;
+
     font-size: 17px;
     font-weight: 700;
+
     color: #1f2937;
 }
 
-.data-center-modal-header-text p {
+.dc-modal-header-text p {
     margin: 4px 0 0;
+
     font-size: 11px;
+
     color: #6b7280;
 }
 
-.data-center-modal-close {
+.dc-modal-close {
     width: 34px;
     height: 34px;
+
     display: inline-flex;
+
     align-items: center;
     justify-content: center;
+
     border: none;
+
     border-radius: 8px;
+
     background: #f1f5f9;
+
     color: #64748b;
+
     cursor: pointer;
-    transition: 0.2s ease;
 }
 
-.data-center-modal-close:hover {
+.dc-modal-close:hover {
     background: #e2e8f0;
-    color: #1f2937;
 }
 
 
 /* =========================================================
-   MODAL FORM
+   FORM
 ========================================================= */
 
 #dataCenterForm {
     display: flex;
+
     flex-direction: column;
-    flex: 1 1 auto;
+
     min-height: 0;
-    height: 100%;
-    overflow: hidden;
 }
 
-.data-center-modal-body {
-    padding: 24px;
-    flex: 1 1 0%;
+.dc-modal-body {
+    flex: 1 1 auto;
+
     min-height: 0;
-    height: 0;
-    overflow-y: scroll;
+
+    overflow-y: auto;
     overflow-x: hidden;
-    -webkit-overflow-scrolling: touch;
-    overscroll-behavior: contain;
-    scrollbar-width: thin;
-    scrollbar-color: #cbd5e1 transparent;
+
+    padding: 24px;
+}
+
+.dc-modal-body::-webkit-scrollbar {
+    width: 8px;
+}
+
+.dc-modal-body::-webkit-scrollbar-track {
+    background: #f1f5f9;
+}
+
+.dc-modal-body::-webkit-scrollbar-thumb {
+    background: #cbd5e1;
+
+    border-radius: 10px;
+}
+
+.dc-modal-body::-webkit-scrollbar-thumb:hover {
+    background: #94a3b8;
 }
 
 
@@ -770,254 +948,536 @@
    FORM CARD
 ========================================================= */
 
-.data-center-form-card {
-    background: white;
+.dc-form-card {
+    background: #ffffff;
+
     border: 1px solid #e5e7eb;
+
     border-radius: 14px;
+
     padding: 24px;
-    margin-bottom: 18px;
-    box-shadow: 0 2px 7px rgba(0, 0, 0, 0.03);
 }
 
-.data-center-form-card:last-child {
+.dc-section {
+    margin-bottom: 28px;
+}
+
+.dc-section:last-child {
     margin-bottom: 0;
 }
 
-.data-center-form-card-header {
+.dc-section-header {
     display: flex;
+
     align-items: center;
+
     gap: 9px;
+
     padding-bottom: 13px;
+
     margin-bottom: 20px;
-    border-bottom: 1px solid #e5e7eb;
+
+    border-bottom:
+        1px solid #e5e7eb;
 }
 
-.data-center-form-card-header i {
+.dc-section-header i {
     color: #075985;
+
     font-size: 16px;
 }
 
-.data-center-form-card-header h3 {
+.dc-section-header h3 {
     margin: 0;
+
     font-size: 14px;
     font-weight: 700;
+
     color: #1f2937;
 }
 
-
-/* =========================================================
-   FORM GRID
-========================================================= */
-
-.data-center-form-grid {
+.dc-form-grid {
     display: grid;
-    grid-template-columns: repeat(2, minmax(0, 1fr));
-    gap: 20px;
+
+    grid-template-columns:
+        repeat(2, minmax(0, 1fr));
+
+    gap: 18px;
 }
 
-.data-center-form-group {
+.dc-form-group {
     display: flex;
+
     flex-direction: column;
+
+    min-width: 0;
 }
 
-.data-center-form-group.full {
+.dc-form-group.full {
     grid-column: 1 / -1;
 }
 
-.data-center-form-group label {
+.dc-form-label {
     margin-bottom: 7px;
+
     font-size: 12px;
+
     font-weight: 600;
+
     color: #374151;
 }
 
-.data-center-form-group label span {
+.dc-required {
     color: #dc2626;
 }
 
-.data-center-form-group input,
-.data-center-form-group select,
-.data-center-form-group textarea {
+.dc-form-control {
     width: 100%;
+
     box-sizing: border-box;
-    border: 1px solid #d1d5db;
-    border-radius: 8px;
-    background: white;
-    color: #374151;
-    outline: none;
-    font-family: inherit;
-    font-size: 12px;
-    transition: 0.2s ease;
-}
 
-.data-center-form-group input,
-.data-center-form-group select {
     height: 40px;
+
     padding: 0 12px;
+
+    border:
+        1px solid #d1d5db;
+
+    border-radius: 8px;
+
+    background: #ffffff;
+
+    color: #374151;
+
+    outline: none;
+
+    font-family: inherit;
+
+    font-size: 12px;
 }
 
-.data-center-form-group textarea {
-    min-height: 85px;
+textarea.dc-form-control {
+    min-height: 90px;
+
+    height: auto;
+
     padding: 10px 12px;
+
     resize: vertical;
 }
 
-.data-center-form-group input:focus,
-.data-center-form-group select:focus,
-.data-center-form-group textarea:focus {
+.dc-form-control:focus {
     border-color: #079bd8;
+
     box-shadow:
-        0 0 0 3px rgba(7, 155, 216, 0.10);
+        0 0 0 3px
+        rgba(7, 155, 216, 0.10);
 }
 
-.data-center-form-group input[readonly] {
+.dc-form-control[readonly] {
     background: #f8fafc;
+
     color: #64748b;
+
     cursor: not-allowed;
 }
 
-.data-center-form-error {
-    margin-top: 5px;
+.dc-help {
+    margin-top: 6px;
+
     font-size: 10px;
+
+    line-height: 1.5;
+
+    color: #9ca3af;
+}
+
+.dc-form-error {
+    margin-top: 5px;
+
+    font-size: 10px;
+
     color: #dc2626;
 }
 
 
 /* =========================================================
-   PRICE INPUT
+   FORM FOOTER
 ========================================================= */
 
-.data-center-price-input {
-    position: relative;
-}
-
-.data-center-price-prefix {
-    position: absolute;
-    left: 12px;
-    top: 50%;
-    transform: translateY(-50%);
-    font-size: 12px;
-    font-weight: 600;
-    color: #64748b;
-    pointer-events: none;
-}
-
-.data-center-price-input input {
-    padding-left: 38px;
-}
-
-
-/* =========================================================
-   SEWA SECTION
-========================================================= */
-
-#dataCenterSewaSection {
-    display: none;
-    margin-top: 20px;
-    padding: 18px;
-    background: #f8fafc;
-    border: 1px solid #e2e8f0;
-    border-radius: 10px;
-}
-
-#dataCenterSewaSection.show {
-    display: block;
-}
-
-.data-center-sewa-title {
-    margin-bottom: 15px;
-    font-size: 12px;
-    font-weight: 700;
-    color: #075985;
-}
-
-.data-center-sewa-grid {
-    display: grid;
-    grid-template-columns: repeat(2, minmax(0, 1fr));
-    gap: 16px;
-}
-
-
-/* =========================================================
-   CUSTOM PERIOD
-========================================================= */
-
-#dataCenterCustomPeriod {
-    display: none;
-    margin-top: 16px;
-}
-
-#dataCenterCustomPeriod.show {
-    display: grid;
-    grid-template-columns: repeat(2, minmax(0, 1fr));
-    gap: 16px;
-}
-
-
-/* =========================================================
-   INFO
-========================================================= */
-
-.data-center-form-info {
-    margin-top: 6px;
-    font-size: 10px;
-    line-height: 1.5;
-    color: #9ca3af;
-}
-
-.data-center-form-info i {
-    margin-right: 3px;
-}
-
-
-/* =========================================================
-   MODAL FOOTER
-========================================================= */
-
-.data-center-modal-footer {
-    display: flex;
-    justify-content: flex-end;
-    align-items: center;
-    gap: 10px;
-    padding: 16px 24px;
-    border-top: 1px solid #e5e7eb;
-    background: white;
+.dc-modal-footer {
     flex-shrink: 0;
+
+    display: flex;
+
+    justify-content: space-between;
+
+    align-items: center;
+
+    gap: 15px;
+
+    padding: 16px 24px;
+
+    border-top:
+        1px solid #e5e7eb;
+
+    background: #ffffff;
 }
 
-.data-center-btn-batal,
-.data-center-btn-simpan {
+
+/* =========================================================
+   FOOTER LEFT — EXCEL
+========================================================= */
+
+.dc-footer-left {
+    display: flex;
+
+    align-items: center;
+
+    gap: 9px;
+}
+
+
+/* =========================================================
+   FOOTER RIGHT — FORM ACTION
+========================================================= */
+
+.dc-footer-right {
+    display: flex;
+
+    align-items: center;
+
+    justify-content: flex-end;
+
+    gap: 10px;
+}
+
+
+/* =========================================================
+   BUTTON BATAL & SIMPAN
+========================================================= */
+
+.dc-btn-batal,
+.dc-btn-simpan {
     height: 40px;
+
     padding: 0 18px;
+
     border-radius: 8px;
+
     font-size: 12px;
+
     font-weight: 600;
+
     cursor: pointer;
-    transition: 0.2s ease;
 }
 
-.data-center-btn-batal {
-    border: 1px solid #d1d5db;
-    background: white;
+.dc-btn-batal {
+    border:
+        1px solid #d1d5db;
+
+    background: #ffffff;
+
     color: #4b5563;
 }
 
-.data-center-btn-batal:hover {
+.dc-btn-batal:hover {
     background: #f8fafc;
 }
 
-.data-center-btn-simpan {
+.dc-btn-simpan {
     border: none;
+
     background: #079bd8;
-    color: white;
+
+    color: #ffffff;
 }
 
-.data-center-btn-simpan:hover {
+.dc-btn-simpan:hover {
     background: #075985;
 }
 
-.data-center-btn-simpan i {
+
+/* =========================================================
+   IMPORT MODAL
+========================================================= */
+
+.dc-import-modal-overlay {
+    position: fixed;
+
+    inset: 0;
+
+    z-index: 10000;
+
+    display: none;
+
+    align-items: center;
+    justify-content: center;
+
+    padding: 20px;
+
+    background:
+        rgba(15, 23, 42, 0.55);
+}
+
+.dc-import-modal-overlay.show {
+    display: flex;
+}
+
+.dc-import-modal {
+    width: 100%;
+
+    max-width: 500px;
+
+    background: #ffffff;
+
+    border-radius: 16px;
+
+    box-shadow:
+        0 25px 60px
+        rgba(15, 23, 42, 0.25);
+
+    overflow: hidden;
+}
+
+.dc-import-header {
+    display: flex;
+
+    align-items: center;
+
+    justify-content: space-between;
+
+    padding: 18px 22px;
+
+    border-bottom:
+        1px solid #e5e7eb;
+}
+
+.dc-import-header-left {
+    display: flex;
+
+    align-items: center;
+
+    gap: 12px;
+}
+
+.dc-import-icon {
+    width: 40px;
+    height: 40px;
+
+    display: flex;
+
+    align-items: center;
+    justify-content: center;
+
+    border-radius: 10px;
+
+    background: #dcfce7;
+
+    color: #15803d;
+}
+
+.dc-import-icon i {
+    font-size: 18px;
+}
+
+.dc-import-title h3 {
+    margin: 0;
+
+    font-size: 16px;
+
+    font-weight: 700;
+
+    color: #1f2937;
+}
+
+.dc-import-title p {
+    margin: 4px 0 0;
+
+    font-size: 11px;
+
+    color: #6b7280;
+}
+
+.dc-import-close {
+    width: 34px;
+    height: 34px;
+
+    display: inline-flex;
+
+    align-items: center;
+    justify-content: center;
+
+    border: none;
+
+    border-radius: 8px;
+
+    background: #f1f5f9;
+
+    color: #64748b;
+
+    cursor: pointer;
+}
+
+.dc-import-close:hover {
+    background: #e2e8f0;
+}
+
+.dc-import-body {
+    padding: 24px;
+}
+
+.dc-import-info {
+    padding: 13px 15px;
+
+    margin-bottom: 18px;
+
+    border-radius: 9px;
+
+    background: #eff6ff;
+
+    border:
+        1px solid #bfdbfe;
+
+    color: #1e40af;
+
+    font-size: 11px;
+
+    line-height: 1.6;
+}
+
+.dc-import-info i {
     margin-right: 5px;
+}
+
+.dc-import-file-wrapper {
+    display: flex;
+
+    flex-direction: column;
+
+    gap: 8px;
+}
+
+.dc-import-label {
+    font-size: 12px;
+
+    font-weight: 600;
+
+    color: #374151;
+}
+
+.dc-import-file {
+    width: 100%;
+
+    box-sizing: border-box;
+
+    padding: 10px;
+
+    border:
+        1px solid #d1d5db;
+
+    border-radius: 8px;
+
+    background: #ffffff;
+
+    font-size: 12px;
+
+    color: #374151;
+
+    cursor: pointer;
+}
+
+.dc-import-file:focus {
+    outline: none;
+
+    border-color: #079bd8;
+
+    box-shadow:
+        0 0 0 3px
+        rgba(7, 155, 216, 0.10);
+}
+
+.dc-import-help {
+    margin-top: 6px;
+
+    font-size: 10px;
+
+    line-height: 1.5;
+
+    color: #9ca3af;
+}
+
+.dc-import-footer {
+    display: flex;
+
+    justify-content: flex-end;
+
+    align-items: center;
+
+    gap: 10px;
+
+    padding: 16px 24px;
+
+    border-top:
+        1px solid #e5e7eb;
+}
+
+.dc-import-cancel,
+.dc-import-submit {
+    height: 40px;
+
+    padding: 0 18px;
+
+    border-radius: 8px;
+
+    font-size: 12px;
+
+    font-weight: 600;
+
+    cursor: pointer;
+}
+
+.dc-import-cancel {
+    border:
+        1px solid #d1d5db;
+
+    background: #ffffff;
+
+    color: #4b5563;
+}
+
+.dc-import-cancel:hover {
+    background: #f8fafc;
+}
+
+.dc-import-submit {
+    display: inline-flex;
+
+    align-items: center;
+
+    justify-content: center;
+
+    gap: 7px;
+
+    border: none;
+
+    background: #15803d;
+
+    color: #ffffff;
+}
+
+.dc-import-submit:hover {
+    background: #166534;
+}
+
+
+/* =========================================================
+   BODY LOCK
+========================================================= */
+
+body.dc-modal-open,
+body.dc-import-modal-open {
+    overflow: hidden;
 }
 
 
@@ -1025,143 +1485,469 @@
    RESPONSIVE
 ========================================================= */
 
-@media (max-width: 1200px) {
+@media (max-width: 1250px) {
 
-    .data-center-stats {
-        grid-template-columns: repeat(3, 1fr);
+    .dc-table-header {
+        align-items: flex-start;
     }
 
+    .dc-table-header-actions {
+        margin-left: auto;
+    }
+
+    .dc-toolbar {
+        width: 100%;
+    }
+
+    .dc-search {
+        flex: 1;
+    }
+
+    .dc-search input {
+        width: 100%;
+    }
 }
 
-@media (max-width: 900px) {
 
-    .data-center-header {
+@media (max-width: 1100px) {
+
+    .dc-stats {
+        grid-template-columns:
+            repeat(2, 1fr);
+    }
+}
+
+
+@media (max-width: 800px) {
+
+    .dc-header {
         align-items: flex-start;
+
         flex-direction: column;
+
         gap: 15px;
     }
 
-    .add-data-center-button {
+    .dc-table-header-actions {
         width: 100%;
+
+        margin-left: 0;
     }
 
-    .data-center-stats {
-        grid-template-columns: repeat(2, 1fr);
+    .add-dc-button {
+        width: auto;
     }
 
-    .data-center-table-header {
-        align-items: flex-start;
-        flex-direction: column;
-    }
-
-    .data-center-toolbar {
+    .dc-toolbar {
         width: 100%;
+
         flex-wrap: wrap;
     }
 
-    .data-center-search {
+    .dc-filter-select {
         flex: 1;
-        min-width: 220px;
+
+        min-width: 140px;
     }
 
-    .data-center-search input {
-        width: 100%;
+    .dc-form-grid {
+        grid-template-columns: 1fr;
     }
 
-}
+    .dc-form-group.full {
+        grid-column: auto;
+    }
 
-@media (max-width: 700px) {
-
-    .data-center-modal-overlay {
+    .dc-modal-overlay {
         padding: 15px;
     }
 
-    .data-center-modal {
-        height: calc(100vh - 30px);
-        max-height: calc(100vh - 30px);
+    .dc-modal {
+        max-height:
+            calc(100vh - 30px);
     }
 
-    .data-center-modal-body {
+    .dc-modal-body {
         padding: 15px;
     }
 
-    .data-center-form-card {
+    .dc-form-card {
         padding: 18px;
     }
 
-    .data-center-form-grid,
-    .data-center-sewa-grid {
-        grid-template-columns: 1fr;
-        gap: 15px;
+    .dc-modal-footer {
+        padding: 14px 18px;
     }
-
-    #dataCenterCustomPeriod.show {
-        grid-template-columns: 1fr;
-    }
-
-    .data-center-modal-footer {
-        padding: 14px 15px;
-    }
-
 }
 
-@media (max-width: 500px) {
 
-    .data-center-stats {
+@media (max-width: 600px) {
+
+    .dc-stats {
         grid-template-columns: 1fr;
     }
 
-    .data-center-toolbar {
+    .dc-filter-select {
+        width: 100%;
+
+        flex: none;
+    }
+
+    .dc-table-header-actions {
         flex-direction: column;
         align-items: stretch;
     }
 
-    .data-center-filter-select {
+    .add-dc-button {
         width: 100%;
     }
 
-    .data-center-modal-header {
+
+    /* FOOTER MODAL */
+
+    .dc-modal-footer {
+        flex-direction: column;
+
+        align-items: stretch;
+
+        gap: 12px;
+
+        padding: 14px 15px;
+    }
+
+    .dc-footer-left {
+        width: 100%;
+
+        display: flex;
+
+        gap: 8px;
+    }
+
+    .dc-footer-left .download-dc-button,
+    .dc-footer-left .import-dc-button {
+        flex: 1;
+
+        width: auto;
+    }
+
+    .dc-footer-right {
+        width: 100%;
+
+        display: flex;
+
+        gap: 8px;
+    }
+
+    .dc-btn-batal,
+    .dc-btn-simpan {
+        flex: 1;
+    }
+
+
+    /* IMPORT MODAL */
+
+    .dc-import-modal-overlay {
         padding: 15px;
     }
 
+    .dc-import-body {
+        padding: 18px;
+    }
+
+    .dc-import-footer {
+        padding: 14px 18px;
+    }
+
+    .dc-import-cancel,
+    .dc-import-submit {
+        flex: 1;
+    }
 }
 
+.dc-pagination-wrapper {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 15px;
+    padding: 16px 20px;
+    border-top: 1px solid #e5e7eb;
+    background: #ffffff;
+}
 
-/* =========================================================
-   BODY LOCK WHEN MODAL OPEN
-========================================================= */
+.dc-pagination-info {
+    font-size: 12px;
+    color: #64748b;
+}
 
-body.data-center-modal-open {
-    overflow: hidden;
+.dc-pagination-info strong {
+    color: #374151;
+}
+
+.dc-pagination {
+    display: flex;
+    align-items: center;
+    gap: 5px;
+}
+
+.dc-page-button {
+    min-width: 32px;
+    height: 32px;
+    padding: 0 9px;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    border: 1px solid #d1d5db;
+    border-radius: 7px;
+    background: #ffffff;
+    color: #475569;
+    text-decoration: none;
+    font-size: 12px;
+    font-weight: 600;
+    transition: 0.2s ease;
+}
+
+.dc-page-button:hover {
+    background: #f1f5f9;
+    border-color: #94a3b8;
+    color: #075985;
+}
+
+.dc-page-button.active {
+    background: #075985;
+    border-color: #075985;
+    color: #ffffff;
+}
+
+.dc-page-button.disabled {
+    opacity: 0.45;
+    cursor: not-allowed;
+    background: #f8fafc;
+}
+
+@media (max-width: 600px) {
+
+    .dc-pagination-wrapper {
+        flex-direction: column;
+        align-items: stretch;
+    }
+
+    .dc-pagination-info {
+        text-align: center;
+    }
+
+    .dc-pagination {
+        justify-content: center;
+        flex-wrap: wrap;
+    }
+
 }
 
 </style>
 
+<div class="dc-page">
 
-<div class="data-center-page">
+{{-- =====================================================
+HEADER
+====================================================== --}}
 
-    {{-- =====================================================
-         HEADER
-    ====================================================== --}}
+<div class="dc-heading">
 
-    <div class="data-center-header">
+    <h2>
+        Data Center
+    </h2>
 
-        <div class="data-center-heading">
+    <p>
+        Kelola data infrastruktur Data Center.
+    </p>
 
-            <h2>
-                Data Center
-            </h2>
+</div>
 
-            <p>
-                Kelola data infrastruktur data center yang tersedia.
-            </p>
+</div>
 
+{{-- =====================================================
+SUCCESS
+====================================================== --}}
+
+@if(session('success'))
+
+<div class="alert-success">
+
+    <i class="bi bi-check-circle-fill"></i>
+
+    <span>
+        {{ session('success') }}
+    </span>
+
+</div>
+
+@endif
+
+{{-- =====================================================
+ERROR
+====================================================== --}}
+
+@if(session('error'))
+
+<div class="alert-error">
+
+    <i class="bi bi-exclamation-circle-fill"></i>
+
+    <span>
+        {{ session('error') }}
+    </span>
+
+</div>
+
+@endif
+
+{{-- =====================================================
+VALIDATION ERROR
+====================================================== --}}
+
+@if($errors->any())
+
+<div class="alert-error">
+
+    <i class="bi bi-exclamation-triangle-fill"></i>
+
+    <div>
+
+        <strong>
+            Data belum dapat disimpan.
+        </strong>
+
+        <div style="margin-top:3px;">
+            {{ $errors->first() }}
         </div>
 
+    </div>
+
+</div>
+
+@endif
+
+{{-- =====================================================
+STATISTICS
+====================================================== --}}
+
+<div class="dc-stats">
+
+{{-- TOTAL --}}
+
+<div class="dc-stat-card">
+
+    <div class="dc-stat-icon blue">
+        <i class="bi bi-hdd-stack-fill"></i>
+    </div>
+
+    <div class="dc-stat-content">
+
+        <span class="dc-stat-label">
+            Total Data Center
+        </span>
+
+        <span class="dc-stat-value">
+            {{ $totalDataCenter }}
+        </span>
+
+        <span class="dc-stat-description">
+            Seluruh perangkat Data Center
+        </span>
+
+    </div>
+
+</div>
+
+
+{{-- ACTIVE --}}
+
+<div class="dc-stat-card">
+
+    <div class="dc-stat-icon green">
+        <i class="bi bi-check-circle-fill"></i>
+    </div>
+
+    <div class="dc-stat-content">
+
+        <span class="dc-stat-label">
+            Active
+        </span>
+
+        <span class="dc-stat-value">
+            {{ $active }}
+        </span>
+
+        <span class="dc-stat-description">
+            Perangkat dalam kondisi aktif
+        </span>
+
+    </div>
+
+</div>
+
+
+{{-- OFFLINE --}}
+
+<div class="dc-stat-card">
+
+    <div class="dc-stat-icon orange">
+        <i class="bi bi-power"></i>
+    </div>
+
+    <div class="dc-stat-content">
+
+        <span class="dc-stat-label">
+            Offline
+        </span>
+
+        <span class="dc-stat-value">
+            {{ $offline }}
+        </span>
+
+        <span class="dc-stat-description">
+            Perangkat sedang offline
+        </span>
+
+    </div>
+
+</div>
+
+</div>
+
+{{-- =====================================================
+TABLE CARD
+====================================================== --}}
+
+<div class="dc-table-card">
+
+{{-- =================================================
+     TABLE HEADER
+================================================== --}}
+
+<div class="dc-table-header">
+
+    <div class="dc-table-header-left">
+
+        <h3 class="dc-table-title">
+            Data Data Center
+        </h3>
+
+        <span class="dc-table-count">
+            ({{ $dataCenters->count() }} data)
+        </span>
+
+    </div>
+
+
+    {{-- =================================================
+         HANYA TOMBOL TAMBAH
+    ================================================== --}}
+
+    <div class="dc-table-header-actions">
 
         <button
             type="button"
-            class="add-data-center-button"
+            class="add-dc-button"
             onclick="openAddDataCenterModal()"
         >
 
@@ -1176,1102 +1962,942 @@ body.data-center-modal-open {
     </div>
 
 
-    {{-- =====================================================
-         SUCCESS
-    ====================================================== --}}
+    {{-- =================================================
+         TOOLBAR
+    ================================================== --}}
 
-    @if(session('success'))
+    <div class="dc-toolbar">
 
-        <div class="alert-success">
+        {{-- SEARCH --}}
 
-            <i class="bi bi-check-circle-fill"></i>
+        <div class="dc-search">
 
-            <span>
-                {{ session('success') }}
-            </span>
+            <i class="bi bi-search"></i>
 
-        </div>
-
-    @endif
-
-
-    {{-- =====================================================
-         ERROR
-    ====================================================== --}}
-
-    @if(session('error'))
-
-        <div class="alert-error">
-
-            <i class="bi bi-exclamation-circle-fill"></i>
-
-            <span>
-                {{ session('error') }}
-            </span>
-
-        </div>
-
-    @endif
-
-
-    {{-- =====================================================
-         VALIDATION ERROR
-    ====================================================== --}}
-
-    @if($errors->any())
-
-        <div class="alert-error">
-
-            <i class="bi bi-exclamation-triangle-fill"></i>
-
-            <div>
-
-                <strong>
-                    Data belum dapat disimpan.
-                </strong>
-
-                <div style="margin-top:3px;">
-                    Silakan periksa kembali isian form.
-                </div>
-
-            </div>
-
-        </div>
-
-    @endif
-
-
-    {{-- =====================================================
-         STATISTICS
-    ====================================================== --}}
-
-    <div class="data-center-stats">
-
-
-        {{-- TOTAL --}}
-
-        <div class="data-center-stat-card">
-
-            <div class="data-center-stat-icon blue">
-
-                <i class="bi bi-server"></i>
-
-            </div>
-
-            <div class="data-center-stat-content">
-
-                <span class="data-center-stat-label">
-                    Total Data Center
-                </span>
-
-                <span class="data-center-stat-value">
-
-                    {{ $totalDataCenter ?? $dataCenters->count() }}
-
-                </span>
-
-                <span class="data-center-stat-description">
-                    Infrastruktur data center terdaftar
-                </span>
-
-            </div>
+            <input
+                type="text"
+                id="dcSearch"
+                placeholder="Cari ID, nama, serial number..."
+            >
 
         </div>
 
 
-        {{-- AKAN HABIS --}}
+        {{-- STATUS --}}
 
-        <div class="data-center-stat-card">
+        <select
+            id="filterStatus"
+            class="dc-filter-select"
+        >
 
-            <div class="data-center-stat-icon orange">
+            <option value="">
+                Semua Status
+            </option>
 
-                <i class="bi bi-clock-history"></i>
+            @foreach($statuses as $status)
 
-            </div>
-
-            <div class="data-center-stat-content">
-
-                <span class="data-center-stat-label">
-                    Akan Habis
-                </span>
-
-                <span class="data-center-stat-value">
-
-                    {{ $akanHabis ?? $akanBerakhir ?? 0 }}
-
-                </span>
-
-                <span class="data-center-stat-description">
-                    Sewa berakhir dalam 30 hari
-                </span>
-
-            </div>
-
-        </div>
-
-
-        {{-- TIDAK BERAKHIR --}}
-
-        <div class="data-center-stat-card">
-
-            <div class="data-center-stat-icon green">
-
-                <i class="bi bi-infinity"></i>
-
-            </div>
-
-            <div class="data-center-stat-content">
-
-                <span class="data-center-stat-label">
-                    Tidak Berakhir
-                </span>
-
-                <span class="data-center-stat-value">
-
-                    {{ $tidakBerakhir ?? 0 }}
-
-                </span>
-
-                <span class="data-center-stat-description">
-                    Data center hasil pembelian
-                </span>
-
-            </div>
-
-        </div>
-
-
-        {{-- EXPIRED --}}
-
-        <div class="data-center-stat-card">
-
-            <div class="data-center-stat-icon red">
-
-                <i class="bi bi-x-circle-fill"></i>
-
-            </div>
-
-            <div class="data-center-stat-content">
-
-                <span class="data-center-stat-label">
-                    Expired
-                </span>
-
-                <span class="data-center-stat-value">
-
-                    {{ $expired ?? 0 }}
-
-                </span>
-
-                <span class="data-center-stat-description">
-                    Data center sudah berakhir
-                </span>
-
-            </div>
-
-        </div>
-
-    </div>
-
-
-    {{-- =====================================================
-         TABLE
-    ====================================================== --}}
-
-    <div class="data-center-table-card">
-
-
-        {{-- =================================================
-             TABLE HEADER
-        ================================================== --}}
-
-        <div class="data-center-table-header">
-
-
-            <div class="data-center-table-header-left">
-
-                <h3 class="data-center-table-title">
-                    Data Data Center
-                </h3>
-
-                <span class="data-center-table-count">
-                    ({{ $dataCenters->count() }} data)
-                </span>
-
-            </div>
-
-
-            {{-- TOOLBAR --}}
-
-            <div class="data-center-toolbar">
-
-
-                {{-- SEARCH --}}
-
-                <div class="data-center-search">
-
-                    <i class="bi bi-search"></i>
-
-                    <input
-                        type="text"
-                        id="dataCenterSearch"
-                        placeholder="Cari data center..."
-                    >
-
-                </div>
-
-
-                {{-- FILTER STATUS --}}
-
-                <select
-                    id="dataCenterStatusFilter"
-                    class="data-center-filter-select"
+                <option
+                    value="{{ strtolower($status) }}"
                 >
+                    {{ $status }}
+                </option>
 
-                    <option value="">
-                        Semua Status
-                    </option>
+            @endforeach
 
-                    <option value="tidak berakhir">
-                        Tidak Berakhir
-                    </option>
-
-                    <option value="digunakan">
-                        Digunakan
-                    </option>
-
-                    <option value="akan habis">
-                        Akan Habis
-                    </option>
-
-                    <option value="expired">
-                        Expired
-                    </option>
-
-                </select>
+        </select>
 
 
-                {{-- FILTER PENGADAAN --}}
+        {{-- TENANT --}}
 
-                <select
-                    id="dataCenterPengadaanFilter"
-                    class="data-center-filter-select"
+        <select
+            id="filterTenant"
+            class="dc-filter-select"
+        >
+
+            <option value="">
+                Semua Tenant
+            </option>
+
+            @foreach($tenants as $tenant)
+
+                <option
+                    value="{{ strtolower($tenant) }}"
                 >
+                    {{ $tenant }}
+                </option>
 
-                    <option value="">
-                        Semua Pengadaan
-                    </option>
+            @endforeach
 
-                    <option value="beli">
-                        Beli
-                    </option>
-
-                    <option value="sewa">
-                        Sewa
-                    </option>
-
-                </select>
+        </select>
 
 
-                {{-- FILTER VERIFIKASI --}}
+        {{-- SITE --}}
 
-                <select
-                    id="dataCenterVerifikasiFilter"
-                    class="data-center-filter-select"
+        <select
+            id="filterSite"
+            class="dc-filter-select"
+        >
+
+            <option value="">
+                Semua Site
+            </option>
+
+            @foreach($sites as $site)
+
+                <option
+                    value="{{ strtolower($site) }}"
                 >
+                    {{ $site }}
+                </option>
 
-                    <option value="">
-                        Semua Verifikasi
-                    </option>
+            @endforeach
 
-                    <option value="menunggu">
-                        Menunggu
-                    </option>
-
-                    <option value="disetujui">
-                        Disetujui
-                    </option>
-
-                    <option value="ditolak">
-                        Ditolak
-                    </option>
-
-                </select>
-
-
-                {{-- FILTER TAHUN --}}
-
-                @if(isset($tahuns) && count($tahuns))
-
-                    <select
-                        id="dataCenterTahunFilter"
-                        class="data-center-filter-select"
-                    >
-
-                        <option value="">
-                            Semua Tahun
-                        </option>
-
-                        @foreach($tahuns as $tahun)
-
-                            <option value="{{ $tahun }}">
-                                {{ $tahun }}
-                            </option>
-
-                        @endforeach
-
-                    </select>
-
-                @endif
-
-            </div>
-
-        </div>
-
-
-        {{-- =================================================
-             TABLE WRAPPER
-        ================================================== --}}
-
-        <div class="data-center-table-wrapper">
-
-            <table class="data-center-table">
-
-                <thead>
-
-                    <tr>
-
-                        <th>
-                            No
-                        </th>
-
-                        <th>
-                            ID
-                        </th>
-
-                        <th>
-                            Nama Infrastruktur
-                        </th>
-
-                        <th>
-                            Spesifikasi
-                        </th>
-
-                        <th>
-                            Pengadaan
-                        </th>
-
-                        <th>
-                            Harga
-                        </th>
-
-                        <th>
-                            Tanggal Pengadaan
-                        </th>
-
-                        <th>
-                            Tanggal Berakhir
-                        </th>
-
-                        <th>
-                            Status
-                        </th>
-
-                        <th>
-                            Verifikasi
-                        </th>
-
-                        <th>
-                            Komentar
-                        </th>
-
-                        <th>
-                            Aksi
-                        </th>
-
-                    </tr>
-
-                </thead>
-
-
-                <tbody id="dataCenterTableBody">
-
-
-                    @forelse($dataCenters as $dataCenter)
-
-                        @php
-
-                            /*
-                             * STATUS OTOMATIS
-                             *
-                             * Beli
-                             *      -> Tidak Berakhir
-                             *
-                             * Sewa > 30 hari
-                             *      -> Digunakan
-                             *
-                             * Sewa <= 30 hari
-                             *      -> Akan Habis
-                             *
-                             * Sewa lewat tanggal
-                             *      -> Expired
-                             */
-
-                            $pengadaanLower =
-                                strtolower(
-                                    trim(
-                                        $dataCenter->pengadaan ?? ''
-                                    )
-                                );
-
-                            $statusLabel =
-                                'Tidak Berakhir';
-
-                            $statusClass =
-                                'status-perpetual';
-
-
-                            if (
-                                $pengadaanLower === 'sewa' &&
-                                $dataCenter->tanggal_berakhir
-                            ) {
-
-                                $today =
-                                    now()->startOfDay();
-
-                                $endDate =
-                                    \Carbon\Carbon::parse(
-                                        $dataCenter->tanggal_berakhir
-                                    )->startOfDay();
-
-                                $daysLeft =
-                                    $today->diffInDays(
-                                        $endDate,
-                                        false
-                                    );
-
-
-                                if ($daysLeft < 0) {
-
-                                    $statusLabel =
-                                        'Expired';
-
-                                    $statusClass =
-                                        'status-expired';
-
-                                } elseif ($daysLeft <= 30) {
-
-                                    $statusLabel =
-                                        'Akan Habis';
-
-                                    $statusClass =
-                                        'status-warning';
-
-                                } else {
-
-                                    $statusLabel =
-                                        'Digunakan';
-
-                                    $statusClass =
-                                        'status-active';
-
-                                }
-
-                            }
-
-
-                            /*
-                             * VERIFIKASI
-                             */
-
-                            $verifikasi =
-                                strtolower(
-                                    $dataCenter->verifikasi
-                                    ?? 'menunggu'
-                                );
-
-
-                            $verifikasiLabel =
-                                match ($verifikasi) {
-
-                                    'disetujui',
-                                    'approved',
-                                    'approve'
-                                        => 'Disetujui',
-
-                                    'ditolak',
-                                    'rejected',
-                                    'reject'
-                                        => 'Ditolak',
-
-                                    default
-                                        => 'Menunggu',
-
-                                };
-
-
-                            $verifikasiClass =
-                                match ($verifikasi) {
-
-                                    'disetujui',
-                                    'approved',
-                                    'approve'
-                                        => 'verifikasi-disetujui',
-
-                                    'ditolak',
-                                    'rejected',
-                                    'reject'
-                                        => 'verifikasi-ditolak',
-
-                                    default
-                                        => 'verifikasi-menunggu',
-
-                                };
-
-
-                            /*
-                             * TAHUN
-                             */
-
-                            $tahunData = null;
-
-                            if (
-                                $dataCenter->tanggal_pengadaan
-                            ) {
-
-                                $tahunData =
-                                    \Carbon\Carbon::parse(
-                                        $dataCenter->tanggal_pengadaan
-                                    )->format('Y');
-
-                            }
-
-                        @endphp
-
-
-                        <tr
-                            data-search="{{ strtolower(
-                                ($dataCenter->id ?? '') . ' ' .
-                                ($dataCenter->nama_infrastruktur ?? '') . ' ' .
-                                ($dataCenter->spesifikasi ?? '') . ' ' .
-                                ($dataCenter->pengadaan ?? '') . ' ' .
-                                ($dataCenter->harga ?? '') . ' ' .
-                                ($statusLabel ?? '') . ' ' .
-                                ($verifikasiLabel ?? '') . ' ' .
-                                ($dataCenter->komentar ?? '')
-                            ) }}"
-                            data-status="{{ strtolower($statusLabel) }}"
-                            data-pengadaan="{{ strtolower($dataCenter->pengadaan ?? '') }}"
-                            data-verifikasi="{{ strtolower($verifikasiLabel) }}"
-                            data-tahun="{{ $tahunData }}"
-                        >
-
-
-                            {{-- NO --}}
-
-                            <td>
-                                {{ $loop->iteration }}
-                            </td>
-
-
-                            {{-- ID --}}
-
-                            <td>
-
-                                <span class="data-center-code">
-
-                                    {{ $dataCenter->id }}
-
-                                </span>
-
-                            </td>
-
-
-                            {{-- NAMA --}}
-
-                            <td>
-
-                                <div class="data-center-name">
-
-                                    {{ $dataCenter->nama_infrastruktur }}
-
-                                </div>
-
-                            </td>
-
-
-                            {{-- SPESIFIKASI --}}
-
-                            <td>
-
-                                @if($dataCenter->spesifikasi)
-
-                                    <div class="data-center-spec">
-
-                                        {{ $dataCenter->spesifikasi }}
-
-                                    </div>
-
-                                @else
-
-                                    <span class="data-center-date-empty">
-                                        -
-                                    </span>
-
-                                @endif
-
-                            </td>
-
-
-                            {{-- PENGADAAN --}}
-
-                            <td>
-
-                                @if(
-                                    strtolower(
-                                        $dataCenter->pengadaan ?? ''
-                                    ) === 'sewa'
-                                )
-
-                                    <span
-                                        class="procurement-badge procurement-sewa"
-                                    >
-                                        Sewa
-                                    </span>
-
-                                @else
-
-                                    <span
-                                        class="procurement-badge procurement-beli"
-                                    >
-                                        Beli
-                                    </span>
-
-                                @endif
-
-                            </td>
-
-
-                            {{-- HARGA --}}
-
-                            <td>
-
-                                <span class="data-center-price">
-
-                                    Rp
-                                    {{ number_format(
-                                        (float) ($dataCenter->harga ?? 0),
-                                        0,
-                                        ',',
-                                        '.'
-                                    ) }}
-
-                                </span>
-
-                            </td>
-
-
-                            {{-- TANGGAL PENGADAAN --}}
-
-                            <td>
-
-                                @if($dataCenter->tanggal_pengadaan)
-
-                                    <span class="data-center-date">
-
-                                        {{ \Carbon\Carbon::parse(
-                                            $dataCenter->tanggal_pengadaan
-                                        )->format('d M Y') }}
-
-                                    </span>
-
-                                @else
-
-                                    <span class="data-center-date-empty">
-                                        -
-                                    </span>
-
-                                @endif
-
-                            </td>
-
-
-                            {{-- TANGGAL BERAKHIR --}}
-
-                            <td>
-
-                                @if($dataCenter->tanggal_berakhir)
-
-                                    <span class="data-center-date">
-
-                                        {{ \Carbon\Carbon::parse(
-                                            $dataCenter->tanggal_berakhir
-                                        )->format('d M Y') }}
-
-                                    </span>
-
-                                @else
-
-                                    <span class="data-center-date-empty">
-                                        Tidak Berakhir
-                                    </span>
-
-                                @endif
-
-                            </td>
-
-
-                            {{-- STATUS --}}
-
-                            <td>
-
-                                <span
-                                    class="data-center-status-badge {{ $statusClass }}"
-                                >
-
-                                    {{ $statusLabel }}
-
-                                </span>
-
-                            </td>
-
-
-                            {{-- VERIFIKASI --}}
-
-                            <td>
-
-                                <span
-                                    class="verifikasi-badge {{ $verifikasiClass }}"
-                                >
-
-                                    {{ $verifikasiLabel }}
-
-                                </span>
-
-                            </td>
-
-
-                            {{-- KOMENTAR --}}
-
-                            <td>
-
-                                @if($dataCenter->komentar)
-
-                                    <div class="data-center-comment">
-
-                                        {{ $dataCenter->komentar }}
-
-                                    </div>
-
-                                @else
-
-                                    <span class="data-center-date-empty">
-                                        -
-                                    </span>
-
-                                @endif
-
-                            </td>
-
-
-                            {{-- AKSI --}}
-
-                            <td>
-
-                                <div class="data-center-action-buttons">
-
-
-                                    {{-- EDIT --}}
-
-                                    <button
-                                        type="button"
-                                        class="data-center-action-button data-center-edit-button"
-                                        title="Edit"
-                                        onclick="openEditDataCenterModal(@js($dataCenter->id))"
-                                    >
-
-                                        <i class="bi bi-pencil-fill"></i>
-
-                                    </button>
-
-
-                                    {{-- DELETE --}}
-
-                                    <form
-                                        action="{{ route(
-                                            'data-center.destroy',
-                                            $dataCenter->id
-                                        ) }}"
-                                        method="POST"
-                                        class="data-center-delete-form"
-                                        onsubmit="return confirm(
-                                            'Yakin ingin menghapus data Data Center ini?'
-                                        );"
-                                    >
-
-                                        @csrf
-
-                                        @method('DELETE')
-
-                                        <button
-                                            type="submit"
-                                            class="data-center-action-button data-center-delete-button"
-                                            title="Hapus"
-                                        >
-
-                                            <i class="bi bi-trash-fill"></i>
-
-                                        </button>
-
-                                    </form>
-
-                                </div>
-
-                            </td>
-
-                        </tr>
-
-
-                    @empty
-
-                        <tr>
-
-                            <td
-                                colspan="12"
-                                style="padding:0;"
-                            >
-
-                                <div class="data-center-empty-state">
-
-                                    <div class="data-center-empty-icon">
-
-                                        <i class="bi bi-server"></i>
-
-                                    </div>
-
-                                    <h3>
-                                        Belum ada data Data Center
-                                    </h3>
-
-                                    <p>
-                                        Data infrastruktur Data Center belum tersedia.
-                                    </p>
-
-                                </div>
-
-                            </td>
-
-                        </tr>
-
-                    @endforelse
-
-                </tbody>
-
-            </table>
-
-        </div>
-
-
-        {{-- =================================================
-             TABLE FOOTER
-        ================================================== --}}
-
-        @if(
-            method_exists($dataCenters, 'links')
-            &&
-            $dataCenters->hasPages()
-        )
-
-            <div class="data-center-table-footer">
-
-                <span class="data-center-showing-text">
-
-                    Menampilkan
-                    {{ $dataCenters->firstItem() }}
-                    -
-                    {{ $dataCenters->lastItem() }}
-                    dari
-                    {{ $dataCenters->total() }}
-                    data
-
-                </span>
-
-                <div>
-                    {{ $dataCenters->links() }}
-                </div>
-
-            </div>
-
-        @endif
+        </select>
 
     </div>
 
 </div>
 
 
-{{-- =========================================================
-     MODAL TAMBAH / EDIT DATA CENTER
-========================================================= --}}
+{{-- =================================================
+     TABLE
+================================================== --}}
 
-<div
-    id="dataCenterModal"
-    class="data-center-modal-overlay"
-    aria-hidden="true"
->
+<div class="dc-table-wrapper">
 
-    <div
-        class="data-center-modal"
-        role="dialog"
-        aria-modal="true"
-        aria-labelledby="dataCenterModalTitle"
-    >
+    <table class="dc-table">
+
+        <thead>
+
+            <tr>
+
+                <th>No</th>
+                <th>ID</th>
+                <th>Nama</th>
+                <th>Status</th>
+                <th>Tenant</th>
+                <th>Site</th>
+                <th>Rack</th>
+                <th>Position</th>
+                <th>U Height</th>
+                <th>Rack Face</th>
+                <th>Role</th>
+                <th>Manufacturer</th>
+                <th>Type</th>
+                <th>Platform</th>
+                <th>Version</th>
+                <th>Serial Number</th>
+                <th>IP Address</th>
+                <th>IPv4 Address</th>
+                <th>CPU</th>
+                <th>Hard Disk</th>
+                <th>RAM</th>
+                <th>PIC</th>
+                <th>Tenant Group</th>
+                <th>Region</th>
+                <th>Location</th>
+                <th>Cluster</th>
+                <th>Owner Group</th>
+                <th>Owner</th>
+                <th>Description</th>
+                <th>Verifikasi</th>
+                <th>Komentar</th>
+                <th>Aksi</th>
+
+            </tr>
+
+        </thead>
 
 
-        {{-- =================================================
-             MODAL HEADER
-        ================================================== --}}
+        <tbody id="dcTableBody">
 
-        <div class="data-center-modal-header">
+            @forelse($dataCenters as $index => $data)
 
-            <div class="data-center-modal-header-left">
+                @php
 
-                <div class="data-center-modal-icon">
+                    $status = strtolower(
+                        (string) ($data->status ?? '')
+                    );
 
-                    <i class="bi bi-server"></i>
+                    $verifikasi = strtolower(
+                        (string) (
+                            $data->verifikasi
+                            ?? 'menunggu'
+                        )
+                    );
 
-                </div>
-
-
-                <div class="data-center-modal-header-text">
-
-                    <h2 id="dataCenterModalTitle">
-                        Tambah Data Center
-                    </h2>
-
-                    <p id="dataCenterModalDescription">
-                        Masukan detail infrastruktur Data Center baru ke dalam sistem.
-                    </p>
-
-                </div>
-
-            </div>
+                @endphp
 
 
-            <button
-                type="button"
-                class="data-center-modal-close"
-                onclick="closeDataCenterModal()"
-                title="Tutup"
-            >
+                <tr
+                    class="dc-row"
 
-                <i class="bi bi-x-lg"></i>
+                    data-search="{{ strtolower(
+                        ($data->id ?? '') . ' ' .
+                        ($data->name ?? '') . ' ' .
+                        ($data->serial_number ?? '') . ' ' .
+                        ($data->ip_address ?? '') . ' ' .
+                        ($data->ipv4_address ?? '') . ' ' .
+                        ($data->tenant ?? '') . ' ' .
+                        ($data->site ?? '') . ' ' .
+                        ($data->rack ?? '') . ' ' .
+                        ($data->role ?? '') . ' ' .
+                        ($data->manufacturer ?? '') . ' ' .
+                        ($data->platform ?? '') . ' ' .
+                        ($data->owner ?? '') . ' ' .
+                        ($data->description ?? '') . ' ' .
+                        ($data->komentar ?? '')
+                    ) }}"
 
-            </button>
+                    data-status="{{ $status }}"
+
+                    data-tenant="{{ strtolower(
+                        $data->tenant ?? ''
+                    ) }}"
+
+                    data-site="{{ strtolower(
+                        $data->site ?? ''
+                    ) }}"
+                >
+
+
+                    {{-- NO --}}
+
+                    <td class="row-number">
+                        {{ $index + 1 }}
+                    </td>
+
+
+                    {{-- ID --}}
+
+                    <td>
+                        <span class="dc-code">
+                            {{ $data->id }}
+                        </span>
+                    </td>
+
+
+                    {{-- NAMA --}}
+
+                    <td>
+                        <div class="dc-name">
+                            {{ $data->name ?? '-' }}
+                        </div>
+                    </td>
+
+
+                    {{-- STATUS --}}
+
+                    <td>
+
+                        @if($status === 'active')
+
+                            <span class="dc-status-badge dc-status-active">
+                                Active
+                            </span>
+
+                        @else
+
+                            <span class="dc-status-badge dc-status-offline">
+                                Offline
+                            </span>
+
+                        @endif
+
+                    </td>
+
+
+                    {{-- TENANT --}}
+
+                    <td>
+                        {{ $data->tenant ?? '-' }}
+                    </td>
+
+
+                    {{-- SITE --}}
+
+                    <td>
+                        {{ $data->site ?? '-' }}
+                    </td>
+
+
+                    {{-- RACK --}}
+
+                    <td>
+                        {{ $data->rack ?? '-' }}
+                    </td>
+
+
+                    {{-- POSITION --}}
+
+                    <td>
+                        {{ $data->position ?? '-' }}
+                    </td>
+
+
+                    {{-- U HEIGHT --}}
+
+                    <td>
+                        {{ $data->u_height ?? '-' }}
+                    </td>
+
+
+                    {{-- RACK FACE --}}
+
+                    <td>
+                        {{ $data->rack_face ?? '-' }}
+                    </td>
+
+
+                    {{-- ROLE --}}
+
+                    <td>
+                        {{ $data->role ?? '-' }}
+                    </td>
+
+
+                    {{-- MANUFACTURER --}}
+
+                    <td>
+                        {{ $data->manufacturer ?? '-' }}
+                    </td>
+
+
+                    {{-- TYPE --}}
+
+                    <td>
+                        {{ $data->type ?? '-' }}
+                    </td>
+
+
+                    {{-- PLATFORM --}}
+
+                    <td>
+                        {{ $data->platform ?? '-' }}
+                    </td>
+
+
+                    {{-- VERSION --}}
+
+                    <td>
+                        {{ $data->version ?? '-' }}
+                    </td>
+
+
+                    {{-- SERIAL NUMBER --}}
+
+                    <td>
+                        {{ $data->serial_number ?? '-' }}
+                    </td>
+
+
+                    {{-- IP ADDRESS --}}
+
+                    <td>
+                        {{ $data->ip_address ?? '-' }}
+                    </td>
+
+
+                    {{-- IPV4 ADDRESS --}}
+
+                    <td>
+                        {{ $data->ipv4_address ?? '-' }}
+                    </td>
+
+
+                    {{-- CPU --}}
+
+                    <td>
+                        {{ $data->cpu ?? '-' }}
+                    </td>
+
+
+                    {{-- HARD DISK --}}
+
+                    <td>
+                        {{ $data->harddisk ?? '-' }}
+                    </td>
+
+
+                    {{-- RAM --}}
+
+                    <td>
+                        {{ $data->ram ?? '-' }}
+                    </td>
+
+
+                    {{-- PIC --}}
+
+                    <td>
+                        {{ $data->pic ?? '-' }}
+                    </td>
+
+
+                    {{-- TENANT GROUP --}}
+
+                    <td>
+                        {{ $data->tenant_group ?? '-' }}
+                    </td>
+
+
+                    {{-- REGION --}}
+
+                    <td>
+                        {{ $data->region ?? '-' }}
+                    </td>
+
+
+                    {{-- LOCATION --}}
+
+                    <td>
+                        {{ $data->location ?? '-' }}
+                    </td>
+
+
+                    {{-- CLUSTER --}}
+
+                    <td>
+                        {{ $data->cluster ?? '-' }}
+                    </td>
+
+
+                    {{-- OWNER GROUP --}}
+
+                    <td>
+                        {{ $data->owner_group ?? '-' }}
+                    </td>
+
+
+                    {{-- OWNER --}}
+
+                    <td>
+                        {{ $data->owner ?? '-' }}
+                    </td>
+
+
+                    {{-- DESCRIPTION --}}
+
+                    <td>
+
+                        @if($data->description)
+
+                            <div
+                                class="dc-description"
+                                title="{{ $data->description }}"
+                            >
+                                {{ $data->description }}
+                            </div>
+
+                        @else
+
+                            <span class="dc-empty-value">
+                                -
+                            </span>
+
+                        @endif
+
+                    </td>
+
+
+                    {{-- VERIFIKASI --}}
+
+                    <td>
+
+                        @if($verifikasi === 'disetujui')
+
+                            <span class="dc-verifikasi-badge dc-verifikasi-disetujui">
+                                Disetujui
+                            </span>
+
+                        @elseif($verifikasi === 'ditolak')
+
+                            <span class="dc-verifikasi-badge dc-verifikasi-ditolak">
+                                Ditolak
+                            </span>
+
+                        @else
+
+                            <span class="dc-verifikasi-badge dc-verifikasi-menunggu">
+                                Menunggu
+                            </span>
+
+                        @endif
+
+                    </td>
+
+
+                    {{-- KOMENTAR --}}
+
+                    <td>
+
+                        @if($data->komentar)
+
+                            <div
+                                class="dc-komentar"
+                                title="{{ $data->komentar }}"
+                            >
+                                {{ $data->komentar }}
+                            </div>
+
+                        @else
+
+                            <span class="dc-empty-value">
+                                -
+                            </span>
+
+                        @endif
+
+                    </td>
+
+
+                    {{-- AKSI --}}
+
+                    <td>
+
+                        <div class="dc-action-buttons">
+
+                            {{-- EDIT --}}
+
+                            <button
+                                type="button"
+                                class="dc-action-button dc-edit-button"
+                                title="Edit"
+                                onclick='openEditDataCenterModal(@json($data))'
+                            >
+
+                                <i class="bi bi-pencil-fill"></i>
+
+                            </button>
+
+
+                            {{-- DELETE --}}
+
+                            <form
+                                action="{{ route(
+                                    'data-center.destroy',
+                                    $data->id
+                                ) }}"
+                                method="POST"
+                                class="dc-delete-form"
+
+                                onsubmit="return confirm(
+                                    'Yakin ingin mengajukan penghapusan data Data Center ini?'
+                                );"
+                            >
+
+                                @csrf
+
+                                @method('DELETE')
+
+                                <button
+                                    type="submit"
+                                    class="dc-action-button dc-delete-button"
+                                    title="Hapus"
+                                >
+
+                                    <i class="bi bi-trash-fill"></i>
+
+                                </button>
+
+                            </form>
+
+                        </div>
+
+                    </td>
+
+                </tr>
+
+
+            @empty
+
+                <tr id="dcEmptyRow">
+
+                    <td
+                        colspan="32"
+                        style="padding:0;"
+                    >
+
+                        <div class="dc-empty-state">
+
+                            <div class="dc-empty-icon">
+                                <i class="bi bi-hdd-rack"></i>
+                            </div>
+
+                            <h3>
+                                Belum ada data Data Center
+                            </h3>
+
+                            <p>
+                                Data infrastruktur Data Center belum tersedia.
+                            </p>
+
+                        </div>
+
+                    </td>
+
+                </tr>
+
+            @endforelse
+
+        </tbody>
+
+    </table>
+
+    @if($dataCenters->hasPages())
+
+    <div class="dc-pagination-wrapper">
+
+        <div class="dc-pagination-info">
+            Menampilkan
+            <strong>{{ $dataCenters->firstItem() }}</strong>
+            -
+            <strong>{{ $dataCenters->lastItem() }}</strong>
+            dari
+            <strong>{{ $dataCenters->total() }}</strong>
+            data
+        </div>
+
+        <div class="dc-pagination">
+
+            @if($dataCenters->onFirstPage())
+
+                <span class="dc-page-button disabled">
+                    <i class="bi bi-chevron-left"></i>
+                </span>
+
+            @else
+
+                <a
+                    href="{{ $dataCenters->previousPageUrl() }}"
+                    class="dc-page-button"
+                >
+                    <i class="bi bi-chevron-left"></i>
+                </a>
+
+            @endif
+
+            @foreach(
+                $dataCenters->getUrlRange(
+                    max(1, $dataCenters->currentPage() - 2),
+                    min(
+                        $dataCenters->lastPage(),
+                        $dataCenters->currentPage() + 2
+                    )
+                ) as $page => $url
+            )
+
+                @if($page == $dataCenters->currentPage())
+
+                    <span class="dc-page-button active">
+                        {{ $page }}
+                    </span>
+
+                @else
+
+                    <a
+                        href="{{ $url }}"
+                        class="dc-page-button"
+                    >
+                        {{ $page }}
+                    </a>
+
+                @endif
+
+            @endforeach
+
+            @if($dataCenters->hasMorePages())
+
+                <a
+                    href="{{ $dataCenters->nextPageUrl() }}"
+                    class="dc-page-button"
+                >
+                    <i class="bi bi-chevron-right"></i>
+                </a>
+
+            @else
+
+                <span class="dc-page-button disabled">
+                    <i class="bi bi-chevron-right"></i>
+                </span>
+
+            @endif
+
+        </div>
+
+    </div>
+
+@endif
+
+    @if($dataCenters->hasPages())
+
+    <div class="dc-pagination-wrapper">
+
+        {{-- INFO DATA --}}
+        <div class="dc-pagination-info">
+
+            Menampilkan
+
+            <strong>
+                {{ $dataCenters->firstItem() }}
+            </strong>
+
+            -
+            
+            <strong>
+                {{ $dataCenters->lastItem() }}
+            </strong>
+
+            dari
+
+            <strong>
+                {{ $dataCenters->total() }}
+            </strong>
+
+            data
 
         </div>
 
 
-        {{-- =================================================
-             FORM
-        ================================================== --}}
+        {{-- PAGINATION --}}
+        <div class="dc-pagination">
 
-        <form
-            id="dataCenterForm"
-            method="POST"
+            {{-- PREVIOUS --}}
+            @if($dataCenters->onFirstPage())
+
+                <span class="dc-page-button disabled">
+                    <i class="bi bi-chevron-left"></i>
+                </span>
+
+            @else
+
+                <a
+                    href="{{ $dataCenters->previousPageUrl() }}"
+                    class="dc-page-button"
+                >
+                    <i class="bi bi-chevron-left"></i>
+                </a>
+
+            @endif
+
+
+            {{-- NOMOR HALAMAN --}}
+            @foreach(
+                $dataCenters->getUrlRange(
+                    max(1, $dataCenters->currentPage() - 2),
+                    min(
+                        $dataCenters->lastPage(),
+                        $dataCenters->currentPage() + 2
+                    )
+                ) as $page => $url
+            )
+
+                @if($page == $dataCenters->currentPage())
+
+                    <span class="dc-page-button active">
+                        {{ $page }}
+                    </span>
+
+                @else
+
+                    <a
+                        href="{{ $url }}"
+                        class="dc-page-button"
+                    >
+                        {{ $page }}
+                    </a>
+
+                @endif
+
+            @endforeach
+
+
+            {{-- NEXT --}}
+            @if($dataCenters->hasMorePages())
+
+                <a
+                    href="{{ $dataCenters->nextPageUrl() }}"
+                    class="dc-page-button"
+                >
+                    <i class="bi bi-chevron-right"></i>
+                </a>
+
+            @else
+
+                <span class="dc-page-button disabled">
+                    <i class="bi bi-chevron-right"></i>
+                </span>
+
+            @endif
+
+        </div>
+
+    </div>
+
+@endif
+
+</div>
+
+</div>
+
+</div>
+
+{{-- =========================================================
+MODAL TAMBAH / EDIT
+========================================================= --}}
+
+<div
+    id="dataCenterModal"
+    class="dc-modal-overlay"
+    aria-hidden="true"
+>
+
+<div
+    class="dc-modal"
+    role="dialog"
+    aria-modal="true"
+    aria-labelledby="dcModalTitle"
+>
+
+
+    {{-- HEADER MODAL --}}
+
+    <div class="dc-modal-header">
+
+        <div class="dc-modal-header-left">
+
+            <div class="dc-modal-icon">
+                <i class="bi bi-hdd-rack-fill"></i>
+            </div>
+
+            <div class="dc-modal-header-text">
+
+                <h2 id="dcModalTitle">
+                    Tambah Data Center
+                </h2>
+
+                <p id="dcModalDescription">
+                    Masukkan data infrastruktur Data Center baru.
+                </p>
+
+            </div>
+
+        </div>
+
+
+        <button
+            type="button"
+            class="dc-modal-close"
+            onclick="closeDataCenterModal()"
+            title="Tutup"
         >
 
-            @csrf
+            <i class="bi bi-x-lg"></i>
 
-            <input
-                type="hidden"
-                name="_method"
-                id="dataCenterMethod"
-                value="POST"
-            >
+        </button>
+
+    </div>
 
 
-            {{-- =================================================
-                 MODAL BODY
-            ================================================== --}}
+    {{-- FORM --}}
 
-            <div class="data-center-modal-body">
+    <form
+        id="dataCenterForm"
+        method="POST"
+        action="{{ route('data-center.store') }}"
+    >
+
+        @csrf
+
+        <input
+            type="hidden"
+            name="_method"
+            id="dcMethod"
+            value="POST"
+        >
+
+
+        <div class="dc-modal-body">
+
+            <div class="dc-form-card">
 
 
                 {{-- =================================================
-                     INFORMASI DATA CENTER
+                     IDENTITAS
                 ================================================== --}}
 
-                <div class="data-center-form-card">
+                <div class="dc-section">
 
+                    <div class="dc-section-header">
 
-                    <div class="data-center-form-card-header">
-
-                        <i class="bi bi-server"></i>
+                        <i class="bi bi-info-circle-fill"></i>
 
                         <h3>
-                            Informasi Data Center
+                            Identitas Perangkat
                         </h3>
 
                     </div>
 
 
-                    <div class="data-center-form-grid">
+                    <div class="dc-form-grid">
 
 
                         {{-- ID --}}
 
-                        <div class="data-center-form-group">
+                        <div class="dc-form-group">
 
-                            <label for="data_center_id">
-
+                            <label class="dc-form-label">
                                 ID Data Center
-
                             </label>
 
                             <input
                                 type="text"
-                                id="data_center_id"
-                                name="id"
-                                value="{{ old('id') }}"
-                                placeholder="ID Data Center"
+                                class="dc-form-control"
+                                value="Otomatis"
                                 readonly
                             >
 
-                            <small class="data-center-form-info">
+                            <div class="dc-help">
 
                                 <i class="bi bi-info-circle"></i>
 
                                 ID dibuat otomatis oleh sistem.
 
-                            </small>
+                            </div>
 
                         </div>
 
 
-                        {{-- NAMA --}}
+                        {{-- NAME --}}
 
-                        <div class="data-center-form-group">
+                        <div class="dc-form-group">
 
-                            <label for="data_center_nama_infrastruktur">
+                            <label
+                                class="dc-form-label"
+                                for="dc_name"
+                            >
 
-                                Nama Infrastruktur
+                                Nama
 
-                                <span>*</span>
+                                <span class="dc-required">
+                                    *
+                                </span>
 
                             </label>
 
                             <input
                                 type="text"
-                                id="data_center_nama_infrastruktur"
-                                name="nama_infrastruktur"
-                                value="{{ old('nama_infrastruktur') }}"
-                                placeholder="Masukkan nama infrastruktur Data Center"
+                                name="name"
+                                id="dc_name"
+                                class="dc-form-control"
+                                value="{{ old('name') }}"
+                                placeholder="Masukkan nama perangkat"
+                                maxlength="255"
                                 required
                             >
 
-                            @error('nama_infrastruktur')
+                            @error('name')
 
-                                <small class="data-center-form-error">
+                                <small class="dc-form-error">
                                     {{ $message }}
                                 </small>
 
@@ -2280,25 +2906,52 @@ body.data-center-modal-open {
                         </div>
 
 
-                        {{-- SPESIFIKASI --}}
+                        {{-- STATUS --}}
 
-                        <div class="data-center-form-group full">
+                        <div class="dc-form-group">
 
-                            <label for="data_center_spesifikasi">
+                            <label
+                                class="dc-form-label"
+                                for="dc_status"
+                            >
 
-                                Spesifikasi
+                                Status
+
+                                <span class="dc-required">
+                                    *
+                                </span>
 
                             </label>
 
-                            <textarea
-                                id="data_center_spesifikasi"
-                                name="spesifikasi"
-                                placeholder="Masukkan spesifikasi Data Center"
-                            >{{ old('spesifikasi') }}</textarea>
+                            <select
+                                name="status"
+                                id="dc_status"
+                                class="dc-form-control"
+                                required
+                            >
 
-                            @error('spesifikasi')
+                                <option value="">
+                                    Pilih Status
+                                </option>
 
-                                <small class="data-center-form-error">
+                                @foreach($statuses as $status)
+
+                                    <option
+                                        value="{{ $status }}"
+                                        {{ old('status') === $status
+                                            ? 'selected'
+                                            : '' }}
+                                    >
+                                        {{ $status }}
+                                    </option>
+
+                                @endforeach
+
+                            </select>
+
+                            @error('status')
+
+                                <small class="dc-form-error">
                                     {{ $message }}
                                 </small>
 
@@ -2306,6 +2959,74 @@ body.data-center-modal-open {
 
                         </div>
 
+
+                        {{-- TYPE --}}
+
+                        <div class="dc-form-group">
+
+                            <label
+                                class="dc-form-label"
+                                for="dc_type"
+                            >
+                                Type
+                            </label>
+
+                            <input
+                                type="text"
+                                name="type"
+                                id="dc_type"
+                                class="dc-form-control"
+                                value="{{ old('type') }}"
+                                placeholder="Contoh: Server, Switch, Router"
+                            >
+
+                        </div>
+
+
+                        {{-- PLATFORM --}}
+
+                        <div class="dc-form-group">
+
+                            <label
+                                class="dc-form-label"
+                                for="dc_platform"
+                            >
+                                Platform
+                            </label>
+
+                            <input
+                                type="text"
+                                name="platform"
+                                id="dc_platform"
+                                class="dc-form-control"
+                                value="{{ old('platform') }}"
+                                placeholder="Masukkan platform"
+                            >
+
+                        </div>
+
+
+                        {{-- VERSION --}}
+
+                        <div class="dc-form-group">
+
+                            <label
+                                class="dc-form-label"
+                                for="dc_version"
+                            >
+                                Version
+                            </label>
+
+                            <input
+                                type="text"
+                                name="version"
+                                id="dc_version"
+                                class="dc-form-control"
+                                value="{{ old('version') }}"
+                                placeholder="Masukkan versi"
+                            >
+
+                        </div>
 
                     </div>
 
@@ -2313,351 +3034,786 @@ body.data-center-modal-open {
 
 
                 {{-- =================================================
-                     PENGADAAN
+                     LOKASI & RACK
                 ================================================== --}}
 
-                <div class="data-center-form-card">
+                <div class="dc-section">
 
+                    <div class="dc-section-header">
 
-                    <div class="data-center-form-card-header">
-
-                        <i class="bi bi-receipt"></i>
+                        <i class="bi bi-diagram-3-fill"></i>
 
                         <h3>
-                            Pengadaan
+                            Lokasi & Rack
                         </h3>
 
                     </div>
 
 
-                    <div class="data-center-form-grid">
+                    <div class="dc-form-grid">
 
 
-                        {{-- PENGADAAN --}}
+                        {{-- TENANT --}}
 
-                        <div class="data-center-form-group">
+                        <div class="dc-form-group">
 
-                            <label for="data_center_pengadaan">
-
-                                Pengadaan
-
-                                <span>*</span>
-
+                            <label
+                                class="dc-form-label"
+                                for="dc_tenant"
+                            >
+                                Tenant
                             </label>
 
                             <select
-                                id="data_center_pengadaan"
-                                name="pengadaan"
-                                onchange="updateDataCenterPengadaan()"
-                                required
+                                name="tenant"
+                                id="dc_tenant"
+                                class="dc-form-control"
                             >
 
                                 <option value="">
-                                    Pilih pengadaan
+                                    Pilih Tenant
                                 </option>
 
-                                <option
-                                    value="Beli"
-                                    {{ old('pengadaan') === 'Beli' ? 'selected' : '' }}
-                                >
-                                    Beli
-                                </option>
+                                @foreach($tenants as $tenant)
 
-                                <option
-                                    value="Sewa"
-                                    {{ old('pengadaan') === 'Sewa' ? 'selected' : '' }}
-                                >
-                                    Sewa
-                                </option>
+                                    <option
+                                        value="{{ $tenant }}"
+                                        {{ old('tenant') === $tenant
+                                            ? 'selected'
+                                            : '' }}
+                                    >
+                                        {{ $tenant }}
+                                    </option>
+
+                                @endforeach
 
                             </select>
 
-                            @error('pengadaan')
-
-                                <small class="data-center-form-error">
-                                    {{ $message }}
-                                </small>
-
-                            @enderror
-
                         </div>
 
 
-                        {{-- HARGA --}}
+                        {{-- SITE --}}
 
-                        <div class="data-center-form-group">
+                        <div class="dc-form-group">
 
-                            <label for="data_center_harga">
-
-                                Harga
-
-                                <span>*</span>
-
+                            <label
+                                class="dc-form-label"
+                                for="dc_site"
+                            >
+                                Site
                             </label>
 
-                            <div class="data-center-price-input">
+                            <select
+                                name="site"
+                                id="dc_site"
+                                class="dc-form-control"
+                            >
 
-                                <span class="data-center-price-prefix">
-                                    Rp
-                                </span>
+                                <option value="">
+                                    Pilih Site
+                                </option>
 
-                                <input
-                                    type="number"
-                                    id="data_center_harga"
-                                    name="harga"
-                                    value="{{ old('harga') }}"
-                                    placeholder="0"
-                                    min="0"
-                                    step="0.01"
-                                    required
-                                >
+                                @foreach($sites as $site)
 
-                            </div>
+                                    <option
+                                        value="{{ $site }}"
+                                        {{ old('site') === $site
+                                            ? 'selected'
+                                            : '' }}
+                                    >
+                                        {{ $site }}
+                                    </option>
 
-                            @error('harga')
+                                @endforeach
 
-                                <small class="data-center-form-error">
-                                    {{ $message }}
-                                </small>
-
-                            @enderror
+                            </select>
 
                         </div>
 
 
-                        {{-- TANGGAL PENGADAAN --}}
+                        {{-- RACK --}}
 
-                        <div class="data-center-form-group">
+                        <div class="dc-form-group">
 
-                            <label for="data_center_tanggal_pengadaan">
+                            <label
+                                class="dc-form-label"
+                                for="dc_rack"
+                            >
+                                Rack
+                            </label>
 
-                                Tanggal Pengadaan
+                            <select
+                                name="rack"
+                                id="dc_rack"
+                                class="dc-form-control"
+                            >
 
-                                <span>*</span>
+                                <option value="">
+                                    Pilih Rack
+                                </option>
 
+                                @foreach($racks as $rack)
+
+                                    <option
+                                        value="{{ $rack }}"
+                                        {{ old('rack') === $rack
+                                            ? 'selected'
+                                            : '' }}
+                                    >
+                                        {{ $rack }}
+                                    </option>
+
+                                @endforeach
+
+                            </select>
+
+                        </div>
+
+
+                        {{-- POSITION --}}
+
+                        <div class="dc-form-group">
+
+                            <label
+                                class="dc-form-label"
+                                for="dc_position"
+                            >
+                                Position
+                            </label>
+
+                            <select
+                                name="position"
+                                id="dc_position"
+                                class="dc-form-control"
+                            >
+
+                                <option value="">
+                                    Pilih Position
+                                </option>
+
+                                @foreach($positions as $position)
+
+                                    <option
+                                        value="{{ $position }}"
+                                        {{ old('position') === $position
+                                            ? 'selected'
+                                            : '' }}
+                                    >
+                                        {{ $position }}
+                                    </option>
+
+                                @endforeach
+
+                            </select>
+
+                        </div>
+
+
+                        {{-- U HEIGHT --}}
+
+                        <div class="dc-form-group">
+
+                            <label
+                                class="dc-form-label"
+                                for="dc_u_height"
+                            >
+                                U Height
+                            </label>
+
+                            <select
+                                name="u_height"
+                                id="dc_u_height"
+                                class="dc-form-control"
+                            >
+
+                                <option value="">
+                                    Pilih U Height
+                                </option>
+
+                                @foreach ($uHeights as $height)
+        <option value="{{ $height }}">
+            {{ $height }}
+        </option>
+    @endforeach
+
+                            </select>
+
+                        </div>
+
+
+                        {{-- RACK FACE --}}
+
+                        <div class="dc-form-group">
+
+                            <label
+                                class="dc-form-label"
+                                for="dc_rack_face"
+                            >
+                                Rack Face
+                            </label>
+
+                            <select
+                                name="rack_face"
+                                id="dc_rack_face"
+                                class="dc-form-control"
+                            >
+
+                                <option value="">
+                                    Pilih Rack Face
+                                </option>
+
+                                @foreach($rackFaces as $face)
+
+                                    <option
+                                        value="{{ $face }}"
+                                        {{ old('rack_face') === $face
+                                            ? 'selected'
+                                            : '' }}
+                                    >
+                                        {{ $face }}
+                                    </option>
+
+                                @endforeach
+
+                            </select>
+
+                        </div>
+
+
+                        {{-- REGION --}}
+
+                        <div class="dc-form-group">
+
+                            <label
+                                class="dc-form-label"
+                                for="dc_region"
+                            >
+                                Region
+                            </label>
+
+                            <select
+                                name="region"
+                                id="dc_region"
+                                class="dc-form-control"
+                            >
+
+                                <option value="">
+                                    Pilih Region
+                                </option>
+
+                                @foreach($regions as $region)
+
+                                    <option
+                                        value="{{ $region }}"
+                                        {{ old('region') === $region
+                                            ? 'selected'
+                                            : '' }}
+                                    >
+                                        {{ $region }}
+                                    </option>
+
+                                @endforeach
+
+                            </select>
+
+                        </div>
+
+
+                        {{-- LOCATION --}}
+
+                        <div class="dc-form-group">
+
+                            <label
+                                class="dc-form-label"
+                                for="dc_location"
+                            >
+                                Location
                             </label>
 
                             <input
-                                type="date"
-                                id="data_center_tanggal_pengadaan"
-                                name="tanggal_pengadaan"
-                                value="{{ old('tanggal_pengadaan') }}"
-                                onchange="calculateDataCenterEndDate()"
-                                required
+                                type="text"
+                                name="location"
+                                id="dc_location"
+                                class="dc-form-control"
+                                value="{{ old('location') }}"
+                                placeholder="Masukkan lokasi"
                             >
-
-                            @error('tanggal_pengadaan')
-
-                                <small class="data-center-form-error">
-                                    {{ $message }}
-                                </small>
-
-                            @enderror
 
                         </div>
 
 
-                        {{-- TANGGAL BERAKHIR --}}
+                        {{-- CLUSTER --}}
 
-                        <div class="data-center-form-group">
+                        <div class="dc-form-group">
 
-                            <label for="data_center_tanggal_berakhir">
-
-                                Tanggal Berakhir
-
+                            <label
+                                class="dc-form-label"
+                                for="dc_cluster"
+                            >
+                                Cluster
                             </label>
 
-                            <input
-                                type="date"
-                                id="data_center_tanggal_berakhir"
-                                name="tanggal_berakhir"
-                                value="{{ old('tanggal_berakhir') }}"
+                            <select
+                                name="cluster"
+                                id="dc_cluster"
+                                class="dc-form-control"
                             >
 
-                            <small class="data-center-form-info">
+                                <option value="">
+                                    Pilih Cluster
+                                </option>
 
-                                <i class="bi bi-info-circle"></i>
+                                @foreach($clusters as $cluster)
 
-                                Untuk pembelian, tanggal berakhir dapat dikosongkan.
+                                    <option
+                                        value="{{ $cluster }}"
+                                        {{ old('cluster') === $cluster
+                                            ? 'selected'
+                                            : '' }}
+                                    >
+                                        {{ $cluster }}
+                                    </option>
 
-                            </small>
+                                @endforeach
 
-                            @error('tanggal_berakhir')
-
-                                <small class="data-center-form-error">
-                                    {{ $message }}
-                                </small>
-
-                            @enderror
+                            </select>
 
                         </div>
 
+                    </div>
+
+                </div>
+
+
+                {{-- =================================================
+                     SPESIFIKASI
+                ================================================== --}}
+
+                <div class="dc-section">
+
+                    <div class="dc-section-header">
+
+                        <i class="bi bi-cpu-fill"></i>
+
+                        <h3>
+                            Spesifikasi Perangkat
+                        </h3>
 
                     </div>
 
 
-                    {{-- =================================================
-                         SEWA
-                    ================================================== --}}
+                    <div class="dc-form-grid">
 
-                    <div
-                        id="dataCenterSewaSection"
-                        class="{{ old('pengadaan') === 'Sewa' ? 'show' : '' }}"
-                    >
 
-                        <div class="data-center-sewa-title">
+                        {{-- ROLE --}}
 
-                            Periode Sewa
+                        <div class="dc-form-group">
+
+                            <label
+                                class="dc-form-label"
+                                for="dc_role"
+                            >
+                                Role
+                            </label>
+
+                            <select
+                                name="role"
+                                id="dc_role"
+                                class="dc-form-control"
+                            >
+
+                                <option value="">
+                                    Pilih Role
+                                </option>
+
+                                @foreach($roles as $role)
+
+                                    <option
+                                        value="{{ $role }}"
+                                        {{ old('role') === $role
+                                            ? 'selected'
+                                            : '' }}
+                                    >
+                                        {{ $role }}
+                                    </option>
+
+                                @endforeach
+
+                            </select>
 
                         </div>
 
 
-                        <div class="data-center-sewa-grid">
+                        {{-- MANUFACTURER --}}
 
+                        <div class="dc-form-group">
 
-                            {{-- PERIODE --}}
+                            <label
+                                class="dc-form-label"
+                                for="dc_manufacturer"
+                            >
+                                Manufacturer
+                            </label>
 
-                            <div class="data-center-form-group">
+                            <select
+                                name="manufacturer"
+                                id="dc_manufacturer"
+                                class="dc-form-control"
+                            >
 
-                                <label for="data_center_periode_sewa">
+                                <option value="">
+                                    Pilih Manufacturer
+                                </option>
 
-                                    Periode Pembayaran
-
-                                </label>
-
-                                <select
-                                    id="data_center_periode_sewa"
-                                    name="periode_sewa"
-                                    onchange="updateDataCenterCustomPeriod(); calculateDataCenterEndDate();"
-                                >
-
-                                    <option value="">
-                                        Pilih periode
-                                    </option>
-
-                                    <option
-                                        value="Monthly"
-                                        {{ old('periode_sewa') === 'Monthly' ? 'selected' : '' }}
-                                    >
-                                        Monthly
-                                    </option>
+                                @foreach($manufacturers as $manufacturer)
 
                                     <option
-                                        value="3 Months"
-                                        {{ old('periode_sewa') === '3 Months' ? 'selected' : '' }}
+                                        value="{{ $manufacturer }}"
+                                        {{ old('manufacturer') === $manufacturer
+                                            ? 'selected'
+                                            : '' }}
                                     >
-                                        3 Months
+                                        {{ $manufacturer }}
                                     </option>
 
-                                    <option
-                                        value="6 Months"
-                                        {{ old('periode_sewa') === '6 Months' ? 'selected' : '' }}
-                                    >
-                                        6 Months
-                                    </option>
+                                @endforeach
 
-                                    <option
-                                        value="Yearly"
-                                        {{ old('periode_sewa') === 'Yearly' ? 'selected' : '' }}
-                                    >
-                                        Yearly
-                                    </option>
-
-                                    <option
-                                        value="Custom"
-                                        {{ old('periode_sewa') === 'Custom' ? 'selected' : '' }}
-                                    >
-                                        Custom
-                                    </option>
-
-                                </select>
-
-                            </div>
-
-
-                            {{-- KETERANGAN --}}
-
-                            <div class="data-center-form-group">
-
-                                <label>
-                                    Keterangan
-                                </label>
-
-                                <div
-                                    class="data-center-form-info"
-                                    style="margin-top:10px;"
-                                >
-
-                                    <i class="bi bi-info-circle"></i>
-
-                                    Pilih periode sesuai dengan kontrak atau pembayaran Data Center.
-
-                                </div>
-
-                            </div>
-
+                            </select>
 
                         </div>
 
 
-                        {{-- CUSTOM --}}
+                        {{-- RAM --}}
 
-                        <div
-                            id="dataCenterCustomPeriod"
-                            class="{{ old('periode_sewa') === 'Custom' ? 'show' : '' }}"
-                        >
+                        <div class="dc-form-group">
 
+                            <label
+                                class="dc-form-label"
+                                for="dc_ram"
+                            >
+                                RAM
+                            </label>
 
-                            <div class="data-center-form-group">
+                            <select
+                                name="ram"
+                                id="dc_ram"
+                                class="dc-form-control"
+                            >
 
-                                <label for="data_center_durasi_sewa">
+                                <option value="">
+                                    Pilih RAM
+                                </option>
 
-                                    Durasi
-
-                                </label>
-
-                                <input
-                                    type="number"
-                                    id="data_center_durasi_sewa"
-                                    name="durasi_sewa"
-                                    value="{{ old('durasi_sewa') }}"
-                                    min="1"
-                                    placeholder="Contoh: 18"
-                                    onchange="calculateDataCenterEndDate()"
-                                >
-
-                            </div>
-
-
-                            <div class="data-center-form-group">
-
-                                <label for="data_center_satuan_sewa">
-
-                                    Satuan
-
-                                </label>
-
-                                <select
-                                    id="data_center_satuan_sewa"
-                                    name="satuan_sewa"
-                                    onchange="calculateDataCenterEndDate()"
-                                >
-
-                                    <option value="Months">
-                                        Bulan
-                                    </option>
+                                @foreach($rams as $ram)
 
                                     <option
-                                        value="Years"
-                                        {{ old('satuan_sewa') === 'Years' ? 'selected' : '' }}
+                                        value="{{ $ram }}"
+                                        {{ old('ram') === $ram
+                                            ? 'selected'
+                                            : '' }}
                                     >
-                                        Tahun
+                                        {{ $ram }}
                                     </option>
 
-                                </select>
+                                @endforeach
+
+                            </select>
+
+                        </div>
+
+
+                        {{-- CPU --}}
+
+                        <div class="dc-form-group">
+
+                            <label
+                                class="dc-form-label"
+                                for="dc_cpu"
+                            >
+                                CPU
+                            </label>
+
+                            <textarea
+                                name="cpu"
+                                id="dc_cpu"
+                                class="dc-form-control"
+                                placeholder="Masukkan spesifikasi CPU"
+                            >{{ old('cpu') }}</textarea>
+
+                        </div>
+
+
+                        {{-- HARDDISK --}}
+
+                        <div class="dc-form-group">
+
+                            <label
+                                class="dc-form-label"
+                                for="dc_harddisk"
+                            >
+                                Hard Disk
+                            </label>
+
+                            <textarea
+                                name="harddisk"
+                                id="dc_harddisk"
+                                class="dc-form-control"
+                                placeholder="Masukkan kapasitas / tipe harddisk"
+                            >{{ old('harddisk') }}</textarea>
+
+                        </div>
+
+
+                        {{-- SERIAL NUMBER --}}
+
+                        <div class="dc-form-group">
+
+                            <label
+                                class="dc-form-label"
+                                for="dc_serial_number"
+                            >
+                                Serial Number
+                            </label>
+
+                            <input
+                                type="text"
+                                name="serial_number"
+                                id="dc_serial_number"
+                                class="dc-form-control"
+                                value="{{ old('serial_number') }}"
+                                placeholder="Masukkan serial number"
+                            >
+
+                        </div>
+
+                    </div>
+
+                </div>
+
+
+                {{-- =================================================
+                     NETWORK
+                ================================================== --}}
+
+                <div class="dc-section">
+
+                    <div class="dc-section-header">
+
+                        <i class="bi bi-router-fill"></i>
+
+                        <h3>
+                            Network
+                        </h3>
+
+                    </div>
+
+
+                    <div class="dc-form-grid">
+
+
+                        {{-- IP ADDRESS --}}
+
+                        <div class="dc-form-group">
+
+                            <label
+                                class="dc-form-label"
+                                for="dc_ip_address"
+                            >
+                                IP Address
+                            </label>
+
+                            <input
+                                type="text"
+                                name="ip_address"
+                                id="dc_ip_address"
+                                class="dc-form-control"
+                                value="{{ old('ip_address') }}"
+                                placeholder="Masukkan IP Address"
+                            >
+
+                        </div>
+
+
+                        {{-- IPV4 --}}
+
+                        <div class="dc-form-group">
+
+                            <label
+                                class="dc-form-label"
+                                for="dc_ipv4_address"
+                            >
+                                IPv4 Address
+                            </label>
+
+                            <input
+                                type="text"
+                                name="ipv4_address"
+                                id="dc_ipv4_address"
+                                class="dc-form-control"
+                                value="{{ old('ipv4_address') }}"
+                                placeholder="Masukkan IPv4 Address"
+                            >
+
+                        </div>
+
+                    </div>
+
+                </div>
+
+
+                {{-- =================================================
+                     PIC & OWNER
+                ================================================== --}}
+
+                <div class="dc-section">
+
+                    <div class="dc-section-header">
+
+                        <i class="bi bi-person-badge-fill"></i>
+
+                        <h3>
+                            PIC & Kepemilikan
+                        </h3>
+
+                    </div>
+
+
+                    <div class="dc-form-grid">
+
+
+                        {{-- PIC --}}
+
+                        <div class="dc-form-group">
+
+                            <label
+                                class="dc-form-label"
+                                for="dc_pic"
+                            >
+                                PIC
+                            </label>
+
+                            <input
+                                type="text"
+                                name="pic"
+                                id="dc_pic"
+                                class="dc-form-control"
+                                value="{{ old('pic') }}"
+                                placeholder="Masukkan PIC"
+                            >
+
+                        </div>
+
+
+                        {{-- OWNER GROUP --}}
+
+                        <div class="dc-form-group">
+
+                            <label
+                                class="dc-form-label"
+                                for="dc_owner_group"
+                            >
+                                Owner Group
+                            </label>
+
+                            <input
+                                type="text"
+                                name="owner_group"
+                                id="dc_owner_group"
+                                class="dc-form-control"
+                                value="{{ old('owner_group') }}"
+                                placeholder="Masukkan owner group"
+                            >
+
+                        </div>
+
+
+                        {{-- OWNER --}}
+
+                        <div class="dc-form-group">
+
+                            <label
+                                class="dc-form-label"
+                                for="dc_owner"
+                            >
+                                Owner
+                            </label>
+
+                            <input
+                                type="text"
+                                name="owner"
+                                id="dc_owner"
+                                class="dc-form-control"
+                                value="{{ old('owner') }}"
+                                placeholder="Masukkan owner"
+                            >
+
+                        </div>
+
+
+                        {{-- TENANT GROUP --}}
+
+                        <div class="dc-form-group">
+
+                            <label class="dc-form-label">
+                                Tenant Group
+                            </label>
+
+                            <input
+                                type="text"
+                                class="dc-form-control"
+                                value="Pemerintah Kota Bekasi"
+                                readonly
+                            >
+
+                            <div class="dc-help">
+
+                                <i class="bi bi-info-circle"></i>
+
+                                Diatur otomatis oleh sistem.
 
                             </div>
 
+                        </div>
+
+                    </div>
+
+                </div>
+
+
+                {{-- =================================================
+                     KETERANGAN
+                ================================================== --}}
+
+                <div class="dc-section">
+
+                    <div class="dc-section-header">
+
+                        <i class="bi bi-card-text"></i>
+
+                        <h3>
+                            Keterangan
+                        </h3>
+
+                    </div>
+
+
+                    <div class="dc-form-grid">
+
+                        <div class="dc-form-group full">
+
+                            <label
+                                class="dc-form-label"
+                                for="dc_description"
+                            >
+                                Description
+                            </label>
+
+                            <textarea
+                                name="description"
+                                id="dc_description"
+                                class="dc-form-control"
+                                placeholder="Masukkan deskripsi perangkat"
+                            >{{ old('description') }}</textarea>
 
                         </div>
 
@@ -2667,28 +3823,84 @@ body.data-center-modal-open {
 
             </div>
 
+        </div>
+
+
+        {{-- =================================================
+             FOOTER FORM
+        ================================================== --}}
+
+        <div class="dc-modal-footer">
+
 
             {{-- =================================================
-                 FOOTER
+                 KIRI — DOWNLOAD & IMPORT EXCEL
             ================================================== --}}
 
-            <div class="data-center-modal-footer">
+            <div class="dc-footer-left">
+
+
+                {{-- DOWNLOAD TEMPLATE --}}
+
+                <a
+                    href="{{ route('data-center.template') }}"
+                    class="download-dc-button"
+                    title="Download Template Excel"
+                >
+
+                    <i class="bi bi-download"></i>
+
+                    <span>
+                        Download Template
+                    </span>
+
+                </a>
+
+
+                {{-- IMPORT EXCEL --}}
 
                 <button
                     type="button"
-                    class="data-center-btn-batal"
-                    onclick="closeDataCenterModal()"
+                    class="import-dc-button"
+                    onclick="openImportDataCenterModal()"
+                    title="Import Data dari Excel"
                 >
 
-                    Batal
+                    <i class="bi bi-file-earmark-excel-fill"></i>
+
+                    <span>
+                        Import Excel
+                    </span>
 
                 </button>
 
+            </div>
+
+
+            {{-- =================================================
+                 KANAN — BATAL & SIMPAN
+            ================================================== --}}
+
+            <div class="dc-footer-right">
+
+
+                {{-- BATAL --}}
+
+                <button
+                    type="button"
+                    class="dc-btn-batal"
+                    onclick="closeDataCenterModal()"
+                >
+                    Batal
+                </button>
+
+
+                {{-- SIMPAN --}}
 
                 <button
                     type="submit"
-                    class="data-center-btn-simpan"
-                    id="dataCenterSaveButton"
+                    class="dc-btn-simpan"
+                    id="dcSaveButton"
                 >
 
                     <i class="bi bi-check-lg"></i>
@@ -2699,218 +3911,327 @@ body.data-center-modal-open {
 
             </div>
 
-        </form>
+        </div>
 
-    </div>
+    </form>
 
 </div>
 
+</div>
 
 {{-- =========================================================
-     JAVASCRIPT
+MODAL IMPORT EXCEL
 ========================================================= --}}
 
-@push('scripts')
+<div
+    id="dataCenterImportModal"
+    class="dc-import-modal-overlay"
+    aria-hidden="true"
+>
+
+<div
+    class="dc-import-modal"
+    role="dialog"
+    aria-modal="true"
+    aria-labelledby="dcImportModalTitle"
+>
+
+
+    {{-- HEADER --}}
+
+    <div class="dc-import-header">
+
+        <div class="dc-import-header-left">
+
+            <div class="dc-import-icon">
+
+                <i class="bi bi-file-earmark-excel-fill"></i>
+
+            </div>
+
+            <div class="dc-import-title">
+
+                <h3 id="dcImportModalTitle">
+                    Import Data Center
+                </h3>
+
+                <p>
+                    Import banyak data Data Center sekaligus.
+                </p>
+
+            </div>
+
+        </div>
+
+
+        <button
+            type="button"
+            class="dc-import-close"
+            onclick="closeImportDataCenterModal()"
+            title="Tutup"
+        >
+
+            <i class="bi bi-x-lg"></i>
+
+        </button>
+
+    </div>
+
+
+    {{-- FORM IMPORT --}}
+
+    <form
+        action="{{ route('data-center.import') }}"
+        method="POST"
+        enctype="multipart/form-data"
+    >
+
+        @csrf
+
+
+        <div class="dc-import-body">
+
+
+            {{-- INFO --}}
+
+            <div class="dc-import-info">
+
+                <i class="bi bi-info-circle-fill"></i>
+
+                File Excel dapat digunakan untuk memasukkan
+                banyak data Data Center sekaligus.
+                ID Data Center dan Tenant Group akan dibuat
+                otomatis oleh sistem.
+
+            </div>
+
+
+            {{-- FILE --}}
+
+            <div class="dc-import-file-wrapper">
+
+                <label
+                    for="dc_import_file"
+                    class="dc-import-label"
+                >
+                    File Excel
+                </label>
+
+                <input
+                    type="file"
+                    name="file"
+                    id="dc_import_file"
+                    class="dc-import-file"
+                    accept=".xlsx,.xls"
+                    required
+                >
+
+                <div class="dc-import-help">
+
+                    <i class="bi bi-info-circle"></i>
+
+                    Format yang diperbolehkan:
+                    <strong>.xlsx</strong> atau
+                    <strong>.xls</strong>.
+                    Maksimal 10 MB.
+
+                </div>
+
+            </div>
+
+        </div>
+
+
+        {{-- FOOTER IMPORT --}}
+
+        <div class="dc-import-footer">
+
+            <button
+                type="button"
+                class="dc-import-cancel"
+                onclick="closeImportDataCenterModal()"
+            >
+                Batal
+            </button>
+
+
+            <button
+                type="submit"
+                class="dc-import-submit"
+            >
+
+                <i class="bi bi-upload"></i>
+
+                Import Data
+
+            </button>
+
+        </div>
+
+    </form>
+
+</div>
+
+</div>
+
+{{-- =========================================================
+JAVASCRIPT
+========================================================= --}}
 
 <script>
 
-document.addEventListener('DOMContentLoaded', function () {
+document.addEventListener(
+    'DOMContentLoaded',
+    function () {
+
+        setupDataCenterFilter();
+
+        @if($errors->any())
+
+            openAddDataCenterModal();
+
+        @endif
+
+    }
+);
 
 
-    /* =====================================================
-       SEARCH & FILTER
-    ===================================================== */
+/* =========================================================
+   FILTER TABLE
+========================================================= */
 
+function setupDataCenterFilter()
+{
     const searchInput =
-        document.getElementById('dataCenterSearch');
+        document.getElementById('dcSearch');
 
     const statusFilter =
-        document.getElementById('dataCenterStatusFilter');
+        document.getElementById('filterStatus');
 
-    const pengadaanFilter =
-        document.getElementById('dataCenterPengadaanFilter');
+    const tenantFilter =
+        document.getElementById('filterTenant');
 
-    const verifikasiFilter =
-        document.getElementById('dataCenterVerifikasiFilter');
+    const siteFilter =
+        document.getElementById('filterSite');
 
-    const tahunFilter =
-        document.getElementById('dataCenterTahunFilter');
+    const rows =
+        document.querySelectorAll('.dc-row');
 
-    const tableBody =
-        document.getElementById('dataCenterTableBody');
 
+    function filterDataCenter()
+    {
 
-    function filterDataCenterTable() {
+        const search =
+            (
+                searchInput?.value || ''
+            )
+            .toLowerCase()
+            .trim();
 
-        if (!tableBody) {
-            return;
-        }
 
+        const status =
+            (
+                statusFilter?.value || ''
+            )
+            .toLowerCase()
+            .trim();
 
-        const rows =
-            tableBody.querySelectorAll(
-                'tr[data-search]'
-            );
 
+        const tenant =
+            (
+                tenantFilter?.value || ''
+            )
+            .toLowerCase()
+            .trim();
 
-        const searchValue =
-            (searchInput?.value || '')
-                .toLowerCase()
-                .trim();
 
+        const site =
+            (
+                siteFilter?.value || ''
+            )
+            .toLowerCase()
+            .trim();
 
-        const statusValue =
-            (statusFilter?.value || '')
-                .toLowerCase()
-                .trim();
 
+        let number = 1;
 
-        const pengadaanValue =
-            (pengadaanFilter?.value || '')
-                .toLowerCase()
-                .trim();
 
+        rows.forEach(
+            function (row) {
 
-        const verifikasiValue =
-            (verifikasiFilter?.value || '')
-                .toLowerCase()
-                .trim();
+                const rowSearch =
+                    (
+                        row.dataset.search || ''
+                    )
+                    .toLowerCase();
 
 
-        const tahunValue =
-            (tahunFilter?.value || '')
-                .toLowerCase()
-                .trim();
+                const rowStatus =
+                    (
+                        row.dataset.status || ''
+                    )
+                    .toLowerCase();
 
 
-        rows.forEach(function (row) {
+                const rowTenant =
+                    (
+                        row.dataset.tenant || ''
+                    )
+                    .toLowerCase();
 
-            const rowSearch =
-                row.dataset.search || '';
 
-            const rowStatus =
-                row.dataset.status || '';
+                const rowSite =
+                    (
+                        row.dataset.site || ''
+                    )
+                    .toLowerCase();
 
-            const rowPengadaan =
-                row.dataset.pengadaan || '';
 
-            const rowVerifikasi =
-                row.dataset.verifikasi || '';
+                const matchSearch =
+                    !search ||
+                    rowSearch.includes(search);
 
-            const rowTahun =
-                row.dataset.tahun || '';
 
+                const matchStatus =
+                    !status ||
+                    rowStatus === status;
 
-            const matchSearch =
-                !searchValue ||
-                rowSearch.includes(searchValue);
 
+                const matchTenant =
+                    !tenant ||
+                    rowTenant === tenant;
 
-            const matchStatus =
-                !statusValue ||
-                rowStatus === statusValue;
 
+                const matchSite =
+                    !site ||
+                    rowSite === site;
 
-            const matchPengadaan =
-                !pengadaanValue ||
-                rowPengadaan === pengadaanValue;
 
+                const show =
+                    matchSearch &&
+                    matchStatus &&
+                    matchTenant &&
+                    matchSite;
 
-            const matchVerifikasi =
-                !verifikasiValue ||
-                rowVerifikasi === verifikasiValue;
 
+                row.style.display =
+                    show ? '' : 'none';
 
-            const matchTahun =
-                !tahunValue ||
-                rowTahun === tahunValue;
 
+                if (show) {
 
-            row.style.display =
-                matchSearch &&
-                matchStatus &&
-                matchPengadaan &&
-                matchVerifikasi &&
-                matchTahun
-                    ? ''
-                    : 'none';
+                    const numberCell =
+                        row.querySelector(
+                            '.row-number'
+                        );
 
-        });
 
-    }
+                    if (numberCell) {
 
+                        numberCell.textContent =
+                            number++;
 
-    if (searchInput) {
-
-        searchInput.addEventListener(
-            'input',
-            filterDataCenterTable
-        );
-
-    }
-
-
-    if (statusFilter) {
-
-        statusFilter.addEventListener(
-            'change',
-            filterDataCenterTable
-        );
-
-    }
-
-
-    if (pengadaanFilter) {
-
-        pengadaanFilter.addEventListener(
-            'change',
-            filterDataCenterTable
-        );
-
-    }
-
-
-    if (verifikasiFilter) {
-
-        verifikasiFilter.addEventListener(
-            'change',
-            filterDataCenterTable
-        );
-
-    }
-
-
-    if (tahunFilter) {
-
-        tahunFilter.addEventListener(
-            'change',
-            filterDataCenterTable
-        );
-
-    }
-
-
-    /* =====================================================
-       MODAL OVERLAY
-    ===================================================== */
-
-    const modal =
-        document.getElementById(
-            'dataCenterModal'
-        );
-
-
-    if (modal) {
-
-        modal.addEventListener(
-            'click',
-            function (event) {
-
-                if (
-                    event.target === modal
-                ) {
-
-                    closeDataCenterModal();
+                    }
 
                 }
 
@@ -2920,58 +4241,42 @@ document.addEventListener('DOMContentLoaded', function () {
     }
 
 
-    /* =====================================================
-       ESCAPE
-    ===================================================== */
-
-    document.addEventListener(
-        'keydown',
-        function (event) {
-
-            if (
-                event.key === 'Escape' &&
-                modal?.classList.contains('show')
-            ) {
-
-                closeDataCenterModal();
-
-            }
-
-        }
+    searchInput?.addEventListener(
+        'input',
+        filterDataCenter
     );
 
 
-    /* =====================================================
-       INITIAL PENGADAAN
-    ===================================================== */
+    statusFilter?.addEventListener(
+        'change',
+        filterDataCenter
+    );
 
-    updateDataCenterPengadaan();
+
+    tenantFilter?.addEventListener(
+        'change',
+        filterDataCenter
+    );
 
 
-    /* =====================================================
-       VALIDATION ERROR
-    ===================================================== */
-
-    @if($errors->any())
-
-        openAddDataCenterModal();
-
-    @endif
-
-});
+    siteFilter?.addEventListener(
+        'change',
+        filterDataCenter
+    );
+}
 
 
 /* =========================================================
-   OPEN ADD MODAL
+   OPEN ADD
 ========================================================= */
 
 function openAddDataCenterModal()
 {
-
     const modal =
         document.getElementById(
             'dataCenterModal'
         );
+
 
     const form =
         document.getElementById(
@@ -2982,6 +4287,9 @@ function openAddDataCenterModal()
     if (!modal || !form) {
         return;
     }
+
+
+    form.reset();
 
 
     form.action =
@@ -2989,132 +4297,81 @@ function openAddDataCenterModal()
 
 
     document.getElementById(
-        'dataCenterMethod'
+        'dcMethod'
     ).value = 'POST';
 
 
     document.getElementById(
-        'dataCenterModalTitle'
+        'dcModalTitle'
     ).textContent =
         'Tambah Data Center';
 
 
     document.getElementById(
-        'dataCenterModalDescription'
+        'dcModalDescription'
     ).textContent =
-        'Masukan detail infrastruktur Data Center baru ke dalam sistem.';
+        'Masukkan data infrastruktur Data Center baru.';
 
 
     document.getElementById(
-        'dataCenterSaveButton'
+        'dcSaveButton'
     ).innerHTML =
         '<i class="bi bi-check-lg"></i> Simpan Data Center';
 
 
-    /*
-     * Jangan reset ketika validation error
-     */
-
-    @if(!$errors->any())
-
-        form.reset();
-
-
+    const status =
         document.getElementById(
-            'data_center_id'
-        ).value = '';
+            'dc_status'
+        );
 
 
-        document.getElementById(
-            'dataCenterSewaSection'
-        ).classList.remove('show');
+    if (status) {
+
+        status.value =
+            'Active';
+
+    }
 
 
-        document.getElementById(
-            'dataCenterCustomPeriod'
-        ).classList.remove('show');
+    const body =
+        document.querySelector(
+            '.dc-modal-body'
+        );
 
 
-        const tanggalBerakhir =
-            document.getElementById(
-                'data_center_tanggal_berakhir'
-            );
+    if (body) {
 
+        body.scrollTop = 0;
 
-        if (tanggalBerakhir) {
-
-            tanggalBerakhir.readOnly = false;
-
-            tanggalBerakhir.style.background =
-                'white';
-
-        }
-
-    @endif
+    }
 
 
     modal.classList.add('show');
+
 
     modal.setAttribute(
         'aria-hidden',
         'false'
     );
 
-    document.body.classList.add(
-        'data-center-modal-open'
-    );
 
+    document.body.classList.add(
+        'dc-modal-open'
+    );
 }
 
 
 /* =========================================================
-   OPEN EDIT MODAL
+   OPEN EDIT
 ========================================================= */
 
-function openEditDataCenterModal(id)
+function openEditDataCenterModal(data)
 {
-
-    const dataCenters =
-        @php
-
-            $dataCenterJson =
-                method_exists(
-                    $dataCenters,
-                    'getCollection'
-                )
-                    ? $dataCenters->getCollection()
-                    : collect($dataCenters);
-
-        @endphp
-
-        @json($dataCenterJson->values());
-
-
-    const dataCenter =
-        dataCenters.find(
-            function (item) {
-
-                return String(item.id) === String(id);
-
-            }
-        );
-
-
-    if (!dataCenter) {
-
-        alert(
-            'Data Data Center tidak ditemukan.'
-        );
-
-        return;
-
-    }
-
-
     const modal =
         document.getElementById(
             'dataCenterModal'
         );
+
 
     const form =
         document.getElementById(
@@ -3122,191 +4379,242 @@ function openEditDataCenterModal(id)
         );
 
 
-    if (!modal || !form) {
+    if (!modal || !form || !data) {
         return;
     }
 
 
     form.action =
         "{{ url('/infrastruktur/data-center') }}/" +
-        encodeURIComponent(id);
+        encodeURIComponent(data.id);
 
 
     document.getElementById(
-        'dataCenterMethod'
+        'dcMethod'
     ).value = 'PUT';
 
 
     document.getElementById(
-        'dataCenterModalTitle'
+        'dcModalTitle'
     ).textContent =
         'Edit Data Center';
 
 
     document.getElementById(
-        'dataCenterModalDescription'
+        'dcModalDescription'
     ).textContent =
-        'Perbarui data infrastruktur Data Center yang dipilih.';
+        'Perbarui data Data Center yang dipilih.';
 
 
     document.getElementById(
-        'dataCenterSaveButton'
+        'dcSaveButton'
     ).innerHTML =
         '<i class="bi bi-check-lg"></i> Simpan Perubahan';
 
 
-    /* =====================================================
-       ISI FORM
-    ===================================================== */
+    function setValue(
+        elementId,
+        value
+    ) {
 
-    document.getElementById(
-        'data_center_id'
-    ).value =
-        dataCenter.id ?? '';
-
-
-    document.getElementById(
-        'data_center_nama_infrastruktur'
-    ).value =
-        dataCenter.nama_infrastruktur ?? '';
+        const element =
+            document.getElementById(
+                elementId
+            );
 
 
-    document.getElementById(
-        'data_center_spesifikasi'
-    ).value =
-        dataCenter.spesifikasi ?? '';
+        if (element) {
+
+            element.value =
+                value ?? '';
+
+        }
+
+    }
 
 
-    document.getElementById(
-        'data_center_pengadaan'
-    ).value =
-        dataCenter.pengadaan ?? '';
+    /* IDENTITAS */
+
+    setValue(
+        'dc_name',
+        data.name
+    );
+
+    setValue(
+        'dc_status',
+        data.status
+    );
+
+    setValue(
+        'dc_type',
+        data.type
+    );
+
+    setValue(
+        'dc_platform',
+        data.platform
+    );
+
+    setValue(
+        'dc_version',
+        data.version
+    );
 
 
-    document.getElementById(
-        'data_center_harga'
-    ).value =
-        dataCenter.harga ?? '';
+    /* LOKASI */
+
+    setValue(
+        'dc_tenant',
+        data.tenant
+    );
+
+    setValue(
+        'dc_site',
+        data.site
+    );
+
+    setValue(
+        'dc_rack',
+        data.rack
+    );
+
+    setValue(
+        'dc_position',
+        data.position
+    );
+
+    setValue(
+        'dc_u_height',
+        data.u_height
+    );
+
+    setValue(
+        'dc_rack_face',
+        data.rack_face
+    );
+
+    setValue(
+        'dc_region',
+        data.region
+    );
+
+    setValue(
+        'dc_location',
+        data.location
+    );
+
+    setValue(
+        'dc_cluster',
+        data.cluster
+    );
 
 
-    document.getElementById(
-        'data_center_tanggal_pengadaan'
-    ).value =
-        formatDataCenterDate(
-            dataCenter.tanggal_pengadaan
+    /* SPESIFIKASI */
+
+    setValue(
+        'dc_role',
+        data.role
+    );
+
+    setValue(
+        'dc_manufacturer',
+        data.manufacturer
+    );
+
+    setValue(
+        'dc_ram',
+        data.ram
+    );
+
+    setValue(
+        'dc_cpu',
+        data.cpu
+    );
+
+    setValue(
+        'dc_harddisk',
+        data.harddisk
+    );
+
+    setValue(
+        'dc_serial_number',
+        data.serial_number
+    );
+
+
+    /* NETWORK */
+
+    setValue(
+        'dc_ip_address',
+        data.ip_address
+    );
+
+    setValue(
+        'dc_ipv4_address',
+        data.ipv4_address
+    );
+
+
+    /* PIC / OWNER */
+
+    setValue(
+        'dc_pic',
+        data.pic
+    );
+
+    setValue(
+        'dc_owner_group',
+        data.owner_group
+    );
+
+    setValue(
+        'dc_owner',
+        data.owner
+    );
+
+
+    /* DESCRIPTION */
+
+    setValue(
+        'dc_description',
+        data.description
+    );
+
+
+    const body =
+        document.querySelector(
+            '.dc-modal-body'
         );
 
 
-    document.getElementById(
-        'data_center_tanggal_berakhir'
-    ).value =
-        formatDataCenterDate(
-            dataCenter.tanggal_berakhir
-        );
+    if (body) {
 
+        body.scrollTop = 0;
 
-    document.getElementById(
-        'data_center_periode_sewa'
-    ).value =
-        dataCenter.periode_sewa ?? '';
-
-
-    document.getElementById(
-        'data_center_durasi_sewa'
-    ).value =
-        dataCenter.durasi_sewa ?? '';
-
-
-    document.getElementById(
-        'data_center_satuan_sewa'
-    ).value =
-        dataCenter.satuan_sewa ?? 'Months';
-
-
-    updateDataCenterPengadaan();
-
-    updateDataCenterCustomPeriod();
+    }
 
 
     modal.classList.add('show');
+
 
     modal.setAttribute(
         'aria-hidden',
         'false'
     );
 
+
     document.body.classList.add(
-        'data-center-modal-open'
+        'dc-modal-open'
     );
-
 }
 
 
 /* =========================================================
-   FORMAT DATE
-========================================================= */
-
-function formatDataCenterDate(value)
-{
-
-    if (!value) {
-        return '';
-    }
-
-
-    if (
-        typeof value === 'string' &&
-        /^\d{4}-\d{2}-\d{2}$/.test(value)
-    ) {
-
-        return value;
-
-    }
-
-
-    const date =
-        new Date(value);
-
-
-    if (isNaN(date.getTime())) {
-        return '';
-    }
-
-
-    const year =
-        date.getFullYear();
-
-
-    const month =
-        String(
-            date.getMonth() + 1
-        ).padStart(2, '0');
-
-
-    const day =
-        String(
-            date.getDate()
-        ).padStart(2, '0');
-
-
-    return (
-        year +
-        '-' +
-        month +
-        '-' +
-        day
-    );
-
-}
-
-
-/* =========================================================
-   CLOSE MODAL
+   CLOSE ADD / EDIT MODAL
 ========================================================= */
 
 function closeDataCenterModal()
 {
-
     const modal =
         document.getElementById(
             'dataCenterModal'
@@ -3328,317 +4636,182 @@ function closeDataCenterModal()
 
 
     document.body.classList.remove(
-        'data-center-modal-open'
+        'dc-modal-open'
+    );
+}
+
+
+/* =========================================================
+   OPEN IMPORT MODAL
+========================================================= */
+
+function openImportDataCenterModal()
+{
+    const modal =
+        document.getElementById(
+            'dataCenterImportModal'
+        );
+
+
+    if (!modal) {
+        return;
+    }
+
+
+    const fileInput =
+        document.getElementById(
+            'dc_import_file'
+        );
+
+
+    if (fileInput) {
+
+        fileInput.value = '';
+
+    }
+
+
+    modal.classList.add('show');
+
+
+    modal.setAttribute(
+        'aria-hidden',
+        'false'
     );
 
+
+    document.body.classList.add(
+        'dc-import-modal-open'
+    );
 }
 
 
 /* =========================================================
-   PENGADAAN
+   CLOSE IMPORT MODAL
 ========================================================= */
 
-function updateDataCenterPengadaan()
+function closeImportDataCenterModal()
 {
-
-    const pengadaan =
+    const modal =
         document.getElementById(
-            'data_center_pengadaan'
-        )?.value;
-
-
-    const sewaSection =
-        document.getElementById(
-            'dataCenterSewaSection'
+            'dataCenterImportModal'
         );
 
 
-    const tanggalBerakhir =
-        document.getElementById(
-            'data_center_tanggal_berakhir'
-        );
-
-
-    if (!sewaSection) {
+    if (!modal) {
         return;
     }
 
 
-    if (
-        String(pengadaan).toLowerCase()
-        === 'sewa'
-    ) {
-
-        sewaSection.classList.add(
-            'show'
-        );
+    modal.classList.remove('show');
 
 
-        if (tanggalBerakhir) {
+    modal.setAttribute(
+        'aria-hidden',
+        'true'
+    );
 
-            tanggalBerakhir.readOnly =
-                true;
 
-            tanggalBerakhir.style.background =
-                '#f8fafc';
+    document.body.classList.remove(
+        'dc-import-modal-open'
+    );
+}
+
+
+/* =========================================================
+   CLICK OUTSIDE MODAL
+========================================================= */
+
+document.addEventListener(
+    'click',
+    function (event) {
+
+        const dataCenterModal =
+            document.getElementById(
+                'dataCenterModal'
+            );
+
+
+        if (
+            dataCenterModal &&
+            event.target === dataCenterModal
+        ) {
+
+            closeDataCenterModal();
 
         }
 
 
-        calculateDataCenterEndDate();
-
-    } else {
-
-        sewaSection.classList.remove(
-            'show'
-        );
+        const importModal =
+            document.getElementById(
+                'dataCenterImportModal'
+            );
 
 
-        document.getElementById(
-            'dataCenterCustomPeriod'
-        )?.classList.remove('show');
+        if (
+            importModal &&
+            event.target === importModal
+        ) {
 
-
-        if (tanggalBerakhir) {
-
-            tanggalBerakhir.readOnly =
-                false;
-
-            tanggalBerakhir.style.background =
-                'white';
+            closeImportDataCenterModal();
 
         }
 
     }
-
-}
-
-
-/* =========================================================
-   CUSTOM PERIOD
-========================================================= */
-
-function updateDataCenterCustomPeriod()
-{
-
-    const periode =
-        document.getElementById(
-            'data_center_periode_sewa'
-        )?.value;
-
-
-    const custom =
-        document.getElementById(
-            'dataCenterCustomPeriod'
-        );
-
-
-    if (!custom) {
-        return;
-    }
-
-
-    if (periode === 'Custom') {
-
-        custom.classList.add(
-            'show'
-        );
-
-    } else {
-
-        custom.classList.remove(
-            'show'
-        );
-
-    }
-
-}
+);
 
 
 /* =========================================================
-   CALCULATE END DATE
+   ESCAPE
 ========================================================= */
 
-function calculateDataCenterEndDate()
-{
+document.addEventListener(
+    'keydown',
+    function (event) {
 
-    const pengadaan =
-        document.getElementById(
-            'data_center_pengadaan'
-        )?.value;
-
-
-    if (
-        String(pengadaan).toLowerCase()
-        !== 'sewa'
-    ) {
-
-        return;
-
-    }
-
-
-    const tanggalMulai =
-        document.getElementById(
-            'data_center_tanggal_pengadaan'
-        )?.value;
-
-
-    const periode =
-        document.getElementById(
-            'data_center_periode_sewa'
-        )?.value;
-
-
-    const tanggalBerakhir =
-        document.getElementById(
-            'data_center_tanggal_berakhir'
-        );
-
-
-    if (
-        !tanggalMulai ||
-        !periode ||
-        !tanggalBerakhir
-    ) {
-
-        return;
-
-    }
-
-
-    const date =
-        new Date(
-            tanggalMulai + 'T00:00:00'
-        );
-
-
-    if (isNaN(date.getTime())) {
-        return;
-    }
-
-
-    switch (periode) {
-
-        case 'Monthly':
-
-            date.setMonth(
-                date.getMonth() + 1
-            );
-
-            break;
-
-
-        case '3 Months':
-
-            date.setMonth(
-                date.getMonth() + 3
-            );
-
-            break;
-
-
-        case '6 Months':
-
-            date.setMonth(
-                date.getMonth() + 6
-            );
-
-            break;
-
-
-        case 'Yearly':
-
-            date.setFullYear(
-                date.getFullYear() + 1
-            );
-
-            break;
-
-
-        case 'Custom':
-
-            const duration =
-                parseInt(
-                    document.getElementById(
-                        'data_center_durasi_sewa'
-                    )?.value || 0
-                );
-
-
-            const unit =
-                document.getElementById(
-                    'data_center_satuan_sewa'
-                )?.value;
-
-
-            if (
-                !duration ||
-                duration < 1
-            ) {
-
-                return;
-
-            }
-
-
-            if (unit === 'Years') {
-
-                date.setFullYear(
-                    date.getFullYear() +
-                    duration
-                );
-
-            } else {
-
-                date.setMonth(
-                    date.getMonth() +
-                    duration
-                );
-
-            }
-
-            break;
-
-
-        default:
-
+        if (event.key !== 'Escape') {
             return;
+        }
+
+
+        const dataCenterModal =
+            document.getElementById(
+                'dataCenterModal'
+            );
+
+
+        if (
+            dataCenterModal &&
+            dataCenterModal.classList.contains(
+                'show'
+            )
+        ) {
+
+            closeDataCenterModal();
+
+        }
+
+
+        const importModal =
+            document.getElementById(
+                'dataCenterImportModal'
+            );
+
+
+        if (
+            importModal &&
+            importModal.classList.contains(
+                'show'
+            )
+        ) {
+
+            closeImportDataCenterModal();
+
+        }
 
     }
-
-
-    /* =====================================================
-       FORMAT YYYY-MM-DD
-    ===================================================== */
-
-    const year =
-        date.getFullYear();
-
-
-    const month =
-        String(
-            date.getMonth() + 1
-        ).padStart(2, '0');
-
-
-    const day =
-        String(
-            date.getDate()
-        ).padStart(2, '0');
-
-
-    tanggalBerakhir.value =
-        year +
-        '-' +
-        month +
-        '-' +
-        day;
-
-}
+);
 
 </script>
-
-@endpush
 
 @endsection

@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use App\Models\Sdm;
 use App\Models\VerificationRequest;
+use App\Models\Notification;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
 
@@ -83,6 +84,8 @@ class SDMController extends Controller
             ->paginate($show)
             ->withQueryString();
 
+        $sdm = Sdm::latest()->paginate(10);
+
         /*
         |--------------------------------------------------------------------------
         | TOTAL PERSONEL
@@ -107,6 +110,12 @@ class SDMController extends Controller
             )
             ->count();
 
+        $aktif = Sdm::where(
+            'masa_berlaku',
+            '>=',
+            now()
+        )->count();
+
         /*
         |--------------------------------------------------------------------------
         | SERTIFIKASI BERAKHIR
@@ -123,6 +132,12 @@ class SDMController extends Controller
                 now()->toDateString()
             )
             ->count();
+
+        $berakhir = Sdm::where(
+            'masa_berlaku',
+            '<',
+            now()
+        )->count();
 
         /*
         |--------------------------------------------------------------------------
@@ -190,6 +205,38 @@ class SDMController extends Controller
             ],
         ]);
 
+        $validator = Validator::make(
+            $request->all(),
+            [
+
+                'nip' =>
+                    'required|string|max:20|unique:sdms,nip',
+
+                'nama' =>
+                    'required|string|max:100',
+
+                'jabatan' =>
+                    'required|string|max:100',
+
+                'kompetensi' =>
+                    'required|string|max:150',
+
+                'masa_berlaku' =>
+                    'required|date',
+
+                'dokumen' =>
+                    'nullable|file|mimes:pdf,jpg,jpeg,png|max:5120',
+
+            ]
+        );
+
+        if ($validator->fails()) {
+
+            return back()
+                ->withErrors($validator)
+                ->withInput();
+        }
+
         /*
         |--------------------------------------------------------------------------
         | UPLOAD DOKUMEN
@@ -204,6 +251,89 @@ class SDMController extends Controller
                     'public'
                 );
         }
+
+        $dokumenPath = null;
+
+        if ($request->hasFile('dokumen')) {
+
+            $dokumenPath =
+                $request
+                    ->file('dokumen')
+                    ->store(
+                        'sdm/dokumen',
+                        'public'
+                    );
+        }
+
+
+        /*
+        |--------------------------------------------------------------------------
+        | GENERATE KODE BK
+        |--------------------------------------------------------------------------
+        */
+
+        $kodeBk =
+            'BK-' .
+            str_pad(
+                Sdm::count() + 1,
+                4,
+                '0',
+                STR_PAD_LEFT
+            );
+
+
+        /*
+        |--------------------------------------------------------------------------
+        | SIMPAN DATA
+        |--------------------------------------------------------------------------
+        */
+
+        $sdm = Sdm::create([
+
+            'nip' =>
+                $request->nip,
+
+            'kode_dk' =>
+                $kodeBk,
+
+            'nama' =>
+                $request->nama,
+
+            'jabatan' =>
+                $request->jabatan,
+
+            'kompetensi' =>
+                $request->kompetensi,
+
+            'masa_berlaku' =>
+                $request->masa_berlaku,
+
+            'dokumen' =>
+                $dokumenPath,
+
+        ]);
+
+
+        /*
+        |--------------------------------------------------------------------------
+        | NOTIFIKASI
+        |--------------------------------------------------------------------------
+        */
+
+        Notification::create([
+            'judul' =>
+                'Data SDM Baru',
+
+            'pesan' =>
+                $request->user()->username .
+                ' menambahkan data SDM "' .
+                $sdm->nama .
+                '" dengan ID ' .
+                $sdm->kode_dk .
+                '.',
+
+            'dibaca' => false,
+        ]);
 
         /*
         |--------------------------------------------------------------------------
@@ -240,6 +370,13 @@ class SDMController extends Controller
             ->with(
                 'success',
                 'Data SDM berhasil ditambahkan dan menunggu verifikasi.'
+            );
+
+        return redirect()
+            ->route('sdm.index')
+            ->with(
+                'success',
+                'Data SDM berhasil ditambahkan.'
             );
     }
 
@@ -295,6 +432,40 @@ class SDMController extends Controller
             ],
         ]);
 
+        $validator = Validator::make(
+            $request->all(),
+            [
+
+                'nip' =>
+                    'required|string|max:20|unique:sdms,nip,' .
+                    $sdm->id,
+
+                'nama' =>
+                    'required|string|max:100',
+
+                'jabatan' =>
+                    'required|string|max:100',
+
+                'kompetensi' =>
+                    'required|string|max:150',
+
+                'masa_berlaku' =>
+                    'required|date',
+
+                'dokumen' =>
+                    'nullable|file|mimes:pdf,jpg,jpeg,png|max:5120',
+
+            ]
+        );
+
+        if ($validator->fails()) {
+
+            return back()
+                ->withErrors($validator)
+                ->withInput();
+        }
+
+
         /*
         |--------------------------------------------------------------------------
         | UPLOAD DOKUMEN BARU
@@ -309,6 +480,79 @@ class SDMController extends Controller
                     'public'
                 );
         }
+
+        $dokumenPath =
+            $sdm->dokumen;
+
+        if ($request->hasFile('dokumen')) {
+
+            if ($sdm->dokumen) {
+
+                Storage::disk('public')
+                    ->delete(
+                        $sdm->dokumen
+                    );
+            }
+
+            $dokumenPath =
+                $request
+                    ->file('dokumen')
+                    ->store(
+                        'sdm/dokumen',
+                        'public'
+                    );
+        }
+
+
+        /*
+        |--------------------------------------------------------------------------
+        | UPDATE DATA
+        |--------------------------------------------------------------------------
+        */
+
+        $sdm->update([
+
+            'nip' =>
+                $request->nip,
+
+            'nama' =>
+                $request->nama,
+
+            'jabatan' =>
+                $request->jabatan,
+
+            'kompetensi' =>
+                $request->kompetensi,
+
+            'masa_berlaku' =>
+                $request->masa_berlaku,
+
+            'dokumen' =>
+                $dokumenPath,
+
+        ]);
+
+
+        /*
+        |--------------------------------------------------------------------------
+        | NOTIFIKASI
+        |--------------------------------------------------------------------------
+        */
+
+        Notification::create([
+            'judul' =>
+                'Data SDM Diperbarui',
+
+            'pesan' =>
+                $request->user()->username .
+                ' memperbarui data SDM "' .
+                $sdm->nama .
+                '" dengan ID ' .
+                $sdm->kode_dk .
+                '.',
+
+            'dibaca' => false,
+        ]);
 
         /*
         |--------------------------------------------------------------------------
@@ -349,6 +593,13 @@ class SDMController extends Controller
                 'success',
                 'Perubahan data SDM berhasil disimpan dan menunggu verifikasi.'
             );
+
+        return redirect()
+            ->route('sdm.index')
+            ->with(
+                'success',
+                'Data SDM berhasil diperbarui.'
+            );
     }
 
 
@@ -356,7 +607,7 @@ class SDMController extends Controller
      * =========================================================
      * DESTROY
      * =========================================================
-     */
+    */
     public function destroy(Sdm $sdm)
     {
         /*
@@ -391,11 +642,172 @@ class SDMController extends Controller
             ]);
         });
 
+        /*
+        |--------------------------------------------------------------------------
+        | SIMPAN DATA UNTUK NOTIFIKASI
+        |--------------------------------------------------------------------------
+        */
+
+        $namaSdm =
+            $sdm->nama;
+
+        $kodeSdm =
+            $sdm->kode_dk;
+
+
+        /*
+        |--------------------------------------------------------------------------
+        | HAPUS DOKUMEN
+        |--------------------------------------------------------------------------
+        */
+
+        if ($sdm->dokumen) {
+
+            Storage::disk('public')
+                ->delete(
+                    $sdm->dokumen
+                );
+        }
+
+
+        /*
+        |--------------------------------------------------------------------------
+        | HAPUS DATA
+        |--------------------------------------------------------------------------
+        */
+
+        $sdm->delete();
+
+
+        /*
+        |--------------------------------------------------------------------------
+        | NOTIFIKASI
+        |--------------------------------------------------------------------------
+        */
+
+        Notification::create([
+            'judul' =>
+                'Data SDM Dihapus',
+
+            'pesan' =>
+                $request->user()->username .
+                ' menghapus data SDM "' .
+                $namaSdm .
+                '" dengan ID ' .
+                $kodeSdm .
+                '.',
+
+            'dibaca' => false,
+        ]);
+
+
+        return redirect()
+            ->route('sdm.index')
+            ->with(
+                'success',
+                'Data SDM berhasil dihapus.'
+            );
+    }
+
+
+    /*
+    |--------------------------------------------------------------------------
+    | APPROVE
+    |--------------------------------------------------------------------------
+    */
+
+    public function approve(
+        Request $request,
+        Sdm $sdm
+    ) {
+
+        $sdm->update([
+            'status_verifikasi' =>
+                'disetujui'
+        ]);
+
+
+        /*
+        |--------------------------------------------------------------------------
+        | NOTIFIKASI
+        |--------------------------------------------------------------------------
+        */
+
+        Notification::create([
+            'judul' =>
+                'Data SDM Disetujui',
+
+            'pesan' =>
+                $request->user()->username .
+                ' menyetujui data SDM "' .
+                $sdm->nama .
+                '" dengan ID ' .
+                $sdm->kode_dk .
+                '.',
+
+            'dibaca' => false,
+        ]);
+
+
+        return redirect()
+            ->route('sdm.index')
+            ->with(
+                'success',
+                'Data berhasil disetujui.'
+            );
+    }
+
+
+    /*
+    |--------------------------------------------------------------------------
+    | REJECT
+    |--------------------------------------------------------------------------
+    */
+
+    public function reject(
+        Request $request,
+        Sdm $sdm
+    ) {
+
+        $sdm->update([
+            'status_verifikasi' =>
+                'ditolak'
+        ]);
+
+
+        /*
+        |--------------------------------------------------------------------------
+        | NOTIFIKASI
+        |--------------------------------------------------------------------------
+        */
+
+        Notification::create([
+            'judul' =>
+                'Data SDM Ditolak',
+
+            'pesan' =>
+                $request->user()->username .
+                ' menolak data SDM "' .
+                $sdm->nama .
+                '" dengan ID ' .
+                $sdm->kode_dk .
+                '.',
+
+            'dibaca' => false,
+        ]);
+
         return redirect()
             ->route('sdm.index')
             ->with(
                 'success',
                 'Pengajuan penghapusan SDM berhasil dikirim dan menunggu verifikasi.'
+            );
+
+        return redirect()
+            ->route('sdm.index')
+            ->with(
+                'success',
+                'Data ditolak.'
             );
     }
 }

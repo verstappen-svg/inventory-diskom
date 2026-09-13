@@ -7,7 +7,6 @@
 @section('content')
 
 <style>
-
 /* =========================================================
    DATA PAGE
 ========================================================= */
@@ -62,6 +61,11 @@
     background: #fee2e2;
     color: #991b1b;
     border: 1px solid #fecaca;
+}
+
+.data-alert ul {
+    margin: 6px 0 0 18px;
+    padding: 0;
 }
 
 
@@ -543,6 +547,29 @@
 
 
 /* =========================================================
+   COMMENT
+========================================================= */
+
+.data-comment-button {
+    display: inline-flex;
+    align-items: center;
+    gap: 5px;
+    border: none;
+    background: #fef3c7;
+    color: #92400e;
+    border-radius: 7px;
+    padding: 6px 9px;
+    font-size: 9px;
+    font-weight: 600;
+    cursor: pointer;
+}
+
+.data-comment-button:hover {
+    background: #fde68a;
+}
+
+
+/* =========================================================
    EMPTY STATE
 ========================================================= */
 
@@ -821,6 +848,27 @@ textarea.data-form-control {
 
 
 /* =========================================================
+   CURRENT FILE
+========================================================= */
+
+.data-current-file {
+    display: none;
+    margin-top: 8px;
+    padding: 8px 10px;
+    background: #f8fafc;
+    border-radius: 7px;
+    color: #64748b;
+    font-size: 10px;
+}
+
+.data-current-file a {
+    color: #0369a1;
+    font-weight: 600;
+    text-decoration: none;
+}
+
+
+/* =========================================================
    MODAL FOOTER
 ========================================================= */
 
@@ -865,6 +913,27 @@ textarea.data-form-control {
 
 .data-modal-save:hover {
     background: #050f63;
+}
+
+
+/* =========================================================
+   COMMENT MODAL
+========================================================= */
+
+.data-comment-modal {
+    width: min(500px, 100%);
+}
+
+.data-comment-box {
+    padding: 20px 21px;
+    color: #475569;
+    font-size: 12px;
+    line-height: 1.6;
+}
+
+.data-comment-box i {
+    color: #075985;
+    margin-right: 6px;
 }
 
 
@@ -928,7 +997,6 @@ textarea.data-form-control {
         align-items: flex-start;
     }
 }
-
 </style>
 
 
@@ -954,21 +1022,57 @@ textarea.data-form-control {
 
 
     {{-- =====================================================
-         ALERT
+         ALERT SUCCESS
     ====================================================== --}}
 
     @if(session('success'))
+
         <div class="data-alert data-alert-success">
             <i class="bi bi-check-circle-fill"></i>
             {{ session('success') }}
         </div>
+
     @endif
 
+
+    {{-- =====================================================
+         ALERT ERROR
+    ====================================================== --}}
+
     @if(session('error'))
+
         <div class="data-alert data-alert-error">
             <i class="bi bi-exclamation-circle-fill"></i>
             {{ session('error') }}
         </div>
+
+    @endif
+
+
+    {{-- =====================================================
+         VALIDATION ERROR
+    ====================================================== --}}
+
+    @if($errors->any())
+
+        <div class="data-alert data-alert-error">
+
+            <div>
+                <strong>
+                    Data gagal disimpan.
+                </strong>
+
+                <ul>
+                    @foreach($errors->all() as $error)
+                        <li>
+                            {{ $error }}
+                        </li>
+                    @endforeach
+                </ul>
+            </div>
+
+        </div>
+
     @endif
 
 
@@ -977,6 +1081,8 @@ textarea.data-form-control {
     ====================================================== --}}
 
     <div class="data-stats">
+
+        {{-- TOTAL DATA --}}
 
         <div class="data-stat-card">
 
@@ -991,7 +1097,7 @@ textarea.data-form-control {
                 </span>
 
                 <span class="data-stat-value">
-                    {{ $totalData ?? ($data->total() ?? $data->count()) }}
+                    {{ $totalData ?? 0 }}
                 </span>
 
                 <span class="data-stat-description">
@@ -1002,6 +1108,8 @@ textarea.data-form-control {
 
         </div>
 
+
+        {{-- DISETUJUI --}}
 
         <div class="data-stat-card">
 
@@ -1016,7 +1124,7 @@ textarea.data-form-control {
                 </span>
 
                 <span class="data-stat-value">
-                    {{ $disetujui ?? 0 }}
+                    {{ $totalDisetujui ?? ($disetujui ?? 0) }}
                 </span>
 
                 <span class="data-stat-description">
@@ -1027,6 +1135,8 @@ textarea.data-form-control {
 
         </div>
 
+
+        {{-- MENUNGGU --}}
 
         <div class="data-stat-card">
 
@@ -1041,7 +1151,7 @@ textarea.data-form-control {
                 </span>
 
                 <span class="data-stat-value">
-                    {{ $menunggu ?? 0 }}
+                    {{ $totalPending ?? ($menunggu ?? 0) }}
                 </span>
 
                 <span class="data-stat-description">
@@ -1091,6 +1201,7 @@ textarea.data-form-control {
                         name="search"
                         value="{{ request('search') }}"
                         placeholder="Cari dataset..."
+                        autocomplete="off"
                     >
 
                 </form>
@@ -1120,11 +1231,16 @@ textarea.data-form-control {
                             action="{{ route('data.index') }}"
                         >
 
+                            {{-- SEARCH --}}
+
                             <input
                                 type="hidden"
                                 name="search"
                                 value="{{ request('search') }}"
                             >
+
+
+                            {{-- JENIS DATA --}}
 
                             <div class="data-filter-group">
 
@@ -1139,18 +1255,52 @@ textarea.data-form-control {
                                     </option>
 
                                     @foreach(($jenisDataList ?? collect()) as $jenis)
+
                                         <option
                                             value="{{ $jenis }}"
                                             {{ request('jenis_data') == $jenis ? 'selected' : '' }}
                                         >
                                             {{ $jenis }}
                                         </option>
+
                                     @endforeach
 
                                 </select>
 
                             </div>
 
+
+                            {{-- TAHUN --}}
+
+                            <div class="data-filter-group">
+
+                                <label class="data-filter-label">
+                                    Tahun
+                                </label>
+
+                                <select name="tahun">
+
+                                    <option value="">
+                                        Semua Tahun
+                                    </option>
+
+                                    @foreach(($tahunData ?? []) as $tahun)
+
+                                        <option
+                                            value="{{ $tahun }}"
+                                            {{ request('tahun') == $tahun ? 'selected' : '' }}
+                                        >
+                                            {{ $tahun }}
+                                        </option>
+
+                                    @endforeach
+
+                                </select>
+
+                            </div>
+
+
+                            {{-- STATUS VERIFIKASI --}}
 
                             <div class="data-filter-group">
 
@@ -1166,21 +1316,28 @@ textarea.data-form-control {
 
                                     <option
                                         value="menunggu"
-                                        {{ request('verifikasi') == 'menunggu' ? 'selected' : '' }}
+                                        {{ strtolower(request('verifikasi')) == 'menunggu' ? 'selected' : '' }}
                                     >
                                         Menunggu
                                     </option>
 
                                     <option
+                                        value="menunggu disetujui"
+                                        {{ strtolower(request('verifikasi')) == 'menunggu disetujui' ? 'selected' : '' }}
+                                    >
+                                        Menunggu Disetujui
+                                    </option>
+
+                                    <option
                                         value="disetujui"
-                                        {{ request('verifikasi') == 'disetujui' ? 'selected' : '' }}
+                                        {{ strtolower(request('verifikasi')) == 'disetujui' ? 'selected' : '' }}
                                     >
                                         Disetujui
                                     </option>
 
                                     <option
                                         value="ditolak"
-                                        {{ request('verifikasi') == 'ditolak' ? 'selected' : '' }}
+                                        {{ strtolower(request('verifikasi')) == 'ditolak' ? 'selected' : '' }}
                                     >
                                         Ditolak
                                     </option>
@@ -1190,6 +1347,8 @@ textarea.data-form-control {
                             </div>
 
 
+                            {{-- JUMLAH DATA --}}
+
                             <div class="data-filter-group">
 
                                 <label class="data-filter-label">
@@ -1198,7 +1357,7 @@ textarea.data-form-control {
 
                                 <select name="show">
 
-                                    @foreach([10,25,50,100] as $jumlah)
+                                    @foreach([10, 25, 50, 100] as $jumlah)
 
                                         <option
                                             value="{{ $jumlah }}"
@@ -1213,6 +1372,8 @@ textarea.data-form-control {
 
                             </div>
 
+
+                            {{-- ACTION --}}
 
                             <div class="data-filter-actions">
 
@@ -1241,7 +1402,7 @@ textarea.data-form-control {
                 </div>
 
 
-                {{-- ADD --}}
+                {{-- TAMBAH --}}
 
                 <button
                     type="button"
@@ -1257,9 +1418,9 @@ textarea.data-form-control {
         </div>
 
 
-        {{-- =================================================
+        {{-- =====================================================
              TABLE
-        ================================================== --}}
+        ====================================================== --}}
 
         <div class="data-table-wrapper">
 
@@ -1270,7 +1431,6 @@ textarea.data-form-control {
                     <thead>
 
                         <tr>
-
                             <th>No</th>
                             <th>Nama Dataset</th>
                             <th>Jenis Data</th>
@@ -1279,7 +1439,6 @@ textarea.data-form-control {
                             <th>Tanggal Pengajuan</th>
                             <th>Verifikasi</th>
                             <th>Aksi</th>
-
                         </tr>
 
                     </thead>
@@ -1292,7 +1451,7 @@ textarea.data-form-control {
                             @php
 
                                 $verifikasi = strtolower(
-                                    $row->verifikasi ?? 'menunggu'
+                                    trim($row->verifikasi ?? 'menunggu')
                                 );
 
                                 $verificationClass = match($verifikasi) {
@@ -1310,6 +1469,8 @@ textarea.data-form-control {
                                     'disetujui' => 'Disetujui',
 
                                     'ditolak' => 'Ditolak',
+
+                                    'menunggu disetujui' => 'Menunggu Disetujui',
 
                                     default => 'Menunggu',
 
@@ -1369,12 +1530,15 @@ textarea.data-form-control {
                                         <a
                                             href="{{ asset('storage/' . $row->file_data) }}"
                                             target="_blank"
+                                            rel="noopener noreferrer"
                                             class="data-file"
                                             title="Buka file"
                                         >
+
                                             <i class="bi bi-file-earmark-text-fill"></i>
 
                                             {{ basename($row->file_data) }}
+
                                         </a>
 
                                     @else
@@ -1388,7 +1552,7 @@ textarea.data-form-control {
                                 </td>
 
 
-                                {{-- TANGGAL --}}
+                                {{-- TANGGAL PENGAJUAN --}}
 
                                 <td>
 
@@ -1396,7 +1560,7 @@ textarea.data-form-control {
 
                                         @if($row->tanggal_pengajuan)
 
-                                            {{ \Carbon\Carbon::parse($row->tanggal_pengajuan)->format('d/m/Y') }}
+                                            {{ \Carbon\Carbon::parse($row->tanggal_pengajuan)->format('d/m/Y H:i') }}
 
                                         @else
 
@@ -1428,6 +1592,27 @@ textarea.data-form-control {
 
                                     <div class="data-action-buttons">
 
+                                        {{-- KOMENTAR JIKA DITOLAK --}}
+
+                                        @if(
+                                            strtolower(trim($row->verifikasi ?? '')) === 'ditolak'
+                                            && !empty($row->komentar_verifikasi)
+                                        )
+
+                                            <button
+                                                type="button"
+                                                class="data-comment-button"
+                                                title="Lihat komentar"
+                                                onclick="showComment(@js($row->komentar_verifikasi))"
+                                            >
+                                                <i class="bi bi-chat-left-text"></i>
+                                            </button>
+
+                                        @endif
+
+
+                                        {{-- EDIT --}}
+
                                         <button
                                             type="button"
                                             class="data-action-button data-edit-button"
@@ -1437,6 +1622,8 @@ textarea.data-form-control {
                                             <i class="bi bi-pencil-fill"></i>
                                         </button>
 
+
+                                        {{-- DELETE --}}
 
                                         <form
                                             action="{{ route('data.destroy', $row->id) }}"
@@ -1479,19 +1666,41 @@ textarea.data-form-control {
                     </div>
 
                     <h3>
-                        @if(request('search') || request('jenis_data') || request('verifikasi'))
+
+                        @if(
+                            request('search')
+                            || request('jenis_data')
+                            || request('tahun')
+                            || request('verifikasi')
+                        )
+
                             Data tidak ditemukan
+
                         @else
+
                             Belum ada data
+
                         @endif
+
                     </h3>
 
                     <p>
-                        @if(request('search') || request('jenis_data') || request('verifikasi'))
+
+                        @if(
+                            request('search')
+                            || request('jenis_data')
+                            || request('tahun')
+                            || request('verifikasi')
+                        )
+
                             Coba ubah kata pencarian atau filter.
+
                         @else
+
                             Belum ada dataset yang tersimpan.
+
                         @endif
+
                     </p>
 
                 </div>
@@ -1501,9 +1710,9 @@ textarea.data-form-control {
         </div>
 
 
-        {{-- =================================================
+        {{-- =====================================================
              FOOTER
-        ================================================== --}}
+        ====================================================== --}}
 
         @if($data->total() > 0)
 
@@ -1524,6 +1733,8 @@ textarea.data-form-control {
 
                 <div class="data-pagination">
 
+                    {{-- PREVIOUS --}}
+
                     @if($data->onFirstPage())
 
                         <span class="data-page-link disabled">
@@ -1533,7 +1744,7 @@ textarea.data-form-control {
                     @else
 
                         <a
-                            href="{{ $data->previousPageUrl() }}"
+                            href="{{ $data->appends(request()->query())->previousPageUrl() }}"
                             class="data-page-link"
                         >
                             <i class="bi bi-chevron-left"></i>
@@ -1542,10 +1753,15 @@ textarea.data-form-control {
                     @endif
 
 
-                    @foreach($data->getUrlRange(
-                        max(1, $data->currentPage() - 2),
-                        min($data->lastPage(), $data->currentPage() + 2)
-                    ) as $page => $url)
+                    {{-- PAGE NUMBERS --}}
+
+                    @foreach(
+                        $data->getUrlRange(
+                            max(1, $data->currentPage() - 2),
+                            min($data->lastPage(), $data->currentPage() + 2)
+                        )
+                        as $page => $url
+                    )
 
                         <a
                             href="{{ $url }}"
@@ -1557,10 +1773,12 @@ textarea.data-form-control {
                     @endforeach
 
 
+                    {{-- NEXT --}}
+
                     @if($data->hasMorePages())
 
                         <a
-                            href="{{ $data->nextPageUrl() }}"
+                            href="{{ $data->appends(request()->query())->nextPageUrl() }}"
                             class="data-page-link"
                         >
                             <i class="bi bi-chevron-right"></i>
@@ -1668,7 +1886,6 @@ textarea.data-form-control {
 
                 <div class="data-form-grid">
 
-
                     {{-- NAMA DATASET --}}
 
                     <div class="data-form-group full">
@@ -1692,9 +1909,11 @@ textarea.data-form-control {
                         >
 
                         @error('nama_dataset')
+
                             <small class="data-error">
                                 {{ $message }}
                             </small>
+
                         @enderror
 
                     </div>
@@ -1723,9 +1942,11 @@ textarea.data-form-control {
                         >
 
                         @error('jenis_data')
+
                             <small class="data-error">
                                 {{ $message }}
                             </small>
+
                         @enderror
 
                     </div>
@@ -1756,9 +1977,11 @@ textarea.data-form-control {
                         >
 
                         @error('tahun')
+
                             <small class="data-error">
                                 {{ $message }}
                             </small>
+
                         @enderror
 
                     </div>
@@ -1780,22 +2003,45 @@ textarea.data-form-control {
                             id="data_file_data"
                             name="file_data"
                             class="data-form-control data-file-input"
+                            accept=".csv,.xls,.xlsx,.pdf,.zip"
                         >
 
                         <small class="data-form-help">
-                            Upload file dataset jika tersedia.
+                            Format: CSV, XLS, XLSX, PDF, ZIP. Maksimal 10 MB.
                         </small>
 
+                        <div
+                            id="dataCurrentFile"
+                            class="data-current-file"
+                        >
+
+                            <i class="bi bi-file-earmark"></i>
+
+                            File saat ini:
+
+                            <a
+                                id="dataCurrentFileLink"
+                                href="#"
+                                target="_blank"
+                                rel="noopener noreferrer"
+                            >
+                                Lihat File
+                            </a>
+
+                        </div>
+
                         @error('file_data')
+
                             <small class="data-error">
                                 {{ $message }}
                             </small>
+
                         @enderror
 
                     </div>
 
 
-                    {{-- KOMENTAR --}}
+                    {{-- KETERANGAN --}}
 
                     <div class="data-form-group full">
 
@@ -1814,9 +2060,11 @@ textarea.data-form-control {
                         >{{ old('komentar_verifikasi') }}</textarea>
 
                         @error('komentar_verifikasi')
+
                             <small class="data-error">
                                 {{ $message }}
                             </small>
+
                         @enderror
 
                     </div>
@@ -1856,7 +2104,86 @@ textarea.data-form-control {
 </div>
 
 
+{{-- =========================================================
+     MODAL KOMENTAR
+========================================================= --}}
+
+<div
+    id="commentModal"
+    class="data-modal-overlay"
+    aria-hidden="true"
+>
+
+    <div
+        class="data-modal data-comment-modal"
+        onclick="event.stopPropagation()"
+    >
+
+        <div class="data-modal-header">
+
+            <div class="data-modal-header-left">
+
+                <div class="data-modal-icon">
+                    <i class="bi bi-chat-left-text"></i>
+                </div>
+
+                <div>
+
+                    <h2 class="data-modal-title">
+                        Komentar Verifikator
+                    </h2>
+
+                    <p class="data-modal-subtitle">
+                        Catatan dari proses verifikasi data.
+                    </p>
+
+                </div>
+
+            </div>
+
+
+            <button
+                type="button"
+                class="data-modal-close"
+                onclick="closeCommentModal()"
+            >
+                <i class="bi bi-x-lg"></i>
+            </button>
+
+        </div>
+
+
+        <div class="data-comment-box">
+
+            <i class="bi bi-chat-left-text-fill"></i>
+
+            <span id="commentText"></span>
+
+        </div>
+
+
+        <div class="data-modal-footer">
+
+            <button
+                type="button"
+                class="data-modal-cancel"
+                onclick="closeCommentModal()"
+            >
+                Tutup
+            </button>
+
+        </div>
+
+    </div>
+
+</div>
+
+
 <script>
+
+/* =========================================================
+   DATA RECORDS
+========================================================= */
 
 const dataRecords = @json($data->items());
 
@@ -1911,7 +2238,7 @@ document.addEventListener('click', function(event)
    OPEN ADD
 ========================================================= */
 
-function openDataModal()
+function openDataModal(resetForm = true)
 {
     const modal =
         document.getElementById('dataModal');
@@ -1923,22 +2250,39 @@ function openDataModal()
         return;
     }
 
+
+    if (resetForm) {
+        form.reset();
+    }
+
+
     form.action =
         "{{ route('data.store') }}";
+
 
     document.getElementById('dataMethod').value =
         'POST';
 
+
     document.getElementById('dataModalTitle').textContent =
         'Tambah Data';
+
 
     document.getElementById('dataModalSubtitle').textContent =
         'Tambahkan dataset baru ke dalam sistem.';
 
+
     document.getElementById('dataSaveButton').innerHTML =
         '<i class="bi bi-check-lg"></i> Simpan Data';
 
-    form.reset();
+
+    const currentFile =
+        document.getElementById('dataCurrentFile');
+
+    if (currentFile) {
+        currentFile.style.display = 'none';
+    }
+
 
     modal.classList.add('show');
 
@@ -1965,6 +2309,7 @@ function openEditDataModal(id)
             return String(item.id) === String(id);
         });
 
+
     if (!data) {
 
         alert(
@@ -1987,16 +2332,20 @@ function openEditDataModal(id)
 
 
     form.action =
-        `/data/${id}`;
+        "{{ url('/data') }}/" + id;
+
 
     document.getElementById('dataMethod').value =
         'PUT';
 
+
     document.getElementById('dataModalTitle').textContent =
         'Edit Data';
 
+
     document.getElementById('dataModalSubtitle').textContent =
         'Perbarui dataset yang dipilih.';
+
 
     document.getElementById('dataSaveButton').innerHTML =
         '<i class="bi bi-check-lg"></i> Simpan Perubahan';
@@ -2005,11 +2354,14 @@ function openEditDataModal(id)
     document.getElementById('data_nama_dataset').value =
         data.nama_dataset ?? '';
 
+
     document.getElementById('data_jenis_data').value =
         data.jenis_data ?? '';
 
+
     document.getElementById('data_tahun').value =
         data.tahun ?? '';
+
 
     document.getElementById('data_komentar_verifikasi').value =
         data.komentar_verifikasi ?? '';
@@ -2020,6 +2372,33 @@ function openEditDataModal(id)
 
     if (fileInput) {
         fileInput.value = '';
+    }
+
+
+    const currentFile =
+        document.getElementById('dataCurrentFile');
+
+    const currentFileLink =
+        document.getElementById('dataCurrentFileLink');
+
+
+    if (
+        currentFile &&
+        currentFileLink &&
+        data.file_data
+    ) {
+
+        currentFileLink.href =
+            "{{ asset('storage') }}/" + data.file_data;
+
+        currentFile.style.display =
+            'block';
+
+    } else if (currentFile) {
+
+        currentFile.style.display =
+            'none';
+
     }
 
 
@@ -2037,7 +2416,7 @@ function openEditDataModal(id)
 
 
 /* =========================================================
-   CLOSE
+   CLOSE DATA MODAL
 ========================================================= */
 
 function closeDataModal()
@@ -2063,16 +2442,84 @@ function closeDataModal()
 
 
 /* =========================================================
+   COMMENT
+========================================================= */
+
+function showComment(comment)
+{
+    const modal =
+        document.getElementById('commentModal');
+
+    const text =
+        document.getElementById('commentText');
+
+    if (!modal || !text) {
+        return;
+    }
+
+    text.textContent =
+        comment || 'Tidak ada komentar.';
+
+    modal.classList.add('show');
+
+    modal.setAttribute(
+        'aria-hidden',
+        'false'
+    );
+
+    document.body.classList.add(
+        'data-modal-open'
+    );
+}
+
+
+function closeCommentModal()
+{
+    const modal =
+        document.getElementById('commentModal');
+
+    if (!modal) {
+        return;
+    }
+
+    modal.classList.remove('show');
+
+    modal.setAttribute(
+        'aria-hidden',
+        'true'
+    );
+
+    document.body.classList.remove(
+        'data-modal-open'
+    );
+}
+
+
+/* =========================================================
    BACKDROP
 ========================================================= */
 
-document.getElementById('dataModal')
+document
+    .getElementById('dataModal')
     ?.addEventListener(
         'click',
         function(event)
         {
             if (event.target === this) {
                 closeDataModal();
+            }
+        }
+    );
+
+
+document
+    .getElementById('commentModal')
+    ?.addEventListener(
+        'click',
+        function(event)
+        {
+            if (event.target === this) {
+                closeCommentModal();
             }
         }
     );
@@ -2086,17 +2533,31 @@ document.addEventListener(
     'keydown',
     function(event)
     {
-        if (event.key === 'Escape') {
+        if (event.key !== 'Escape') {
+            return;
+        }
 
-            const modal =
-                document.getElementById('dataModal');
 
-            if (
-                modal &&
-                modal.classList.contains('show')
-            ) {
-                closeDataModal();
-            }
+        const dataModal =
+            document.getElementById('dataModal');
+
+        const commentModal =
+            document.getElementById('commentModal');
+
+
+        if (
+            dataModal &&
+            dataModal.classList.contains('show')
+        ) {
+            closeDataModal();
+        }
+
+
+        if (
+            commentModal &&
+            commentModal.classList.contains('show')
+        ) {
+            closeCommentModal();
         }
     }
 );
@@ -2112,7 +2573,7 @@ document.addEventListener(
     'DOMContentLoaded',
     function()
     {
-        openDataModal();
+        openDataModal(false);
     }
 );
 
