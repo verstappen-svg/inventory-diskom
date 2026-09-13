@@ -162,6 +162,17 @@ Route::middleware('auth')->group(function () {
             '/hardware/{hardware}',
             [HardwareController::class, 'destroy']
         )->name('hardware.destroy');
+
+        /*
+        |--------------------------------------------------------------------------
+        | IMPORT EXCEL — HARDWARE
+        |--------------------------------------------------------------------------
+        */
+
+        Route::post(
+            '/hardware/import',
+            [HardwareController::class, 'import']
+        )->name('hardware.import');
     });
 
 
@@ -371,4 +382,5 @@ Route::middleware('auth')->group(function () {
             }
         )->name('laporan.index');
     });
+
 });

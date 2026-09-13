@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
+use App\Models\ActivityLog;
 
 class AuthController extends Controller
 {
@@ -23,7 +24,29 @@ class AuthController extends Controller
         ]);
 
         if (Auth::attempt($credentials)) {
+
+            // Cek apakah akun masih aktif
+            if (!auth()->user()->is_active) {
+                Auth::logout();
+
+                return back()->withErrors([
+                    'username' => 'Akun ini sudah dinonaktifkan.',
+                ])->onlyInput('username');
+            }
+
+            // Regenerasi session setelah login
             $request->session()->regenerate();
+
+            // Simpan waktu login terakhir
+            auth()->user()->update([
+                'last_login_at' => now(),
+            ]);
+
+            // Catat aktivitas login
+            ActivityLog::record(
+                'User "' . auth()->user()->name . '" login',
+                'login'
+            );
 
             return redirect()->intended(route('dashboard'));
         }
@@ -40,6 +63,7 @@ class AuthController extends Controller
         Auth::logout();
 
         $request->session()->invalidate();
+
         $request->session()->regenerateToken();
 
         return redirect()->route('login');

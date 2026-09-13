@@ -3,9 +3,12 @@
 namespace App\Http\Controllers;
 
 use App\Models\Hardware;
+use App\Models\Lokasi;
 use App\Models\VerificationRequest;
+use App\Imports\HardwareImport;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
+use Maatwebsite\Excel\Facades\Excel;
 
 class HardwareController extends Controller
 {
@@ -17,7 +20,7 @@ class HardwareController extends Controller
 
     public function index(Request $request)
     {
-        $query = Hardware::query();
+        $query = Hardware::with('lokasi');
 
         if ($request->filled('search')) {
 
@@ -29,8 +32,16 @@ class HardwareController extends Controller
                     ->orWhere('nama_barang', 'like', "%{$search}%")
                     ->orWhere('spesifikasi', 'like', "%{$search}%")
                     ->orWhere('jenis_barang', 'like', "%{$search}%")
+                    ->orWhere('sistem_operasi', 'like', "%{$search}%")
                     ->orWhere('tahun_pembelian', 'like', "%{$search}%")
-                    ->orWhere('kondisi', 'like', "%{$search}%");
+                    ->orWhere('kondisi', 'like', "%{$search}%")
+                    ->orWhereHas('lokasi', function ($lokasiQuery) use ($search) {
+                        $lokasiQuery->where(
+                            'nama_lokasi',
+                            'like',
+                            "%{$search}%"
+                        );
+                    });
 
             });
         }
@@ -46,57 +57,99 @@ class HardwareController extends Controller
             ->paginate($show)
             ->withQueryString();
 
-        return view('hardware.index', compact('hardwares'));
+        $lokasis = Lokasi::orderBy('nama_lokasi')->get();
+
+        return view(
+            'hardware.index',
+            compact('hardwares', 'lokasis')
+        );
     }
 
 
     /*
-    |--------------------------------------------------------------------------
-    | GENERATE ASSET ID
-    |--------------------------------------------------------------------------
-    |
-    | Format:
-    |
-    | HW-26-0001
-    | HW-26-0002
-    | HW-26-0003
-    |
-    | 26 = dua digit tahun sekarang
-    |
-    */
+|--------------------------------------------------------------------------
+| GENERATE ASSET ID
+|--------------------------------------------------------------------------
+|
+| Format:
+|
+| ED-26-0001  -> End Device
+| SD-26-0001  -> Security Device
+| PD-26-0001  -> Peripheral / Supporting Device
+|
+*/
 
-    private function generateAssetId(): string
-    {
-        $year = now()->format('y');
+private function generateAssetId(string $jenisBarang): string
+{
+    $year = now()->format('y');
 
-        $prefix = 'HW-' . $year . '-';
+    /*
+     * Tentukan prefix berdasarkan jenis barang.
+     */
+    $endDevices = [
+        'PC All in One',
+        'PC Desktop',
+        'Laptop',
+        'NoteBook',
+        'Tablet',
+        'Smartphone',
+        'Perangkat Komunikasi',
+    ];
 
-        $lastHardware = Hardware::where('asset_id', 'like', $prefix . '%')
-            ->orderByRaw(
-                "CAST(SUBSTRING(asset_id, 7) AS UNSIGNED) DESC"
-            )
-            ->first();
+    $securityDevices = [
+        'CCTV',
+    ];
 
-        if (!$lastHardware) {
-            $number = 1;
-        } else {
+    if (in_array($jenisBarang, $endDevices)) {
 
-            $lastNumber = (int) substr(
-                $lastHardware->asset_id,
-                strlen($prefix)
-            );
+        $prefix = 'ED-' . $year . '-';
 
-            $number = $lastNumber + 1;
-        }
+    } elseif (in_array($jenisBarang, $securityDevices)) {
 
-        return $prefix . str_pad(
-            $number,
-            4,
-            '0',
-            STR_PAD_LEFT
-        );
+        $prefix = 'SD-' . $year . '-';
+
+    } else {
+
+        $prefix = 'PD-' . $year . '-';
     }
 
+
+    /*
+     * Cari nomor terakhir berdasarkan prefix.
+     */
+    $lastHardware = Hardware::where(
+        'asset_id',
+        'like',
+        $prefix . '%'
+    )
+        ->orderByRaw(
+            "CAST(SUBSTRING(asset_id, 8) AS UNSIGNED) DESC"
+        )
+        ->first();
+
+
+    if (!$lastHardware) {
+
+        $number = 1;
+
+    } else {
+
+        $lastNumber = (int) substr(
+            $lastHardware->asset_id,
+            strlen($prefix)
+        );
+
+        $number = $lastNumber + 1;
+    }
+
+
+    return $prefix . str_pad(
+        $number,
+        4,
+        '0',
+        STR_PAD_LEFT
+    );
+}
 
     /*
     |--------------------------------------------------------------------------
@@ -121,6 +174,17 @@ class HardwareController extends Controller
 
             'jenis_barang' => [
                 'required',
+                'string',
+                'max:255',
+            ],
+
+            'lokasi_id' => [
+                'required',
+                'exists:lokasi,id',
+            ],
+
+            'sistem_operasi' => [
+                'nullable',
                 'string',
                 'max:255',
             ],
@@ -155,6 +219,12 @@ class HardwareController extends Controller
             'jenis_barang.required' =>
                 'Jenis barang wajib diisi.',
 
+            'lokasi_id.required' =>
+                'Lokasi wajib dipilih.',
+
+            'lokasi_id.exists' =>
+                'Lokasi yang dipilih tidak valid.',
+
             'tahun_pembelian.required' =>
                 'Tahun pembelian wajib diisi.',
 
@@ -173,40 +243,49 @@ class HardwareController extends Controller
         ]);
 
 
+        /*
+         * Kalau sistem operasi kosong,
+         * otomatis menjadi N/A.
+         */
+        $validated['sistem_operasi'] =
+            trim($validated['sistem_operasi'] ?? '') ?: 'N/A';
+
+
         DB::transaction(function () use ($validated) {
 
-            /*
-             * Asset ID dibuat OTOMATIS.
-             */
-            $validated['asset_id'] = $this->generateAssetId();
+    /*
+     * Asset ID dibuat OTOMATIS berdasarkan jenis barang.
+     */
+    $validated['asset_id'] = $this->generateAssetId(
+        $validated['jenis_barang']
+    );
 
 
-            /*
-             * Simpan hardware.
-             */
-            $hardware = Hardware::create($validated);
+    /*
+     * Simpan hardware.
+     */
+    $hardware = Hardware::create($validated);
 
 
-            /*
-             * Buat request verifikasi.
-             */
-            VerificationRequest::create([
+    /*
+     * Buat request verifikasi.
+     */
+    VerificationRequest::create([
 
-                'module' => 'hardware',
+        'module' => 'hardware',
 
-                'record_id' => $hardware->asset_id,
+        'record_id' => $hardware->asset_id,
 
-                'action' => 'create',
+        'action' => 'create',
 
-                'data' => $hardware->toArray(),
+        'data' => $hardware->toArray(),
 
-                'status' => 'menunggu',
+        'status' => 'menunggu',
 
-                'submitted_by' => auth()->id(),
+        'submitted_by' => auth()->id(),
 
-            ]);
-        });
-
+    ]);
+});
 
         return redirect()
             ->route('hardware.index')
@@ -269,6 +348,17 @@ class HardwareController extends Controller
                 'max:255',
             ],
 
+            'lokasi_id' => [
+                'required',
+                'exists:lokasi,id',
+            ],
+
+            'sistem_operasi' => [
+                'nullable',
+                'string',
+                'max:255',
+            ],
+
             'tahun_pembelian' => [
                 'required',
                 'integer',
@@ -299,6 +389,12 @@ class HardwareController extends Controller
             'jenis_barang.required' =>
                 'Jenis barang wajib diisi.',
 
+            'lokasi_id.required' =>
+                'Lokasi wajib dipilih.',
+
+            'lokasi_id.exists' =>
+                'Lokasi yang dipilih tidak valid.',
+
             'tahun_pembelian.required' =>
                 'Tahun pembelian wajib diisi.',
 
@@ -312,6 +408,14 @@ class HardwareController extends Controller
                 'Kondisi wajib dipilih.',
 
         ]);
+
+
+        /*
+         * Kalau sistem operasi dikosongkan ketika edit,
+         * otomatis kembali menjadi N/A.
+         */
+        $validated['sistem_operasi'] =
+            trim($validated['sistem_operasi'] ?? '') ?: 'N/A';
 
 
         /*
@@ -370,6 +474,45 @@ class HardwareController extends Controller
     }
 
 
+    public function import(Request $request)
+{
+    $request->validate([
+        'file' => [
+            'required',
+            'file',
+            'mimes:xlsx,csv',
+            'max:10240',
+        ],
+    ], [
+        'file.required' => 'File import wajib dipilih.',
+        'file.file' => 'File yang dipilih tidak valid.',
+        'file.mimes' => 'File harus berformat Excel (.xlsx) atau CSV (.csv).',
+        'file.max' => 'Ukuran file maksimal 10 MB.',
+    ]);
+
+    try {
+        Excel::import(
+            new HardwareImport,
+            $request->file('file')
+        );
+
+        return redirect()
+            ->route('hardware.index')
+            ->with(
+                'success',
+                'Data hardware berhasil diimport dan menunggu verifikasi.'
+            );
+
+    } catch (\Exception $e) {
+
+        return redirect()
+            ->route('hardware.index')
+            ->with(
+                'error',
+                'Import gagal: ' . $e->getMessage()
+            );
+    }
+}
     /*
     |--------------------------------------------------------------------------
     | DESTROY

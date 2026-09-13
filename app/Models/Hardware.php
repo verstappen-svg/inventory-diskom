@@ -4,6 +4,7 @@ namespace App\Models;
 
 use Illuminate\Database\Eloquent\Model;
 use App\Models\VerificationRequest;
+use App\Models\Lokasi;
 
 class Hardware extends Model
 {
@@ -32,6 +33,8 @@ class Hardware extends Model
         'nama_barang',
         'spesifikasi',
         'jenis_barang',
+        'lokasi_id',
+        'sistem_operasi',
         'tahun_pembelian',
         'harga',
         'kondisi',
@@ -61,6 +64,20 @@ class Hardware extends Model
     public function getRouteKeyName()
     {
         return 'asset_id';
+    }
+
+    /*
+    |--------------------------------------------------------------------------
+    | Relasi Lokasi
+    |--------------------------------------------------------------------------
+    */
+
+    public function lokasi()
+    {
+        return $this->belongsTo(
+            Lokasi::class,
+            'lokasi_id'
+        );
     }
 
     /*
