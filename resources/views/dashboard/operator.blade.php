@@ -6,15 +6,16 @@
 @section('content')
 
 @php
+
 /*
 |--------------------------------------------------------------------------
 | HELPER DATA
 |--------------------------------------------------------------------------
 */
 
-
 $tahunList = $tahunList ?? [];
 $tahun = $tahun ?? 'all';
+
 
 /*
 |--------------------------------------------------------------------------
@@ -23,12 +24,19 @@ $tahun = $tahun ?? 'all';
 */
 
 if ($activities instanceof \Illuminate\Support\Collection) {
+
     $activities = $activities;
+
 } elseif (is_array($activities ?? null)) {
+
     $activities = collect($activities);
+
 } else {
+
     $activities = collect();
+
 }
+
 
 /*
 |--------------------------------------------------------------------------
@@ -39,34 +47,58 @@ if ($activities instanceof \Illuminate\Support\Collection) {
 $hardwareDashboard = $hardwareDashboard ?? [];
 
 if ($hardwareDashboard instanceof \Illuminate\Support\Collection) {
+
     $hardwareDashboard = $hardwareDashboard->toArray();
+
 }
 
 if (!is_array($hardwareDashboard)) {
+
     $hardwareDashboard = [];
+
 }
+
 
 $hardwareStatus = $hardwareDashboard['status'] ?? [];
 $hardwareJenis = $hardwareDashboard['jenis'] ?? [];
 
+
 if ($hardwareStatus instanceof \Illuminate\Support\Collection) {
+
     $hardwareStatus = $hardwareStatus->toArray();
+
 }
 
 if ($hardwareJenis instanceof \Illuminate\Support\Collection) {
+
     $hardwareJenis = $hardwareJenis->toArray();
+
 }
 
-$hardwareStatus = is_array($hardwareStatus) ? $hardwareStatus : [];
-$hardwareJenis = is_array($hardwareJenis) ? $hardwareJenis : [];
+
+$hardwareStatus =
+    is_array($hardwareStatus)
+        ? $hardwareStatus
+        : [];
+
+
+$hardwareJenis =
+    is_array($hardwareJenis)
+        ? $hardwareJenis
+        : [];
+
 
 $hardwareStatus = array_merge([
+
     'Baik' => 0,
     'Perbaikan' => 0,
     'Rusak' => 0,
+
 ], $hardwareStatus);
 
+
 $hardwareJenis = array_merge([
+
     'Laptop' => 0,
     'PC' => 0,
     'Printer' => 0,
@@ -74,7 +106,9 @@ $hardwareJenis = array_merge([
     'Keyboard' => 0,
     'Mouse' => 0,
     'Camera' => 0,
+
 ], $hardwareJenis);
+
 
 /*
 |--------------------------------------------------------------------------
@@ -85,37 +119,66 @@ $hardwareJenis = array_merge([
 $softwareDashboard = $softwareDashboard ?? [];
 
 if ($softwareDashboard instanceof \Illuminate\Support\Collection) {
+
     $softwareDashboard = $softwareDashboard->toArray();
+
 }
 
 if (!is_array($softwareDashboard)) {
+
     $softwareDashboard = [];
+
 }
+
 
 $softwarePengadaan = $softwareDashboard['pengadaan'] ?? [];
 $softwareStatus = $softwareDashboard['status'] ?? [];
 
+
 if ($softwarePengadaan instanceof \Illuminate\Support\Collection) {
-    $softwarePengadaan = $softwarePengadaan->toArray();
+
+    $softwarePengadaan =
+        $softwarePengadaan->toArray();
+
 }
+
 
 if ($softwareStatus instanceof \Illuminate\Support\Collection) {
-    $softwareStatus = $softwareStatus->toArray();
+
+    $softwareStatus =
+        $softwareStatus->toArray();
+
 }
 
-$softwarePengadaan = is_array($softwarePengadaan) ? $softwarePengadaan : [];
-$softwareStatus = is_array($softwareStatus) ? $softwareStatus : [];
+
+$softwarePengadaan =
+    is_array($softwarePengadaan)
+        ? $softwarePengadaan
+        : [];
+
+
+$softwareStatus =
+    is_array($softwareStatus)
+        ? $softwareStatus
+        : [];
+
 
 $softwarePengadaan = array_merge([
+
     'Beli' => 0,
     'Sewa' => 0,
+
 ], $softwarePengadaan);
 
+
 $softwareStatus = array_merge([
+
     'Tersedia' => 0,
     'Akan Habis' => 0,
     'Expired' => 0,
+
 ], $softwareStatus);
+
 
 /*
 |--------------------------------------------------------------------------
@@ -123,40 +186,77 @@ $softwareStatus = array_merge([
 |--------------------------------------------------------------------------
 */
 
-$infrastrukturDashboard = $infrastrukturDashboard ?? [];
+$infrastrukturDashboard =
+    $infrastrukturDashboard ?? [];
+
 
 if ($infrastrukturDashboard instanceof \Illuminate\Support\Collection) {
-    $infrastrukturDashboard = $infrastrukturDashboard->toArray();
+
+    $infrastrukturDashboard =
+        $infrastrukturDashboard->toArray();
+
 }
+
 
 if (!is_array($infrastrukturDashboard)) {
+
     $infrastrukturDashboard = [];
+
 }
 
-$infraPengadaan = $infrastrukturDashboard['pengadaan'] ?? [];
-$infraStatus = $infrastrukturDashboard['status'] ?? [];
+
+$infraPengadaan =
+    $infrastrukturDashboard['pengadaan'] ?? [];
+
+
+$infraStatus =
+    $infrastrukturDashboard['status'] ?? [];
+
 
 if ($infraPengadaan instanceof \Illuminate\Support\Collection) {
-    $infraPengadaan = $infraPengadaan->toArray();
+
+    $infraPengadaan =
+        $infraPengadaan->toArray();
+
 }
+
 
 if ($infraStatus instanceof \Illuminate\Support\Collection) {
-    $infraStatus = $infraStatus->toArray();
+
+    $infraStatus =
+        $infraStatus->toArray();
+
 }
 
-$infraPengadaan = is_array($infraPengadaan) ? $infraPengadaan : [];
-$infraStatus = is_array($infraStatus) ? $infraStatus : [];
+
+$infraPengadaan =
+    is_array($infraPengadaan)
+        ? $infraPengadaan
+        : [];
+
+
+$infraStatus =
+    is_array($infraStatus)
+        ? $infraStatus
+        : [];
+
 
 $infraPengadaan = array_merge([
+
     'Beli' => 0,
     'Sewa' => 0,
+
 ], $infraPengadaan);
 
+
 $infraStatus = array_merge([
+
     'Tersedia' => 0,
     'Akan Habis' => 0,
     'Expired' => 0,
+
 ], $infraStatus);
+
 
 /*
 |--------------------------------------------------------------------------
@@ -164,12 +264,24 @@ $infraStatus = array_merge([
 |--------------------------------------------------------------------------
 */
 
-$totalAset = (int) ($totalAset ?? 0);
-$hardwareCount = (int) ($hardwareCount ?? 0);
-$softwareCount = (int) ($softwareCount ?? 0);
-$infrastrukturCount = (int) ($infrastrukturCount ?? 0);
-$sdmCount = (int) ($sdmCount ?? 0);
-$dataCount = (int) ($dataCount ?? 0);
+$totalAset =
+    (int) ($totalAset ?? 0);
+
+$hardwareCount =
+    (int) ($hardwareCount ?? 0);
+
+$softwareCount =
+    (int) ($softwareCount ?? 0);
+
+$infrastrukturCount =
+    (int) ($infrastrukturCount ?? 0);
+
+$sdmCount =
+    (int) ($sdmCount ?? 0);
+
+$dataCount =
+    (int) ($dataCount ?? 0);
+
 
 /*
 |--------------------------------------------------------------------------
@@ -178,135 +290,235 @@ $dataCount = (int) ($dataCount ?? 0);
 */
 
 foreach ($hardwareStatus as $key => $value) {
-    $hardwareStatus[$key] = max(0, (int) $value);
+
+    $hardwareStatus[$key] =
+        max(0, (int) $value);
+
 }
+
 
 foreach ($hardwareJenis as $key => $value) {
-    $hardwareJenis[$key] = max(0, (int) $value);
+
+    $hardwareJenis[$key] =
+        max(0, (int) $value);
+
 }
+
 
 foreach ($softwarePengadaan as $key => $value) {
-    $softwarePengadaan[$key] = max(0, (int) $value);
+
+    $softwarePengadaan[$key] =
+        max(0, (int) $value);
+
 }
+
 
 foreach ($softwareStatus as $key => $value) {
-    $softwareStatus[$key] = max(0, (int) $value);
+
+    $softwareStatus[$key] =
+        max(0, (int) $value);
+
 }
+
 
 foreach ($infraPengadaan as $key => $value) {
-    $infraPengadaan[$key] = max(0, (int) $value);
+
+    $infraPengadaan[$key] =
+        max(0, (int) $value);
+
 }
 
+
 foreach ($infraStatus as $key => $value) {
-    $infraStatus[$key] = max(0, (int) $value);
+
+    $infraStatus[$key] =
+        max(0, (int) $value);
+
 }
+
 
 /*
 |--------------------------------------------------------------------------
 | TOTAL DONUT
 |--------------------------------------------------------------------------
+|
+| HARDWARE DONUT SEKARANG MENGGUNAKAN JENIS BARANG
+|
 */
 
-$hardwareTotal = array_sum($hardwareStatus);
-$softwarePengadaanTotal = array_sum($softwarePengadaan);
-$infraPengadaanTotal = array_sum($infraPengadaan);
+$hardwareTotal =
+    array_sum($hardwareJenis);
+
+
+$softwarePengadaanTotal =
+    array_sum($softwarePengadaan);
+
+
+$infraPengadaanTotal =
+    array_sum($infraPengadaan);
+
 
 /*
 |--------------------------------------------------------------------------
-| PERSENTASE DONUT
+| PERSENTASE HARDWARE JENIS
 |--------------------------------------------------------------------------
 */
 
 $hardwarePersen = [];
 
-foreach ($hardwareStatus as $key => $value) {
-    $hardwarePersen[$key] = $hardwareTotal > 0
-        ? round(($value / $hardwareTotal) * 100, 1)
-        : 0;
+foreach ($hardwareJenis as $key => $value) {
+
+    $hardwarePersen[$key] =
+        $hardwareTotal > 0
+            ? round(
+                ($value / $hardwareTotal) * 100,
+                1
+            )
+            : 0;
+
 }
+
+
+/*
+|--------------------------------------------------------------------------
+| PERSENTASE SOFTWARE
+|--------------------------------------------------------------------------
+*/
 
 $softwarePersen = [];
 
 foreach ($softwarePengadaan as $key => $value) {
-    $softwarePersen[$key] = $softwarePengadaanTotal > 0
-        ? round(($value / $softwarePengadaanTotal) * 100, 1)
-        : 0;
+
+    $softwarePersen[$key] =
+        $softwarePengadaanTotal > 0
+            ? round(
+                ($value / $softwarePengadaanTotal) * 100,
+                1
+            )
+            : 0;
+
 }
+
+
+/*
+|--------------------------------------------------------------------------
+| PERSENTASE INFRA
+|--------------------------------------------------------------------------
+*/
 
 $infraPersen = [];
 
 foreach ($infraPengadaan as $key => $value) {
-    $infraPersen[$key] = $infraPengadaanTotal > 0
-        ? round(($value / $infraPengadaanTotal) * 100, 1)
-        : 0;
+
+    $infraPersen[$key] =
+        $infraPengadaanTotal > 0
+            ? round(
+                ($value / $infraPengadaanTotal) * 100,
+                1
+            )
+            : 0;
+
 }
+
 
 /*
 |--------------------------------------------------------------------------
-| DONUT DEGREE
+| HARDWARE BAR MAX
+|--------------------------------------------------------------------------
+|
+| BAR HARDWARE SEKARANG MENGGUNAKAN STATUS
+|
+*/
+
+$hardwareBarMax = max(
+
+    !empty($hardwareStatus)
+        ? max($hardwareStatus)
+        : 0,
+
+    1
+
+);
+
+
+/*
+|--------------------------------------------------------------------------
+| SOFTWARE BAR MAX
 |--------------------------------------------------------------------------
 */
 
-$hardwareBaikDeg = 0;
-$hardwarePerbaikanDeg = 0;
+$softwareBarMax = max(
 
-if ($hardwareTotal > 0) {
-    $hardwareBaikDeg =
-        ($hardwareStatus['Baik'] / $hardwareTotal) * 360;
+    !empty($softwareStatus)
+        ? max($softwareStatus)
+        : 0,
 
-    $hardwarePerbaikanDeg =
-        (
-            (
-                $hardwareStatus['Baik']
-                + $hardwareStatus['Perbaikan']
-            )
-            / $hardwareTotal
-        ) * 360;
-}
+    1
+
+);
+
+
+/*
+|--------------------------------------------------------------------------
+| INFRA BAR MAX
+|--------------------------------------------------------------------------
+*/
+
+$infraBarMax = max(
+
+    !empty($infraStatus)
+        ? max($infraStatus)
+        : 0,
+
+    1
+
+);
+
+
+/*
+|--------------------------------------------------------------------------
+| SOFTWARE DONUT DEGREE
+|--------------------------------------------------------------------------
+*/
 
 $softwareBeliDeg = 0;
 
 if ($softwarePengadaanTotal > 0) {
+
     $softwareBeliDeg =
-        ($softwarePengadaan['Beli'] / $softwarePengadaanTotal) * 360;
+        ($softwarePengadaan['Beli']
+        / $softwarePengadaanTotal)
+        * 360;
+
 }
+
+
+/*
+|--------------------------------------------------------------------------
+| INFRA DONUT DEGREE
+|--------------------------------------------------------------------------
+*/
 
 $infraBeliDeg = 0;
 
 if ($infraPengadaanTotal > 0) {
+
     $infraBeliDeg =
-        ($infraPengadaan['Beli'] / $infraPengadaanTotal) * 360;
+        ($infraPengadaan['Beli']
+        / $infraPengadaanTotal)
+        * 360;
+
 }
 
-/*
-|--------------------------------------------------------------------------
-| BAR MAX
-|--------------------------------------------------------------------------
-*/
-
-$hardwareBarMax = max(
-    !empty($hardwareJenis) ? max($hardwareJenis) : 0,
-    1
-);
-
-$softwareBarMax = max(
-    !empty($softwareStatus) ? max($softwareStatus) : 0,
-    1
-);
-
-$infraBarMax = max(
-    !empty($infraStatus) ? max($infraStatus) : 0,
-    1
-);
-
-
 @endphp
+
 
 <style>
 
 .dashboard {
     width: 100%;
 }
+
 
 /* =====================================================
    WELCOME
@@ -328,6 +540,7 @@ $infraBarMax = max(
     font-size: 13px;
     color: #6b7280;
 }
+
 
 /* =====================================================
    FILTER
@@ -370,7 +583,7 @@ $infraBarMax = max(
 
 .filter-select:focus {
     border-color: #079bd8;
-    box-shadow: 0 0 0 3px rgba(7, 155, 216, .10);
+    box-shadow: 0 0 0 3px rgba(7,155,216,.10);
 }
 
 .filter-button {
@@ -389,13 +602,14 @@ $infraBarMax = max(
     background: #0788bd;
 }
 
+
 /* =====================================================
    SUMMARY
 ===================================================== */
 
 .stats-grid {
     display: grid;
-    grid-template-columns: repeat(6, minmax(0, 1fr));
+    grid-template-columns: repeat(6,minmax(0,1fr));
     gap: 14px;
     margin-bottom: 22px;
 }
@@ -407,7 +621,9 @@ $infraBarMax = max(
     border: 1px solid #eef0f4;
     box-shadow: 0 3px 10px rgba(0,0,0,.05);
     min-width: 0;
-    transition: transform .2s ease, box-shadow .2s ease;
+    transition:
+        transform .2s ease,
+        box-shadow .2s ease;
 }
 
 .stat-card:hover {
@@ -460,13 +676,14 @@ $infraBarMax = max(
     color: #1f2937;
 }
 
+
 /* =====================================================
    ASSET PANELS
 ===================================================== */
 
 .asset-panels {
     display: grid;
-    grid-template-columns: repeat(3, minmax(0, 1fr));
+    grid-template-columns: repeat(3,minmax(0,1fr));
     gap: 14px;
     margin-bottom: 22px;
 }
@@ -499,6 +716,7 @@ $infraBarMax = max(
     color: #374151;
 }
 
+
 /* =====================================================
    DONUT
 ===================================================== */
@@ -520,24 +738,26 @@ $infraBarMax = max(
     border-radius: 50%;
     flex-shrink: 0;
 
-    --donut-baik: 0deg;
-    --donut-perbaikan: 0deg;
-    --donut-beli: 0deg;
-    --donut-infra-beli: 0deg;
-
-    animation: donutEntrance .5s ease-out;
+    animation:
+        donutEntrance .5s ease-out;
 }
 
 @keyframes donutEntrance {
+
     from {
         opacity: 0;
-        transform: scale(.75) rotate(-25deg);
+        transform:
+            scale(.75)
+            rotate(-25deg);
     }
 
     to {
         opacity: 1;
-        transform: scale(1) rotate(0deg);
+        transform:
+            scale(1)
+            rotate(0deg);
     }
+
 }
 
 .donut::after {
@@ -549,7 +769,8 @@ $infraBarMax = max(
     background: #fff;
     top: 50%;
     left: 50%;
-    transform: translate(-50%, -50%);
+    transform:
+        translate(-50%,-50%);
 }
 
 .donut-center {
@@ -575,6 +796,7 @@ $infraBarMax = max(
     color: #9ca3af;
 }
 
+
 /* =====================================================
    LEGEND
 ===================================================== */
@@ -584,6 +806,8 @@ $infraBarMax = max(
     flex-direction: column;
     gap: 8px;
     min-width: 145px;
+    max-height: 125px;
+    overflow-y: auto;
 }
 
 .legend-item {
@@ -619,6 +843,7 @@ $infraBarMax = max(
     color: #374151;
     white-space: nowrap;
 }
+
 
 /* =====================================================
    BAR CHART
@@ -687,6 +912,7 @@ $infraBarMax = max(
     padding: 20px 0;
 }
 
+
 /* =====================================================
    ACTIVITY
 ===================================================== */
@@ -741,6 +967,7 @@ $infraBarMax = max(
     font-size: 12px;
 }
 
+
 /* =====================================================
    ACTIVITY TIMELINE
 ===================================================== */
@@ -754,7 +981,8 @@ $infraBarMax = max(
 .activity-item {
     position: relative;
     display: grid;
-    grid-template-columns: 46px minmax(0,1fr) auto;
+    grid-template-columns:
+        46px minmax(0,1fr) auto;
     gap: 14px;
     align-items: start;
 
@@ -787,7 +1015,8 @@ $infraBarMax = max(
     background: #e5e7eb;
 }
 
-.activity-item:last-child .activity-timeline::after {
+.activity-item:last-child
+.activity-timeline::after {
     display: none;
 }
 
@@ -809,12 +1038,15 @@ $infraBarMax = max(
 
     border: 4px solid #fff;
 
-    box-shadow: 0 2px 7px rgba(2,132,199,.12);
+    box-shadow:
+        0 2px 7px
+        rgba(2,132,199,.12);
 }
 
 .activity-icon i {
     font-size: 16px;
 }
+
 
 /* =====================================================
    CONTENT
@@ -857,6 +1089,7 @@ $infraBarMax = max(
     word-break: break-word;
 }
 
+
 /* =====================================================
    META
 ===================================================== */
@@ -889,6 +1122,7 @@ $infraBarMax = max(
     font-weight: 600;
 }
 
+
 /* =====================================================
    DATE
 ===================================================== */
@@ -919,6 +1153,7 @@ $infraBarMax = max(
     color: #9ca3af;
     white-space: nowrap;
 }
+
 
 /* =====================================================
    EMPTY
@@ -963,6 +1198,7 @@ $infraBarMax = max(
     color: #9ca3af;
 }
 
+
 /* =====================================================
    RESPONSIVE
 ===================================================== */
@@ -970,13 +1206,17 @@ $infraBarMax = max(
 @media (max-width:1300px) {
 
     .stats-grid {
-        grid-template-columns: repeat(3,minmax(0,1fr));
+        grid-template-columns:
+            repeat(3,minmax(0,1fr));
     }
 
     .asset-panels {
-        grid-template-columns: repeat(2,minmax(0,1fr));
+        grid-template-columns:
+            repeat(2,minmax(0,1fr));
     }
+
 }
+
 
 @media (max-width:900px) {
 
@@ -985,9 +1225,12 @@ $infraBarMax = max(
     }
 
     .activity-item {
-        grid-template-columns: 38px minmax(0,1fr) 110px;
+        grid-template-columns:
+            38px minmax(0,1fr) 110px;
     }
+
 }
+
 
 @media (max-width:700px) {
 
@@ -996,7 +1239,8 @@ $infraBarMax = max(
     }
 
     .stats-grid {
-        grid-template-columns: repeat(2,minmax(0,1fr));
+        grid-template-columns:
+            repeat(2,minmax(0,1fr));
     }
 
     .dashboard-toolbar {
@@ -1012,7 +1256,9 @@ $infraBarMax = max(
     }
 
     .activity-item {
-        grid-template-columns: 46px minmax(0,1fr);
+        grid-template-columns:
+            46px minmax(0,1fr);
+
         gap: 10px;
     }
 
@@ -1039,7 +1285,9 @@ $infraBarMax = max(
         content: "•";
         margin-right: 7px;
     }
+
 }
+
 
 @media (max-width:500px) {
 
@@ -1097,27 +1345,33 @@ $infraBarMax = max(
     .dashboard-card {
         padding: 16px;
     }
+
 }
 
 </style>
+
 
 <div class="dashboard">
 
 
 {{-- =====================================================
      WELCOME
-====================================================== --}}
+===================================================== --}}
 
 <div class="welcome-section">
 
     <h2 class="welcome-title">
+
         Selamat Datang,
         {{ auth()->user()->name ?? 'Operator' }} 👋
+
     </h2>
 
     <p class="welcome-text">
+
         Pantau dan kelola data aset IT melalui sistem
         Inventory IT Assets.
+
     </p>
 
 </div>
@@ -1125,7 +1379,7 @@ $infraBarMax = max(
 
 {{-- =====================================================
      FILTER TAHUN
-====================================================== --}}
+===================================================== --}}
 
 <div class="dashboard-toolbar">
 
@@ -1147,16 +1401,22 @@ $infraBarMax = max(
 
             <option
                 value="all"
-                {{ empty($tahun) || (string) $tahun === 'all' ? 'selected' : '' }}
+                {{ empty($tahun) ||
+                    (string) $tahun === 'all'
+                    ? 'selected'
+                    : '' }}
             >
                 Semua Tahun
             </option>
+
 
             @foreach($tahunList as $year)
 
                 <option
                     value="{{ $year }}"
-                    {{ (string) $tahun === (string) $year ? 'selected' : '' }}
+                    {{ (string) $tahun === (string) $year
+                        ? 'selected'
+                        : '' }}
                 >
                     {{ $year }}
                 </option>
@@ -1165,12 +1425,16 @@ $infraBarMax = max(
 
         </select>
 
+
         <button
             type="submit"
             class="filter-button"
         >
+
             <i class="bi bi-funnel"></i>
+
             Filter
+
         </button>
 
     </form>
@@ -1180,17 +1444,23 @@ $infraBarMax = max(
 
 {{-- =====================================================
      SUMMARY
-====================================================== --}}
+===================================================== --}}
 
 <div class="stats-grid">
 
+
     <div class="stat-card">
+
         <div class="stat-card-top">
+
             <div class="stat-icon">
+
                 <i class="bi bi-box-seam"></i>
+
             </div>
 
             <div class="stat-content">
+
                 <span class="stat-label">
                     Total Aset
                 </span>
@@ -1198,18 +1468,26 @@ $infraBarMax = max(
                 <span class="stat-value">
                     {{ number_format($totalAset) }}
                 </span>
+
             </div>
+
         </div>
+
     </div>
 
 
     <div class="stat-card">
+
         <div class="stat-card-top">
+
             <div class="stat-icon">
+
                 <i class="bi bi-pc-display"></i>
+
             </div>
 
             <div class="stat-content">
+
                 <span class="stat-label">
                     Hardware
                 </span>
@@ -1217,18 +1495,26 @@ $infraBarMax = max(
                 <span class="stat-value">
                     {{ number_format($hardwareCount) }}
                 </span>
+
             </div>
+
         </div>
+
     </div>
 
 
     <div class="stat-card">
+
         <div class="stat-card-top">
+
             <div class="stat-icon">
+
                 <i class="bi bi-laptop"></i>
+
             </div>
 
             <div class="stat-content">
+
                 <span class="stat-label">
                     Software
                 </span>
@@ -1236,18 +1522,26 @@ $infraBarMax = max(
                 <span class="stat-value">
                     {{ number_format($softwareCount) }}
                 </span>
+
             </div>
+
         </div>
+
     </div>
 
 
     <div class="stat-card">
+
         <div class="stat-card-top">
+
             <div class="stat-icon">
+
                 <i class="bi bi-diagram-3-fill"></i>
+
             </div>
 
             <div class="stat-content">
+
                 <span class="stat-label">
                     Infrastruktur
                 </span>
@@ -1255,18 +1549,26 @@ $infraBarMax = max(
                 <span class="stat-value">
                     {{ number_format($infrastrukturCount) }}
                 </span>
+
             </div>
+
         </div>
+
     </div>
 
 
     <div class="stat-card">
+
         <div class="stat-card-top">
+
             <div class="stat-icon">
+
                 <i class="bi bi-people-fill"></i>
+
             </div>
 
             <div class="stat-content">
+
                 <span class="stat-label">
                     SDM
                 </span>
@@ -1274,18 +1576,26 @@ $infraBarMax = max(
                 <span class="stat-value">
                     {{ number_format($sdmCount) }}
                 </span>
+
             </div>
+
         </div>
+
     </div>
 
 
     <div class="stat-card">
+
         <div class="stat-card-top">
+
             <div class="stat-icon">
+
                 <i class="bi bi-database-fill"></i>
+
             </div>
 
             <div class="stat-content">
+
                 <span class="stat-label">
                     Data
                 </span>
@@ -1293,37 +1603,51 @@ $infraBarMax = max(
                 <span class="stat-value">
                     {{ number_format($dataCount) }}
                 </span>
+
             </div>
+
         </div>
+
     </div>
+
 
 </div>
 
 
 {{-- =====================================================
      3 PANEL
-====================================================== --}}
+===================================================== --}}
 
 <div class="asset-panels">
 
-    {{-- HARDWARE --}}
+
+    {{-- =================================================
+         HARDWARE
+    ================================================== --}}
 
     <div class="asset-panel">
 
+
         <div class="asset-panel-header">
+
             <i class="bi bi-pc-display"></i>
 
             <h3 class="asset-panel-title">
                 Hardware
             </h3>
+
         </div>
+
+
+        {{-- =============================================
+             DONUT = JENIS BARANG
+        ============================================== --}}
 
         <div class="donut-section">
 
+
             <div
                 class="donut hardware-donut"
-                data-baik="{{ $hardwareBaikDeg }}"
-                data-perbaikan="{{ $hardwarePerbaikanDeg }}"
                 data-total="{{ $hardwareTotal }}"
             >
 
@@ -1341,140 +1665,209 @@ $infraBarMax = max(
 
             </div>
 
+
             <div class="legend">
 
-                <div class="legend-item">
 
-                    <div class="legend-left">
+                @php
 
-                        <span
-                            class="legend-dot"
-                            style="background:#16a34a;"
-                        ></span>
+                    $hardwareColors = [
 
-                        <span class="legend-name">
-                            Baik
-                        </span>
+                        'Laptop' =>
+                            '#079bd8',
 
-                    </div>
+                        'PC' =>
+                            '#6366f1',
 
-                    <span class="legend-value">
-                        {{ number_format($hardwareStatus['Baik']) }}
-                        ({{ number_format($hardwarePersen['Baik'],1,',','.') }}%)
-                    </span>
+                        'Printer' =>
+                            '#8b5cf6',
 
-                </div>
+                        'Monitor' =>
+                            '#ec4899',
 
+                        'Keyboard' =>
+                            '#f59e0b',
 
-                <div class="legend-item">
+                        'Mouse' =>
+                            '#16a34a',
 
-                    <div class="legend-left">
+                        'Camera' =>
+                            '#ef4444',
 
-                        <span
-                            class="legend-dot"
-                            style="background:#f59e0b;"
-                        ></span>
+                    ];
 
-                        <span class="legend-name">
-                            Perbaikan
-                        </span>
-
-                    </div>
-
-                    <span class="legend-value">
-                        {{ number_format($hardwareStatus['Perbaikan']) }}
-                        ({{ number_format($hardwarePersen['Perbaikan'],1,',','.') }}%)
-                    </span>
-
-                </div>
+                @endphp
 
 
-                <div class="legend-item">
+                @foreach($hardwareJenis as $label => $value)
 
-                    <div class="legend-left">
-
-                        <span
-                            class="legend-dot"
-                            style="background:#ef4444;"
-                        ></span>
-
-                        <span class="legend-name">
-                            Rusak
-                        </span>
-
-                    </div>
-
-                    <span class="legend-value">
-                        {{ number_format($hardwareStatus['Rusak']) }}
-                        ({{ number_format($hardwarePersen['Rusak'],1,',','.') }}%)
-                    </span>
-
-                </div>
-
-            </div>
-
-        </div>
+                    <div class="legend-item">
 
 
-        <div class="bar-section">
+                        <div class="legend-left">
 
-            <div class="bar-title">
-                Jenis barang
-            </div>
-
-            @if(array_sum($hardwareJenis) > 0)
-
-                <div class="bar-chart">
-
-                    @foreach($hardwareJenis as $label => $value)
-
-                        @php
-                            $height = $value > 0
-                                ? max(4, ($value / $hardwareBarMax) * 55)
-                                : 0;
-                        @endphp
-
-                        <div class="bar-item">
-
-                            <span class="bar-value">
-                                {{ number_format($value) }}
-                            </span>
-
-                            <div
-                                class="bar"
-                                data-height="{{ $height }}"
+                            <span
+                                class="legend-dot"
                                 style="
-                                    height: {{ $height }}px;
-                                    background:#079bd8;
+                                    background:
+                                    {{ $hardwareColors[$label]
+                                        ?? '#9ca3af' }};
                                 "
-                            ></div>
+                            ></span>
 
-                            <span class="bar-label">
+
+                            <span class="legend-name">
                                 {{ $label }}
                             </span>
 
                         </div>
 
+
+                        <span class="legend-value">
+
+                            {{ number_format($value) }}
+
+                            (
+                            {{ number_format(
+                                $hardwarePersen[$label] ?? 0,
+                                1,
+                                ',',
+                                '.'
+                            ) }}%
+                            )
+
+                        </span>
+
+
+                    </div>
+
+                @endforeach
+
+
+            </div>
+
+
+        </div>
+
+
+        {{-- =============================================
+             BAR = STATUS HARDWARE
+        ============================================== --}}
+
+        <div class="bar-section">
+
+
+            <div class="bar-title">
+                Kondisi hardware
+            </div>
+
+
+            @if(array_sum($hardwareStatus) > 0)
+
+
+                <div class="bar-chart">
+
+
+                    @foreach($hardwareStatus as $label => $value)
+
+
+                        @php
+
+                            $height =
+                                $value > 0
+
+                                    ? max(
+                                        4,
+                                        (
+                                            $value
+                                            / $hardwareBarMax
+                                        ) * 55
+                                    )
+
+                                    : 0;
+
+
+                            if ($label === 'Baik') {
+
+                                $barColor =
+                                    '#16a34a';
+
+                            } elseif (
+                                $label === 'Perbaikan'
+                            ) {
+
+                                $barColor =
+                                    '#f59e0b';
+
+                            } else {
+
+                                $barColor =
+                                    '#ef4444';
+
+                            }
+
+                        @endphp
+
+
+                        <div class="bar-item">
+
+
+                            <span class="bar-value">
+                                {{ number_format($value) }}
+                            </span>
+
+
+                            <div
+                                class="bar"
+                                data-height="{{ $height }}"
+                                style="
+                                    height:
+                                        {{ $height }}px;
+
+                                    background:
+                                        {{ $barColor }};
+                                "
+                            ></div>
+
+
+                            <span class="bar-label">
+                                {{ $label }}
+                            </span>
+
+
+                        </div>
+
+
                     @endforeach
 
+
                 </div>
+
 
             @else
 
+
                 <div class="chart-empty">
-                    Belum ada data jenis hardware.
+                    Belum ada data status hardware.
                 </div>
+
 
             @endif
 
+
         </div>
+
 
     </div>
 
 
-    {{-- SOFTWARE --}}
+
+    {{-- =================================================
+         SOFTWARE
+    ================================================== --}}
 
     <div class="asset-panel">
+
 
         <div class="asset-panel-header">
 
@@ -1486,7 +1879,9 @@ $infraBarMax = max(
 
         </div>
 
+
         <div class="donut-section">
+
 
             <div
                 class="donut software-donut"
@@ -1497,7 +1892,9 @@ $infraBarMax = max(
                 <div class="donut-center">
 
                     <span class="donut-number">
-                        {{ number_format($softwarePengadaanTotal) }}
+                        {{ number_format(
+                            $softwarePengadaanTotal
+                        ) }}
                     </span>
 
                     <span class="donut-caption">
@@ -1508,7 +1905,9 @@ $infraBarMax = max(
 
             </div>
 
+
             <div class="legend">
+
 
                 <div class="legend-item">
 
@@ -1516,7 +1915,9 @@ $infraBarMax = max(
 
                         <span
                             class="legend-dot"
-                            style="background:#2f80d7;"
+                            style="
+                                background:#2f80d7;
+                            "
                         ></span>
 
                         <span class="legend-name">
@@ -1525,9 +1926,22 @@ $infraBarMax = max(
 
                     </div>
 
+
                     <span class="legend-value">
-                        {{ number_format($softwarePengadaan['Beli']) }}
-                        ({{ number_format($softwarePersen['Beli'],1,',','.') }}%)
+
+                        {{ number_format(
+                            $softwarePengadaan['Beli']
+                        ) }}
+
+                        (
+                        {{ number_format(
+                            $softwarePersen['Beli'],
+                            1,
+                            ',',
+                            '.'
+                        ) }}%
+                        )
+
                     </span>
 
                 </div>
@@ -1539,7 +1953,9 @@ $infraBarMax = max(
 
                         <span
                             class="legend-dot"
-                            style="background:#9ca3af;"
+                            style="
+                                background:#9ca3af;
+                            "
                         ></span>
 
                         <span class="legend-name">
@@ -1548,53 +1964,109 @@ $infraBarMax = max(
 
                     </div>
 
+
                     <span class="legend-value">
-                        {{ number_format($softwarePengadaan['Sewa']) }}
-                        ({{ number_format($softwarePersen['Sewa'],1,',','.') }}%)
+
+                        {{ number_format(
+                            $softwarePengadaan['Sewa']
+                        ) }}
+
+                        (
+                        {{ number_format(
+                            $softwarePersen['Sewa'],
+                            1,
+                            ',',
+                            '.'
+                        ) }}%
+                        )
+
                     </span>
 
                 </div>
 
+
             </div>
+
 
         </div>
 
 
         <div class="bar-section">
 
+
             <div class="bar-title">
                 Status
             </div>
 
+
             @if(array_sum($softwareStatus) > 0)
+
 
                 <div class="bar-chart">
 
+
                     @foreach($softwareStatus as $label => $value)
+
 
                         @php
 
-                            $height = $value > 0
-                                ? max(4, ($value / $softwareBarMax) * 55)
-                                : 0;
+                            $height =
+                                $value > 0
+
+                                    ? max(
+                                        4,
+                                        (
+                                            $value
+                                            / $softwareBarMax
+                                        ) * 55
+                                    )
+
+                                    : 0;
+
 
                             if ($label === 'Tersedia') {
-                                $barColor = '#16a34a';
-                            } elseif ($label === 'Akan Habis') {
-                                $barColor = '#f59e0b';
+
+                                $barColor =
+                                    '#16a34a';
+
+                            } elseif (
+                                $label === 'Akan Habis'
+                            ) {
+
+                                $barColor =
+                                    '#f59e0b';
+
                             } else {
-                                $barColor = '#ef4444';
+
+                                $barColor =
+                                    '#ef4444';
+
                             }
 
-                            if ($label === 'Akan Habis') {
-                                $barLabel = 'Akan habis';
-                            } elseif ($label === 'Expired') {
-                                $barLabel = 'Exp';
+
+                            if (
+                                $label === 'Akan Habis'
+                            ) {
+
+                                $barLabel =
+                                    'Akan habis';
+
+                            } elseif (
+                                $label === 'Expired'
+                            ) {
+
+                                $barLabel =
+                                    'Exp';
+
                             } else {
-                                $barLabel = $label;
+
+                                $barLabel =
+                                    $label;
+
                             }
 
                         @endphp
+
 
                         <div class="bar-item">
 
@@ -1602,14 +2074,19 @@ $infraBarMax = max(
                                 {{ number_format($value) }}
                             </span>
 
+
                             <div
                                 class="bar"
                                 data-height="{{ $height }}"
                                 style="
-                                    height: {{ $height }}px;
-                                    background: {{ $barColor }};
+                                    height:
+                                        {{ $height }}px;
+
+                                    background:
+                                        {{ $barColor }};
                                 "
                             ></div>
+
 
                             <span class="bar-label">
                                 {{ $barLabel }}
@@ -1617,26 +2094,37 @@ $infraBarMax = max(
 
                         </div>
 
+
                     @endforeach
+
 
                 </div>
 
+
             @else
+
 
                 <div class="chart-empty">
                     Belum ada data status software.
                 </div>
 
+
             @endif
 
+
         </div>
+
 
     </div>
 
 
-    {{-- INFRASTRUKTUR --}}
+
+    {{-- =================================================
+         INFRASTRUKTUR
+    ================================================== --}}
 
     <div class="asset-panel">
+
 
         <div class="asset-panel-header">
 
@@ -1648,7 +2136,9 @@ $infraBarMax = max(
 
         </div>
 
+
         <div class="donut-section">
+
 
             <div
                 class="donut infrastructure-donut"
@@ -1659,7 +2149,9 @@ $infraBarMax = max(
                 <div class="donut-center">
 
                     <span class="donut-number">
-                        {{ number_format($infraPengadaanTotal) }}
+                        {{ number_format(
+                            $infraPengadaanTotal
+                        ) }}
                     </span>
 
                     <span class="donut-caption">
@@ -1670,15 +2162,20 @@ $infraBarMax = max(
 
             </div>
 
+
             <div class="legend">
 
+
                 <div class="legend-item">
+
 
                     <div class="legend-left">
 
                         <span
                             class="legend-dot"
-                            style="background:#2f80d7;"
+                            style="
+                                background:#2f80d7;
+                            "
                         ></span>
 
                         <span class="legend-name">
@@ -1687,21 +2184,38 @@ $infraBarMax = max(
 
                     </div>
 
+
                     <span class="legend-value">
-                        {{ number_format($infraPengadaan['Beli']) }}
-                        ({{ number_format($infraPersen['Beli'],1,',','.') }}%)
+
+                        {{ number_format(
+                            $infraPengadaan['Beli']
+                        ) }}
+
+                        (
+                        {{ number_format(
+                            $infraPersen['Beli'],
+                            1,
+                            ',',
+                            '.'
+                        ) }}%
+                        )
+
                     </span>
+
 
                 </div>
 
 
                 <div class="legend-item">
 
+
                     <div class="legend-left">
 
                         <span
                             class="legend-dot"
-                            style="background:#9ca3af;"
+                            style="
+                                background:#9ca3af;
+                            "
                         ></span>
 
                         <span class="legend-name">
@@ -1710,53 +2224,110 @@ $infraBarMax = max(
 
                     </div>
 
+
                     <span class="legend-value">
-                        {{ number_format($infraPengadaan['Sewa']) }}
-                        ({{ number_format($infraPersen['Sewa'],1,',','.') }}%)
+
+                        {{ number_format(
+                            $infraPengadaan['Sewa']
+                        ) }}
+
+                        (
+                        {{ number_format(
+                            $infraPersen['Sewa'],
+                            1,
+                            ',',
+                            '.'
+                        ) }}%
+                        )
+
                     </span>
+
 
                 </div>
 
+
             </div>
+
 
         </div>
 
 
         <div class="bar-section">
 
+
             <div class="bar-title">
                 Status keseluruhan
             </div>
 
+
             @if(array_sum($infraStatus) > 0)
+
 
                 <div class="bar-chart">
 
+
                     @foreach($infraStatus as $label => $value)
+
 
                         @php
 
-                            $height = $value > 0
-                                ? max(4, ($value / $infraBarMax) * 55)
-                                : 0;
+                            $height =
+                                $value > 0
+
+                                    ? max(
+                                        4,
+                                        (
+                                            $value
+                                            / $infraBarMax
+                                        ) * 55
+                                    )
+
+                                    : 0;
+
 
                             if ($label === 'Tersedia') {
-                                $barColor = '#16a34a';
-                            } elseif ($label === 'Akan Habis') {
-                                $barColor = '#f59e0b';
+
+                                $barColor =
+                                    '#16a34a';
+
+                            } elseif (
+                                $label === 'Akan Habis'
+                            ) {
+
+                                $barColor =
+                                    '#f59e0b';
+
                             } else {
-                                $barColor = '#ef4444';
+
+                                $barColor =
+                                    '#ef4444';
+
                             }
 
-                            if ($label === 'Akan Habis') {
-                                $barLabel = 'Akan habis';
-                            } elseif ($label === 'Expired') {
-                                $barLabel = 'Exp';
+
+                            if (
+                                $label === 'Akan Habis'
+                            ) {
+
+                                $barLabel =
+                                    'Akan habis';
+
+                            } elseif (
+                                $label === 'Expired'
+                            ) {
+
+                                $barLabel =
+                                    'Exp';
+
                             } else {
-                                $barLabel = $label;
+
+                                $barLabel =
+                                    $label;
+
                             }
 
                         @endphp
+
 
                         <div class="bar-item">
 
@@ -1764,14 +2335,19 @@ $infraBarMax = max(
                                 {{ number_format($value) }}
                             </span>
 
+
                             <div
                                 class="bar"
                                 data-height="{{ $height }}"
                                 style="
-                                    height: {{ $height }}px;
-                                    background: {{ $barColor }};
+                                    height:
+                                        {{ $height }}px;
+
+                                    background:
+                                        {{ $barColor }};
                                 "
                             ></div>
+
 
                             <span class="bar-label">
                                 {{ $barLabel }}
@@ -1779,32 +2355,43 @@ $infraBarMax = max(
 
                         </div>
 
+
                     @endforeach
+
 
                 </div>
 
+
             @else
+
 
                 <div class="chart-empty">
                     Belum ada data status infrastruktur.
                 </div>
 
+
             @endif
+
 
         </div>
 
+
     </div>
+
 
 </div>
 
 
+
 {{-- =====================================================
      AKTIVITAS TERBARU
-====================================================== --}}
+===================================================== --}}
 
 <div class="dashboard-card activity-card">
 
+
     <div class="card-header">
+
 
         <div>
 
@@ -1818,48 +2405,47 @@ $infraBarMax = max(
 
         </div>
 
+
         @if($activities->isNotEmpty())
 
             <div class="activity-total">
 
                 <i class="bi bi-activity"></i>
 
-                {{ $activities->count() }} Aktivitas
+                {{ $activities->count() }}
+                Aktivitas
 
             </div>
 
         @endif
 
+
     </div>
+
 
 
     <div class="activity-list">
 
+
         @forelse($activities as $activity)
+
 
             @php
 
-                /*
-                |--------------------------------------------------------------------------
-                | AMBIL DATA AKTIVITAS
-                |--------------------------------------------------------------------------
-                */
 
                 if (is_array($activity)) {
+
 
                     $activityDateValue =
                         $activity['date']
                         ?? $activity['created_at']
                         ?? null;
 
+
                     $activityIcon =
                         $activity['icon']
                         ?? 'bi-activity';
 
-                    /*
-                    | Controller sekarang harus mengirim
-                    | username operator yang benar.
-                    */
 
                     $activityOperator =
                         $activity['operator']
@@ -1867,24 +2453,30 @@ $infraBarMax = max(
                         ?? $activity['user_name']
                         ?? 'Operator';
 
+
                     $activityFeature =
                         $activity['feature']
                         ?? 'Inventory IT Assets';
+
 
                     $activityText =
                         $activity['text']
                         ?? 'Aktivitas data aset';
 
+
                 } else {
+
 
                     $activityDateValue =
                         $activity->date
                         ?? $activity->created_at
                         ?? null;
 
+
                     $activityIcon =
                         $activity->icon
                         ?? 'bi-activity';
+
 
                     $activityOperator =
                         $activity->operator
@@ -1892,54 +2484,62 @@ $infraBarMax = max(
                         ?? $activity->user_name
                         ?? 'Operator';
 
+
                     $activityFeature =
                         $activity->feature
                         ?? 'Inventory IT Assets';
+
 
                     $activityText =
                         $activity->text
                         ?? 'Aktivitas data aset';
 
+
                 }
 
-                /*
-                |--------------------------------------------------------------------------
-                | ICON
-                |--------------------------------------------------------------------------
-                */
 
-                $activityIcon = trim((string) $activityIcon);
+                $activityIcon =
+                    trim((string) $activityIcon);
 
-                if (!str_starts_with($activityIcon, 'bi-')) {
-                    $activityIcon = 'bi-' . $activityIcon;
+
+                if (
+                    !str_starts_with(
+                        $activityIcon,
+                        'bi-'
+                    )
+                ) {
+
+                    $activityIcon =
+                        'bi-' . $activityIcon;
+
                 }
 
-                /*
-                |--------------------------------------------------------------------------
-                | TANGGAL
-                |--------------------------------------------------------------------------
-                |
-                | Controller sudah mengirim Carbon dalam timezone
-                | Asia/Jakarta.
-                |
-                | Blade TIDAK melakukan konversi UTC lagi.
-                |
-                */
 
                 $activityDate = null;
 
-                if ($activityDateValue instanceof \Carbon\Carbon) {
 
-                    $activityDate = $activityDateValue->copy();
+                if (
+                    $activityDateValue
+                    instanceof \Carbon\Carbon
+                ) {
 
-                } elseif ($activityDateValue instanceof \DateTimeInterface) {
+                    $activityDate =
+                        $activityDateValue->copy();
+
+                } elseif (
+                    $activityDateValue
+                    instanceof \DateTimeInterface
+                ) {
 
                     $activityDate =
                         \Carbon\Carbon::instance(
                             $activityDateValue
                         );
 
-                } elseif (!empty($activityDateValue)) {
+                } elseif (
+                    !empty($activityDateValue)
+                ) {
+
 
                     try {
 
@@ -1957,56 +2557,62 @@ $infraBarMax = max(
 
                 }
 
-                /*
-                |--------------------------------------------------------------------------
-                | FORMAT TANGGAL
-                |--------------------------------------------------------------------------
-                */
 
                 $activityDateLabel = '-';
 
+
                 if ($activityDate) {
+
 
                     if ($activityDate->isToday()) {
 
-                        $activityDateLabel = 'Hari ini';
+                        $activityDateLabel =
+                            'Hari ini';
 
-                    } elseif ($activityDate->isYesterday()) {
+                    } elseif (
+                        $activityDate->isYesterday()
+                    ) {
 
-                        $activityDateLabel = 'Kemarin';
+                        $activityDateLabel =
+                            'Kemarin';
 
                     } else {
 
                         $activityDateLabel =
                             $activityDate
                                 ->locale('id')
-                                ->translatedFormat('d M Y');
+                                ->translatedFormat(
+                                    'd M Y'
+                                );
 
                     }
 
                 }
 
+
             @endphp
+
 
 
             <div class="activity-item">
 
-                {{-- TIMELINE --}}
 
                 <div class="activity-timeline">
 
                     <div class="activity-icon">
 
-                        <i class="bi {{ $activityIcon }}"></i>
+                        <i class="
+                            bi {{ $activityIcon }}
+                        "></i>
 
                     </div>
 
                 </div>
 
 
-                {{-- CONTENT --}}
 
                 <div class="activity-content">
+
 
                     <div class="activity-top">
 
@@ -2026,7 +2632,13 @@ $infraBarMax = max(
 
                     <div class="activity-meta">
 
-                        <span class="activity-meta-item activity-operator">
+
+                        <span
+                            class="
+                                activity-meta-item
+                                activity-operator
+                            "
+                        >
 
                             <i class="bi bi-person"></i>
 
@@ -2037,7 +2649,12 @@ $infraBarMax = max(
 
                         @if($activityDate)
 
-                            <span class="activity-meta-item">
+
+                            <span
+                                class="
+                                    activity-meta-item
+                                "
+                            >
 
                                 <i class="bi bi-clock"></i>
 
@@ -2048,41 +2665,56 @@ $infraBarMax = max(
 
                             </span>
 
+
                         @endif
 
+
                     </div>
+
 
                 </div>
 
 
-                {{-- DATE --}}
 
                 <div class="activity-date">
 
+
                     @if($activityDate)
 
+
                         <span class="activity-date-main">
+
                             {{ $activityDateLabel }}
+
                         </span>
+
 
                         <span class="activity-date-time">
+
                             {{ $activityDate->format('H:i') }}
+
                         </span>
 
+
                     @else
+
 
                         <span class="activity-date-main">
                             -
                         </span>
 
+
                     @endif
 
+
                 </div>
+
 
             </div>
 
 
         @empty
+
 
             <div class="empty-state">
 
@@ -2098,254 +2730,545 @@ $infraBarMax = max(
 
             </div>
 
+
         @endforelse
+
 
     </div>
 
+
 </div>
 
 
 </div>
+
 
 <script>
 
-document.addEventListener('DOMContentLoaded', function () {
-
-    const duration = 1200;
-
-
-    /*
-    |--------------------------------------------------------------------------
-    | HARDWARE DONUT
-    |--------------------------------------------------------------------------
-    */
-
-    const hardware =
-        document.querySelector('.hardware-donut');
-
-    if (hardware) {
-
-        const targetBaik =
-            parseFloat(hardware.dataset.baik) || 0;
-
-        const targetPerbaikan =
-            parseFloat(hardware.dataset.perbaikan) || 0;
-
-        const total =
-            parseFloat(hardware.dataset.total) || 0;
-
-        if (total <= 0) {
-
-            hardware.style.background = '#e5e7eb';
-
-        } else {
-
-            const start = performance.now();
-
-            function animateHardware(time) {
-
-                const progress =
-                    Math.min(
-                        (time - start) / duration,
-                        1
-                    );
-
-                const ease =
-                    1 - Math.pow(1 - progress, 3);
-
-                const baik =
-                    targetBaik * ease;
-
-                const perbaikan =
-                    targetPerbaikan * ease;
-
-                hardware.style.background = `
-                    conic-gradient(
-                        #16a34a 0deg ${baik}deg,
-                        #f59e0b ${baik}deg ${perbaikan}deg,
-                        #ef4444 ${perbaikan}deg 360deg
-                    )
-                `;
-
-                if (progress < 1) {
-                    requestAnimationFrame(animateHardware);
-                }
-            }
-
-            requestAnimationFrame(animateHardware);
-        }
-    }
+document.addEventListener(
+    'DOMContentLoaded',
+    function () {
 
 
-    /*
-    |--------------------------------------------------------------------------
-    | SOFTWARE DONUT
-    |--------------------------------------------------------------------------
-    */
-
-    const software =
-        document.querySelector('.software-donut');
-
-    if (software) {
-
-        const targetBeli =
-            parseFloat(software.dataset.beli) || 0;
-
-        const total =
-            parseFloat(software.dataset.total) || 0;
-
-        if (total <= 0) {
-
-            software.style.background = '#e5e7eb';
-
-        } else {
-
-            const start = performance.now();
-
-            function animateSoftware(time) {
-
-                const progress =
-                    Math.min(
-                        (time - start) / duration,
-                        1
-                    );
-
-                const ease =
-                    1 - Math.pow(1 - progress, 3);
-
-                const beli =
-                    targetBeli * ease;
-
-                software.style.background = `
-                    conic-gradient(
-                        #2f80d7 0deg ${beli}deg,
-                        #9ca3af ${beli}deg 360deg
-                    )
-                `;
-
-                if (progress < 1) {
-                    requestAnimationFrame(animateSoftware);
-                }
-            }
-
-            requestAnimationFrame(animateSoftware);
-        }
-    }
+        const duration = 1200;
 
 
-    /*
-    |--------------------------------------------------------------------------
-    | INFRASTRUKTUR DONUT
-    |--------------------------------------------------------------------------
-    */
+        /*
+        |--------------------------------------------------------------------------
+        | HARDWARE DONUT
+        |--------------------------------------------------------------------------
+        | Donut berdasarkan JENIS BARANG
+        */
 
-    const infrastructure =
-        document.querySelector('.infrastructure-donut');
-
-    if (infrastructure) {
-
-        const targetBeli =
-            parseFloat(infrastructure.dataset.beli) || 0;
-
-        const total =
-            parseFloat(infrastructure.dataset.total) || 0;
-
-        if (total <= 0) {
-
-            infrastructure.style.background = '#e5e7eb';
-
-        } else {
-
-            const start = performance.now();
-
-            function animateInfrastructure(time) {
-
-                const progress =
-                    Math.min(
-                        (time - start) / duration,
-                        1
-                    );
-
-                const ease =
-                    1 - Math.pow(1 - progress, 3);
-
-                const beli =
-                    targetBeli * ease;
-
-                infrastructure.style.background = `
-                    conic-gradient(
-                        #2f80d7 0deg ${beli}deg,
-                        #9ca3af ${beli}deg 360deg
-                    )
-                `;
-
-                if (progress < 1) {
-                    requestAnimationFrame(
-                        animateInfrastructure
-                    );
-                }
-            }
-
-            requestAnimationFrame(
-                animateInfrastructure
+        const hardware =
+            document.querySelector(
+                '.hardware-donut'
             );
-        }
-    }
 
 
-    /*
-    |--------------------------------------------------------------------------
-    | BAR CHART
-    |--------------------------------------------------------------------------
-    */
+        if (hardware) {
 
-    const bars =
-        document.querySelectorAll('.bar');
 
-    bars.forEach(function (bar) {
+            const total =
+                parseFloat(
+                    hardware.dataset.total
+                ) || 0;
 
-        const targetHeight =
-            parseFloat(bar.dataset.height) || 0;
 
-        const start = performance.now();
+            const jenisData =
+                @json($hardwareJenis);
 
-        function animateBar(time) {
 
-            const progress =
-                Math.min(
-                    (time - start) / duration,
-                    1
+            const jenisColors = {
+
+                Laptop:
+                    '#079bd8',
+
+                PC:
+                    '#6366f1',
+
+                Printer:
+                    '#8b5cf6',
+
+                Monitor:
+                    '#ec4899',
+
+                Keyboard:
+                    '#f59e0b',
+
+                Mouse:
+                    '#16a34a',
+
+                Camera:
+                    '#ef4444'
+
+            };
+
+
+            if (total <= 0) {
+
+
+                hardware.style.background =
+                    '#e5e7eb';
+
+
+            } else {
+
+
+                const segments = [];
+
+                let currentDegree = 0;
+
+
+                Object.entries(
+                    jenisData
+                ).forEach(
+                    function ([label,value]) {
+
+
+                        value =
+                            parseFloat(value)
+                            || 0;
+
+
+                        if (value <= 0) {
+
+                            return;
+
+                        }
+
+
+                        const degree =
+                            (
+                                value
+                                / total
+                            ) * 360;
+
+
+                        const start =
+                            currentDegree;
+
+
+                        const end =
+                            currentDegree
+                            + degree;
+
+
+                        segments.push({
+
+                            start:
+                                start,
+
+                            end:
+                                end,
+
+                            color:
+                                jenisColors[label]
+                                || '#9ca3af'
+
+                        });
+
+
+                        currentDegree =
+                            end;
+
+
+                    }
                 );
 
-            const ease =
-                1 - Math.pow(1 - progress, 3);
 
-            const height =
-                targetHeight * ease;
+                const start =
+                    performance.now();
 
-            bar.style.height =
-                height + 'px';
 
-            if (progress < 1) {
+                function animateHardware(time) {
+
+
+                    const progress =
+                        Math.min(
+
+                            (
+                                time - start
+                            ) / duration,
+
+                            1
+
+                        );
+
+
+                    const ease =
+                        1 -
+                        Math.pow(
+                            1 - progress,
+                            3
+                        );
+
+
+                    const gradientParts =
+                        segments.map(
+                            function (segment) {
+
+
+                                const animatedStart =
+                                    segment.start
+                                    * ease;
+
+
+                                const animatedEnd =
+                                    segment.end
+                                    * ease;
+
+
+                                return `
+                                    ${segment.color}
+                                    ${animatedStart}deg
+                                    ${animatedEnd}deg
+                                `;
+
+
+                            }
+                        );
+
+
+                    hardware.style.background =
+                        `conic-gradient(
+                            ${gradientParts.join(',')}
+                        )`;
+
+
+                    if (progress < 1) {
+
+
+                        requestAnimationFrame(
+                            animateHardware
+                        );
+
+
+                    }
+
+
+                }
+
+
+                requestAnimationFrame(
+                    animateHardware
+                );
+
+
+            }
+
+
+        }
+
+
+
+        /*
+        |--------------------------------------------------------------------------
+        | SOFTWARE DONUT
+        |--------------------------------------------------------------------------
+        */
+
+        const software =
+            document.querySelector(
+                '.software-donut'
+            );
+
+
+        if (software) {
+
+
+            const targetBeli =
+                parseFloat(
+                    software.dataset.beli
+                ) || 0;
+
+
+            const total =
+                parseFloat(
+                    software.dataset.total
+                ) || 0;
+
+
+            if (total <= 0) {
+
+
+                software.style.background =
+                    '#e5e7eb';
+
+
+            } else {
+
+
+                const start =
+                    performance.now();
+
+
+                function animateSoftware(time) {
+
+
+                    const progress =
+                        Math.min(
+
+                            (
+                                time - start
+                            ) / duration,
+
+                            1
+
+                        );
+
+
+                    const ease =
+                        1 -
+                        Math.pow(
+                            1 - progress,
+                            3
+                        );
+
+
+                    const beli =
+                        targetBeli
+                        * ease;
+
+
+                    software.style.background = `
+                        conic-gradient(
+                            #2f80d7
+                            0deg
+                            ${beli}deg,
+
+                            #9ca3af
+                            ${beli}deg
+                            360deg
+                        )
+                    `;
+
+
+                    if (progress < 1) {
+
+
+                        requestAnimationFrame(
+                            animateSoftware
+                        );
+
+
+                    }
+
+
+                }
+
+
+                requestAnimationFrame(
+                    animateSoftware
+                );
+
+
+            }
+
+
+        }
+
+
+
+        /*
+        |--------------------------------------------------------------------------
+        | INFRASTRUKTUR DONUT
+        |--------------------------------------------------------------------------
+        */
+
+        const infrastructure =
+            document.querySelector(
+                '.infrastructure-donut'
+            );
+
+
+        if (infrastructure) {
+
+
+            const targetBeli =
+                parseFloat(
+                    infrastructure.dataset.beli
+                ) || 0;
+
+
+            const total =
+                parseFloat(
+                    infrastructure.dataset.total
+                ) || 0;
+
+
+            if (total <= 0) {
+
+
+                infrastructure.style.background =
+                    '#e5e7eb';
+
+
+            } else {
+
+
+                const start =
+                    performance.now();
+
+
+                function animateInfrastructure(time) {
+
+
+                    const progress =
+                        Math.min(
+
+                            (
+                                time - start
+                            ) / duration,
+
+                            1
+
+                        );
+
+
+                    const ease =
+                        1 -
+                        Math.pow(
+                            1 - progress,
+                            3
+                        );
+
+
+                    const beli =
+                        targetBeli
+                        * ease;
+
+
+                    infrastructure.style.background = `
+                        conic-gradient(
+                            #2f80d7
+                            0deg
+                            ${beli}deg,
+
+                            #9ca3af
+                            ${beli}deg
+                            360deg
+                        )
+                    `;
+
+
+                    if (progress < 1) {
+
+
+                        requestAnimationFrame(
+                            animateInfrastructure
+                        );
+
+
+                    }
+
+
+                }
+
+
+                requestAnimationFrame(
+                    animateInfrastructure
+                );
+
+
+            }
+
+
+        }
+
+
+
+        /*
+        |--------------------------------------------------------------------------
+        | BAR CHART
+        |--------------------------------------------------------------------------
+        */
+
+        const bars =
+            document.querySelectorAll(
+                '.bar'
+            );
+
+
+        bars.forEach(
+            function (bar) {
+
+
+                const targetHeight =
+                    parseFloat(
+                        bar.dataset.height
+                    ) || 0;
+
+
+                const start =
+                    performance.now();
+
+
+                function animateBar(time) {
+
+
+                    const progress =
+                        Math.min(
+
+                            (
+                                time - start
+                            ) / duration,
+
+                            1
+
+                        );
+
+
+                    const ease =
+                        1 -
+                        Math.pow(
+                            1 - progress,
+                            3
+                        );
+
+
+                    const height =
+                        targetHeight
+                        * ease;
+
+
+                    bar.style.height =
+                        height + 'px';
+
+
+                    if (progress < 1) {
+
+
+                        requestAnimationFrame(
+                            animateBar
+                        );
+
+
+                    } else {
+
+
+                        bar.style.height =
+                            targetHeight
+                            + 'px';
+
+
+                    }
+
+
+                }
+
 
                 requestAnimationFrame(
                     animateBar
                 );
 
-            } else {
-
-                bar.style.height =
-                    targetHeight + 'px';
 
             }
+        );
 
-        }
 
-        requestAnimationFrame(animateBar);
-
-    });
-
-});
+    }
+);
 
 </script>
 

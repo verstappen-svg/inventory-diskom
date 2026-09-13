@@ -29,27 +29,49 @@ class DataCenter extends Model
 
     protected $fillable = [
         'id',
-        'nama_infrastruktur',
-        'spesifikasi',
-        'pengadaan',
-        'harga',
-        'tanggal_pengadaan',
-        'tanggal_berakhir',
+
+        // Identitas perangkat
+        'name',
         'status',
+        'tenant',
+        'site',
+        'rack',
+        'role',
+
+        // Spesifikasi perangkat
+        'manufacturer',
+        'type',
+        'platform',
+        'version',
+        'serial_number',
+        'ip_address',
+        'cpu',
+        'harddisk',
+        'ram',
+        'pic',
+
+        // Organisasi & lokasi
+        'tenant_group',
+        'region',
+        'location',
+        'position',
+        'rack_face',
+        'ipv4_address',
+        'cluster',
+
+        // Keterangan
+        'description',
+        'comments',
+
+        // Owner
+        'owner_group',
+        'owner',
+
+        // Rack
+        'u_height',
+
+        // Verifikasi
         'verifikasi',
         'komentar',
-    ];
-
-
-    /*
-    |--------------------------------------------------------------------------
-    | CAST
-    |--------------------------------------------------------------------------
-    */
-
-    protected $casts = [
-        'tanggal_pengadaan' => 'date',
-        'tanggal_berakhir' => 'date',
-        'harga' => 'decimal:2',
     ];
 }

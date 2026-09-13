@@ -330,7 +330,7 @@ class DashboardController extends Controller
             case 'admin':
 
                 return view(
-                    'dashboard.superadmin',
+                    'dashboard.super-admin',
                     $viewData
                 );
 
@@ -1666,6 +1666,12 @@ class DashboardController extends Controller
                         $updatedRaw
                     );
 
+                /*
+                |--------------------------------------------------------------------------
+                | CREATED
+                |--------------------------------------------------------------------------
+                */
+
                 if ($createdDate) {
 
                     $activityDate =
@@ -1674,7 +1680,7 @@ class DashboardController extends Controller
 
                 /*
                 |--------------------------------------------------------------------------
-                | UPDATE HANYA JIKA BENAR-BENAR LEBIH BARU
+                | UPDATED
                 |--------------------------------------------------------------------------
                 */
 
@@ -1722,16 +1728,11 @@ class DashboardController extends Controller
 
                 /*
                 |--------------------------------------------------------------------------
-                | CARI USER YANG MELAKUKAN AKTIVITAS
+                | USER YANG MELAKUKAN AKTIVITAS
                 |--------------------------------------------------------------------------
                 */
 
                 $userId = null;
-
-                /*
-                | Kalau UPDATE:
-                | updated_by > user_id > created_by
-                */
 
                 if ($activityType === 'updated') {
 
@@ -1762,11 +1763,6 @@ class DashboardController extends Controller
 
                 } else {
 
-                    /*
-                    | Kalau CREATE:
-                    | created_by > user_id > updated_by
-                    */
-
                     if (
                         isset($row->created_by) &&
                         $row->created_by
@@ -1795,7 +1791,7 @@ class DashboardController extends Controller
 
                 /*
                 |--------------------------------------------------------------------------
-                | NAMA / USERNAME USER
+                | NAMA USER
                 |--------------------------------------------------------------------------
                 */
 
@@ -1806,7 +1802,7 @@ class DashboardController extends Controller
 
                 /*
                 |--------------------------------------------------------------------------
-                | TEXT
+                | TEXT AKTIVITAS
                 |--------------------------------------------------------------------------
                 */
 
@@ -1835,8 +1831,25 @@ class DashboardController extends Controller
 
                 /*
                 |--------------------------------------------------------------------------
-                | TANGGAL LENGKAP
+                | PASTIKAN WIB
                 |--------------------------------------------------------------------------
+                */
+
+                $activityDate =
+                    $activityDate
+                        ->copy()
+                        ->setTimezone(
+                            'Asia/Jakarta'
+                        );
+
+                /*
+                |--------------------------------------------------------------------------
+                | FORMAT TANGGAL
+                |--------------------------------------------------------------------------
+                |
+                | Contoh:
+                | 08 September 2026, 14:35
+                |
                 */
 
                 $tanggal =
@@ -1848,7 +1861,24 @@ class DashboardController extends Controller
 
                 /*
                 |--------------------------------------------------------------------------
-                | SIMPAN
+                | FORMAT JAM
+                |--------------------------------------------------------------------------
+                |
+                | Contoh:
+                | 14:35
+                |
+                | Key ini dibutuhkan oleh Blade:
+                | $activity['time']
+                |
+                */
+
+                $time =
+                    $activityDate
+                        ->format('H:i');
+
+                /*
+                |--------------------------------------------------------------------------
+                | SIMPAN AKTIVITAS
                 |--------------------------------------------------------------------------
                 */
 
@@ -1858,6 +1888,9 @@ class DashboardController extends Controller
 
                     'tanggal' =>
                         $tanggal,
+
+                    'time' =>
+                        $time,
 
                     'operator' =>
                         $operator,
@@ -1982,6 +2015,15 @@ class DashboardController extends Controller
                         'Asia/Jakarta'
                     );
             }
+
+            /*
+            |--------------------------------------------------------------------------
+            | TIMESTAMP DATABASE
+            |--------------------------------------------------------------------------
+            |
+            | Data database dianggap berasal dari timezone aplikasi.
+            |
+            */
 
             return Carbon::createFromFormat(
                 'Y-m-d H:i:s',
@@ -2123,6 +2165,7 @@ class DashboardController extends Controller
                         $value,
                         [
                             'menunggu',
+                            'menunggu disetujui',
                             'pending',
                             'belum',
                             'belum diverifikasi',

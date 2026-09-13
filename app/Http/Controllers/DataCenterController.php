@@ -2,95 +2,148 @@
 
 namespace App\Http\Controllers;
 
+use App\Exports\DataCenterTemplateExport;
+use App\Imports\DataCenterImport;
 use App\Models\DataCenter;
+use App\Models\VerificationRequest;
 use Illuminate\Http\Request;
-use Carbon\Carbon;
+use Illuminate\Support\Facades\DB;
+use Illuminate\Validation\Rule;
+use Maatwebsite\Excel\Facades\Excel;
 
 class DataCenterController extends Controller
 {
     /*
     |--------------------------------------------------------------------------
-    | HITUNG STATUS OTOMATIS
+    | PILIHAN DROPDOWN
     |--------------------------------------------------------------------------
     */
 
-    private function getStatusOtomatis($dataCenter)
+    private function allowedStatuses(): array
     {
-        /*
-        |--------------------------------------------------------------------------
-        | JIKA BELI
-        |--------------------------------------------------------------------------
-        */
-
-        if ($dataCenter->pengadaan === 'Beli') {
-            return $dataCenter->status ?? 'Tersedia';
-        }
-
-
-        /*
-        |--------------------------------------------------------------------------
-        | JIKA SEWA
-        |--------------------------------------------------------------------------
-        */
-
-        if (
-            $dataCenter->pengadaan === 'Sewa' &&
-            $dataCenter->tanggal_berakhir
-        ) {
-
-            $today = Carbon::today();
-
-            $tanggalBerakhir = Carbon::parse(
-                $dataCenter->tanggal_berakhir
-            );
-
-
-            /*
-            |--------------------------------------------------------------------------
-            | EXPIRED
-            |--------------------------------------------------------------------------
-            */
-
-            if ($tanggalBerakhir->lt($today)) {
-                return 'Expired';
-            }
-
-
-            /*
-            |--------------------------------------------------------------------------
-            | AKAN HABIS
-            |--------------------------------------------------------------------------
-            */
-
-            if (
-                $tanggalBerakhir->gte($today) &&
-                $tanggalBerakhir->lte(
-                    $today->copy()->addDays(30)
-                )
-            ) {
-                return 'Akan Habis';
-            }
-
-
-            /*
-            |--------------------------------------------------------------------------
-            | DIGUNAKAN
-            |--------------------------------------------------------------------------
-            */
-
-            return 'Digunakan';
-        }
-
-
-        /*
-        |--------------------------------------------------------------------------
-        | FALLBACK
-        |--------------------------------------------------------------------------
-        */
-
-        return $dataCenter->status ?? 'Tersedia';
+        return [
+            'Active',
+            'Offline',
+        ];
     }
 
+    private function allowedTenants(): array
+    {
+        return [
+            'Diskominfostandi',
+            'Dinas Pendidikan',
+            'Sekretariat Daerah',
+            'SatpolPP',
+            'DPMPTSP',
+            'Dinas Tata Ruang',
+            'Bappelitbangda',
+            'Dinas Lingkungan Hidup',
+            'Disdamkarmat',
+            'BKPSDM',
+            'BPKAD',
+        ];
+    }
+
+    private function allowedSites(): array
+    {
+        return [
+            'Data Center Pemerintah Kota Bekasi',
+            'DRC-Batam',
+        ];
+    }
+
+    private function allowedRacks(): array
+    {
+        return [
+            'Rack A01',
+            'Rack A02',
+            'Rack DRC',
+        ];
+    }
+
+    private function allowedRoles(): array
+    {
+        return [
+            'Switch Manage',
+            'Server Managed by Disdik',
+            'Server Managed by Diskominfostandi',
+            'Server Managed by DPMPTSP',
+            'Server Managed by BPKAD',
+            'NAS Managed by Diskominfo',
+            'Router',
+        ];
+    }
+
+    private function allowedManufacturers(): array
+    {
+        return [
+            'Mikrotik',
+            'Hewlett Packard Enterprise',
+            'Lenovo',
+            'Synology',
+            'Supermicro',
+        ];
+    }
+
+    private function allowedRams(): array
+    {
+        return [
+            '4 GB',
+            '8 GB',
+            '16 GB',
+            '32 GB',
+            '40 GB',
+            '64 GB',
+            '96 GB',
+            '128 GB',
+            '192 GB',
+            '256 GB',
+            '512 GB',
+            '1024 GB',
+        ];
+    }
+
+    private function allowedRegions(): array
+    {
+        return [
+            'Kota Bekasi',
+            'Kota Batam',
+        ];
+    }
+
+    private function allowedRackFaces(): array
+    {
+        return [
+            'Front',
+            'Rear',
+        ];
+    }
+
+    private function allowedClusters(): array
+    {
+        return [
+            'DC-Diskominfo',
+        ];
+    }
+
+    private function allowedPositions(): array
+    {
+        return collect(range(1, 42))
+            ->map(fn ($position) => str_pad(
+                $position,
+                2,
+                '0',
+                STR_PAD_LEFT
+            ))
+            ->toArray();
+    }
+
+    private function allowedUHeights(): array
+{
+    return collect(range(1, 42))
+        ->map(fn ($height) => (string) $height)
+        ->toArray();
+}
 
     /*
     |--------------------------------------------------------------------------
@@ -100,6 +153,12 @@ class DataCenterController extends Controller
 
     public function index(Request $request)
     {
+        /*
+        |--------------------------------------------------------------------------
+        | QUERY DATA CENTER
+        |--------------------------------------------------------------------------
+        */
+
         $query = DataCenter::query();
 
 
@@ -107,40 +166,124 @@ class DataCenterController extends Controller
         |--------------------------------------------------------------------------
         | SEARCH
         |--------------------------------------------------------------------------
+        |
+        | Search dilakukan langsung ke database.
+        | Jadi search tetap berlaku untuk seluruh data,
+        | bukan hanya 25 data yang sedang tampil.
+        |
         */
 
         if ($request->filled('search')) {
 
-            $search = $request->search;
+            $search = trim($request->search);
 
             $query->where(function ($q) use ($search) {
 
                 $q->where('id', 'like', "%{$search}%")
-                    ->orWhere(
-                        'nama_infrastruktur',
-                        'like',
-                        "%{$search}%"
-                    )
-                    ->orWhere(
-                        'spesifikasi',
-                        'like',
-                        "%{$search}%"
-                    );
+                    ->orWhere('name', 'like', "%{$search}%")
+                    ->orWhere('status', 'like', "%{$search}%")
+                    ->orWhere('type', 'like', "%{$search}%")
+                    ->orWhere('platform', 'like', "%{$search}%")
+                    ->orWhere('version', 'like', "%{$search}%")
+                    ->orWhere('serial_number', 'like', "%{$search}%")
+                    ->orWhere('ip_address', 'like', "%{$search}%")
+                    ->orWhere('ipv4_address', 'like', "%{$search}%")
+                    ->orWhere('cpu', 'like', "%{$search}%")
+                    ->orWhere('harddisk', 'like', "%{$search}%")
+                    ->orWhere('ram', 'like', "%{$search}%")
+                    ->orWhere('tenant', 'like', "%{$search}%")
+                    ->orWhere('tenant_group', 'like', "%{$search}%")
+                    ->orWhere('site', 'like', "%{$search}%")
+                    ->orWhere('rack', 'like', "%{$search}%")
+                    ->orWhere('position', 'like', "%{$search}%")
+                    ->orWhere('u_height', 'like', "%{$search}%")
+                    ->orWhere('rack_face', 'like', "%{$search}%")
+                    ->orWhere('role', 'like', "%{$search}%")
+                    ->orWhere('manufacturer', 'like', "%{$search}%")
+                    ->orWhere('pic', 'like', "%{$search}%")
+                    ->orWhere('region', 'like', "%{$search}%")
+                    ->orWhere('location', 'like', "%{$search}%")
+                    ->orWhere('cluster', 'like', "%{$search}%")
+                    ->orWhere('owner_group', 'like', "%{$search}%")
+                    ->orWhere('owner', 'like', "%{$search}%")
+                    ->orWhere('description', 'like', "%{$search}%")
+                    ->orWhere('verifikasi', 'like', "%{$search}%")
+                    ->orWhere('komentar', 'like', "%{$search}%");
             });
         }
 
 
         /*
         |--------------------------------------------------------------------------
-        | FILTER PENGADAAN
+        | FILTER STATUS
         |--------------------------------------------------------------------------
         */
 
-        if ($request->filled('pengadaan')) {
+        if ($request->filled('status')) {
 
             $query->where(
-                'pengadaan',
-                $request->pengadaan
+                'status',
+                $request->status
+            );
+        }
+
+
+        /*
+        |--------------------------------------------------------------------------
+        | FILTER TENANT
+        |--------------------------------------------------------------------------
+        */
+
+        if ($request->filled('tenant')) {
+
+            $query->where(
+                'tenant',
+                $request->tenant
+            );
+        }
+
+
+        /*
+        |--------------------------------------------------------------------------
+        | FILTER SITE
+        |--------------------------------------------------------------------------
+        */
+
+        if ($request->filled('site')) {
+
+            $query->where(
+                'site',
+                $request->site
+            );
+        }
+
+
+        /*
+        |--------------------------------------------------------------------------
+        | FILTER MANUFACTURER
+        |--------------------------------------------------------------------------
+        */
+
+        if ($request->filled('manufacturer')) {
+
+            $query->where(
+                'manufacturer',
+                $request->manufacturer
+            );
+        }
+
+
+        /*
+        |--------------------------------------------------------------------------
+        | FILTER PLATFORM
+        |--------------------------------------------------------------------------
+        */
+
+        if ($request->filled('platform')) {
+
+            $query->where(
+                'platform',
+                $request->platform
             );
         }
 
@@ -162,145 +305,124 @@ class DataCenterController extends Controller
 
         /*
         |--------------------------------------------------------------------------
-        | FILTER TAHUN
+        | DATA + PAGINATION
         |--------------------------------------------------------------------------
         |
-        | Filter berdasarkan tahun dari tanggal_pengadaan.
+        | Maksimal 25 data per halaman.
         |
-        */
-
-        if ($request->filled('tahun')) {
-
-            $query->whereYear(
-                'tanggal_pengadaan',
-                $request->tahun
-            );
-        }
-
-
-        /*
-        |--------------------------------------------------------------------------
-        | AMBIL DATA
-        |--------------------------------------------------------------------------
+        | withQueryString() memastikan search dan filter tetap
+        | terbawa ketika user pindah halaman.
+        |
         */
 
         $dataCenters = $query
             ->orderByDesc('created_at')
-            ->orderBy('id')
-            ->get();
+            ->paginate(25)
+            ->withQueryString();
 
 
         /*
         |--------------------------------------------------------------------------
-        | HITUNG STATUS OTOMATIS
+        | SUMMARY
         |--------------------------------------------------------------------------
+        |
+        | Tidak perlu mengambil seluruh data dengan ->get().
+        | Langsung hitung melalui database supaya lebih ringan.
+        |
         */
 
-        foreach ($dataCenters as $dataCenter) {
+        $totalDataCenter = DataCenter::count();
 
-            $dataCenter->status_otomatis =
-                $this->getStatusOtomatis($dataCenter);
-        }
+        $active = DataCenter::where(
+            'status',
+            'Active'
+        )->count();
+
+        $offline = DataCenter::where(
+            'status',
+            'Offline'
+        )->count();
 
 
         /*
         |--------------------------------------------------------------------------
-        | FILTER STATUS
+        | DROPDOWN
         |--------------------------------------------------------------------------
-        |
-        | Status tidak langsung diambil dari database karena:
-        |
-        | Beli  -> Tersedia / Digunakan
-        | Sewa  -> Digunakan / Akan Habis / Expired
-        |
-        | Jadi status dihitung terlebih dahulu.
-        |
         */
 
-        if ($request->filled('status')) {
+        $statuses = collect(
+            $this->allowedStatuses()
+        );
 
-            $dataCenters = $dataCenters
-                ->filter(function ($dataCenter) use ($request) {
+        $tenants = collect(
+            $this->allowedTenants()
+        );
 
-                    return $dataCenter->status_otomatis ===
-                        $request->status;
-                })
-                ->values();
-        }
+        $sites = collect(
+            $this->allowedSites()
+        );
+
+        $racks = collect(
+            $this->allowedRacks()
+        );
+
+        $roles = collect(
+            $this->allowedRoles()
+        );
+
+        $manufacturers = collect(
+            $this->allowedManufacturers()
+        );
+
+        $rams = collect(
+            $this->allowedRams()
+        );
+
+        $regions = collect(
+            $this->allowedRegions()
+        );
+
+        $rackFaces = collect(
+            $this->allowedRackFaces()
+        );
+
+        $clusters = collect(
+            $this->allowedClusters()
+        );
+
+        $positions = collect(
+            $this->allowedPositions()
+        );
+
+        $uHeights = collect(
+            $this->allowedUHeights()
+        );
 
 
         /*
         |--------------------------------------------------------------------------
-        | DATA UNTUK CARD
-        |--------------------------------------------------------------------------
-        |
-        | Card selalu menghitung seluruh data,
-        | tidak mengikuti filter tabel.
-        |
-        */
-
-        $allDataCenters = DataCenter::all();
-
-
-        foreach ($allDataCenters as $dataCenter) {
-
-            $dataCenter->status_otomatis =
-                $this->getStatusOtomatis($dataCenter);
-        }
-
-
-        /*
-        |--------------------------------------------------------------------------
-        | JUMLAH STATUS
+        | PLATFORM
         |--------------------------------------------------------------------------
         */
 
-        $tersedia = $allDataCenters
-            ->where('status_otomatis', 'Tersedia')
-            ->count();
-
-        $digunakan = $allDataCenters
-            ->where('status_otomatis', 'Digunakan')
-            ->count();
-
-        $akanHabis = $allDataCenters
-            ->where('status_otomatis', 'Akan Habis')
-            ->count();
-
-        $expired = $allDataCenters
-            ->where('status_otomatis', 'Expired')
-            ->count();
-
-        $totalDataCenter = $allDataCenters->count();
-
-
-        /*
-        |--------------------------------------------------------------------------
-        | DATA TAHUN UNTUK FILTER
-        |--------------------------------------------------------------------------
-        |
-        | Mengambil tahun unik dari tanggal_pengadaan.
-        |
-        */
-
-        $tahuns = DataCenter::query()
-            ->whereNotNull('tanggal_pengadaan')
-            ->selectRaw(
-                'YEAR(tanggal_pengadaan) as tahun'
-            )
+        $platforms = DataCenter::query()
+            ->whereNotNull('platform')
+            ->where('platform', '!=', '')
+            ->select('platform')
             ->distinct()
-            ->orderByDesc('tahun')
-            ->pluck('tahun');
+            ->orderBy('platform')
+            ->pluck('platform');
 
 
         /*
         |--------------------------------------------------------------------------
-        | DATA FILTER VERIFIKASI
+        | VERIFIKASI
         |--------------------------------------------------------------------------
         */
 
         $verifikasis = DataCenter::query()
             ->whereNotNull('verifikasi')
+            ->where('verifikasi', '!=', '')
             ->select('verifikasi')
             ->distinct()
             ->orderBy('verifikasi')
@@ -309,22 +431,289 @@ class DataCenterController extends Controller
 
         /*
         |--------------------------------------------------------------------------
-        | KIRIM KE VIEW
+        | VIEW
         |--------------------------------------------------------------------------
         */
 
-        return view('infrastruktur.data-center.index',
+        return view(
+            'infrastruktur.data-center.index',
             compact(
                 'dataCenters',
                 'totalDataCenter',
-                'tersedia',
-                'digunakan',
-                'akanHabis',
-                'expired',
-                'tahuns',
+                'active',
+                'offline',
+                'statuses',
+                'tenants',
+                'sites',
+                'racks',
+                'roles',
+                'manufacturers',
+                'rams',
+                'regions',
+                'rackFaces',
+                'clusters',
+                'positions',
+                'uHeights',
+                'platforms',
                 'verifikasis'
             )
         );
+    }
+
+
+    /*
+    |--------------------------------------------------------------------------
+    | VALIDATION RULES
+    |--------------------------------------------------------------------------
+    */
+
+    private function dataCenterRules(): array
+    {
+        return [
+
+            'name' => [
+                'required',
+                'string',
+                'max:255',
+            ],
+
+            'status' => [
+                'required',
+                'string',
+                Rule::in(
+                    $this->allowedStatuses()
+                ),
+            ],
+
+            'tenant' => [
+                'nullable',
+                'string',
+                'max:255',
+                Rule::in(
+                    $this->allowedTenants()
+                ),
+            ],
+
+            'site' => [
+                'nullable',
+                'string',
+                'max:255',
+                Rule::in(
+                    $this->allowedSites()
+                ),
+            ],
+
+            'rack' => [
+                'nullable',
+                'string',
+                'max:255',
+                Rule::in(
+                    $this->allowedRacks()
+                ),
+            ],
+
+            'role' => [
+                'nullable',
+                'string',
+                'max:255',
+                Rule::in(
+                    $this->allowedRoles()
+                ),
+            ],
+
+            'manufacturer' => [
+                'nullable',
+                'string',
+                'max:255',
+                Rule::in(
+                    $this->allowedManufacturers()
+                ),
+            ],
+
+            'ram' => [
+                'nullable',
+                'string',
+                'max:100',
+                Rule::in(
+                    $this->allowedRams()
+                ),
+            ],
+
+            'region' => [
+                'nullable',
+                'string',
+                'max:255',
+                Rule::in(
+                    $this->allowedRegions()
+                ),
+            ],
+
+            'position' => [
+                'nullable',
+                'string',
+                'max:100',
+                Rule::in(
+                    $this->allowedPositions()
+                ),
+            ],
+
+            'rack_face' => [
+                'nullable',
+                'string',
+                'max:100',
+                Rule::in(
+                    $this->allowedRackFaces()
+                ),
+            ],
+
+            'cluster' => [
+                'nullable',
+                'string',
+                'max:255',
+                Rule::in(
+                    $this->allowedClusters()
+                ),
+            ],
+
+            'u_height' => [
+                'nullable',
+                'string',
+                'max:50',
+                Rule::in(
+                    $this->allowedUHeights()
+                ),
+            ],
+
+            'type' => [
+                'nullable',
+                'string',
+                'max:255',
+            ],
+
+            'platform' => [
+                'nullable',
+                'string',
+                'max:255',
+            ],
+
+            'version' => [
+                'nullable',
+                'string',
+                'max:255',
+            ],
+
+            'pic' => [
+                'nullable',
+                'string',
+                'max:255',
+            ],
+
+            'location' => [
+                'nullable',
+                'string',
+                'max:255',
+            ],
+
+            'owner_group' => [
+                'nullable',
+                'string',
+                'max:255',
+            ],
+
+            'owner' => [
+                'nullable',
+                'string',
+                'max:255',
+            ],
+
+            'serial_number' => [
+                'nullable',
+                'string',
+                'max:255',
+            ],
+
+            'ip_address' => [
+                'nullable',
+                'string',
+                'max:255',
+            ],
+
+            'ipv4_address' => [
+                'nullable',
+                'string',
+                'max:255',
+            ],
+
+            'cpu' => [
+                'nullable',
+                'string',
+            ],
+
+            'harddisk' => [
+                'nullable',
+                'string',
+            ],
+
+            'description' => [
+                'nullable',
+                'string',
+            ],
+        ];
+    }
+
+
+    /*
+    |--------------------------------------------------------------------------
+    | VALIDATION MESSAGES
+    |--------------------------------------------------------------------------
+    */
+
+    private function dataCenterMessages(): array
+    {
+        return [
+
+            'name.required' =>
+                'Nama perangkat wajib diisi.',
+
+            'status.required' =>
+                'Status wajib dipilih.',
+
+            'status.in' =>
+                'Status hanya boleh Active atau Offline.',
+
+            'tenant.in' =>
+                'Tenant tidak tersedia dalam pilihan.',
+
+            'site.in' =>
+                'Site tidak tersedia dalam pilihan.',
+
+            'rack.in' =>
+                'Rack tidak tersedia dalam pilihan.',
+
+            'role.in' =>
+                'Role tidak tersedia dalam pilihan.',
+
+            'manufacturer.in' =>
+                'Manufacturer tidak tersedia dalam pilihan.',
+
+            'ram.in' =>
+                'RAM tidak tersedia dalam pilihan.',
+
+            'region.in' =>
+                'Region tidak tersedia dalam pilihan.',
+
+            'position.in' =>
+                'Position harus berada pada 01 sampai 42.',
+
+            'rack_face.in' =>
+                'Rack Face hanya boleh Front atau Rear.',
+
+            'cluster.in' =>
+                'Cluster tidak tersedia dalam pilihan.',
+
+            'u_height.in' =>
+                'U Height harus berada pada 1U sampai 42U.',
+        ];
     }
 
 
@@ -336,174 +725,142 @@ class DataCenterController extends Controller
 
     public function store(Request $request)
     {
-        $validated = $request->validate([
+        $validated = $request->validate(
+            $this->dataCenterRules(),
+            $this->dataCenterMessages()
+        );
 
-            'nama_infrastruktur' => [
-                'required',
-                'string',
-                'max:255',
-            ],
+        $newId = $this->generateNextId();
 
-            'spesifikasi' => [
-                'nullable',
-                'string',
-            ],
+        $validated['id'] = $newId;
 
-            'pengadaan' => [
-                'required',
-                'in:Beli,Sewa',
-            ],
-
-            'harga' => [
-                'required',
-                'numeric',
-                'min:0',
-            ],
-
-            'tanggal_pengadaan' => [
-                'required',
-                'date',
-            ],
-
-            'tanggal_berakhir' => [
-                'nullable',
-                'date',
-                'after_or_equal:tanggal_pengadaan',
-            ],
-
-            'status' => [
-                'nullable',
-                'in:Tersedia,Digunakan',
-            ],
-
-            'komentar' => [
-                'nullable',
-                'string',
-            ],
-        ]);
-
-
-        /*
-        |--------------------------------------------------------------------------
-        | JIKA BELI
-        |--------------------------------------------------------------------------
-        */
-
-        if ($validated['pengadaan'] === 'Beli') {
-
-            $validated['tanggal_berakhir'] = null;
-
-            $validated['status'] =
-                $validated['status'] ?? 'Tersedia';
-        }
-
-
-        /*
-        |--------------------------------------------------------------------------
-        | JIKA SEWA
-        |--------------------------------------------------------------------------
-        */
-
-        if ($validated['pengadaan'] === 'Sewa') {
-
-            if (empty($validated['tanggal_berakhir'])) {
-
-                return back()
-                    ->withErrors([
-                        'tanggal_berakhir' =>
-                            'Tanggal berakhir wajib diisi untuk pengadaan sewa.',
-                    ])
-                    ->withInput();
-            }
-
-            $validated['status'] = 'Digunakan';
-        }
-
-
-        /*
-        |--------------------------------------------------------------------------
-        | GENERATE ID OTOMATIS
-        |--------------------------------------------------------------------------
-        */
-
-        $prefix = 'INFD-';
-
-$lastDataCenter = DataCenter::where(
-    'id',
-    'like',
-    $prefix . '%'
-)
-    ->orderByRaw(
-        'CAST(SUBSTRING(id, 6) AS UNSIGNED) DESC'
-    )
-    ->first();
-
-
-        if ($lastDataCenter) {
-
-            $lastNumber = (int) substr(
-                $lastDataCenter->id,
-                strlen($prefix)
-            );
-
-            $newNumber = $lastNumber + 1;
-
-        } else {
-
-            $newNumber = 1;
-        }
-
-
-        $validated['id'] =
-            $prefix .
-            str_pad(
-                $newNumber,
-                3,
-                '0',
-                STR_PAD_LEFT
-            );
-
-
-        /*
-        |--------------------------------------------------------------------------
-        | VERIFIKASI
-        |--------------------------------------------------------------------------
-        */
+        $validated['tenant_group'] =
+            'Pemerintah Kota Bekasi';
 
         $validated['verifikasi'] =
-            'Menunggu disetujui';
+            'menunggu';
 
+        $validated['komentar'] =
+            null;
 
-        /*
-        |--------------------------------------------------------------------------
-        | KOMENTAR
-        |--------------------------------------------------------------------------
-        */
+        DB::transaction(function () use (
+            $validated
+        ) {
 
-        $validated['komentar'] = null;
+            $dataCenter =
+                DataCenter::create(
+                    $validated
+                );
 
+            VerificationRequest::create([
 
-        /*
-        |--------------------------------------------------------------------------
-        | SIMPAN
-        |--------------------------------------------------------------------------
-        */
+                'module' =>
+                    'data-center',
 
-        DataCenter::create($validated);
+                'record_id' =>
+                    $dataCenter->id,
 
+                'action' =>
+                    'create',
 
-        /*
-        |--------------------------------------------------------------------------
-        | REDIRECT
-        |--------------------------------------------------------------------------
-        */
+                'data' =>
+                    $dataCenter->toArray(),
+
+                'status' =>
+                    'menunggu',
+
+                'submitted_by' =>
+                    auth()->id(),
+            ]);
+        });
 
         return redirect()
             ->route('data-center.index')
             ->with(
                 'success',
-                'Data datacenter berhasil diajukan dan menunggu disetujui verifikator.'
+                'Data Data Center berhasil ditambahkan dan menunggu verifikasi.'
             );
+    }
+
+
+    /*
+    |--------------------------------------------------------------------------
+    | IMPORT EXCEL
+    |--------------------------------------------------------------------------
+    */
+
+    public function import(Request $request)
+    {
+        $request->validate(
+
+            [
+                'file' => [
+                    'required',
+                    'file',
+                    'mimes:xlsx,xls',
+                    'max:10240',
+                ],
+            ],
+
+            [
+                'file.required' =>
+                    'File Excel wajib dipilih.',
+
+                'file.file' =>
+                    'File yang diupload tidak valid.',
+
+                'file.mimes' =>
+                    'File harus berupa Excel (.xlsx atau .xls).',
+
+                'file.max' =>
+                    'Ukuran file maksimal 10 MB.',
+            ]
+        );
+
+        try {
+
+            DB::transaction(function () use (
+                $request
+            ) {
+
+                Excel::import(
+                    new DataCenterImport(),
+                    $request->file('file')
+                );
+            });
+
+            return redirect()
+                ->route('data-center.index')
+                ->with(
+                    'success',
+                    'Data Data Center berhasil diimport dari Excel.'
+                );
+
+        } catch (\Throwable $e) {
+
+            return redirect()
+                ->route('data-center.index')
+                ->with(
+                    'error',
+                    'Import Excel gagal: ' .
+                    $e->getMessage()
+                );
+        }
+    }
+
+
+    /*
+    |--------------------------------------------------------------------------
+    | DOWNLOAD TEMPLATE EXCEL
+    |--------------------------------------------------------------------------
+    */
+
+    public function downloadTemplate()
+    {
+        return Excel::download(
+            new DataCenterTemplateExport,
+            'template-data-center.xlsx'
+        );
     }
 
 
@@ -517,135 +874,62 @@ $lastDataCenter = DataCenter::where(
         Request $request,
         $id
     ) {
+        $validated = $request->validate(
+            $this->dataCenterRules(),
+            $this->dataCenterMessages()
+        );
 
-        $validated = $request->validate([
+        $dataCenter =
+            DataCenter::findOrFail($id);
 
-            'nama_infrastruktur' => [
-                'required',
-                'string',
-                'max:255',
-            ],
+        $validated['tenant_group'] =
+            'Pemerintah Kota Bekasi';
 
-            'spesifikasi' => [
-                'nullable',
-                'string',
-            ],
+        DB::transaction(function () use (
+            $dataCenter,
+            $validated
+        ) {
 
-            'pengadaan' => [
-                'required',
-                'in:Beli,Sewa',
-            ],
+            $dataCenter->update([
 
-            'harga' => [
-                'required',
-                'numeric',
-                'min:0',
-            ],
+                ...$validated,
 
-            'tanggal_pengadaan' => [
-                'required',
-                'date',
-            ],
+                'verifikasi' =>
+                    'menunggu',
 
-            'tanggal_berakhir' => [
-                'nullable',
-                'date',
-                'after_or_equal:tanggal_pengadaan',
-            ],
+                'komentar' =>
+                    null,
+            ]);
 
-            'status' => [
-                'nullable',
-                'in:Tersedia,Digunakan',
-            ],
+            $dataCenter->refresh();
 
-        ]);
+            VerificationRequest::create([
 
+                'module' =>
+                    'data-center',
 
-        /*
-        |--------------------------------------------------------------------------
-        | CARI DATA
-        |--------------------------------------------------------------------------
-        */
+                'record_id' =>
+                    $dataCenter->id,
 
-        $datacenter = DataCenter::findOrFail($id);
+                'action' =>
+                    'update',
 
+                'data' =>
+                    $dataCenter->toArray(),
 
-        /*
-        |--------------------------------------------------------------------------
-        | JIKA BELI
-        |--------------------------------------------------------------------------
-        */
+                'status' =>
+                    'menunggu',
 
-        if ($validated['pengadaan'] === 'Beli') {
-
-            $validated['tanggal_berakhir'] = null;
-
-            $validated['status'] =
-                $validated['status'] ?? 'Tersedia';
-        }
-
-
-        /*
-        |--------------------------------------------------------------------------
-        | JIKA SEWA
-        |--------------------------------------------------------------------------
-        */
-
-        if ($validated['pengadaan'] === 'Sewa') {
-
-            if (empty($validated['tanggal_berakhir'])) {
-
-                return back()
-                    ->withErrors([
-                        'tanggal_berakhir' =>
-                            'Tanggal berakhir wajib diisi untuk pengadaan sewa.',
-                    ])
-                    ->withInput();
-            }
-
-            $validated['status'] = 'Digunakan';
-        }
-
-
-        /*
-        |--------------------------------------------------------------------------
-        | VERIFIKASI ULANG
-        |--------------------------------------------------------------------------
-        */
-
-        $validated['verifikasi'] =
-            'Menunggu disetujui';
-
-
-        /*
-        |--------------------------------------------------------------------------
-        | HAPUS KOMENTAR LAMA
-        |--------------------------------------------------------------------------
-        */
-
-        $validated['komentar'] = null;
-
-
-        /*
-        |--------------------------------------------------------------------------
-        | UPDATE
-        |--------------------------------------------------------------------------
-        */
-
-        $datacenter->update($validated);
-
-
-        /*
-        |--------------------------------------------------------------------------
-        | REDIRECT
-        |--------------------------------------------------------------------------
-        */
+                'submitted_by' =>
+                    auth()->id(),
+            ]);
+        });
 
         return redirect()
             ->route('data-center.index')
             ->with(
                 'success',
-                'Perubahan data datacenter berhasil diajukan dan menunggu disetujui verifikator.'
+                'Perubahan Data Center berhasil disimpan dan menunggu verifikasi.'
             );
     }
 
@@ -658,32 +942,91 @@ $lastDataCenter = DataCenter::where(
 
     public function destroy($id)
     {
-        $datacenter = DataCenter::findOrFail($id);
+        $dataCenter =
+            DataCenter::findOrFail($id);
 
+        DB::transaction(function () use (
+            $dataCenter
+        ) {
 
-        /*
-        |--------------------------------------------------------------------------
-        | AJUKAN PENGHAPUSAN
-        |--------------------------------------------------------------------------
-        */
+            $dataCenter->update([
 
-        $datacenter->update([
-            'verifikasi' => 'Menunggu disetujui',
-            'komentar' => null,
-        ]);
+                'verifikasi' =>
+                    'menunggu',
 
+                'komentar' =>
+                    null,
+            ]);
 
-        /*
-        |--------------------------------------------------------------------------
-        | REDIRECT
-        |--------------------------------------------------------------------------
-        */
+            VerificationRequest::create([
+
+                'module' =>
+                    'data-center',
+
+                'record_id' =>
+                    $dataCenter->id,
+
+                'action' =>
+                    'delete',
+
+                'data' =>
+                    $dataCenter->toArray(),
+
+                'status' =>
+                    'menunggu',
+
+                'submitted_by' =>
+                    auth()->id(),
+            ]);
+        });
 
         return redirect()
             ->route('data-center.index')
             ->with(
                 'success',
-                'Permintaan penghapusan data berhasil diajukan dan menunggu disetujui verifikator.'
+                'Pengajuan penghapusan Data Center berhasil dikirim dan menunggu verifikasi.'
+            );
+    }
+
+
+    /*
+    |--------------------------------------------------------------------------
+    | GENERATE ID
+    |--------------------------------------------------------------------------
+    */
+
+    private function generateNextId(): string
+    {
+        $prefix = 'INFDC-';
+
+        $lastDataCenter =
+            DataCenter::query()
+                ->where(
+                    'id',
+                    'like',
+                    $prefix . '%'
+                )
+                ->orderByRaw(
+                    "CAST(SUBSTRING(id, 7) AS UNSIGNED) DESC"
+                )
+                ->first();
+
+        $newNumber =
+            $lastDataCenter
+                ? (
+                    (int) substr(
+                        $lastDataCenter->id,
+                        strlen($prefix)
+                    )
+                ) + 1
+                : 1;
+
+        return $prefix .
+            str_pad(
+                $newNumber,
+                3,
+                '0',
+                STR_PAD_LEFT
             );
     }
 }

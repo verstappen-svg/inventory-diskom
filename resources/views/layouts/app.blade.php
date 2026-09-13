@@ -2,9 +2,7 @@
 <html lang="id">
 
 <head>
-
     <meta charset="UTF-8">
-
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
     <title>
@@ -14,8 +12,10 @@
     {{-- =====================================================
          BOOTSTRAP ICONS
     ====================================================== --}}
-    <link rel="stylesheet"
-          href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css">
+    <link
+        rel="stylesheet"
+        href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css"
+    >
 
     {{-- =====================================================
          VITE
@@ -23,7 +23,6 @@
     @vite(['resources/css/app.css', 'resources/js/app.js'])
 
     <style>
-
         /* =====================================================
            RESET
         ===================================================== */
@@ -46,7 +45,6 @@
             color: #1f2937;
         }
 
-
         /* =====================================================
            APP LAYOUT
         ===================================================== */
@@ -54,7 +52,6 @@
         .app-layout {
             width: 100%;
             min-height: 100vh;
-
             margin: 0;
             padding: 0;
         }
@@ -66,7 +63,6 @@
 
         .main-area {
             margin-left: 270px;
-
             width: calc(100% - 270px);
             min-width: 0;
             min-height: 100vh;
@@ -80,6 +76,7 @@
         .top-header {
             width: 100%;
             min-height: 75px;
+
             background: #ffffff;
             border-bottom: 1px solid #e5e7eb;
 
@@ -95,7 +92,6 @@
             z-index: 900;
         }
 
-
         /* =====================================================
            HEADER LEFT
         ===================================================== */
@@ -104,14 +100,18 @@
             display: flex;
             align-items: center;
             gap: 20px;
+
             min-width: 0;
         }
 
         .page-title {
             margin: 0;
+
             font-size: 20px;
             font-weight: 700;
+
             color: #075985;
+
             white-space: nowrap;
         }
 
@@ -166,9 +166,9 @@
             display: flex;
             align-items: center;
             gap: 20px;
+
             flex-shrink: 0;
         }
-
 
         /* =====================================================
            NOTIFICATION
@@ -176,6 +176,7 @@
 
         .notification-wrapper {
             position: relative;
+
             display: flex;
             align-items: center;
             justify-content: center;
@@ -186,7 +187,6 @@
             height: 40px;
 
             border: none;
-
             background: transparent;
 
             color: #374151;
@@ -202,16 +202,13 @@
             transition: 0.2s ease;
         }
 
-
         .notification-button:hover {
             background: #f5f6fa;
         }
 
-
         .notification-button i {
             font-size: 17px;
         }
-
 
         .notification-badge {
             position: absolute;
@@ -228,7 +225,6 @@
 
             border: 1px solid #ffffff;
         }
-
 
         /* =====================================================
            USER
@@ -254,7 +250,6 @@
             border-radius: 50%;
 
             background: #071b88;
-
             color: #ffffff;
 
             display: flex;
@@ -265,7 +260,6 @@
             font-weight: bold;
         }
 
-
         .user-text {
             display: flex;
             flex-direction: column;
@@ -275,17 +269,14 @@
             min-width: 75px;
         }
 
-
         .user-name {
             font-size: 10px;
-
             font-weight: 700;
 
             color: #374151;
 
             line-height: 1.2;
         }
-
 
         .user-role {
             font-size: 8px;
@@ -294,7 +285,6 @@
 
             line-height: 1.2;
         }
-
 
         /* =====================================================
            MAIN CONTENT
@@ -319,6 +309,7 @@
             width: 100% !important;
             max-width: none !important;
             min-width: 0;
+
             box-sizing: border-box;
         }
 
@@ -326,9 +317,9 @@
             width: 100% !important;
             max-width: none !important;
             min-width: 0;
+
             box-sizing: border-box;
         }
-
 
         /* =====================================================
            LAPORAN PAGE
@@ -336,14 +327,11 @@
 
         .laporan-page {
             width: 100% !important;
-
             max-width: none !important;
-
             min-width: 0;
 
             box-sizing: border-box;
         }
-
 
         /* =====================================================
            RESPONSIVE
@@ -359,14 +347,12 @@
             .top-header .search-box {
                 width: 240px;
             }
-
         }
 
         @media (max-width: 900px) {
 
             .main-area {
                 margin-left: 0;
-
                 width: 100%;
             }
 
@@ -381,7 +367,6 @@
             .main-content {
                 padding: 20px;
             }
-
         }
 
         @media (max-width: 600px) {
@@ -403,21 +388,16 @@
             }
 
             .top-header .search-box {
-                width: 200px;
+                width: 180px;
             }
 
             .user-text {
                 display: none;
             }
 
-            .top-header .search-box {
-                width: 180px;
-            }
-
             .main-content {
                 padding: 18px 15px 25px;
             }
-
         }
 
         @media (max-width: 500px) {
@@ -429,19 +409,13 @@
             .main-content {
                 padding: 15px;
             }
-
         }
-
     </style>
 
-
     @stack('styles')
-
 </head>
 
-
 <body>
-
 
     {{-- =================================================
          SIDEBAR
@@ -468,7 +442,6 @@
 
             <div class="header-left">
 
-
                 {{-- PAGE TITLE --}}
 
                 <h1 class="page-title">
@@ -480,14 +453,9 @@
                      SEARCH HANYA DI DASHBOARD
                 ================================================== --}}
 
-                @if(
-                    View::hasSection('dashboard-search')
-                )
-
+                @if(View::hasSection('dashboard-search'))
                     @yield('dashboard-search')
-
                 @endif
-
 
             </div>
 
@@ -498,7 +466,9 @@
 
             <div class="header-right">
 
-                {{-- NOTIFICATION --}}
+                {{-- =================================================
+                     NOTIFICATION
+                ================================================== --}}
 
                 <div class="notification-wrapper">
 
@@ -507,53 +477,10 @@
                         type="button"
                         title="Notifikasi"
                     >
-
                         <i class="bi bi-bell"></i>
 
                         <span class="notification-badge"></span>
-
                     </button>
-
-                </div>
-
-
-                {{-- USER --}}
-
-                <div class="user-info">
-
-                    <div class="user-avatar">
-
-                        {{ strtoupper(
-                            substr(
-                                auth()->user()->name ?? 'U',
-                                0,
-                                1
-                            )
-                        ) }}
-
-                    </div>
-
-                    <div class="user-text">
-
-                        <span class="user-name">
-
-                            {{ auth()->user()->name ?? 'User' }}
-
-                        </span>
-
-                        <span class="user-role">
-
-                            {{ ucwords(
-                                str_replace(
-                                    '_',
-                                    ' ',
-                                    auth()->user()->role ?? 'User'
-                                )
-                            ) }}
-
-                        </span>
-
-                    </div>
 
                 </div>
 
@@ -564,11 +491,9 @@
 
                 <div class="user-info">
 
-
                     {{-- AVATAR --}}
 
                     <div class="user-avatar">
-
                         {{ strtoupper(
                             substr(
                                 auth()->user()->name ?? 'U',
@@ -576,7 +501,6 @@
                                 1
                             )
                         ) }}
-
                     </div>
 
 
@@ -584,16 +508,11 @@
 
                     <div class="user-text">
 
-
                         <span class="user-name">
-
                             {{ auth()->user()->name ?? 'User' }}
-
                         </span>
 
-
                         <span class="user-role">
-
                             {{ ucwords(
                                 str_replace(
                                     '_',
@@ -601,15 +520,11 @@
                                     auth()->user()->role ?? 'User'
                                 )
                             ) }}
-
                         </span>
-
 
                     </div>
 
-
                 </div>
-
 
             </div>
 
@@ -629,10 +544,12 @@
     </div>
 
 
-</div>
+    {{-- =================================================
+         SCRIPTS
+    ================================================== --}}
 
-@stack('scripts')
-
+    @stack('scripts')
 
 </body>
+
 </html>

@@ -14,7 +14,6 @@ class AuthController extends Controller
 
     public function login(Request $request)
     {
-        // Validasi sekaligus menyimpan credentials
         $credentials = $request->validate([
             'username' => ['required'],
             'password' => ['required'],
@@ -23,7 +22,6 @@ class AuthController extends Controller
             'password.required' => 'Password wajib diisi.',
         ]);
 
-        // Coba autentikasi pengguna
         if (Auth::attempt($credentials)) {
             $request->session()->regenerate();
 

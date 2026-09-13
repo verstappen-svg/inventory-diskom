@@ -2,16 +2,19 @@
 
 use Illuminate\Support\Facades\Route;
 
-use App\Http\Controllers\DashboardController;
-use App\Http\Controllers\SDMController;
 use App\Http\Controllers\AuthController;
+use App\Http\Controllers\DashboardController;
 use App\Http\Controllers\HardwareController;
+use App\Http\Controllers\SDMController;
+use App\Http\Controllers\UserController;
+use App\Http\Controllers\PermissionController;
+use App\Http\Controllers\LogAktivitasController;
+use App\Http\Controllers\JaringanController;
+use App\Http\Controllers\DataCenterController;
+use App\Http\Controllers\SplpController;
 use App\Http\Controllers\SoftwareController;
 use App\Http\Controllers\DataController;
-use App\Http\Controllers\JaringanController;
-use App\Http\Controllers\SplpController;
-use App\Http\Controllers\DataCenterController;
-use App\Http\Controllers\LaporanController;
+use App\Http\Controllers\VerificationController;
 
 
 /*
@@ -20,14 +23,20 @@ use App\Http\Controllers\LaporanController;
 |--------------------------------------------------------------------------
 */
 
-Route::get('/login', [AuthController::class, 'showLogin'])
-    ->name('login');
+Route::get(
+    '/login',
+    [AuthController::class, 'showLogin']
+)->name('login');
 
-Route::post('/login', [AuthController::class, 'login'])
-    ->name('login.process');
+Route::post(
+    '/login',
+    [AuthController::class, 'login']
+)->name('login.process');
 
-Route::post('/logout', [AuthController::class, 'logout'])
-    ->name('logout');
+Route::post(
+    '/logout',
+    [AuthController::class, 'logout']
+)->name('logout');
 
 
 /*
@@ -42,19 +51,88 @@ Route::middleware('auth')->group(function () {
     |--------------------------------------------------------------------------
     | DASHBOARD
     |--------------------------------------------------------------------------
-    |
-    | Semua dashboard sekarang diproses oleh DashboardController.
-    | Controller akan menentukan view berdasarkan role:
-    |
-    | super_admin  -> dashboard.super-admin
-    | operator     -> dashboard.operator
-    | verifikator  -> dashboard.verifikator
-    | pimpinan     -> dashboard.pimpinan
-    |
     */
 
-    Route::get('/dashboard', [DashboardController::class, 'index'])
-        ->name('dashboard');
+    Route::get(
+        '/dashboard',
+        [DashboardController::class, 'index']
+    )->name('dashboard');
+
+
+    /*
+    |--------------------------------------------------------------------------
+    | VERIFIKASI
+    |--------------------------------------------------------------------------
+    */
+
+    Route::middleware('role:verifikator')->group(function () {
+
+        Route::get(
+            '/verifikasi',
+            [VerificationController::class, 'index']
+        )->name('verifikasi.index');
+
+        Route::post(
+            '/verifikasi/{verificationRequest}/approve',
+            [VerificationController::class, 'approve']
+        )->name('verifikasi.approve');
+
+        Route::post(
+            '/verifikasi/{verificationRequest}/reject',
+            [VerificationController::class, 'reject']
+        )->name('verifikasi.reject');
+    });
+
+
+    /*
+    |--------------------------------------------------------------------------
+    | SUPER ADMIN — MANAJEMEN PENGGUNA
+    |--------------------------------------------------------------------------
+    */
+
+    Route::resource(
+        'pengguna',
+        UserController::class
+    )->except(['show']);
+
+    Route::post(
+        '/pengguna/{pengguna}/aktifkan',
+        [UserController::class, 'activate']
+    )->name('pengguna.activate');
+
+    Route::post(
+        '/pengguna/{pengguna}/nonaktifkan',
+        [UserController::class, 'deactivate']
+    )->name('pengguna.deactivate');
+
+
+    /*
+    |--------------------------------------------------------------------------
+    | SUPER ADMIN — HAK AKSES
+    |--------------------------------------------------------------------------
+    */
+
+    Route::get(
+        '/hak-akses/{role}',
+        [PermissionController::class, 'show']
+    )->name('hak-akses.show');
+
+    Route::post(
+        '/hak-akses/{role}',
+        [PermissionController::class, 'update']
+    )->name('hak-akses.update');
+
+
+    /*
+    |--------------------------------------------------------------------------
+    | SUPER ADMIN — LOG AKTIVITAS
+    |--------------------------------------------------------------------------
+    */
+
+    Route::get(
+        '/log-aktivitas',
+        [LogAktivitasController::class, 'index']
+    )->name('log-aktivitas.index');
 
 
     /*
@@ -63,17 +141,28 @@ Route::middleware('auth')->group(function () {
     |--------------------------------------------------------------------------
     */
 
-    Route::get('/hardware', [HardwareController::class, 'index'])
-        ->name('hardware.index');
+    Route::middleware('menu.permission:hardware')->group(function () {
 
-    Route::post('/hardware', [HardwareController::class, 'store'])
-        ->name('hardware.store');
+        Route::get(
+            '/hardware',
+            [HardwareController::class, 'index']
+        )->name('hardware.index');
 
-    Route::put('/hardware/{hardware}', [HardwareController::class, 'update'])
-        ->name('hardware.update');
+        Route::post(
+            '/hardware',
+            [HardwareController::class, 'store']
+        )->name('hardware.store');
 
-    Route::delete('/hardware/{hardware}', [HardwareController::class, 'destroy'])
-        ->name('hardware.destroy');
+        Route::put(
+            '/hardware/{hardware}',
+            [HardwareController::class, 'update']
+        )->name('hardware.update');
+
+        Route::delete(
+            '/hardware/{hardware}',
+            [HardwareController::class, 'destroy']
+        )->name('hardware.destroy');
+    });
 
 
     /*
@@ -82,63 +171,110 @@ Route::middleware('auth')->group(function () {
     |--------------------------------------------------------------------------
     */
 
-    Route::resource('software', SoftwareController::class)
-        ->except(['show']);
+    Route::resource(
+        'software',
+        SoftwareController::class
+    )
+        ->except(['show'])
+        ->middleware('menu.permission:software');
 
 
     /*
     |--------------------------------------------------------------------------
-    | INFRASTRUKTUR
+    | INFRASTRUKTUR — JARINGAN
     |--------------------------------------------------------------------------
     */
+
+    Route::resource(
+        'infrastruktur/jaringan',
+        JaringanController::class
+    )
+        ->names([
+            'index'   => 'jaringan.index',
+            'create'  => 'jaringan.create',
+            'store'   => 'jaringan.store',
+            'show'    => 'jaringan.show',
+            'edit'    => 'jaringan.edit',
+            'update'  => 'jaringan.update',
+            'destroy' => 'jaringan.destroy',
+        ])
+        ->except(['show'])
+        ->middleware('menu.permission:infrastruktur.jaringan');
 
 
     /*
     |--------------------------------------------------------------------------
-    | JARINGAN
+    | INFRASTRUKTUR — DATA CENTER
     |--------------------------------------------------------------------------
     */
 
-// Jaringan
-Route::get('/infrastruktur/jaringan', [JaringanController::class, 'index'])
-    ->name('jaringan.index');
-
-Route::post('/infrastruktur/jaringan', [JaringanController::class, 'store'])
-    ->name('jaringan.store');
-
-Route::put('/infrastruktur/jaringan/{id}', [JaringanController::class, 'update'])
-    ->name('jaringan.update');
-
-Route::delete('/infrastruktur/jaringan/{id}', [JaringanController::class, 'destroy'])
-    ->name('jaringan.destroy');
-
-
-// Data Center
-Route::get('/infrastruktur/data-center', [DataCenterController::class, 'index'])
-    ->name('data-center.index');
-
-Route::post('/infrastruktur/data-center', [DataCenterController::class, 'store'])
-    ->name('data-center.store');
-
-Route::put('/infrastruktur/data-center/{id}', [DataCenterController::class, 'update'])
-    ->name('data-center.update');
-
-Route::delete('/infrastruktur/data-center/{id}', [DataCenterController::class, 'destroy'])
-    ->name('data-center.destroy');
+    Route::resource(
+        'infrastruktur/data-center',
+        DataCenterController::class
+    )
+        ->names([
+            'index'   => 'data-center.index',
+            'create'  => 'data-center.create',
+            'store'   => 'data-center.store',
+            'show'    => 'data-center.show',
+            'edit'    => 'data-center.edit',
+            'update'  => 'data-center.update',
+            'destroy' => 'data-center.destroy',
+        ])
+        ->except(['show'])
+        ->middleware('menu.permission:infrastruktur.data-center');
 
 
-// SPLP
-Route::get('/infrastruktur/splp', [SplpController::class, 'index'])
-    ->name('splp.index');
+    /*
+    |--------------------------------------------------------------------------
+    | DOWNLOAD TEMPLATE EXCEL — DATA CENTER
+    |--------------------------------------------------------------------------
+    */
 
-Route::post('/infrastruktur/splp', [SplpController::class, 'store'])
-    ->name('splp.store');
+    Route::get(
+        '/infrastruktur/data-center/template',
+        [DataCenterController::class, 'downloadTemplate']
+    )
+        ->name('data-center.template')
+        ->middleware('menu.permission:infrastruktur.data-center');
 
-Route::put('/infrastruktur/splp/{id}', [SplpController::class, 'update'])
-    ->name('splp.update');
 
-Route::delete('/infrastruktur/splp/{id}', [SplpController::class, 'destroy'])
-    ->name('splp.destroy');
+    /*
+    |--------------------------------------------------------------------------
+    | IMPORT EXCEL — DATA CENTER
+    |--------------------------------------------------------------------------
+    */
+
+    Route::post(
+        '/infrastruktur/data-center/import',
+        [DataCenterController::class, 'import']
+    )
+        ->name('data-center.import')
+        ->middleware('menu.permission:infrastruktur.data-center');
+
+
+    /*
+    |--------------------------------------------------------------------------
+    | INFRASTRUKTUR — SPLP
+    |--------------------------------------------------------------------------
+    */
+
+    Route::resource(
+        'infrastruktur/splp',
+        SplpController::class
+    )
+        ->names([
+            'index'   => 'splp.index',
+            'create'  => 'splp.create',
+            'store'   => 'splp.store',
+            'show'    => 'splp.show',
+            'edit'    => 'splp.edit',
+            'update'  => 'splp.update',
+            'destroy' => 'splp.destroy',
+        ])
+        ->except(['show'])
+        ->middleware('menu.permission:infrastruktur.splp');
+
 
     /*
     |--------------------------------------------------------------------------
@@ -146,27 +282,38 @@ Route::delete('/infrastruktur/splp/{id}', [SplpController::class, 'destroy'])
     |--------------------------------------------------------------------------
     */
 
-    Route::get('/data', [DataController::class, 'index'])
-        ->name('data.index');
+    Route::middleware('menu.permission:data')->group(function () {
 
-    Route::post('/data', [DataController::class, 'store'])
-        ->name('data.store');
+        Route::get(
+            '/data',
+            [DataController::class, 'index']
+        )->name('data.index');
 
-    // Preview file
-    Route::get('/data/{id}/preview', [DataController::class, 'preview'])
-        ->name('data.preview');
+        Route::post(
+            '/data',
+            [DataController::class, 'store']
+        )->name('data.store');
 
-    // Edit data
-    Route::get('/data/{id}/edit', [DataController::class, 'edit'])
-        ->name('data.edit');
+        Route::get(
+            '/data/{id}/preview',
+            [DataController::class, 'preview']
+        )->name('data.preview');
 
-    // Update data
-    Route::put('/data/{id}', [DataController::class, 'update'])
-        ->name('data.update');
+        Route::get(
+            '/data/{id}/edit',
+            [DataController::class, 'edit']
+        )->name('data.edit');
 
-    // Pengajuan hapus data
-    Route::delete('/data/{id}', [DataController::class, 'destroy'])
-        ->name('data.destroy');
+        Route::put(
+            '/data/{id}',
+            [DataController::class, 'update']
+        )->name('data.update');
+
+        Route::delete(
+            '/data/{id}',
+            [DataController::class, 'destroy']
+        )->name('data.destroy');
+    });
 
 
     /*
@@ -175,23 +322,38 @@ Route::delete('/infrastruktur/splp/{id}', [SplpController::class, 'destroy'])
     |--------------------------------------------------------------------------
     */
 
-    Route::get('/sdm', [SDMController::class, 'index'])
-        ->name('sdm.index');
+    Route::middleware('menu.permission:sdm')->group(function () {
 
-    Route::post('/sdm', [SDMController::class, 'store'])
-        ->name('sdm.store');
+        Route::get(
+            '/sdm',
+            [SDMController::class, 'index']
+        )->name('sdm.index');
 
-    Route::put('/sdm/{sdm}', [SDMController::class, 'update'])
-        ->name('sdm.update');
+        Route::post(
+            '/sdm',
+            [SDMController::class, 'store']
+        )->name('sdm.store');
 
-    Route::delete('/sdm/{sdm}', [SDMController::class, 'destroy'])
-        ->name('sdm.destroy');
+        Route::put(
+            '/sdm/{sdm}',
+            [SDMController::class, 'update']
+        )->name('sdm.update');
 
-    Route::post('/sdm/{sdm}/approve', [SDMController::class, 'approve'])
-        ->name('sdm.approve');
+        Route::delete(
+            '/sdm/{sdm}',
+            [SDMController::class, 'destroy']
+        )->name('sdm.destroy');
 
-    Route::post('/sdm/{sdm}/reject', [SDMController::class, 'reject'])
-        ->name('sdm.reject');
+        Route::post(
+            '/sdm/{sdm}/approve',
+            [SDMController::class, 'approve']
+        )->name('sdm.approve');
+
+        Route::post(
+            '/sdm/{sdm}/reject',
+            [SDMController::class, 'reject']
+        )->name('sdm.reject');
+    });
 
 
     /*
@@ -200,9 +362,13 @@ Route::delete('/infrastruktur/splp/{id}', [SplpController::class, 'destroy'])
     |--------------------------------------------------------------------------
     */
 
-    Route::get('/laporan', [LaporanController::class, 'index'])
-    ->name('laporan.index');
+    Route::middleware('menu.permission:laporan')->group(function () {
 
-
+        Route::get(
+            '/laporan',
+            function () {
+                return view('laporan.index');
+            }
+        )->name('laporan.index');
     });
-
+});

@@ -29,13 +29,11 @@ class Jaringan extends Model
 
     protected $fillable = [
         'id',
-        'nama_infrastruktur',
-        'spesifikasi',
-        'pengadaan',
-        'harga',
-        'tanggal_pengadaan',
-        'tanggal_berakhir',
-        'status',
+        'jenis_data',
+        'lokasi',
+        'jarak_kabel',
+        'jumlah_core',
+        'jumlah_titik',
         'verifikasi',
         'komentar',
     ];
@@ -48,8 +46,8 @@ class Jaringan extends Model
     */
 
     protected $casts = [
-        'tanggal_pengadaan' => 'date',
-        'tanggal_berakhir' => 'date',
-        'harga' => 'decimal:2',
+        'jarak_kabel' => 'decimal:2',
+        'jumlah_core' => 'integer',
+        'jumlah_titik' => 'integer',
     ];
 }

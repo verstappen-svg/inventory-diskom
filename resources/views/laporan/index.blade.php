@@ -4,58 +4,20 @@
 
 @section('page-title', 'LAPORAN')
 
-
 @push('styles')
 
 <style>
-
-/* =========================================================
-   LAPORAN PAGE
-========================================================= */
-
 .laporan-page {
     width: 100%;
 }
 
-
-/* =========================================================
-   HEADER INFO
-========================================================= */
-
-.laporan-header {
-    margin-bottom: 20px;
-}
-
-.laporan-header h2 {
-    margin: 0 0 6px;
-    font-size: 20px;
-    font-weight: 700;
-    color: #111827;
-}
-
-.laporan-header p {
-    margin: 0;
-    font-size: 13px;
-    color: #6b7280;
-}
-
-
-/* =========================================================
-   TABLE CONTAINER
-========================================================= */
-
 .laporan-container {
-    background: #ffffff;
+    background: #fff;
     border-radius: 12px;
     border: 1px solid #e5e7eb;
-    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.04);
+    box-shadow: 0 2px 8px rgba(0,0,0,.04);
     overflow: hidden;
 }
-
-
-/* =========================================================
-   TOOLBAR
-========================================================= */
 
 .laporan-toolbar {
     display: flex;
@@ -75,7 +37,7 @@
     padding: 0 13px;
     border: 1px solid #d1d5db;
     border-radius: 7px;
-    background: #ffffff;
+    background: #fff;
 }
 
 .laporan-search i {
@@ -105,7 +67,7 @@
     display: flex;
     align-items: center;
     gap: 7px;
-    background: #ffffff;
+    background: #fff;
     color: #374151;
     border: 1px solid #d1d5db;
 }
@@ -113,11 +75,6 @@
 .filter-button:hover {
     background: #f9fafb;
 }
-
-
-/* =========================================================
-   FILTER
-========================================================= */
 
 .filter-box {
     display: none;
@@ -155,7 +112,7 @@
     padding: 0 10px;
     border: 1px solid #d1d5db;
     border-radius: 6px;
-    background: #ffffff;
+    background: #fff;
     outline: none;
 }
 
@@ -176,7 +133,7 @@
 .filter-submit {
     border: none;
     background: #2563eb;
-    color: #ffffff;
+    color: #fff;
 }
 
 .filter-submit:hover {
@@ -185,14 +142,13 @@
 
 .filter-reset {
     border: 1px solid #d1d5db;
-    background: #ffffff;
+    background: #fff;
     color: #374151;
 }
 
-
-/* =========================================================
-   TABLE
-========================================================= */
+.filter-reset:hover {
+    background: #f9fafb;
+}
 
 .laporan-table-wrapper {
     width: 100%;
@@ -228,11 +184,6 @@
     background: #fafafa;
 }
 
-
-/* =========================================================
-   BADGE
-========================================================= */
-
 .status-badge {
     display: inline-flex;
     align-items: center;
@@ -264,11 +215,6 @@
     color: #4b5563;
 }
 
-
-/* =========================================================
-   EMPTY
-========================================================= */
-
 .empty-data {
     text-align: center !important;
     padding: 60px 30px !important;
@@ -288,11 +234,6 @@
     margin-bottom: 5px;
 }
 
-
-/* =========================================================
-   FOOTER
-========================================================= */
-
 .laporan-footer {
     display: flex;
     justify-content: space-between;
@@ -301,11 +242,6 @@
     font-size: 12px;
     color: #6b7280;
 }
-
-
-/* =========================================================
-   INFO FILTER
-========================================================= */
 
 .filter-info {
     padding: 12px 20px;
@@ -318,11 +254,6 @@
 .filter-info strong {
     font-weight: 700;
 }
-
-
-/* =========================================================
-   RESPONSIVE
-========================================================= */
 
 @media (max-width: 900px) {
 
@@ -353,321 +284,293 @@
         flex-wrap: wrap;
         gap: 10px;
     }
-
 }
-
 </style>
 
 @endpush
 
-
 @section('content')
+
+@php
+$jenis = $jenis ?? '';
+$tahun = $tahun ?? '';
+$status = $status ?? '';
+$search = $search ?? '';
+$tahunList = $tahunList ?? [];
+$hasil = $hasil ?? collect();
+
+
+if (is_array($hasil)) {
+    $hasil = collect($hasil);
+}
+
+@endphp
 
 <div class="laporan-page">
 
-   
 
-    {{-- =====================================================
-         CONTAINER
-    ====================================================== --}}
+<div class="laporan-container">
 
-    <div class="laporan-container">
+    {{-- TOOLBAR --}}
+    <div class="laporan-toolbar">
 
+        <form
+            method="GET"
+            action="{{ route('laporan.index') }}"
+        >
 
-        {{-- =================================================
-             TOOLBAR
-        ================================================== --}}
+            <input
+                type="hidden"
+                name="jenis"
+                value="{{ $jenis }}"
+            >
 
-        <div class="laporan-toolbar">
+            <input
+                type="hidden"
+                name="tahun"
+                value="{{ $tahun }}"
+            >
 
+            <input
+                type="hidden"
+                name="status"
+                value="{{ $status }}"
+            >
 
-            {{-- SEARCH --}}
+            <div class="laporan-search">
 
-            <form
-                method="GET"
-                action="{{ route('laporan.index') }}">
+                <i class="bi bi-search"></i>
 
                 <input
-                    type="hidden"
-                    name="jenis"
-                    value="{{ $jenis }}">
+                    type="text"
+                    name="search"
+                    value="{{ $search }}"
+                    placeholder="Search..."
+                    autocomplete="off"
+                >
 
-                <input
-                    type="hidden"
-                    name="tahun"
-                    value="{{ $tahun }}">
+            </div>
 
-                <input
-                    type="hidden"
-                    name="status"
-                    value="{{ $status }}">
-
-                <div class="laporan-search">
-
-                    <i class="bi bi-search"></i>
-
-                    <input
-                        type="text"
-                        name="search"
-                        value="{{ $search }}"
-                        placeholder="Search..."
-                        autocomplete="off">
-
-                </div>
-
-            </form>
+        </form>
 
 
-            {{-- ACTION --}}
+        <div class="laporan-actions">
 
-            <div class="laporan-actions">
+            <button
+                type="button"
+                class="filter-button"
+                onclick="toggleLaporanFilter()"
+            >
 
-                <button
-                    type="button"
-                    class="filter-button"
-                    onclick="toggleLaporanFilter()">
+                <i class="bi bi-filter"></i>
 
-                    <i class="bi bi-filter"></i>
+                Filter
 
-                    Filter
+            </button>
 
-                </button>
+        </div>
+
+    </div>
+
+
+    {{-- FILTER --}}
+    <div
+        class="filter-box {{ $jenis || $tahun || $status || $search ? 'show' : '' }}"
+        id="laporanFilter"
+    >
+
+        <form
+            method="GET"
+            action="{{ route('laporan.index') }}"
+            class="filter-form"
+        >
+
+            <input
+                type="hidden"
+                name="search"
+                value="{{ $search }}"
+            >
+
+
+            {{-- JENIS --}}
+            <div class="filter-group">
+
+                <label>Jenis Data</label>
+
+                <select name="jenis">
+
+                    <option value="">
+                        Pilih Jenis Data
+                    </option>
+
+                    <option
+                        value="hardware"
+                        {{ $jenis === 'hardware' ? 'selected' : '' }}
+                    >
+                        Hardware
+                    </option>
+
+                    <option
+                        value="software"
+                        {{ $jenis === 'software' ? 'selected' : '' }}
+                    >
+                        Software
+                    </option>
+
+                    <option
+                        value="jaringan"
+                        {{ $jenis === 'jaringan' ? 'selected' : '' }}
+                    >
+                        Jaringan
+                    </option>
+
+                    <option
+                        value="data-center"
+                        {{ $jenis === 'data-center' ? 'selected' : '' }}
+                    >
+                        Data Center
+                    </option>
+
+                    <option
+                        value="splp"
+                        {{ $jenis === 'splp' ? 'selected' : '' }}
+                    >
+                        SPLP
+                    </option>
+
+                    <option
+                        value="data"
+                        {{ $jenis === 'data' ? 'selected' : '' }}
+                    >
+                        Data
+                    </option>
+
+                    <option
+                        value="sdm"
+                        {{ $jenis === 'sdm' ? 'selected' : '' }}
+                    >
+                        SDM
+                    </option>
+
+                </select>
 
             </div>
 
 
-        </div>
+            {{-- TAHUN --}}
+            <div class="filter-group">
 
+                <label>Tahun</label>
 
-        {{-- =================================================
-             FILTER BOX
-        ================================================== --}}
+                <select name="tahun">
 
-        <div
-            class="filter-box
-            {{ $jenis || $tahun || $status ? 'show' : '' }}"
-            id="laporanFilter">
+                    <option value="">
+                        Semua Tahun
+                    </option>
 
-
-            <form
-                method="GET"
-                action="{{ route('laporan.index') }}"
-                class="filter-form">
-
-
-                {{-- SEARCH --}}
-
-                <input
-                    type="hidden"
-                    name="search"
-                    value="{{ $search }}">
-
-
-                {{-- JENIS DATA --}}
-
-                <div class="filter-group">
-
-                    <label>
-                        Jenis Data
-                    </label>
-
-                    <select name="jenis">
-
-                        <option value="">
-                            Pilih Jenis Data
-                        </option>
+                    @foreach($tahunList as $itemTahun)
 
                         <option
-                            value="hardware"
-                            {{ $jenis == 'hardware' ? 'selected' : '' }}>
-
-                            Hardware
-
+                            value="{{ $itemTahun }}"
+                            {{ (string) $tahun === (string) $itemTahun ? 'selected' : '' }}
+                        >
+                            {{ $itemTahun }}
                         </option>
 
-                        <option
-                            value="software"
-                            {{ $jenis == 'software' ? 'selected' : '' }}>
+                    @endforeach
 
-                            Software
+                </select>
 
-                        </option>
+            </div>
 
-                        <option
-                            value="jaringan"
-                            {{ $jenis == 'jaringan' ? 'selected' : '' }}>
 
-                            Jaringan
+            {{-- STATUS --}}
+            <div class="filter-group">
 
-                        </option>
+                <label>Status</label>
 
-                        <option
-                            value="data-center"
-                            {{ $jenis == 'data-center' ? 'selected' : '' }}>
+                <select name="status">
 
-                            Data Center
+                    <option value="">
+                        Semua Status
+                    </option>
 
-                        </option>
+                    <option
+                        value="Disetujui"
+                        {{ $status === 'Disetujui' ? 'selected' : '' }}
+                    >
+                        Disetujui
+                    </option>
 
-                        <option
-                            value="splp"
-                            {{ $jenis == 'splp' ? 'selected' : '' }}>
+                    <option
+                        value="Menunggu Disetujui"
+                        {{ $status === 'Menunggu Disetujui' ? 'selected' : '' }}
+                    >
+                        Menunggu Disetujui
+                    </option>
 
-                            SPLP
+                    <option
+                        value="Ditolak"
+                        {{ $status === 'Ditolak' ? 'selected' : '' }}
+                    >
+                        Ditolak
+                    </option>
 
-                        </option>
+                    <option
+                        value="Tersedia"
+                        {{ $status === 'Tersedia' ? 'selected' : '' }}
+                    >
+                        Tersedia
+                    </option>
 
-                        <option
-                            value="data"
-                            {{ $jenis == 'data' ? 'selected' : '' }}>
+                    <option
+                        value="Digunakan"
+                        {{ $status === 'Digunakan' ? 'selected' : '' }}
+                    >
+                        Digunakan
+                    </option>
 
-                            Data
+                </select>
 
-                        </option>
+            </div>
 
-                        <option
-                            value="sdm"
-                            {{ $jenis == 'sdm' ? 'selected' : '' }}>
 
-                            SDM
+            <button
+                type="submit"
+                class="filter-submit"
+            >
 
-                        </option>
+                <i class="bi bi-check-lg"></i>
 
-                    </select>
+                Terapkan
 
-                </div>
+            </button>
 
 
-                {{-- TAHUN --}}
+            <a
+                href="{{ route('laporan.index') }}"
+                class="filter-reset"
+            >
 
-                <div class="filter-group">
+                <i class="bi bi-arrow-counterclockwise"></i>
 
-                    <label>
-                        Tahun
-                    </label>
+                Reset
 
-                    <select name="tahun">
+            </a>
 
-                        <option value="">
-                            Semua Tahun
-                        </option>
+        </form>
 
-                        @foreach($tahunList as $itemTahun)
+    </div>
 
-                            <option
-                                value="{{ $itemTahun }}"
-                                {{ $tahun == $itemTahun ? 'selected' : '' }}>
 
-                                {{ $itemTahun }}
+    {{-- INFO FILTER --}}
+    @if($jenis || $tahun || $status || $search)
 
-                            </option>
+        <div class="filter-info">
 
-                        @endforeach
+            Menampilkan laporan:
 
-                    </select>
-
-                </div>
-
-
-                {{-- STATUS --}}
-
-                <div class="filter-group">
-
-                    <label>
-                        Status
-                    </label>
-
-                    <select name="status">
-
-                        <option value="">
-                            Semua Status
-                        </option>
-
-                        <option
-                            value="Disetujui"
-                            {{ $status == 'Disetujui' ? 'selected' : '' }}>
-
-                            Disetujui
-
-                        </option>
-
-                        <option
-                            value="Menunggu Disetujui"
-                            {{ $status == 'Menunggu Disetujui' ? 'selected' : '' }}>
-
-                            Menunggu Disetujui
-
-                        </option>
-
-                        <option
-                            value="Ditolak"
-                            {{ $status == 'Ditolak' ? 'selected' : '' }}>
-
-                            Ditolak
-
-                        </option>
-
-                        <option
-                            value="Tersedia"
-                            {{ $status == 'Tersedia' ? 'selected' : '' }}>
-
-                            Tersedia
-
-                        </option>
-
-                        <option
-                            value="Digunakan"
-                            {{ $status == 'Digunakan' ? 'selected' : '' }}>
-
-                            Digunakan
-
-                        </option>
-
-                    </select>
-
-                </div>
-
-
-                {{-- SUBMIT --}}
-
-                <button
-                    type="submit"
-                    class="filter-submit">
-
-                    <i class="bi bi-check-lg"></i>
-
-                    Terapkan
-
-                </button>
-
-
-                {{-- RESET --}}
-
-                <a
-                    href="{{ route('laporan.index') }}"
-                    class="filter-reset">
-
-                    <i class="bi bi-arrow-counterclockwise"></i>
-
-                    Reset
-
-                </a>
-
-
-            </form>
-
-        </div>
-
-
-        {{-- =================================================
-             INFO
-        ================================================== --}}
-
-        @if($jenis)
-
-            <div class="filter-info">
-
-                Menampilkan laporan:
+            @if($jenis)
 
                 <strong>
 
@@ -701,723 +604,697 @@
                             SDM
                             @break
 
+                        @default
+                            {{ $jenis }}
+
                     @endswitch
 
                 </strong>
 
-                @if($tahun)
+            @else
 
-                    — Tahun {{ $tahun }}
+                <strong>
+                    Semua Data
+                </strong>
 
-                @endif
-
-            </div>
-
-        @endif
+            @endif
 
 
-        {{-- =================================================
-             TABLE
-        ================================================== --}}
-
-        <div class="laporan-table-wrapper">
-
-            <table class="laporan-table">
+            @if($tahun)
+                — Tahun {{ $tahun }}
+            @endif
 
 
-                @if(!$jenis)
+            @if($status)
+                — Status {{ $status }}
+            @endif
 
-                    <tbody>
+
+            @if($search)
+                — Pencarian "{{ $search }}"
+            @endif
+
+        </div>
+
+    @endif
+
+
+    {{-- TABLE --}}
+    <div class="laporan-table-wrapper">
+
+        <table class="laporan-table">
+
+            @if(!$jenis)
+
+                <tbody>
+
+                    <tr>
+
+                        <td class="empty-data">
+
+                            <i class="bi bi-file-earmark-bar-graph"></i>
+
+                            <strong>
+                                Pilih Jenis Data
+                            </strong>
+
+                            Pilih jenis data pada filter untuk menampilkan laporan.
+
+                        </td>
+
+                    </tr>
+
+                </tbody>
+
+
+            @elseif($jenis === 'hardware')
+
+                <thead>
+
+                    <tr>
+                        <th>ID</th>
+                        <th>NAMA BARANG</th>
+                        <th>STATUS</th>
+                        <th>TANGGAL</th>
+                    </tr>
+
+                </thead>
+
+                <tbody>
+
+                    @forelse($hasil as $item)
 
                         <tr>
 
-                            <td class="empty-data">
+                            <td>
+                                {{ $item->id ?? '-' }}
+                            </td>
 
-                                <i class="bi bi-file-earmark-bar-graph"></i>
+                            <td>
+                                {{ $item->nama_barang ?? '-' }}
+                            </td>
 
-                                <strong>
-                                    Pilih Jenis Data
-                                </strong>
+                            <td>
 
-                                Pilih jenis data pada filter untuk menampilkan laporan.
+                                <span class="status-badge status-default">
+                                    {{ $item->status ?? '-' }}
+                                </span>
+
+                            </td>
+
+                            <td>
+                                {{ $item->created_at?->format('d/m/Y') ?? '-' }}
+                            </td>
+
+                        </tr>
+
+                    @empty
+
+                        <tr>
+
+                            <td
+                                colspan="4"
+                                class="empty-data"
+                            >
+
+                                <i class="bi bi-database-x"></i>
+
+                                Tidak ada data hardware.
 
                             </td>
 
                         </tr>
 
-                    </tbody>
+                    @endforelse
 
+                </tbody>
 
-                @else
 
+            @elseif($jenis === 'software')
 
-                    {{-- =================================================
-                         HARDWARE
-                    ================================================== --}}
+                <thead>
 
-                    @if($jenis == 'hardware')
+                    <tr>
+                        <th>ID</th>
+                        <th>NAMA SOFTWARE</th>
+                        <th>STATUS</th>
+                        <th>TANGGAL</th>
+                    </tr>
 
-                        <thead>
+                </thead>
 
-                            <tr>
+                <tbody>
 
-                                <th>ID</th>
+                    @forelse($hasil as $item)
 
-                                <th>NAMA BARANG</th>
+                        <tr>
 
-                                <th>STATUS</th>
+                            <td>
+                                {{ $item->id ?? '-' }}
+                            </td>
 
-                                <th>TANGGAL</th>
+                            <td>
+                                {{ $item->nama_software ?? '-' }}
+                            </td>
 
-                            </tr>
+                            <td>
 
-                        </thead>
+                                <span class="status-badge status-default">
+                                    {{ $item->status ?? '-' }}
+                                </span>
 
-                        <tbody>
+                            </td>
 
-                            @forelse($hasil as $item)
+                            <td>
+                                {{ $item->created_at?->format('d/m/Y') ?? '-' }}
+                            </td>
 
-                                <tr>
+                        </tr>
 
-                                    <td>
-                                        {{ $item->id }}
-                                    </td>
+                    @empty
 
-                                    <td>
-                                        {{ $item->nama_barang ?? '-' }}
-                                    </td>
+                        <tr>
 
-                                    <td>
+                            <td
+                                colspan="4"
+                                class="empty-data"
+                            >
 
-                                        <span class="status-badge status-default">
+                                <i class="bi bi-database-x"></i>
 
-                                            {{ $item->status ?? '-' }}
+                                Tidak ada data software.
 
-                                        </span>
+                            </td>
 
-                                    </td>
+                        </tr>
 
-                                    <td>
-                                        {{ $item->created_at?->format('d/m/Y') ?? '-' }}
-                                    </td>
+                    @endforelse
 
-                                </tr>
+                </tbody>
 
-                            @empty
 
-                                <tr>
+            @elseif($jenis === 'jaringan')
 
-                                    <td
-                                        colspan="4"
-                                        class="empty-data">
+                <thead>
 
-                                        <i class="bi bi-database-x"></i>
+                    <tr>
+                        <th>ID</th>
+                        <th>NAMA INFRASTRUKTUR</th>
+                        <th>PENGADAAN</th>
+                        <th>HARGA</th>
+                        <th>VERIFIKASI</th>
+                        <th>TANGGAL</th>
+                    </tr>
 
-                                        Tidak ada data hardware.
+                </thead>
 
-                                    </td>
+                <tbody>
 
-                                </tr>
+                    @forelse($hasil as $item)
 
-                            @endforelse
+                        <tr>
 
-                        </tbody>
+                            <td>
+                                {{ $item->id ?? '-' }}
+                            </td>
 
+                            <td>
+                                {{ $item->nama_infrastruktur ?? '-' }}
+                            </td>
 
-                    {{-- =================================================
-                         SOFTWARE
-                    ================================================== --}}
+                            <td>
+                                {{ $item->pengadaan ?? '-' }}
+                            </td>
 
-                    @elseif($jenis == 'software')
+                            <td>
+                                Rp {{ number_format($item->harga ?? 0, 0, ',', '.') }}
+                            </td>
 
-                        <thead>
+                            <td>
 
-                            <tr>
+                                @if($item->verifikasi === 'Disetujui')
 
-                                <th>ID</th>
+                                    <span class="status-badge status-approved">
+                                        <i class="bi bi-check-circle"></i>
+                                        Disetujui
+                                    </span>
 
-                                <th>NAMA SOFTWARE</th>
+                                @elseif(
+                                    $item->verifikasi === 'Menunggu disetujui' ||
+                                    $item->verifikasi === 'Menunggu Disetujui'
+                                )
 
-                                <th>STATUS</th>
+                                    <span class="status-badge status-pending">
+                                        <i class="bi bi-clock"></i>
+                                        Menunggu
+                                    </span>
 
-                                <th>TANGGAL</th>
+                                @elseif($item->verifikasi === 'Ditolak')
 
-                            </tr>
+                                    <span class="status-badge status-rejected">
+                                        <i class="bi bi-x-circle"></i>
+                                        Ditolak
+                                    </span>
 
-                        </thead>
+                                @else
 
-                        <tbody>
+                                    <span class="status-badge status-default">
+                                        {{ $item->verifikasi ?? '-' }}
+                                    </span>
 
-                            @forelse($hasil as $item)
+                                @endif
 
-                                <tr>
+                            </td>
 
-                                    <td>
-                                        {{ $item->id }}
-                                    </td>
+                            <td>
 
-                                    <td>
-                                        {{ $item->nama_software ?? '-' }}
-                                    </td>
+                                @if($item->tanggal_pengadaan)
 
-                                    <td>
+                                    {{ \Carbon\Carbon::parse($item->tanggal_pengadaan)->format('d/m/Y') }}
 
-                                        <span class="status-badge status-default">
+                                @else
 
-                                            {{ $item->status ?? '-' }}
+                                    -
 
-                                        </span>
+                                @endif
 
-                                    </td>
+                            </td>
 
-                                    <td>
-                                        {{ $item->created_at?->format('d/m/Y') ?? '-' }}
-                                    </td>
+                        </tr>
 
-                                </tr>
+                    @empty
 
-                            @empty
+                        <tr>
 
-                                <tr>
+                            <td
+                                colspan="6"
+                                class="empty-data"
+                            >
 
-                                    <td
-                                        colspan="4"
-                                        class="empty-data">
+                                <i class="bi bi-database-x"></i>
 
-                                        <i class="bi bi-database-x"></i>
+                                Tidak ada data jaringan.
 
-                                        Tidak ada data software.
+                            </td>
 
-                                    </td>
+                        </tr>
 
-                                </tr>
+                    @endforelse
 
-                            @endforelse
+                </tbody>
 
-                        </tbody>
 
+            @elseif($jenis === 'data-center')
 
-                    {{-- =================================================
-                         JARINGAN
-                    ================================================== --}}
+                <thead>
 
-                    @elseif($jenis == 'jaringan')
+                    <tr>
+                        <th>ID</th>
+                        <th>NAMA INFRASTRUKTUR</th>
+                        <th>PENGADAAN</th>
+                        <th>HARGA</th>
+                        <th>VERIFIKASI</th>
+                        <th>TANGGAL</th>
+                    </tr>
 
-                        <thead>
+                </thead>
 
-                            <tr>
+                <tbody>
 
-                                <th>ID</th>
+                    @forelse($hasil as $item)
 
-                                <th>NAMA INFRASTRUKTUR</th>
+                        <tr>
 
-                                <th>PENGADAAN</th>
+                            <td>
+                                {{ $item->id ?? '-' }}
+                            </td>
 
-                                <th>HARGA</th>
+                            <td>
+                                {{ $item->nama_infrastruktur ?? '-' }}
+                            </td>
 
-                                <th>VERIFIKASI</th>
+                            <td>
+                                {{ $item->pengadaan ?? '-' }}
+                            </td>
 
-                                <th>TANGGAL</th>
+                            <td>
+                                Rp {{ number_format($item->harga ?? 0, 0, ',', '.') }}
+                            </td>
 
-                            </tr>
+                            <td>
 
-                        </thead>
+                                <span class="status-badge status-default">
+                                    {{ $item->verifikasi ?? '-' }}
+                                </span>
 
-                        <tbody>
+                            </td>
 
-                            @forelse($hasil as $item)
+                            <td>
 
-                                <tr>
+                                @if($item->tanggal_pengadaan)
 
-                                    <td>
-                                        {{ $item->id }}
-                                    </td>
+                                    {{ \Carbon\Carbon::parse($item->tanggal_pengadaan)->format('d/m/Y') }}
 
-                                    <td>
-                                        {{ $item->nama_infrastruktur ?? '-' }}
-                                    </td>
+                                @else
 
-                                    <td>
-                                        {{ $item->pengadaan ?? '-' }}
-                                    </td>
+                                    -
 
-                                    <td>
-                                        Rp {{ number_format($item->harga ?? 0, 0, ',', '.') }}
-                                    </td>
+                                @endif
 
-                                    <td>
+                            </td>
 
-                                        @if($item->verifikasi == 'Disetujui')
+                        </tr>
 
-                                            <span class="status-badge status-approved">
-                                                <i class="bi bi-check-circle"></i>
-                                                Disetujui
-                                            </span>
+                    @empty
 
-                                        @elseif($item->verifikasi == 'Menunggu disetujui' || $item->verifikasi == 'Menunggu Disetujui')
+                        <tr>
 
-                                            <span class="status-badge status-pending">
-                                                <i class="bi bi-clock"></i>
-                                                Menunggu
-                                            </span>
+                            <td
+                                colspan="6"
+                                class="empty-data"
+                            >
 
-                                        @elseif($item->verifikasi == 'Ditolak')
+                                <i class="bi bi-database-x"></i>
 
-                                            <span class="status-badge status-rejected">
-                                                <i class="bi bi-x-circle"></i>
-                                                Ditolak
-                                            </span>
+                                Tidak ada data Data Center.
 
-                                        @else
+                            </td>
 
-                                            <span class="status-badge status-default">
-                                                {{ $item->verifikasi ?? '-' }}
-                                            </span>
+                        </tr>
 
-                                        @endif
+                    @endforelse
 
-                                    </td>
+                </tbody>
 
-                                    <td>
-                                        {{ $item->tanggal_pengadaan ? \Carbon\Carbon::parse($item->tanggal_pengadaan)->format('d/m/Y') : '-' }}
-                                    </td>
 
-                                </tr>
+            @elseif($jenis === 'splp')
 
-                            @empty
+                <thead>
 
-                                <tr>
+                    <tr>
+                        <th>ID</th>
+                        <th>NAMA INFRASTRUKTUR</th>
+                        <th>PENGADAAN</th>
+                        <th>HARGA</th>
+                        <th>VERIFIKASI</th>
+                        <th>TANGGAL</th>
+                    </tr>
 
-                                    <td
-                                        colspan="6"
-                                        class="empty-data">
+                </thead>
 
-                                        <i class="bi bi-database-x"></i>
+                <tbody>
 
-                                        Tidak ada data jaringan.
+                    @forelse($hasil as $item)
 
-                                    </td>
+                        <tr>
 
-                                </tr>
+                            <td>
+                                {{ $item->id ?? '-' }}
+                            </td>
 
-                            @endforelse
+                            <td>
+                                {{ $item->nama_infrastruktur ?? '-' }}
+                            </td>
 
-                        </tbody>
+                            <td>
+                                {{ $item->pengadaan ?? '-' }}
+                            </td>
 
+                            <td>
+                                Rp {{ number_format($item->harga ?? 0, 0, ',', '.') }}
+                            </td>
 
-                    {{-- =================================================
-                         DATA CENTER
-                    ================================================== --}}
+                            <td>
 
-                    @elseif($jenis == 'data-center')
+                                <span class="status-badge status-default">
+                                    {{ $item->verifikasi ?? '-' }}
+                                </span>
 
-                        <thead>
+                            </td>
 
-                            <tr>
+                            <td>
 
-                                <th>ID</th>
+                                @if($item->tanggal_pengadaan)
 
-                                <th>NAMA INFRASTRUKTUR</th>
+                                    {{ \Carbon\Carbon::parse($item->tanggal_pengadaan)->format('d/m/Y') }}
 
-                                <th>PENGADAAN</th>
+                                @else
 
-                                <th>HARGA</th>
+                                    -
 
-                                <th>VERIFIKASI</th>
+                                @endif
 
-                                <th>TANGGAL</th>
+                            </td>
 
-                            </tr>
+                        </tr>
 
-                        </thead>
+                    @empty
 
-                        <tbody>
+                        <tr>
 
-                            @forelse($hasil as $item)
+                            <td
+                                colspan="6"
+                                class="empty-data"
+                            >
 
-                                <tr>
+                                <i class="bi bi-database-x"></i>
 
-                                    <td>
-                                        {{ $item->id }}
-                                    </td>
+                                Tidak ada data SPLP.
 
-                                    <td>
-                                        {{ $item->nama_infrastruktur ?? '-' }}
-                                    </td>
+                            </td>
 
-                                    <td>
-                                        {{ $item->pengadaan ?? '-' }}
-                                    </td>
+                        </tr>
 
-                                    <td>
-                                        Rp {{ number_format($item->harga ?? 0, 0, ',', '.') }}
-                                    </td>
+                    @endforelse
 
-                                    <td>
+                </tbody>
 
-                                        <span class="status-badge status-default">
 
-                                            {{ $item->verifikasi ?? '-' }}
+            @elseif($jenis === 'data')
 
-                                        </span>
+                <thead>
 
-                                    </td>
+                    <tr>
+                        <th>ID</th>
+                        <th>NAMA DATASET</th>
+                        <th>JENIS DATA</th>
+                        <th>TAHUN</th>
+                        <th>VERIFIKASI</th>
+                    </tr>
 
-                                    <td>
-                                        {{ $item->tanggal_pengadaan ? \Carbon\Carbon::parse($item->tanggal_pengadaan)->format('d/m/Y') : '-' }}
-                                    </td>
+                </thead>
 
-                                </tr>
+                <tbody>
 
-                            @empty
+                    @forelse($hasil as $item)
 
-                                <tr>
+                        <tr>
 
-                                    <td
-                                        colspan="6"
-                                        class="empty-data">
+                            <td>
+                                DS-{{ str_pad($item->id ?? 0, 3, '0', STR_PAD_LEFT) }}
+                            </td>
 
-                                        <i class="bi bi-database-x"></i>
+                            <td>
+                                {{ $item->nama_dataset ?? '-' }}
+                            </td>
 
-                                        Tidak ada data Data Center.
+                            <td>
+                                {{ $item->jenis_data ?? '-' }}
+                            </td>
 
-                                    </td>
+                            <td>
+                                {{ $item->tahun ?? '-' }}
+                            </td>
 
-                                </tr>
+                            <td>
 
-                            @endforelse
+                                @if($item->verifikasi === 'Disetujui')
 
-                        </tbody>
+                                    <span class="status-badge status-approved">
+                                        <i class="bi bi-check-circle"></i>
+                                        Disetujui
+                                    </span>
 
+                                @elseif(
+                                    $item->verifikasi === 'Menunggu Disetujui' ||
+                                    $item->verifikasi === 'Menunggu disetujui'
+                                )
 
-                    {{-- =================================================
-                         SPLP
-                    ================================================== --}}
+                                    <span class="status-badge status-pending">
+                                        <i class="bi bi-clock"></i>
+                                        Menunggu
+                                    </span>
 
-                    @elseif($jenis == 'splp')
+                                @elseif($item->verifikasi === 'Ditolak')
 
-                        <thead>
+                                    <span class="status-badge status-rejected">
+                                        <i class="bi bi-x-circle"></i>
+                                        Ditolak
+                                    </span>
 
-                            <tr>
+                                @else
 
-                                <th>ID</th>
+                                    <span class="status-badge status-default">
+                                        {{ $item->verifikasi ?? '-' }}
+                                    </span>
 
-                                <th>NAMA INFRASTRUKTUR</th>
+                                @endif
 
-                                <th>PENGADAAN</th>
+                            </td>
 
-                                <th>HARGA</th>
+                        </tr>
 
-                                <th>VERIFIKASI</th>
+                    @empty
 
-                                <th>TANGGAL</th>
+                        <tr>
 
-                            </tr>
+                            <td
+                                colspan="5"
+                                class="empty-data"
+                            >
 
-                        </thead>
+                                <i class="bi bi-database-x"></i>
 
-                        <tbody>
+                                Tidak ada data dataset.
 
-                            @forelse($hasil as $item)
+                            </td>
 
-                                <tr>
+                        </tr>
 
-                                    <td>
-                                        {{ $item->id }}
-                                    </td>
+                    @endforelse
 
-                                    <td>
-                                        {{ $item->nama_infrastruktur ?? '-' }}
-                                    </td>
+                </tbody>
 
-                                    <td>
-                                        {{ $item->pengadaan ?? '-' }}
-                                    </td>
 
-                                    <td>
-                                        Rp {{ number_format($item->harga ?? 0, 0, ',', '.') }}
-                                    </td>
+            @elseif($jenis === 'sdm')
 
-                                    <td>
+                <thead>
 
-                                        <span class="status-badge status-default">
+                    <tr>
+                        <th>ID</th>
+                        <th>NAMA</th>
+                        <th>STATUS</th>
+                        <th>TANGGAL</th>
+                    </tr>
 
-                                            {{ $item->verifikasi ?? '-' }}
+                </thead>
 
-                                        </span>
+                <tbody>
 
-                                    </td>
+                    @forelse($hasil as $item)
 
-                                    <td>
-                                        {{ $item->tanggal_pengadaan ? \Carbon\Carbon::parse($item->tanggal_pengadaan)->format('d/m/Y') : '-' }}
-                                    </td>
+                        <tr>
 
-                                </tr>
+                            <td>
+                                {{ $item->id ?? '-' }}
+                            </td>
 
-                            @empty
+                            <td>
+                                {{ $item->nama ?? '-' }}
+                            </td>
 
-                                <tr>
+                            <td>
 
-                                    <td
-                                        colspan="6"
-                                        class="empty-data">
+                                <span class="status-badge status-default">
+                                    {{ $item->status ?? '-' }}
+                                </span>
 
-                                        <i class="bi bi-database-x"></i>
+                            </td>
 
-                                        Tidak ada data SPLP.
+                            <td>
+                                {{ $item->created_at?->format('d/m/Y') ?? '-' }}
+                            </td>
 
-                                    </td>
+                        </tr>
 
-                                </tr>
+                    @empty
 
-                            @endforelse
+                        <tr>
 
-                        </tbody>
+                            <td
+                                colspan="4"
+                                class="empty-data"
+                            >
 
+                                <i class="bi bi-database-x"></i>
 
-                    {{-- =================================================
-                         DATA
-                    ================================================== --}}
+                                Tidak ada data SDM.
 
-                    @elseif($jenis == 'data')
+                            </td>
 
-                        <thead>
+                        </tr>
 
-                            <tr>
+                    @endforelse
 
-                                <th>ID</th>
+                </tbody>
 
-                                <th>NAMA DATASET</th>
 
-                                <th>JENIS DATA</th>
+            @else
 
-                                <th>TAHUN</th>
+                <tbody>
 
-                                <th>VERIFIKASI</th>
+                    <tr>
 
-                            </tr>
+                        <td class="empty-data">
 
-                        </thead>
+                            <i class="bi bi-exclamation-circle"></i>
 
-                        <tbody>
+                            <strong>
+                                Jenis data tidak dikenali
+                            </strong>
 
-                            @forelse($hasil as $item)
+                            Silakan pilih jenis data yang tersedia.
 
-                                <tr>
+                        </td>
 
-                                    <td>
+                    </tr>
 
-                                        DS-{{
-                                            str_pad(
-                                                $item->id,
-                                                3,
-                                                '0',
-                                                STR_PAD_LEFT
-                                            )
-                                        }}
+                </tbody>
 
-                                    </td>
+            @endif
 
-                                    <td>
-                                        {{ $item->nama_dataset }}
-                                    </td>
+        </table>
 
-                                    <td>
-                                        {{ $item->jenis_data }}
-                                    </td>
+    </div>
 
-                                    <td>
-                                        {{ $item->tahun }}
-                                    </td>
 
-                                    <td>
+    {{-- FOOTER --}}
+    @if($jenis)
 
-                                        @if($item->verifikasi == 'Disetujui')
+        <div class="laporan-footer">
 
-                                            <span class="status-badge status-approved">
-                                                <i class="bi bi-check-circle"></i>
-                                                Disetujui
-                                            </span>
+            <span>
+                Menampilkan
+                <strong>{{ $hasil->count() }}</strong>
+                data
+            </span>
 
-                                        @elseif($item->verifikasi == 'Menunggu Disetujui')
-
-                                            <span class="status-badge status-pending">
-                                                <i class="bi bi-clock"></i>
-                                                Menunggu
-                                            </span>
-
-                                        @elseif($item->verifikasi == 'Ditolak')
-
-                                            <span class="status-badge status-rejected">
-                                                <i class="bi bi-x-circle"></i>
-                                                Ditolak
-                                            </span>
-
-                                        @else
-
-                                            <span class="status-badge status-default">
-                                                -
-                                            </span>
-
-                                        @endif
-
-                                    </td>
-
-                                </tr>
-
-                            @empty
-
-                                <tr>
-
-                                    <td
-                                        colspan="5"
-                                        class="empty-data">
-
-                                        <i class="bi bi-database-x"></i>
-
-                                        Tidak ada data dataset.
-
-                                    </td>
-
-                                </tr>
-
-                            @endforelse
-
-                        </tbody>
-
-
-                    {{-- =================================================
-                         SDM
-                    ================================================== --}}
-
-                    @elseif($jenis == 'sdm')
-
-                        <thead>
-
-                            <tr>
-
-                                <th>ID</th>
-
-                                <th>NAMA</th>
-
-                                <th>STATUS</th>
-
-                                <th>TANGGAL</th>
-
-                            </tr>
-
-                        </thead>
-
-                        <tbody>
-
-                            @forelse($hasil as $item)
-
-                                <tr>
-
-                                    <td>
-                                        {{ $item->id }}
-                                    </td>
-
-                                    <td>
-                                        {{ $item->nama ?? '-' }}
-                                    </td>
-
-                                    <td>
-
-                                        <span class="status-badge status-default">
-
-                                            {{ $item->status ?? '-' }}
-
-                                        </span>
-
-                                    </td>
-
-                                    <td>
-                                        {{ $item->created_at?->format('d/m/Y') ?? '-' }}
-                                    </td>
-
-                                </tr>
-
-                            @empty
-
-                                <tr>
-
-                                    <td
-                                        colspan="4"
-                                        class="empty-data">
-
-                                        <i class="bi bi-database-x"></i>
-
-                                        Tidak ada data SDM.
-
-                                    </td>
-
-                                </tr>
-
-                            @endforelse
-
-                        </tbody>
-
-                    @endif
-
-                @endif
-
-
-            </table>
+            <span>
+                Inventory IT Assets
+            </span>
 
         </div>
 
+    @endif
 
-        {{-- =================================================
-             FOOTER
-        ================================================== --}}
+</div>
 
-        @if($jenis)
-
-            <div class="laporan-footer">
-
-                <span>
-
-                    Menampilkan
-
-                    <strong>
-                        {{ $hasil->count() }}
-                    </strong>
-
-                    data
-
-                </span>
-
-                <span>
-
-                    Inventory IT Assets
-
-                </span>
-
-            </div>
-
-        @endif
-
-
-    </div>
 
 </div>
 
 @endsection
 
-
 @push('scripts')
 
 <script>
-
 function toggleLaporanFilter()
 {
-    const filter =
-        document.getElementById('laporanFilter');
+    const filter = document.getElementById('laporanFilter');
 
-    filter.classList.toggle('show');
+    if (filter) {
+        filter.classList.toggle('show');
+    }
 }
-
 </script>
 
 @endpush

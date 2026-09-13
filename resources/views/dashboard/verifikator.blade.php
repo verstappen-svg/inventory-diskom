@@ -1,126 +1,517 @@
 @extends('layouts.app')
 
 @section('title', 'Dashboard Verifikator')
-
 @section('page-title', 'Dashboard Verifikator')
 
 @section('content')
 
+@php
+
+    /*
+    |--------------------------------------------------------------------------
+    | DATA VERIFIKASI
+    |--------------------------------------------------------------------------
+    */
+
+    $totalMenunggu =
+        $verificationData['Menunggu'] ?? 0;
+
+    $totalDisetujui =
+        $verificationData['Disetujui'] ?? 0;
+
+    $totalDitolak =
+        $verificationData['Ditolak'] ?? 0;
+
+
+    /*
+    |--------------------------------------------------------------------------
+    | PENGAJUAN TERBARU
+    |--------------------------------------------------------------------------
+    |
+    | Data diambil dari verification_requests.
+    |
+    */
+
+    use App\Models\VerificationRequest;
+
+    $pengajuanTerbaru =
+        VerificationRequest::with([
+            'submitter',
+        ])
+        ->latest()
+        ->take(5)
+        ->get();
+
+@endphp
+
+
 <style>
 
-.dashboard {
+/* =========================================================
+   DASHBOARD VERIFIKATOR
+========================================================= */
+
+.verifikator-dashboard {
     width: 100%;
 }
 
-.dashboard-top {
+
+/* =========================================================
+   TOP
+========================================================= */
+
+.verifikator-top {
     display: flex;
     justify-content: space-between;
-    align-items: center;
+    align-items: flex-start;
     gap: 20px;
-    margin-bottom: 25px;
+    margin-bottom: 22px;
 }
 
-.welcome-title {
-    margin: 0 0 6px;
-    font-size: 24px;
-    font-weight: 700;
-}
 
-.welcome-text {
+/* =========================================================
+   WELCOME
+========================================================= */
+
+.verifikator-welcome h2 {
     margin: 0;
-    font-size: 13px;
-    color: #6b7280;
+    font-size: 23px;
+    font-weight: 700;
+    color: #111827;
 }
 
-.year-filter select {
+.verifikator-welcome p {
+    margin: 6px 0 0;
+    font-size: 13px;
+    color: #64748b;
+}
+
+
+/* =========================================================
+   YEAR FILTER
+========================================================= */
+
+.verifikator-year-filter {
+    display: flex;
+    align-items: center;
+}
+
+.verifikator-year-filter select {
+    min-width: 145px;
     padding: 9px 12px;
     border: 1px solid #d1d5db;
     border-radius: 8px;
+    background: #ffffff;
+    color: #374151;
+    font-size: 11px;
+    outline: none;
+    cursor: pointer;
 }
 
-.verification-grid {
+.verifikator-year-filter select:focus {
+    border-color: #2563eb;
+}
+
+
+/* =========================================================
+   ALERT
+========================================================= */
+
+.verifikator-alert {
+    width: 100%;
+    padding: 12px 15px;
+    border-radius: 9px;
+    margin-bottom: 18px;
+    font-size: 11px;
+    font-weight: 600;
+    box-sizing: border-box;
+}
+
+.verifikator-alert.success {
+    background: #dcfce7;
+    border: 1px solid #bbf7d0;
+    color: #15803d;
+}
+
+.verifikator-alert.error {
+    background: #fee2e2;
+    border: 1px solid #fecaca;
+    color: #dc2626;
+}
+
+
+/* =========================================================
+   STATISTICS
+========================================================= */
+
+.verifikator-stats {
     display: grid;
-    grid-template-columns: repeat(3, 1fr);
-    gap: 20px;
-    margin-bottom: 25px;
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+    gap: 16px;
+    margin-bottom: 22px;
 }
 
-.verification-card {
-    background: white;
-    border-radius: 15px;
-    padding: 22px;
-    border: 1px solid #eef0f4;
-    box-shadow: 0 3px 10px rgba(0,0,0,.06);
+.verifikator-stat {
+    min-height: 110px;
+    background: #ffffff;
+    border-radius: 12px;
+    padding: 18px 20px;
+    display: flex;
+    align-items: center;
+    gap: 15px;
+    border: 1px solid #e5e7eb;
+    box-shadow: 0 2px 8px rgba(15, 23, 42, .05);
+    box-sizing: border-box;
 }
 
-.verification-icon {
-    width: 48px;
-    height: 48px;
-    border-radius: 13px;
-    background: #e0f2fe;
-    color: #075985;
+.verifikator-stat-icon {
+    width: 45px;
+    height: 45px;
+    min-width: 45px;
+    border-radius: 11px;
     display: flex;
     align-items: center;
     justify-content: center;
-    margin-bottom: 15px;
+    font-size: 19px;
 }
 
-.verification-icon i {
-    font-size: 22px;
+.verifikator-stat-icon.orange {
+    background: #fff4cc;
+    color: #f59e0b;
 }
 
-.verification-label {
+.verifikator-stat-icon.green {
+    background: #d8f9e5;
+    color: #16a34a;
+}
+
+.verifikator-stat-icon.red {
+    background: #ffe0e0;
+    color: #ef4444;
+}
+
+.verifikator-stat-label {
     display: block;
-    font-size: 13px;
-    color: #6b7280;
+    font-size: 11px;
+    color: #64748b;
+    margin-bottom: 4px;
 }
 
-.verification-value {
+.verifikator-stat-value {
     display: block;
-    font-size: 28px;
+    font-size: 23px;
     font-weight: 700;
-    margin-top: 6px;
+    color: #075985;
 }
 
-.dashboard-card {
-    background: white;
-    border-radius: 15px;
-    padding: 22px;
-    border: 1px solid #eef0f4;
-    box-shadow: 0 3px 10px rgba(0,0,0,.06);
-    margin-bottom: 25px;
+
+/* =========================================================
+   MAIN GRID
+========================================================= */
+
+.verifikator-main-grid {
+    display: grid;
+    grid-template-columns:
+        minmax(0, 1.7fr)
+        minmax(260px, .8fr);
+    gap: 18px;
+    margin-bottom: 20px;
 }
 
-.card-title {
-    margin: 0 0 20px;
-    font-size: 16px;
+
+/* =========================================================
+   CARD
+========================================================= */
+
+.verifikator-card {
+    background: #ffffff;
+    border: 1px solid #e5e7eb;
+    border-radius: 12px;
+    overflow: hidden;
+    box-shadow: 0 2px 8px rgba(15, 23, 42, .04);
 }
 
-.summary-item {
+.verifikator-card + .verifikator-card {
+    margin-bottom: 0;
+}
+
+.verifikator-card-header {
+    min-height: 58px;
+    padding: 0 16px;
     display: flex;
+    align-items: center;
     justify-content: space-between;
-    padding: 14px 0;
-    border-bottom: 1px solid #eef0f4;
+    border-bottom: 1px solid #e5e7eb;
+    box-sizing: border-box;
 }
 
-.summary-item:last-child {
+.verifikator-card-title {
+    margin: 0;
+    font-size: 13px;
+    font-weight: 700;
+    color: #1f2937;
+}
+
+
+/* =========================================================
+   TABLE
+========================================================= */
+
+.verifikator-table-wrapper {
+    width: 100%;
+    overflow-x: auto;
+}
+
+.verifikator-table {
+    width: 100%;
+    border-collapse: collapse;
+    min-width: 650px;
+}
+
+.verifikator-table th {
+    padding: 10px 13px;
+    background: #f8fafc;
+    border-bottom: 1px solid #e5e7eb;
+    color: #64748b;
+    font-size: 9px;
+    font-weight: 700;
+    text-align: left;
+    white-space: nowrap;
+}
+
+.verifikator-table td {
+    padding: 11px 13px;
+    border-bottom: 1px solid #f1f5f9;
+    font-size: 10px;
+    color: #374151;
+    white-space: nowrap;
+}
+
+.verifikator-table tbody tr:last-child td {
     border-bottom: none;
 }
 
-.activity-item {
+.verifikator-table tbody tr:hover {
+    background: #f8fafc;
+}
+
+
+/* =========================================================
+   DATA
+========================================================= */
+
+.verifikator-data-name {
+    display: block;
+    font-weight: 600;
+    color: #1f2937;
+}
+
+.verifikator-data-code {
+    display: block;
+    margin-top: 3px;
+    font-size: 8px;
+    color: #94a3b8;
+}
+
+.verifikator-category {
+    display: inline-flex;
+    padding: 4px 7px;
+    border-radius: 5px;
+    background: #eff6ff;
+    color: #2563eb;
+    font-size: 8px;
+    font-weight: 600;
+}
+
+
+/* =========================================================
+   STATUS
+========================================================= */
+
+.verifikator-status {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    padding: 4px 8px;
+    border-radius: 20px;
+    font-size: 8px;
+    font-weight: 600;
+}
+
+.verifikator-status.pending {
+    background: #fff4cc;
+    color: #b45309;
+}
+
+.verifikator-status.approved {
+    background: #dcfce7;
+    color: #15803d;
+}
+
+.verifikator-status.rejected {
+    background: #fee2e2;
+    color: #dc2626;
+}
+
+
+/* =========================================================
+   NOTIFICATION
+========================================================= */
+
+.verifikator-notification {
     display: flex;
-    gap: 13px;
-    padding: 15px 0;
-    border-bottom: 1px solid #eef0f4;
+    gap: 10px;
+    padding: 15px;
+    border-bottom: 1px solid #f1f5f9;
 }
 
-.activity-item:last-child {
+.verifikator-notification:last-child {
     border-bottom: none;
 }
 
-.activity-icon {
+.verifikator-notification-icon {
+    width: 30px;
+    height: 30px;
+    min-width: 30px;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.verifikator-notification-icon.orange {
+    background: #fff4cc;
+    color: #f59e0b;
+}
+
+.verifikator-notification-icon.green {
+    background: #dcfce7;
+    color: #16a34a;
+}
+
+.verifikator-notification-icon.red {
+    background: #fee2e2;
+    color: #ef4444;
+}
+
+.verifikator-notification-title {
+    font-size: 10px;
+    font-weight: 700;
+    color: #374151;
+    margin-bottom: 4px;
+}
+
+.verifikator-notification-text {
+    font-size: 8px;
+    color: #64748b;
+    line-height: 1.5;
+}
+
+
+/* =========================================================
+   SUMMARY
+========================================================= */
+
+.verifikator-summary {
+    background: #ffffff;
+    border: 1px solid #e5e7eb;
+    border-radius: 12px;
+    box-shadow: 0 2px 8px rgba(15, 23, 42, .04);
+    margin-bottom: 20px;
+    overflow: hidden;
+}
+
+.verifikator-summary-header {
+    min-height: 58px;
+    padding: 0 16px;
+    display: flex;
+    align-items: center;
+    border-bottom: 1px solid #e5e7eb;
+}
+
+.verifikator-summary-title {
+    margin: 0;
+    font-size: 13px;
+    font-weight: 700;
+    color: #1f2937;
+}
+
+.verifikator-summary-grid {
+    display: grid;
+    grid-template-columns: repeat(4, 1fr);
+}
+
+.verifikator-summary-item {
+    padding: 18px;
+    border-right: 1px solid #f1f5f9;
+}
+
+.verifikator-summary-item:last-child {
+    border-right: none;
+}
+
+.verifikator-summary-label {
+    display: block;
+    font-size: 10px;
+    color: #64748b;
+    margin-bottom: 6px;
+}
+
+.verifikator-summary-value {
+    display: block;
+    font-size: 20px;
+    font-weight: 700;
+    color: #075985;
+}
+
+
+/* =========================================================
+   ACTIVITY
+========================================================= */
+
+.verifikator-activity {
+    background: #ffffff;
+    border: 1px solid #e5e7eb;
+    border-radius: 12px;
+    box-shadow: 0 2px 8px rgba(15, 23, 42, .04);
+    overflow: hidden;
+}
+
+.verifikator-activity-header {
+    min-height: 58px;
+    padding: 0 16px;
+    display: flex;
+    align-items: center;
+    border-bottom: 1px solid #e5e7eb;
+}
+
+.verifikator-activity-title {
+    margin: 0;
+    font-size: 13px;
+    font-weight: 700;
+    color: #1f2937;
+}
+
+.verifikator-activity-list {
+    padding: 0 16px;
+}
+
+.verifikator-activity-item {
+    display: flex;
+    align-items: center;
+    gap: 13px;
+    padding: 14px 0;
+    border-bottom: 1px solid #f1f5f9;
+}
+
+.verifikator-activity-item:last-child {
+    border-bottom: none;
+}
+
+.verifikator-activity-icon {
     width: 36px;
     height: 36px;
+    min-width: 36px;
     border-radius: 10px;
     background: #e0f2fe;
     color: #075985;
@@ -129,31 +520,125 @@
     justify-content: center;
 }
 
-.activity-text {
-    display: block;
-    font-size: 13px;
+.verifikator-activity-content {
+    min-width: 0;
+    flex: 1;
 }
 
-.activity-time {
+.verifikator-activity-text {
     display: block;
     font-size: 11px;
-    color: #9ca3af;
+    font-weight: 600;
+    color: #374151;
+}
+
+.verifikator-activity-meta {
+    display: flex;
+    align-items: center;
+    gap: 7px;
+    flex-wrap: wrap;
     margin-top: 4px;
 }
 
-@media(max-width:900px) {
+.verifikator-activity-operator {
+    font-size: 9px;
+    color: #64748b;
+}
 
-    .verification-grid {
+.verifikator-activity-time {
+    font-size: 9px;
+    color: #94a3b8;
+}
+
+.verifikator-activity-time::before {
+    content: "•";
+    margin-right: 7px;
+}
+
+.verifikator-empty {
+    padding: 35px 20px;
+    text-align: center;
+    color: #94a3b8;
+    font-size: 10px;
+}
+
+
+/* =========================================================
+   BUTTON
+========================================================= */
+
+.verifikator-see-all {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    padding: 8px 13px;
+    border-radius: 6px;
+    background: #2563eb;
+    color: #ffffff;
+    text-decoration: none;
+    font-size: 9px;
+    font-weight: 600;
+}
+
+.verifikator-see-all:hover {
+    background: #1d4ed8;
+    color: #ffffff;
+}
+
+
+/* =========================================================
+   RESPONSIVE
+========================================================= */
+
+@media (max-width: 950px) {
+
+    .verifikator-main-grid {
         grid-template-columns: 1fr;
     }
 
 }
 
-@media(max-width:600px) {
+@media (max-width: 700px) {
 
-    .dashboard-top {
+    .verifikator-top {
         flex-direction: column;
-        align-items: flex-start;
+    }
+
+    .verifikator-year-filter {
+        width: 100%;
+    }
+
+    .verifikator-year-filter select {
+        width: 100%;
+    }
+
+    .verifikator-stats {
+        grid-template-columns: 1fr;
+    }
+
+    .verifikator-summary-grid {
+        grid-template-columns: repeat(2, 1fr);
+    }
+
+    .verifikator-summary-item:nth-child(2) {
+        border-right: none;
+    }
+
+}
+
+@media (max-width: 450px) {
+
+    .verifikator-summary-grid {
+        grid-template-columns: 1fr;
+    }
+
+    .verifikator-summary-item {
+        border-right: none;
+        border-bottom: 1px solid #f1f5f9;
+    }
+
+    .verifikator-summary-item:last-child {
+        border-bottom: none;
     }
 
 }
@@ -161,29 +646,72 @@
 </style>
 
 
-<div class="dashboard">
+<div class="verifikator-dashboard">
 
-    <div class="dashboard-top">
 
-        <div>
+    {{-- =====================================================
+         ALERT
+    ====================================================== --}}
 
-            <h2 class="welcome-title">
-                Dashboard Verifikator
+    @if(session('success'))
+
+        <div class="verifikator-alert success">
+
+            <i class="bi bi-check-circle"></i>
+
+            {{ session('success') }}
+
+        </div>
+
+    @endif
+
+
+    @if(session('error'))
+
+        <div class="verifikator-alert error">
+
+            <i class="bi bi-exclamation-circle"></i>
+
+            {{ session('error') }}
+
+        </div>
+
+    @endif
+
+
+    {{-- =====================================================
+         WELCOME + FILTER TAHUN
+    ====================================================== --}}
+
+    <div class="verifikator-top">
+
+        <div class="verifikator-welcome">
+
+            <h2>
+                Selamat datang,
+                {{ auth()->user()->name ?? 'Verifikator' }}
+                👋
             </h2>
 
-            <p class="welcome-text">
-                Pantau dan kelola proses verifikasi data aset.
+            <p>
+                Kelola dan verifikasi pengajuan perubahan data aset.
             </p>
 
         </div>
 
 
-        <form method="GET"
-              action="{{ route('dashboard') }}"
-              class="year-filter">
+        {{-- FILTER TAHUN --}}
 
-            <select name="tahun"
-                    onchange="this.form.submit()">
+        <form
+            method="GET"
+            action="{{ route('dashboard') }}"
+            class="verifikator-year-filter"
+        >
+
+            <select
+                name="tahun"
+                onchange="this.form.submit()"
+            >
 
                 <option value="all">
                     Semua Tahun
@@ -191,11 +719,11 @@
 
                 @foreach($tahunList as $item)
 
-                    <option value="{{ $item }}"
-                        {{ $tahun == $item ? 'selected' : '' }}>
-
+                    <option
+                        value="{{ $item }}"
+                        {{ (string) $tahun === (string) $item ? 'selected' : '' }}
+                    >
                         {{ $item }}
-
                     </option>
 
                 @endforeach
@@ -207,155 +735,617 @@
     </div>
 
 
-    <div class="verification-grid">
+    {{-- =====================================================
+         STATISTIK VERIFIKASI
+    ====================================================== --}}
 
-        <div class="verification-card">
+    <div class="verifikator-stats">
 
-            <div class="verification-icon">
 
-                <i class="bi bi-hourglass-split"></i>
+        {{-- MENUNGGU --}}
+
+        <div class="verifikator-stat">
+
+            <div class="verifikator-stat-icon orange">
+
+                <i class="bi bi-clock"></i>
 
             </div>
 
-            <span class="verification-label">
-                Menunggu Verifikasi
-            </span>
+            <div>
 
-            <span class="verification-value">
-                {{ $verificationData['Menunggu'] ?? 0 }}
-            </span>
+                <span class="verifikator-stat-label">
+                    Menunggu Verifikasi
+                </span>
+
+                <span class="verifikator-stat-value">
+                    {{ number_format($totalMenunggu) }}
+                </span>
+
+            </div>
 
         </div>
 
 
-        <div class="verification-card">
+        {{-- DISETUJUI --}}
 
-            <div class="verification-icon">
+        <div class="verifikator-stat">
+
+            <div class="verifikator-stat-icon green">
 
                 <i class="bi bi-check-circle"></i>
 
             </div>
 
-            <span class="verification-label">
-                Disetujui
-            </span>
+            <div>
 
-            <span class="verification-value">
-                {{ $verificationData['Disetujui'] ?? 0 }}
-            </span>
+                <span class="verifikator-stat-label">
+                    Disetujui
+                </span>
+
+                <span class="verifikator-stat-value">
+                    {{ number_format($totalDisetujui) }}
+                </span>
+
+            </div>
 
         </div>
 
 
-        <div class="verification-card">
+        {{-- DITOLAK --}}
 
-            <div class="verification-icon">
+        <div class="verifikator-stat">
+
+            <div class="verifikator-stat-icon red">
 
                 <i class="bi bi-x-circle"></i>
 
             </div>
 
-            <span class="verification-label">
-                Ditolak
-            </span>
+            <div>
 
-            <span class="verification-value">
-                {{ $verificationData['Ditolak'] ?? 0 }}
-            </span>
+                <span class="verifikator-stat-label">
+                    Ditolak
+                </span>
 
-        </div>
-
-    </div>
-
-
-    <div class="dashboard-card">
-
-        <h3 class="card-title">
-            Ringkasan Data Aset
-        </h3>
-
-        <div class="summary-item">
-
-            <span>Total Aset</span>
-
-            <strong>
-                {{ number_format($totalAset) }}
-            </strong>
-
-        </div>
-
-        <div class="summary-item">
-
-            <span>Hardware</span>
-
-            <strong>
-                {{ number_format($hardwareCount) }}
-            </strong>
-
-        </div>
-
-        <div class="summary-item">
-
-            <span>Software</span>
-
-            <strong>
-                {{ number_format($softwareCount) }}
-            </strong>
-
-        </div>
-
-        <div class="summary-item">
-
-            <span>Infrastruktur</span>
-
-            <strong>
-                {{ number_format($infrastrukturCount) }}
-            </strong>
-
-        </div>
-
-    </div>
-
-
-    <div class="dashboard-card">
-
-        <h3 class="card-title">
-            Aktivitas Terbaru
-        </h3>
-
-        @forelse($activities as $activity)
-
-            <div class="activity-item">
-
-                <div class="activity-icon">
-
-                    <i class="bi {{ $activity['icon'] }}"></i>
-
-                </div>
-
-                <div>
-
-                    <span class="activity-text">
-                        {{ $activity['text'] }}
-                    </span>
-
-                    <span class="activity-time">
-                        {{ $activity['time'] }}
-                    </span>
-
-                </div>
+                <span class="verifikator-stat-value">
+                    {{ number_format($totalDitolak) }}
+                </span>
 
             </div>
 
-        @empty
-
-            <p class="welcome-text">
-                Belum ada aktivitas.
-            </p>
-
-        @endforelse
+        </div>
 
     </div>
+
+
+    {{-- =====================================================
+         MAIN GRID
+    ====================================================== --}}
+
+    <div class="verifikator-main-grid">
+
+
+        {{-- =================================================
+             PENGAJUAN TERBARU
+        ================================================== --}}
+
+        <div class="verifikator-card">
+
+            <div class="verifikator-card-header">
+
+                <h3 class="verifikator-card-title">
+                    Pengajuan Terbaru
+                </h3>
+
+                <a
+                    href="{{ route('verifikasi.index') }}"
+                    class="verifikator-see-all"
+                >
+                    Lihat semua
+                </a>
+
+            </div>
+
+
+            <div class="verifikator-table-wrapper">
+
+                @if($pengajuanTerbaru->count())
+
+                    <table class="verifikator-table">
+
+                        <thead>
+
+                            <tr>
+
+                                <th>
+                                    DATA
+                                </th>
+
+                                <th>
+                                    KATEGORI
+                                </th>
+
+                                <th>
+                                    JENIS
+                                </th>
+
+                                <th>
+                                    DIAJUKAN OLEH
+                                </th>
+
+                                <th>
+                                    STATUS
+                                </th>
+
+                            </tr>
+
+                        </thead>
+
+
+                        <tbody>
+
+                            @foreach($pengajuanTerbaru as $item)
+
+                                @php
+
+                                    $data =
+                                        is_array($item->data ?? null)
+                                            ? $item->data
+                                            : [];
+
+                                    $namaData =
+                                        $data['jenis']
+                                        ?? $data['nama']
+                                        ?? $data['nama_data']
+                                        ?? $data['nama_infrastruktur']
+                                        ?? $data['kode']
+                                        ?? ucfirst($item->module ?? 'Data');
+
+                                    $kodeData =
+                                        $data['kode']
+                                        ?? null;
+
+                                @endphp
+
+
+                                <tr>
+
+                                    {{-- DATA --}}
+
+                                    <td>
+
+                                        <span class="verifikator-data-name">
+
+                                            {{ $namaData }}
+
+                                        </span>
+
+                                        @if($kodeData)
+
+                                            <span class="verifikator-data-code">
+
+                                                {{ $kodeData }}
+
+                                            </span>
+
+                                        @endif
+
+                                    </td>
+
+
+                                    {{-- KATEGORI --}}
+
+                                    <td>
+
+                                        <span class="verifikator-category">
+
+                                            @if(
+                                                $item->module === 'data-center' ||
+                                                $item->module === 'data_center'
+                                            )
+
+                                                Data Center
+
+                                            @elseif(
+                                                $item->module === 'jaringan'
+                                            )
+
+                                                Jaringan
+
+                                            @elseif(
+                                                $item->module === 'splp'
+                                            )
+
+                                                SPLP
+
+                                            @else
+
+                                                {{ ucfirst($item->module ?? 'Data') }}
+
+                                            @endif
+
+                                        </span>
+
+                                    </td>
+
+
+                                    {{-- JENIS AKSI --}}
+
+                                    <td>
+
+                                        @if($item->action === 'create')
+
+                                            Tambah
+
+                                        @elseif($item->action === 'update')
+
+                                            Perbarui
+
+                                        @elseif($item->action === 'delete')
+
+                                            Hapus
+
+                                        @else
+
+                                            {{ ucfirst($item->action ?? '-') }}
+
+                                        @endif
+
+                                    </td>
+
+
+                                    {{-- SUBMITTER --}}
+
+                                    <td>
+
+                                        {{ $item->submitter->name ?? '-' }}
+
+                                    </td>
+
+
+                                    {{-- STATUS --}}
+
+                                    <td>
+
+                                        @if($item->status === 'menunggu')
+
+                                            <span class="verifikator-status pending">
+                                                Menunggu
+                                            </span>
+
+                                        @elseif($item->status === 'disetujui')
+
+                                            <span class="verifikator-status approved">
+                                                Disetujui
+                                            </span>
+
+                                        @elseif($item->status === 'ditolak')
+
+                                            <span class="verifikator-status rejected">
+                                                Ditolak
+                                            </span>
+
+                                        @else
+
+                                            <span class="verifikator-status pending">
+                                                {{ ucfirst($item->status ?? '-') }}
+                                            </span>
+
+                                        @endif
+
+                                    </td>
+
+                                </tr>
+
+                            @endforeach
+
+                        </tbody>
+
+                    </table>
+
+                @else
+
+                    <div class="verifikator-empty">
+
+                        <i class="bi bi-inbox"></i>
+
+                        <br><br>
+
+                        Belum ada pengajuan.
+
+                    </div>
+
+                @endif
+
+            </div>
+
+        </div>
+
+
+        {{-- =================================================
+             NOTIFIKASI
+        ================================================== --}}
+
+        <div class="verifikator-card">
+
+            <div class="verifikator-card-header">
+
+                <h3 class="verifikator-card-title">
+                    Notifikasi
+                </h3>
+
+            </div>
+
+
+            <div>
+
+
+                {{-- MENUNGGU --}}
+
+                <div class="verifikator-notification">
+
+                    <div class="verifikator-notification-icon orange">
+
+                        <i class="bi bi-clock"></i>
+
+                    </div>
+
+                    <div>
+
+                        <div class="verifikator-notification-title">
+                            Pengajuan menunggu verifikasi
+                        </div>
+
+                        <div class="verifikator-notification-text">
+
+                            Terdapat
+                            <strong>
+                                {{ number_format($totalMenunggu) }}
+                            </strong>
+                            pengajuan yang perlu diperiksa.
+
+                        </div>
+
+                    </div>
+
+                </div>
+
+
+                {{-- DISETUJUI --}}
+
+                <div class="verifikator-notification">
+
+                    <div class="verifikator-notification-icon green">
+
+                        <i class="bi bi-check-circle"></i>
+
+                    </div>
+
+                    <div>
+
+                        <div class="verifikator-notification-title">
+                            Pengajuan disetujui
+                        </div>
+
+                        <div class="verifikator-notification-text">
+
+                            Total
+                            <strong>
+                                {{ number_format($totalDisetujui) }}
+                            </strong>
+                            pengajuan telah disetujui.
+
+                        </div>
+
+                    </div>
+
+                </div>
+
+
+                {{-- DITOLAK --}}
+
+                <div class="verifikator-notification">
+
+                    <div class="verifikator-notification-icon red">
+
+                        <i class="bi bi-x-circle"></i>
+
+                    </div>
+
+                    <div>
+
+                        <div class="verifikator-notification-title">
+                            Pengajuan ditolak
+                        </div>
+
+                        <div class="verifikator-notification-text">
+
+                            Total
+                            <strong>
+                                {{ number_format($totalDitolak) }}
+                            </strong>
+                            pengajuan ditolak.
+
+                        </div>
+
+                    </div>
+
+                </div>
+
+
+            </div>
+
+        </div>
+
+    </div>
+
+
+    {{-- =====================================================
+         RINGKASAN ASET
+    ====================================================== --}}
+
+    <div class="verifikator-summary">
+
+        <div class="verifikator-summary-header">
+
+            <h3 class="verifikator-summary-title">
+                Ringkasan Data Aset
+            </h3>
+
+        </div>
+
+
+        <div class="verifikator-summary-grid">
+
+
+            {{-- TOTAL --}}
+
+            <div class="verifikator-summary-item">
+
+                <span class="verifikator-summary-label">
+                    Total Aset
+                </span>
+
+                <span class="verifikator-summary-value">
+                    {{ number_format($totalAset ?? 0) }}
+                </span>
+
+            </div>
+
+
+            {{-- HARDWARE --}}
+
+            <div class="verifikator-summary-item">
+
+                <span class="verifikator-summary-label">
+                    Hardware
+                </span>
+
+                <span class="verifikator-summary-value">
+                    {{ number_format($hardwareCount ?? 0) }}
+                </span>
+
+            </div>
+
+
+            {{-- SOFTWARE --}}
+
+            <div class="verifikator-summary-item">
+
+                <span class="verifikator-summary-label">
+                    Software
+                </span>
+
+                <span class="verifikator-summary-value">
+                    {{ number_format($softwareCount ?? 0) }}
+                </span>
+
+            </div>
+
+
+            {{-- INFRASTRUKTUR --}}
+
+            <div class="verifikator-summary-item">
+
+                <span class="verifikator-summary-label">
+                    Infrastruktur
+                </span>
+
+                <span class="verifikator-summary-value">
+                    {{ number_format($infrastrukturCount ?? 0) }}
+                </span>
+
+            </div>
+
+        </div>
+
+    </div>
+
+
+    {{-- =====================================================
+         AKTIVITAS TERBARU
+    ====================================================== --}}
+
+    <div class="verifikator-activity">
+
+        <div class="verifikator-activity-header">
+
+            <h3 class="verifikator-activity-title">
+                Aktivitas Terbaru
+            </h3>
+
+        </div>
+
+
+        <div class="verifikator-activity-list">
+
+            @forelse($activities as $activity)
+
+                <div class="verifikator-activity-item">
+
+
+                    {{-- ICON --}}
+
+                    <div class="verifikator-activity-icon">
+
+                        <i class="bi {{ $activity['icon'] ?? 'bi-activity' }}"></i>
+
+                    </div>
+
+
+                    {{-- CONTENT --}}
+
+                    <div class="verifikator-activity-content">
+
+                        <span class="verifikator-activity-text">
+
+                            {{ $activity['text'] ?? 'Aktivitas data' }}
+
+                        </span>
+
+
+                        <div class="verifikator-activity-meta">
+
+                            <span class="verifikator-activity-operator">
+
+                                {{ $activity['operator'] ?? 'Operator' }}
+
+                            </span>
+
+
+                            <span class="verifikator-activity-time">
+
+                                {{ $activity['time'] ?? '-' }}
+
+                                WIB
+
+                            </span>
+
+                        </div>
+
+                    </div>
+
+                </div>
+
+            @empty
+
+                <div class="verifikator-empty">
+
+                    <i class="bi bi-clock-history"></i>
+
+                    <br><br>
+
+                    Belum ada aktivitas terbaru.
+
+                </div>
+
+            @endforelse
+
+        </div>
+
+    </div>
+
 
 </div>
 
