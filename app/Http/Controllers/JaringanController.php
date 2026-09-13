@@ -504,6 +504,18 @@ class JaringanController extends Controller
         // REDIRECT
         // ========================================================
 
+        Notification::create([
+            'judul' => 'Perubahan Jaringan Diajukan',
+            'pesan' =>
+                $request->user()->username .
+                ' memperbarui jaringan "' .
+                $jaringan->nama_infrastruktur .
+                '" dengan ID ' .
+                $jaringan->id .
+                ' dan mengajukannya kembali untuk persetujuan.',
+            'dibaca' => false,
+        ]);
+
         return redirect()
             ->route('jaringan.index')
             ->with(
@@ -563,6 +575,18 @@ class JaringanController extends Controller
         // ========================================================
         // REDIRECT
         // ========================================================
+
+        Notification::create([
+            'judul' => 'Penghapusan Jaringan Diajukan',
+            'pesan' =>
+                $username .
+                ' mengajukan penghapusan jaringan "' .
+                $namaJaringan .
+                '" dengan ID ' .
+                $idJaringan .
+                ' untuk persetujuan verifikator.',
+            'dibaca' => false,
+        ]);
 
         return redirect()
             ->route('jaringan.index')

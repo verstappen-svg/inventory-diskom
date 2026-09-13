@@ -107,8 +107,7 @@ class DashboardController extends Controller
 
         $infrastrukturCount =
             $jaringanCount +
-            $dataCenterCount +
-            $splpCount;
+            $dataCenterCount;
 
         /*
         |--------------------------------------------------------------------------
@@ -217,10 +216,6 @@ class DashboardController extends Controller
                 'nama' => 'Data Center',
                 'jumlah' => $dataCenterCount,
             ],
-            [
-                'nama' => 'SPLP',
-                'jumlah' => $splpCount,
-            ],
         ];
 
         /*
@@ -250,6 +245,7 @@ class DashboardController extends Controller
         $viewData = [
             'tahun' => $tahun,
             'tahunList' => $tahunList,
+
             'totalAset' => $totalAset,
 
             'hardwareCount' => $hardwareCount,
@@ -278,6 +274,24 @@ class DashboardController extends Controller
 
             'softwareDashboard' =>
                 $softwareDashboard,
+
+            /*
+            |--------------------------------------------------------------------------
+            | DATA INFRASTRUKTUR UNTUK DASHBOARD
+            |--------------------------------------------------------------------------
+            |
+            | Struktur:
+            |
+            | jenis
+            | - Jaringan
+            | - Data Center
+            |
+            | tenant
+            | - Tenant A
+            | - Tenant B
+            | - dst.
+            |
+            */
 
             'infrastrukturDashboard' =>
                 $infrastrukturDashboard,
@@ -403,224 +417,203 @@ class DashboardController extends Controller
 
 
     /**
-     * ============================================================
-     * HARDWARE DASHBOARD
-     * ============================================================
-     */
-    private function getHardwareDashboard(
-        $tahun = null
-    ): array {
+ * ============================================================
+ * HARDWARE DASHBOARD
+ * ============================================================
+ */
+private function getHardwareDashboard($tahun = null): array
+{
+    $result = [
+        'status' => [
+            'Baik' => 0,
+            'Perbaikan' => 0,
+            'Rusak' => 0,
+        ],
 
-        $result = [
-            'status' => [
-                'Baik' => 0,
-                'Perbaikan' => 0,
-                'Rusak' => 0,
-            ],
+        // Jenis hardware dibuat DINAMIS
+        'jenis' => [],
+    ];
 
-            'jenis' => [
-                'Laptop' => 0,
-                'PC' => 0,
-                'Printer' => 0,
-                'Monitor' => 0,
-                'Keyboard' => 0,
-                'Mouse' => 0,
-                'Camera' => 0,
-            ],
-        ];
+    $table = $this->resolveTableName('hardwares');
 
-        $table =
-            $this->resolveTableName('hardwares');
-
-        if (!$table) {
-            return $result;
-        }
-
-        $query = DB::table($table);
-
-        $this->applyYearFilter(
-            $query,
-            $table,
-            $tahun
-        );
-
-        $rows = $query->get();
-
-        $conditionColumn =
-            $this->firstExistingColumn(
-                $table,
-                [
-                    'kondisi',
-                    'status',
-                    'status_aset',
-                    'status_barang',
-                ]
-            );
-
-        $jenisColumn =
-            $this->firstExistingColumn(
-                $table,
-                [
-                    'jenis_barang',
-                    'jenis',
-                    'kategori',
-                    'tipe',
-                ]
-            );
-
-        foreach ($rows as $row) {
-
-            $condition =
-                $conditionColumn
-                    ? trim(
-                        (string) (
-                            $row->{$conditionColumn}
-                            ?? ''
-                        )
-                    )
-                    : '';
-
-            $conditionLower =
-                strtolower($condition);
-
-            if (
-                in_array(
-                    $conditionLower,
-                    [
-                        'baik',
-                        'tersedia',
-                        'bagus',
-                        'aktif',
-                    ],
-                    true
-                )
-            ) {
-
-                $result['status']['Baik']++;
-
-            } elseif (
-                in_array(
-                    $conditionLower,
-                    [
-                        'perlu perbaikan',
-                        'perbaikan',
-                        'diperbaiki',
-                        'repair',
-                    ],
-                    true
-                )
-            ) {
-
-                $result['status']['Perbaikan']++;
-
-            } elseif (
-                in_array(
-                    $conditionLower,
-                    [
-                        'rusak',
-                        'damage',
-                        'damaged',
-                    ],
-                    true
-                )
-            ) {
-
-                $result['status']['Rusak']++;
-
-            } else {
-
-                $result['status']['Baik']++;
-            }
-
-            $jenis =
-                $jenisColumn
-                    ? trim(
-                        (string) (
-                            $row->{$jenisColumn}
-                            ?? ''
-                        )
-                    )
-                    : '';
-
-            $jenisLower =
-                strtolower($jenis);
-
-            if (
-                str_contains(
-                    $jenisLower,
-                    'laptop'
-                )
-            ) {
-
-                $result['jenis']['Laptop']++;
-
-            } elseif (
-                in_array(
-                    $jenisLower,
-                    [
-                        'pc',
-                        'komputer',
-                        'desktop',
-                    ],
-                    true
-                )
-            ) {
-
-                $result['jenis']['PC']++;
-
-            } elseif (
-                str_contains(
-                    $jenisLower,
-                    'printer'
-                )
-            ) {
-
-                $result['jenis']['Printer']++;
-
-            } elseif (
-                str_contains(
-                    $jenisLower,
-                    'monitor'
-                )
-            ) {
-
-                $result['jenis']['Monitor']++;
-
-            } elseif (
-                str_contains(
-                    $jenisLower,
-                    'keyboard'
-                )
-            ) {
-
-                $result['jenis']['Keyboard']++;
-
-            } elseif (
-                str_contains(
-                    $jenisLower,
-                    'mouse'
-                )
-            ) {
-
-                $result['jenis']['Mouse']++;
-
-            } elseif (
-                str_contains(
-                    $jenisLower,
-                    'kamera'
-                ) ||
-                str_contains(
-                    $jenisLower,
-                    'camera'
-                )
-            ) {
-
-                $result['jenis']['Camera']++;
-            }
-        }
-
+    if (!$table) {
         return $result;
     }
+
+    $query = DB::table($table);
+
+    // Filter tahun tetap berlaku
+    $this->applyYearFilter(
+        $query,
+        $table,
+        $tahun
+    );
+
+    $rows = $query->get();
+
+    $conditionColumn = $this->firstExistingColumn(
+        $table,
+        [
+            'kondisi',
+            'status',
+            'status_aset',
+            'status_barang',
+        ]
+    );
+
+    $jenisColumn = $this->firstExistingColumn(
+        $table,
+        [
+            'jenis_barang',
+            'jenis',
+            'kategori',
+            'tipe',
+        ]
+    );
+
+    foreach ($rows as $row) {
+
+        /*
+        |--------------------------------------------------------------------------
+        | STATUS HARDWARE
+        |--------------------------------------------------------------------------
+        */
+
+        $condition = $conditionColumn
+            ? trim(
+                (string) (
+                    $row->{$conditionColumn} ?? ''
+                )
+            )
+            : '';
+
+        $conditionLower = strtolower($condition);
+
+        if (
+            in_array(
+                $conditionLower,
+                [
+                    'baik',
+                    'tersedia',
+                    'bagus',
+                    'aktif',
+                ],
+                true
+            )
+        ) {
+
+            $result['status']['Baik']++;
+
+        } elseif (
+            in_array(
+                $conditionLower,
+                [
+                    'perlu perbaikan',
+                    'perbaikan',
+                    'diperbaiki',
+                    'repair',
+                ],
+                true
+            )
+        ) {
+
+            $result['status']['Perbaikan']++;
+
+        } elseif (
+            in_array(
+                $conditionLower,
+                [
+                    'rusak',
+                    'damage',
+                    'damaged',
+                ],
+                true
+            )
+        ) {
+
+            $result['status']['Rusak']++;
+
+        } else {
+
+            // Nilai kosong / tidak dikenali
+            // tetap dimasukkan ke Baik seperti logic lama
+            $result['status']['Baik']++;
+        }
+
+
+        /*
+        |--------------------------------------------------------------------------
+        | JENIS HARDWARE - DINAMIS
+        |--------------------------------------------------------------------------
+        */
+
+        $jenis = $jenisColumn
+            ? trim(
+                (string) (
+                    $row->{$jenisColumn} ?? ''
+                )
+            )
+            : '';
+
+        // Kalau jenis kosong, jangan dibuat kategori kosong
+        if ($jenis === '') {
+            continue;
+        }
+
+        /*
+        |--------------------------------------------------------------------------
+        | NORMALISASI HURUF
+        |--------------------------------------------------------------------------
+        |
+        | Contoh:
+        | Laptop
+        | laptop
+        | LAPTOP
+        |
+        | akan dianggap sebagai jenis yang sama.
+        |
+        */
+
+        $jenisKey = strtolower($jenis);
+
+        $existingJenis = null;
+
+        foreach (array_keys($result['jenis']) as $key) {
+
+            if (strtolower($key) === $jenisKey) {
+
+                $existingJenis = $key;
+
+                break;
+            }
+        }
+
+        /*
+        |--------------------------------------------------------------------------
+        | HITUNG JENIS
+        |--------------------------------------------------------------------------
+        */
+
+        if ($existingJenis !== null) {
+
+            $result['jenis'][$existingJenis]++;
+
+        } else {
+
+            $result['jenis'][$jenis] = 1;
+        }
+    }
+
+    /*
+    |--------------------------------------------------------------------------
+    | URUTKAN DARI JUMLAH TERBANYAK
+    |--------------------------------------------------------------------------
+    */
+
+    arsort($result['jenis']);
+
+    return $result;
+}
 
 
     /**
@@ -825,92 +818,163 @@ class DashboardController extends Controller
      * ============================================================
      * INFRASTRUKTUR DASHBOARD
      * ============================================================
+     *
+     * DONUT :
+     * - Jaringan
+     * - Data Center
+     * - SPLP
+     *
+     * BAR :
+     * - Tenant
+     *
+     * TIDAK menggunakan:
+     * - Beli / Sewa
+     * - Tersedia / Akan Habis / Expired
+     * - Baik / Perbaikan / Rusak
+     *
+     * ============================================================
      */
     private function getInfrastrukturDashboard(
         $tahun = null
     ): array {
 
         $result = [
-            'pengadaan' => [
-                'Beli' => 0,
-                'Sewa' => 0,
+            'jenis' => [
+                'Jaringan' => 0,
+                'Data Center' => 0,
             ],
 
-            'status' => [
-                'Tersedia' => 0,
-                'Akan Habis' => 0,
-                'Expired' => 0,
-            ],
+            'tenant' => [],
         ];
 
-        $tables = [
-            'jaringans',
-            'data_centers',
-            'splps',
-        ];
+        /*
+        |--------------------------------------------------------------------------
+        | JARINGAN
+        |--------------------------------------------------------------------------
+        */
 
-        foreach ($tables as $requestedTable) {
+        $jaringanTable =
+            $this->resolveTableName('jaringans');
 
-            $table =
-                $this->resolveTableName(
-                    $requestedTable
-                );
+        if ($jaringanTable) {
 
-            if (!$table) {
-                continue;
-            }
-
-            $query = DB::table($table);
+            $query = DB::table($jaringanTable);
 
             $this->applyYearFilter(
                 $query,
-                $table,
+                $jaringanTable,
                 $tahun
             );
 
-            $rows = $query->get();
+            $result['jenis']['Jaringan'] =
+                $query->count();
+        }
 
-            foreach ($rows as $row) {
+        /*
+        |--------------------------------------------------------------------------
+        | DATA CENTER
+        |--------------------------------------------------------------------------
+        |
+        | Data Center dihitung untuk donut.
+        | Tenant hanya diambil dari tabel Data Center.
+        | SPLP tidak digunakan untuk chart Infrastruktur.
+        |
+        */
 
-                $pengadaan =
-                    strtolower(
+        $dataCenterTable =
+            $this->resolveTableName('data_centers');
+
+        if ($dataCenterTable) {
+
+            $query = DB::table($dataCenterTable);
+
+            $this->applyYearFilter(
+                $query,
+                $dataCenterTable,
+                $tahun
+            );
+
+            $result['jenis']['Data Center'] =
+                $query->count();
+
+            $tenantColumn =
+                $this->firstExistingColumn(
+                    $dataCenterTable,
+                    [
+                        'tenant',
+                        'nama_tenant',
+                        'tenant_name',
+                        'namaTenant',
+                    ]
+                );
+
+            if ($tenantColumn) {
+
+                $rows =
+                    $query
+                        ->select($tenantColumn)
+                        ->get();
+
+                foreach ($rows as $row) {
+
+                    $tenant =
                         trim(
                             (string) (
-                                $row->pengadaan
+                                $row->{$tenantColumn}
                                 ?? ''
                             )
-                        )
-                    );
+                        );
 
-                if ($pengadaan === 'beli') {
-                    $result['pengadaan']['Beli']++;
-                } elseif ($pengadaan === 'sewa') {
-                    $result['pengadaan']['Sewa']++;
-                }
+                    if ($tenant === '') {
+                        continue;
+                    }
 
-                $status =
-                    $this->getInfrastructureStatus(
-                        $row
-                    );
+                    /*
+                    |--------------------------------------------------------------
+                    | Normalisasi tenant agar perbedaan huruf besar/kecil tidak
+                    | membuat tenant yang sama menjadi dua kategori.
+                    |--------------------------------------------------------------
+                    */
 
-                if (
-                    isset(
-                        $result['status'][$status]
-                    )
-                ) {
+                    $tenantKey = strtolower($tenant);
+                    $existingTenant = null;
 
-                    $result['status'][$status]++;
+                    foreach (array_keys($result['tenant']) as $existingKey) {
+
+                        if (strtolower($existingKey) === $tenantKey) {
+                            $existingTenant = $existingKey;
+                            break;
+                        }
+                    }
+
+                    if ($existingTenant !== null) {
+                        $result['tenant'][$existingTenant]++;
+                    } else {
+                        $result['tenant'][$tenant] = 1;
+                    }
                 }
             }
         }
 
+        /*
+        |--------------------------------------------------------------------------
+        | URUTKAN TENANT DARI JUMLAH TERBANYAK
+        |--------------------------------------------------------------------------
+        */
+
+        arsort($result['tenant']);
+
         return $result;
     }
-
 
     /**
      * ============================================================
      * STATUS INFRASTRUKTUR
+     * ============================================================
+     *
+     * Fungsi ini TETAP dipakai oleh getStatusData().
+     * Bukan untuk chart Infrastruktur.
+     *
      * ============================================================
      */
     private function getInfrastructureStatus(
@@ -1640,12 +1704,6 @@ class DashboardController extends Controller
 
                 $activityType = 'created';
 
-                /*
-                |--------------------------------------------------------------------------
-                | TENTUKAN TANGGAL AKTIVITAS
-                |--------------------------------------------------------------------------
-                */
-
                 $createdRaw =
                     $hasCreatedAt
                         ? ($row->created_at ?? null)
@@ -1666,23 +1724,11 @@ class DashboardController extends Controller
                         $updatedRaw
                     );
 
-                /*
-                |--------------------------------------------------------------------------
-                | CREATED
-                |--------------------------------------------------------------------------
-                */
-
                 if ($createdDate) {
 
                     $activityDate =
                         $createdDate;
                 }
-
-                /*
-                |--------------------------------------------------------------------------
-                | UPDATED
-                |--------------------------------------------------------------------------
-                */
 
                 if (
                     $updatedDate &&
@@ -1700,12 +1746,6 @@ class DashboardController extends Controller
                     $activityType =
                         'updated';
                 }
-
-                /*
-                |--------------------------------------------------------------------------
-                | FALLBACK TANGGAL
-                |--------------------------------------------------------------------------
-                */
 
                 if (
                     !$activityDate &&
@@ -1725,12 +1765,6 @@ class DashboardController extends Controller
                 if (!$activityDate) {
                     continue;
                 }
-
-                /*
-                |--------------------------------------------------------------------------
-                | USER YANG MELAKUKAN AKTIVITAS
-                |--------------------------------------------------------------------------
-                */
 
                 $userId = null;
 
@@ -1789,22 +1823,10 @@ class DashboardController extends Controller
                     }
                 }
 
-                /*
-                |--------------------------------------------------------------------------
-                | NAMA USER
-                |--------------------------------------------------------------------------
-                */
-
                 $operator =
                     $this->getActivityUserName(
                         $userId
                     );
-
-                /*
-                |--------------------------------------------------------------------------
-                | TEXT AKTIVITAS
-                |--------------------------------------------------------------------------
-                */
 
                 if (
                     $activityType === 'updated'
@@ -1829,28 +1851,12 @@ class DashboardController extends Controller
                         $item['icon'];
                 }
 
-                /*
-                |--------------------------------------------------------------------------
-                | PASTIKAN WIB
-                |--------------------------------------------------------------------------
-                */
-
                 $activityDate =
                     $activityDate
                         ->copy()
                         ->setTimezone(
                             'Asia/Jakarta'
                         );
-
-                /*
-                |--------------------------------------------------------------------------
-                | FORMAT TANGGAL
-                |--------------------------------------------------------------------------
-                |
-                | Contoh:
-                | 08 September 2026, 14:35
-                |
-                */
 
                 $tanggal =
                     $activityDate
@@ -1859,28 +1865,9 @@ class DashboardController extends Controller
                             'd F Y, H:i'
                         );
 
-                /*
-                |--------------------------------------------------------------------------
-                | FORMAT JAM
-                |--------------------------------------------------------------------------
-                |
-                | Contoh:
-                | 14:35
-                |
-                | Key ini dibutuhkan oleh Blade:
-                | $activity['time']
-                |
-                */
-
                 $time =
                     $activityDate
                         ->format('H:i');
-
-                /*
-                |--------------------------------------------------------------------------
-                | SIMPAN AKTIVITAS
-                |--------------------------------------------------------------------------
-                */
 
                 $activities->push([
                     'date' =>
@@ -1912,12 +1899,6 @@ class DashboardController extends Controller
                 ]);
             }
         }
-
-        /*
-        |--------------------------------------------------------------------------
-        | SORT DARI AKTIVITAS TERBARU
-        |--------------------------------------------------------------------------
-        */
 
         return $activities
             ->sortByDesc(function ($activity) {
@@ -1955,12 +1936,6 @@ class DashboardController extends Controller
             return 'Operator';
         }
 
-        /*
-        |--------------------------------------------------------------------------
-        | PRIORITAS USERNAME
-        |--------------------------------------------------------------------------
-        */
-
         if (
             isset($user->username) &&
             !empty($user->username)
@@ -1968,12 +1943,6 @@ class DashboardController extends Controller
 
             return $user->username;
         }
-
-        /*
-        |--------------------------------------------------------------------------
-        | FALLBACK NAME
-        |--------------------------------------------------------------------------
-        */
 
         if (
             isset($user->name) &&
@@ -2015,15 +1984,6 @@ class DashboardController extends Controller
                         'Asia/Jakarta'
                     );
             }
-
-            /*
-            |--------------------------------------------------------------------------
-            | TIMESTAMP DATABASE
-            |--------------------------------------------------------------------------
-            |
-            | Data database dianggap berasal dari timezone aplikasi.
-            |
-            */
 
             return Carbon::createFromFormat(
                 'Y-m-d H:i:s',

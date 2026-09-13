@@ -58,7 +58,6 @@ if (!is_array($hardwareDashboard)) {
 
 }
 
-
 $hardwareStatus = $hardwareDashboard['status'] ?? [];
 $hardwareJenis = $hardwareDashboard['jenis'] ?? [];
 
@@ -88,6 +87,16 @@ $hardwareJenis =
         : [];
 
 
+/*
+|--------------------------------------------------------------------------
+| STATUS HARDWARE
+|--------------------------------------------------------------------------
+|
+| Status memang tetap menggunakan 3 kategori:
+| Baik / Perbaikan / Rusak
+|
+*/
+
 $hardwareStatus = array_merge([
 
     'Baik' => 0,
@@ -97,17 +106,23 @@ $hardwareStatus = array_merge([
 ], $hardwareStatus);
 
 
-$hardwareJenis = array_merge([
+/*
+|--------------------------------------------------------------------------
+| JENIS HARDWARE
+|--------------------------------------------------------------------------
+|
+| TIDAK DI-HARDCODE.
+|
+| Data langsung mengikuti isi kolom jenis_barang di database.
+|
+*/
 
-    'Laptop' => 0,
-    'PC' => 0,
-    'Printer' => 0,
-    'Monitor' => 0,
-    'Keyboard' => 0,
-    'Mouse' => 0,
-    'Camera' => 0,
-
-], $hardwareJenis);
+$hardwareJenis = array_filter(
+    $hardwareJenis,
+    function ($value) {
+        return is_numeric($value);
+    }
+);
 
 
 /*
@@ -120,7 +135,8 @@ $softwareDashboard = $softwareDashboard ?? [];
 
 if ($softwareDashboard instanceof \Illuminate\Support\Collection) {
 
-    $softwareDashboard = $softwareDashboard->toArray();
+    $softwareDashboard =
+        $softwareDashboard->toArray();
 
 }
 
@@ -131,8 +147,11 @@ if (!is_array($softwareDashboard)) {
 }
 
 
-$softwarePengadaan = $softwareDashboard['pengadaan'] ?? [];
-$softwareStatus = $softwareDashboard['status'] ?? [];
+$softwarePengadaan =
+    $softwareDashboard['pengadaan'] ?? [];
+
+$softwareStatus =
+    $softwareDashboard['status'] ?? [];
 
 
 if ($softwarePengadaan instanceof \Illuminate\Support\Collection) {
@@ -205,57 +224,60 @@ if (!is_array($infrastrukturDashboard)) {
 }
 
 
-$infraPengadaan =
-    $infrastrukturDashboard['pengadaan'] ?? [];
+/*
+|--------------------------------------------------------------------------
+| JENIS INFRASTRUKTUR
+|--------------------------------------------------------------------------
+*/
+
+$infraJenis =
+    $infrastrukturDashboard['jenis'] ?? [];
 
 
-$infraStatus =
-    $infrastrukturDashboard['status'] ?? [];
+if ($infraJenis instanceof \Illuminate\Support\Collection) {
 
-
-if ($infraPengadaan instanceof \Illuminate\Support\Collection) {
-
-    $infraPengadaan =
-        $infraPengadaan->toArray();
-
-}
-
-
-if ($infraStatus instanceof \Illuminate\Support\Collection) {
-
-    $infraStatus =
-        $infraStatus->toArray();
+    $infraJenis =
+        $infraJenis->toArray();
 
 }
 
 
-$infraPengadaan =
-    is_array($infraPengadaan)
-        ? $infraPengadaan
+$infraJenis =
+    is_array($infraJenis)
+        ? $infraJenis
         : [];
 
 
-$infraStatus =
-    is_array($infraStatus)
-        ? $infraStatus
+$infraJenis = array_merge([
+
+    'Jaringan' => 0,
+    'Data Center' => 0,
+
+], $infraJenis);
+
+
+/*
+|--------------------------------------------------------------------------
+| TENANT DATA CENTER
+|--------------------------------------------------------------------------
+*/
+
+$infraTenant =
+    $infrastrukturDashboard['tenant'] ?? [];
+
+
+if ($infraTenant instanceof \Illuminate\Support\Collection) {
+
+    $infraTenant =
+        $infraTenant->toArray();
+
+}
+
+
+$infraTenant =
+    is_array($infraTenant)
+        ? $infraTenant
         : [];
-
-
-$infraPengadaan = array_merge([
-
-    'Beli' => 0,
-    'Sewa' => 0,
-
-], $infraPengadaan);
-
-
-$infraStatus = array_merge([
-
-    'Tersedia' => 0,
-    'Akan Habis' => 0,
-    'Expired' => 0,
-
-], $infraStatus);
 
 
 /*
@@ -321,17 +343,17 @@ foreach ($softwareStatus as $key => $value) {
 }
 
 
-foreach ($infraPengadaan as $key => $value) {
+foreach ($infraJenis as $key => $value) {
 
-    $infraPengadaan[$key] =
+    $infraJenis[$key] =
         max(0, (int) $value);
 
 }
 
 
-foreach ($infraStatus as $key => $value) {
+foreach ($infraTenant as $key => $value) {
 
-    $infraStatus[$key] =
+    $infraTenant[$key] =
         max(0, (int) $value);
 
 }
@@ -339,11 +361,8 @@ foreach ($infraStatus as $key => $value) {
 
 /*
 |--------------------------------------------------------------------------
-| TOTAL DONUT
+| TOTAL
 |--------------------------------------------------------------------------
-|
-| HARDWARE DONUT SEKARANG MENGGUNAKAN JENIS BARANG
-|
 */
 
 $hardwareTotal =
@@ -354,13 +373,13 @@ $softwarePengadaanTotal =
     array_sum($softwarePengadaan);
 
 
-$infraPengadaanTotal =
-    array_sum($infraPengadaan);
+$infraJenisTotal =
+    array_sum($infraJenis);
 
 
 /*
 |--------------------------------------------------------------------------
-| PERSENTASE HARDWARE JENIS
+| PERSENTASE HARDWARE
 |--------------------------------------------------------------------------
 */
 
@@ -402,18 +421,18 @@ foreach ($softwarePengadaan as $key => $value) {
 
 /*
 |--------------------------------------------------------------------------
-| PERSENTASE INFRA
+| PERSENTASE INFRASTRUKTUR
 |--------------------------------------------------------------------------
 */
 
 $infraPersen = [];
 
-foreach ($infraPengadaan as $key => $value) {
+foreach ($infraJenis as $key => $value) {
 
     $infraPersen[$key] =
-        $infraPengadaanTotal > 0
+        $infraJenisTotal > 0
             ? round(
-                ($value / $infraPengadaanTotal) * 100,
+                ($value / $infraJenisTotal) * 100,
                 1
             )
             : 0;
@@ -423,11 +442,8 @@ foreach ($infraPengadaan as $key => $value) {
 
 /*
 |--------------------------------------------------------------------------
-| HARDWARE BAR MAX
+| BAR MAX
 |--------------------------------------------------------------------------
-|
-| BAR HARDWARE SEKARANG MENGGUNAKAN STATUS
-|
 */
 
 $hardwareBarMax = max(
@@ -441,12 +457,6 @@ $hardwareBarMax = max(
 );
 
 
-/*
-|--------------------------------------------------------------------------
-| SOFTWARE BAR MAX
-|--------------------------------------------------------------------------
-*/
-
 $softwareBarMax = max(
 
     !empty($softwareStatus)
@@ -458,16 +468,10 @@ $softwareBarMax = max(
 );
 
 
-/*
-|--------------------------------------------------------------------------
-| INFRA BAR MAX
-|--------------------------------------------------------------------------
-*/
-
 $infraBarMax = max(
 
-    !empty($infraStatus)
-        ? max($infraStatus)
+    !empty($infraTenant)
+        ? max($infraTenant)
         : 0,
 
     1
@@ -488,24 +492,6 @@ if ($softwarePengadaanTotal > 0) {
     $softwareBeliDeg =
         ($softwarePengadaan['Beli']
         / $softwarePengadaanTotal)
-        * 360;
-
-}
-
-
-/*
-|--------------------------------------------------------------------------
-| INFRA DONUT DEGREE
-|--------------------------------------------------------------------------
-*/
-
-$infraBeliDeg = 0;
-
-if ($infraPengadaanTotal > 0) {
-
-    $infraBeliDeg =
-        ($infraPengadaan['Beli']
-        / $infraPengadaanTotal)
         * 360;
 
 }
@@ -1454,9 +1440,7 @@ if ($infraPengadaanTotal > 0) {
         <div class="stat-card-top">
 
             <div class="stat-icon">
-
                 <i class="bi bi-box-seam"></i>
-
             </div>
 
             <div class="stat-content">
@@ -1481,9 +1465,7 @@ if ($infraPengadaanTotal > 0) {
         <div class="stat-card-top">
 
             <div class="stat-icon">
-
                 <i class="bi bi-pc-display"></i>
-
             </div>
 
             <div class="stat-content">
@@ -1508,9 +1490,7 @@ if ($infraPengadaanTotal > 0) {
         <div class="stat-card-top">
 
             <div class="stat-icon">
-
                 <i class="bi bi-laptop"></i>
-
             </div>
 
             <div class="stat-content">
@@ -1535,9 +1515,7 @@ if ($infraPengadaanTotal > 0) {
         <div class="stat-card-top">
 
             <div class="stat-icon">
-
                 <i class="bi bi-diagram-3-fill"></i>
-
             </div>
 
             <div class="stat-content">
@@ -1562,9 +1540,7 @@ if ($infraPengadaanTotal > 0) {
         <div class="stat-card-top">
 
             <div class="stat-icon">
-
                 <i class="bi bi-people-fill"></i>
-
             </div>
 
             <div class="stat-content">
@@ -1589,9 +1565,7 @@ if ($infraPengadaanTotal > 0) {
         <div class="stat-card-top">
 
             <div class="stat-icon">
-
                 <i class="bi bi-database-fill"></i>
-
             </div>
 
             <div class="stat-content">
@@ -1621,766 +1595,659 @@ if ($infraPengadaanTotal > 0) {
 <div class="asset-panels">
 
 
-    {{-- =================================================
-         HARDWARE
-    ================================================== --}}
+{{-- =====================================================
+     HARDWARE
+===================================================== --}}
 
-    <div class="asset-panel">
+<div class="asset-panel">
+
+    <div class="asset-panel-header">
+
+        <i class="bi bi-pc-display"></i>
+
+        <h3 class="asset-panel-title">
+            Hardware
+        </h3>
+
+    </div>
 
 
-        <div class="asset-panel-header">
+    {{-- DONUT = JENIS BARANG --}}
 
-            <i class="bi bi-pc-display"></i>
+    <div class="donut-section">
 
-            <h3 class="asset-panel-title">
-                Hardware
-            </h3>
+        <div
+            class="donut hardware-donut"
+            data-total="{{ $hardwareTotal }}"
+        >
+
+            <div class="donut-center">
+
+                <span class="donut-number">
+                    {{ number_format($hardwareTotal) }}
+                </span>
+
+                <span class="donut-caption">
+                    Total
+                </span>
+
+            </div>
 
         </div>
 
 
-        {{-- =============================================
-             DONUT = JENIS BARANG
-        ============================================== --}}
+        <div class="legend">
 
-        <div class="donut-section">
+            @php
+
+                /*
+                |--------------------------------------------------------------------------
+                | WARNA HARDWARE
+                |--------------------------------------------------------------------------
+                |
+                | Warna berdasarkan urutan jenis yang berasal dari database.
+                | Tidak bergantung pada nama jenis barang.
+                |
+                */
+
+                $hardwareColors = [
+
+                    '#079bd8',
+                    '#6366f1',
+                    '#8b5cf6',
+                    '#ec4899',
+                    '#f59e0b',
+                    '#16a34a',
+                    '#ef4444',
+                    '#14b8a6',
+                    '#f97316',
+                    '#06b6d4',
+                    '#84cc16',
+                    '#a855f7',
+                    '#e11d48',
+                    '#0ea5e9',
+                    '#64748b',
+                    '#d946ef',
+
+                ];
+
+                $hardwareColorIndex = 0;
+
+            @endphp
 
 
-            <div
-                class="donut hardware-donut"
-                data-total="{{ $hardwareTotal }}"
-            >
-
-                <div class="donut-center">
-
-                    <span class="donut-number">
-                        {{ number_format($hardwareTotal) }}
-                    </span>
-
-                    <span class="donut-caption">
-                        Total
-                    </span>
-
-                </div>
-
-            </div>
-
-
-            <div class="legend">
-
+            @forelse($hardwareJenis as $label => $value)
 
                 @php
 
-                    $hardwareColors = [
+                    $legendColor =
+                        $hardwareColors[
+                            $hardwareColorIndex
+                            % count($hardwareColors)
+                        ];
 
-                        'Laptop' =>
-                            '#079bd8',
-
-                        'PC' =>
-                            '#6366f1',
-
-                        'Printer' =>
-                            '#8b5cf6',
-
-                        'Monitor' =>
-                            '#ec4899',
-
-                        'Keyboard' =>
-                            '#f59e0b',
-
-                        'Mouse' =>
-                            '#16a34a',
-
-                        'Camera' =>
-                            '#ef4444',
-
-                    ];
+                    $hardwareColorIndex++;
 
                 @endphp
 
 
-                @foreach($hardwareJenis as $label => $value)
+                <div class="legend-item">
 
-                    <div class="legend-item">
+                    <div class="legend-left">
 
+                        <span
+                            class="legend-dot"
+                            style="
+                                background:
+                                {{ $legendColor }};
+                            "
+                        ></span>
 
-                        <div class="legend-left">
-
-                            <span
-                                class="legend-dot"
-                                style="
-                                    background:
-                                    {{ $hardwareColors[$label]
-                                        ?? '#9ca3af' }};
-                                "
-                            ></span>
-
-
-                            <span class="legend-name">
-                                {{ $label }}
-                            </span>
-
-                        </div>
-
-
-                        <span class="legend-value">
-
-                            {{ number_format($value) }}
-
-                            (
-                            {{ number_format(
-                                $hardwarePersen[$label] ?? 0,
-                                1,
-                                ',',
-                                '.'
-                            ) }}%
-                            )
-
+                        <span
+                            class="legend-name"
+                            title="{{ $label }}"
+                        >
+                            {{ $label }}
                         </span>
 
+                    </div>
+
+                    <span class="legend-value">
+
+                        {{ number_format($value) }}
+
+                        (
+
+                        {{ number_format(
+                            $hardwarePersen[$label] ?? 0,
+                            1,
+                            ',',
+                            '.'
+                        ) }}%
+
+                        )
+
+                    </span>
+
+                </div>
+
+            @empty
+
+                <div class="chart-empty">
+                    Belum ada data jenis hardware.
+                </div>
+
+            @endforelse
+
+        </div>
+
+    </div>
+
+
+    {{-- BAR = KONDISI HARDWARE --}}
+
+    <div class="bar-section">
+
+        <div class="bar-title">
+            Kondisi hardware
+        </div>
+
+
+        @if(array_sum($hardwareStatus) > 0)
+
+            <div class="bar-chart">
+
+                @foreach($hardwareStatus as $label => $value)
+
+                    @php
+
+                        $height =
+                            $value > 0
+                                ? max(
+                                    4,
+                                    (
+                                        $value
+                                        / $hardwareBarMax
+                                    ) * 55
+                                )
+                                : 0;
+
+
+                        if ($label === 'Baik') {
+
+                            $barColor = '#16a34a';
+
+                        } elseif ($label === 'Perbaikan') {
+
+                            $barColor = '#f59e0b';
+
+                        } else {
+
+                            $barColor = '#ef4444';
+
+                        }
+
+                    @endphp
+
+
+                    <div class="bar-item">
+
+                        <span class="bar-value">
+                            {{ number_format($value) }}
+                        </span>
+
+                        <div
+                            class="bar"
+                            data-height="{{ $height }}"
+                            style="
+                                height:
+                                    {{ $height }}px;
+
+                                background:
+                                    {{ $barColor }};
+                            "
+                        ></div>
+
+                        <span class="bar-label">
+                            {{ $label }}
+                        </span>
 
                     </div>
 
                 @endforeach
 
-
             </div>
 
+        @else
 
-        </div>
-
-
-        {{-- =============================================
-             BAR = STATUS HARDWARE
-        ============================================== --}}
-
-        <div class="bar-section">
-
-
-            <div class="bar-title">
-                Kondisi hardware
+            <div class="chart-empty">
+                Belum ada data kondisi hardware.
             </div>
 
-
-            @if(array_sum($hardwareStatus) > 0)
-
-
-                <div class="bar-chart">
-
-
-                    @foreach($hardwareStatus as $label => $value)
-
-
-                        @php
-
-                            $height =
-                                $value > 0
-
-                                    ? max(
-                                        4,
-                                        (
-                                            $value
-                                            / $hardwareBarMax
-                                        ) * 55
-                                    )
-
-                                    : 0;
-
-
-                            if ($label === 'Baik') {
-
-                                $barColor =
-                                    '#16a34a';
-
-                            } elseif (
-                                $label === 'Perbaikan'
-                            ) {
-
-                                $barColor =
-                                    '#f59e0b';
-
-                            } else {
-
-                                $barColor =
-                                    '#ef4444';
-
-                            }
-
-                        @endphp
-
-
-                        <div class="bar-item">
-
-
-                            <span class="bar-value">
-                                {{ number_format($value) }}
-                            </span>
-
-
-                            <div
-                                class="bar"
-                                data-height="{{ $height }}"
-                                style="
-                                    height:
-                                        {{ $height }}px;
-
-                                    background:
-                                        {{ $barColor }};
-                                "
-                            ></div>
-
-
-                            <span class="bar-label">
-                                {{ $label }}
-                            </span>
-
-
-                        </div>
-
-
-                    @endforeach
-
-
-                </div>
-
-
-            @else
-
-
-                <div class="chart-empty">
-                    Belum ada data status hardware.
-                </div>
-
-
-            @endif
-
-
-        </div>
-
+        @endif
 
     </div>
-
-
-
-    {{-- =================================================
-         SOFTWARE
-    ================================================== --}}
-
-    <div class="asset-panel">
-
-
-        <div class="asset-panel-header">
-
-            <i class="bi bi-grid-3x3-gap"></i>
-
-            <h3 class="asset-panel-title">
-                Software
-            </h3>
-
-        </div>
-
-
-        <div class="donut-section">
-
-
-            <div
-                class="donut software-donut"
-                data-beli="{{ $softwareBeliDeg }}"
-                data-total="{{ $softwarePengadaanTotal }}"
-            >
-
-                <div class="donut-center">
-
-                    <span class="donut-number">
-                        {{ number_format(
-                            $softwarePengadaanTotal
-                        ) }}
-                    </span>
-
-                    <span class="donut-caption">
-                        Total
-                    </span>
-
-                </div>
-
-            </div>
-
-
-            <div class="legend">
-
-
-                <div class="legend-item">
-
-                    <div class="legend-left">
-
-                        <span
-                            class="legend-dot"
-                            style="
-                                background:#2f80d7;
-                            "
-                        ></span>
-
-                        <span class="legend-name">
-                            Beli
-                        </span>
-
-                    </div>
-
-
-                    <span class="legend-value">
-
-                        {{ number_format(
-                            $softwarePengadaan['Beli']
-                        ) }}
-
-                        (
-                        {{ number_format(
-                            $softwarePersen['Beli'],
-                            1,
-                            ',',
-                            '.'
-                        ) }}%
-                        )
-
-                    </span>
-
-                </div>
-
-
-                <div class="legend-item">
-
-                    <div class="legend-left">
-
-                        <span
-                            class="legend-dot"
-                            style="
-                                background:#9ca3af;
-                            "
-                        ></span>
-
-                        <span class="legend-name">
-                            Sewa
-                        </span>
-
-                    </div>
-
-
-                    <span class="legend-value">
-
-                        {{ number_format(
-                            $softwarePengadaan['Sewa']
-                        ) }}
-
-                        (
-                        {{ number_format(
-                            $softwarePersen['Sewa'],
-                            1,
-                            ',',
-                            '.'
-                        ) }}%
-                        )
-
-                    </span>
-
-                </div>
-
-
-            </div>
-
-
-        </div>
-
-
-        <div class="bar-section">
-
-
-            <div class="bar-title">
-                Status
-            </div>
-
-
-            @if(array_sum($softwareStatus) > 0)
-
-
-                <div class="bar-chart">
-
-
-                    @foreach($softwareStatus as $label => $value)
-
-
-                        @php
-
-                            $height =
-                                $value > 0
-
-                                    ? max(
-                                        4,
-                                        (
-                                            $value
-                                            / $softwareBarMax
-                                        ) * 55
-                                    )
-
-                                    : 0;
-
-
-                            if ($label === 'Tersedia') {
-
-                                $barColor =
-                                    '#16a34a';
-
-                            } elseif (
-                                $label === 'Akan Habis'
-                            ) {
-
-                                $barColor =
-                                    '#f59e0b';
-
-                            } else {
-
-                                $barColor =
-                                    '#ef4444';
-
-                            }
-
-
-                            if (
-                                $label === 'Akan Habis'
-                            ) {
-
-                                $barLabel =
-                                    'Akan habis';
-
-                            } elseif (
-                                $label === 'Expired'
-                            ) {
-
-                                $barLabel =
-                                    'Exp';
-
-                            } else {
-
-                                $barLabel =
-                                    $label;
-
-                            }
-
-                        @endphp
-
-
-                        <div class="bar-item">
-
-                            <span class="bar-value">
-                                {{ number_format($value) }}
-                            </span>
-
-
-                            <div
-                                class="bar"
-                                data-height="{{ $height }}"
-                                style="
-                                    height:
-                                        {{ $height }}px;
-
-                                    background:
-                                        {{ $barColor }};
-                                "
-                            ></div>
-
-
-                            <span class="bar-label">
-                                {{ $barLabel }}
-                            </span>
-
-                        </div>
-
-
-                    @endforeach
-
-
-                </div>
-
-
-            @else
-
-
-                <div class="chart-empty">
-                    Belum ada data status software.
-                </div>
-
-
-            @endif
-
-
-        </div>
-
-
-    </div>
-
-
-
-    {{-- =================================================
-         INFRASTRUKTUR
-    ================================================== --}}
-
-    <div class="asset-panel">
-
-
-        <div class="asset-panel-header">
-
-            <i class="bi bi-diagram-3"></i>
-
-            <h3 class="asset-panel-title">
-                Infrastruktur
-            </h3>
-
-        </div>
-
-
-        <div class="donut-section">
-
-
-            <div
-                class="donut infrastructure-donut"
-                data-beli="{{ $infraBeliDeg }}"
-                data-total="{{ $infraPengadaanTotal }}"
-            >
-
-                <div class="donut-center">
-
-                    <span class="donut-number">
-                        {{ number_format(
-                            $infraPengadaanTotal
-                        ) }}
-                    </span>
-
-                    <span class="donut-caption">
-                        Total
-                    </span>
-
-                </div>
-
-            </div>
-
-
-            <div class="legend">
-
-
-                <div class="legend-item">
-
-
-                    <div class="legend-left">
-
-                        <span
-                            class="legend-dot"
-                            style="
-                                background:#2f80d7;
-                            "
-                        ></span>
-
-                        <span class="legend-name">
-                            Beli
-                        </span>
-
-                    </div>
-
-
-                    <span class="legend-value">
-
-                        {{ number_format(
-                            $infraPengadaan['Beli']
-                        ) }}
-
-                        (
-                        {{ number_format(
-                            $infraPersen['Beli'],
-                            1,
-                            ',',
-                            '.'
-                        ) }}%
-                        )
-
-                    </span>
-
-
-                </div>
-
-
-                <div class="legend-item">
-
-
-                    <div class="legend-left">
-
-                        <span
-                            class="legend-dot"
-                            style="
-                                background:#9ca3af;
-                            "
-                        ></span>
-
-                        <span class="legend-name">
-                            Sewa
-                        </span>
-
-                    </div>
-
-
-                    <span class="legend-value">
-
-                        {{ number_format(
-                            $infraPengadaan['Sewa']
-                        ) }}
-
-                        (
-                        {{ number_format(
-                            $infraPersen['Sewa'],
-                            1,
-                            ',',
-                            '.'
-                        ) }}%
-                        )
-
-                    </span>
-
-
-                </div>
-
-
-            </div>
-
-
-        </div>
-
-
-        <div class="bar-section">
-
-
-            <div class="bar-title">
-                Status keseluruhan
-            </div>
-
-
-            @if(array_sum($infraStatus) > 0)
-
-
-                <div class="bar-chart">
-
-
-                    @foreach($infraStatus as $label => $value)
-
-
-                        @php
-
-                            $height =
-                                $value > 0
-
-                                    ? max(
-                                        4,
-                                        (
-                                            $value
-                                            / $infraBarMax
-                                        ) * 55
-                                    )
-
-                                    : 0;
-
-
-                            if ($label === 'Tersedia') {
-
-                                $barColor =
-                                    '#16a34a';
-
-                            } elseif (
-                                $label === 'Akan Habis'
-                            ) {
-
-                                $barColor =
-                                    '#f59e0b';
-
-                            } else {
-
-                                $barColor =
-                                    '#ef4444';
-
-                            }
-
-
-                            if (
-                                $label === 'Akan Habis'
-                            ) {
-
-                                $barLabel =
-                                    'Akan habis';
-
-                            } elseif (
-                                $label === 'Expired'
-                            ) {
-
-                                $barLabel =
-                                    'Exp';
-
-                            } else {
-
-                                $barLabel =
-                                    $label;
-
-                            }
-
-                        @endphp
-
-
-                        <div class="bar-item">
-
-                            <span class="bar-value">
-                                {{ number_format($value) }}
-                            </span>
-
-
-                            <div
-                                class="bar"
-                                data-height="{{ $height }}"
-                                style="
-                                    height:
-                                        {{ $height }}px;
-
-                                    background:
-                                        {{ $barColor }};
-                                "
-                            ></div>
-
-
-                            <span class="bar-label">
-                                {{ $barLabel }}
-                            </span>
-
-                        </div>
-
-
-                    @endforeach
-
-
-                </div>
-
-
-            @else
-
-
-                <div class="chart-empty">
-                    Belum ada data status infrastruktur.
-                </div>
-
-
-            @endif
-
-
-        </div>
-
-
-    </div>
-
 
 </div>
 
+
+{{-- =====================================================
+     SOFTWARE
+===================================================== --}}
+
+<div class="asset-panel">
+
+    <div class="asset-panel-header">
+
+        <i class="bi bi-grid-3x3-gap"></i>
+
+        <h3 class="asset-panel-title">
+            Software
+        </h3>
+
+    </div>
+
+
+    {{-- DONUT = PENGADAAN --}}
+
+    <div class="donut-section">
+
+        <div
+            class="donut software-donut"
+            data-beli="{{ $softwareBeliDeg }}"
+            data-total="{{ $softwarePengadaanTotal }}"
+        >
+
+            <div class="donut-center">
+
+                <span class="donut-number">
+                    {{ number_format(
+                        $softwarePengadaanTotal
+                    ) }}
+                </span>
+
+                <span class="donut-caption">
+                    Total
+                </span>
+
+            </div>
+
+        </div>
+
+
+        <div class="legend">
+
+            <div class="legend-item">
+
+                <div class="legend-left">
+
+                    <span
+                        class="legend-dot"
+                        style="
+                            background:#2f80d7;
+                        "
+                    ></span>
+
+                    <span class="legend-name">
+                        Beli
+                    </span>
+
+                </div>
+
+                <span class="legend-value">
+
+                    {{ number_format(
+                        $softwarePengadaan['Beli']
+                    ) }}
+
+                    (
+
+                    {{ number_format(
+                        $softwarePersen['Beli'],
+                        1,
+                        ',',
+                        '.'
+                    ) }}%
+
+                    )
+
+                </span>
+
+            </div>
+
+
+            <div class="legend-item">
+
+                <div class="legend-left">
+
+                    <span
+                        class="legend-dot"
+                        style="
+                            background:#9ca3af;
+                        "
+                    ></span>
+
+                    <span class="legend-name">
+                        Sewa
+                    </span>
+
+                </div>
+
+                <span class="legend-value">
+
+                    {{ number_format(
+                        $softwarePengadaan['Sewa']
+                    ) }}
+
+                    (
+
+                    {{ number_format(
+                        $softwarePersen['Sewa'],
+                        1,
+                        ',',
+                        '.'
+                    ) }}%
+
+                    )
+
+                </span>
+
+            </div>
+
+        </div>
+
+    </div>
+
+
+    {{-- BAR = STATUS SOFTWARE --}}
+
+    <div class="bar-section">
+
+        <div class="bar-title">
+            Status
+        </div>
+
+
+        @if(array_sum($softwareStatus) > 0)
+
+            <div class="bar-chart">
+
+                @foreach($softwareStatus as $label => $value)
+
+                    @php
+
+                        $height =
+                            $value > 0
+                                ? max(
+                                    4,
+                                    (
+                                        $value
+                                        / $softwareBarMax
+                                    ) * 55
+                                )
+                                : 0;
+
+
+                        if ($label === 'Tersedia') {
+
+                            $barColor = '#16a34a';
+
+                        } elseif ($label === 'Akan Habis') {
+
+                            $barColor = '#f59e0b';
+
+                        } else {
+
+                            $barColor = '#ef4444';
+
+                        }
+
+
+                        if ($label === 'Akan Habis') {
+
+                            $barLabel = 'Akan habis';
+
+                        } elseif ($label === 'Expired') {
+
+                            $barLabel = 'Exp';
+
+                        } else {
+
+                            $barLabel = $label;
+
+                        }
+
+                    @endphp
+
+
+                    <div class="bar-item">
+
+                        <span class="bar-value">
+                            {{ number_format($value) }}
+                        </span>
+
+                        <div
+                            class="bar"
+                            data-height="{{ $height }}"
+                            style="
+                                height:
+                                    {{ $height }}px;
+
+                                background:
+                                    {{ $barColor }};
+                            "
+                        ></div>
+
+                        <span class="bar-label">
+                            {{ $barLabel }}
+                        </span>
+
+                    </div>
+
+                @endforeach
+
+            </div>
+
+        @else
+
+            <div class="chart-empty">
+                Belum ada data status software.
+            </div>
+
+        @endif
+
+    </div>
+
+</div>
+
+
+{{-- =====================================================
+     INFRASTRUKTUR
+===================================================== --}}
+
+<div class="asset-panel">
+
+    <div class="asset-panel-header">
+
+        <i class="bi bi-diagram-3"></i>
+
+        <h3 class="asset-panel-title">
+            Infrastruktur
+        </h3>
+
+    </div>
+
+
+    {{-- DONUT = JARINGAN + DATA CENTER --}}
+
+    <div class="donut-section">
+
+        <div
+            class="donut infrastructure-donut"
+            data-total="{{ $infraJenisTotal }}"
+        >
+
+            <div class="donut-center">
+
+                <span class="donut-number">
+                    {{ number_format(
+                        $infraJenisTotal
+                    ) }}
+                </span>
+
+                <span class="donut-caption">
+                    Total
+                </span>
+
+            </div>
+
+        </div>
+
+
+        <div class="legend">
+
+            @php
+
+                $infraColors = [
+
+                    'Jaringan' =>
+                        '#079bd8',
+
+                    'Data Center' =>
+                        '#8b5cf6',
+
+                ];
+
+            @endphp
+
+
+            @foreach($infraJenis as $label => $value)
+
+                <div class="legend-item">
+
+                    <div class="legend-left">
+
+                        <span
+                            class="legend-dot"
+                            style="
+                                background:
+                                {{ $infraColors[$label]
+                                    ?? '#9ca3af' }};
+                            "
+                        ></span>
+
+                        <span class="legend-name">
+                            {{ $label }}
+                        </span>
+
+                    </div>
+
+
+                    <span class="legend-value">
+
+                        {{ number_format($value) }}
+
+                        (
+
+                        {{ number_format(
+                            $infraPersen[$label] ?? 0,
+                            1,
+                            ',',
+                            '.'
+                        ) }}%
+
+                        )
+
+                    </span>
+
+                </div>
+
+            @endforeach
+
+        </div>
+
+    </div>
+
+
+    {{-- BAR = TENANT DATA CENTER --}}
+
+    <div class="bar-section">
+
+        <div class="bar-title">
+            Tenant Data Center
+        </div>
+
+
+        @if(array_sum($infraTenant) > 0)
+
+            <div class="bar-chart">
+
+                @foreach($infraTenant as $label => $value)
+
+                    @php
+
+                        $height =
+                            $value > 0
+                                ? max(
+                                    4,
+                                    (
+                                        $value
+                                        / $infraBarMax
+                                    ) * 55
+                                )
+                                : 0;
+
+                        $barColor =
+                            '#8b5cf6';
+
+                    @endphp
+
+
+                    <div class="bar-item">
+
+                        <span class="bar-value">
+                            {{ number_format($value) }}
+                        </span>
+
+                        <div
+                            class="bar"
+                            data-height="{{ $height }}"
+                            style="
+                                height:
+                                    {{ $height }}px;
+
+                                background:
+                                    {{ $barColor }};
+                            "
+                        ></div>
+
+                        <span
+                            class="bar-label"
+                            title="{{ $label }}"
+                        >
+                            {{ $label }}
+                        </span>
+
+                    </div>
+
+                @endforeach
+
+            </div>
+
+        @else
+
+            <div class="chart-empty">
+                Belum ada data tenant Data Center.
+            </div>
+
+        @endif
+
+    </div>
+
+</div>
+
+
+</div>
 
 
 {{-- =====================================================
@@ -2391,7 +2258,6 @@ if ($infraPengadaanTotal > 0) {
 
 
     <div class="card-header">
-
 
         <div>
 
@@ -2419,9 +2285,7 @@ if ($infraPengadaanTotal > 0) {
 
         @endif
 
-
     </div>
-
 
 
     <div class="activity-list">
@@ -2432,20 +2296,16 @@ if ($infraPengadaanTotal > 0) {
 
             @php
 
-
                 if (is_array($activity)) {
-
 
                     $activityDateValue =
                         $activity['date']
                         ?? $activity['created_at']
                         ?? null;
 
-
                     $activityIcon =
                         $activity['icon']
                         ?? 'bi-activity';
-
 
                     $activityOperator =
                         $activity['operator']
@@ -2453,30 +2313,24 @@ if ($infraPengadaanTotal > 0) {
                         ?? $activity['user_name']
                         ?? 'Operator';
 
-
                     $activityFeature =
                         $activity['feature']
                         ?? 'Inventory IT Assets';
-
 
                     $activityText =
                         $activity['text']
                         ?? 'Aktivitas data aset';
 
-
                 } else {
-
 
                     $activityDateValue =
                         $activity->date
                         ?? $activity->created_at
                         ?? null;
 
-
                     $activityIcon =
                         $activity->icon
                         ?? 'bi-activity';
-
 
                     $activityOperator =
                         $activity->operator
@@ -2484,16 +2338,13 @@ if ($infraPengadaanTotal > 0) {
                         ?? $activity->user_name
                         ?? 'Operator';
 
-
                     $activityFeature =
                         $activity->feature
                         ?? 'Inventory IT Assets';
 
-
                     $activityText =
                         $activity->text
                         ?? 'Aktivitas data aset';
-
 
                 }
 
@@ -2540,7 +2391,6 @@ if ($infraPengadaanTotal > 0) {
                     !empty($activityDateValue)
                 ) {
 
-
                     try {
 
                         $activityDate =
@@ -2563,6 +2413,10 @@ if ($infraPengadaanTotal > 0) {
 
                 if ($activityDate) {
 
+                    $activityDate =
+                        $activityDate->setTimezone(
+                            'Asia/Jakarta'
+                        );
 
                     if ($activityDate->isToday()) {
 
@@ -2589,9 +2443,7 @@ if ($infraPengadaanTotal > 0) {
 
                 }
 
-
             @endphp
-
 
 
             <div class="activity-item">
@@ -2608,7 +2460,6 @@ if ($infraPengadaanTotal > 0) {
                     </div>
 
                 </div>
-
 
 
                 <div class="activity-content">
@@ -2649,7 +2500,6 @@ if ($infraPengadaanTotal > 0) {
 
                         @if($activityDate)
 
-
                             <span
                                 class="
                                     activity-meta-item
@@ -2665,7 +2515,6 @@ if ($infraPengadaanTotal > 0) {
 
                             </span>
 
-
                         @endif
 
 
@@ -2675,12 +2524,10 @@ if ($infraPengadaanTotal > 0) {
                 </div>
 
 
-
                 <div class="activity-date">
 
 
                     @if($activityDate)
-
 
                         <span class="activity-date-main">
 
@@ -2695,14 +2542,11 @@ if ($infraPengadaanTotal > 0) {
 
                         </span>
 
-
                     @else
-
 
                         <span class="activity-date-main">
                             -
                         </span>
-
 
                     @endif
 
@@ -2749,7 +2593,6 @@ document.addEventListener(
     'DOMContentLoaded',
     function () {
 
-
         const duration = 1200;
 
 
@@ -2757,7 +2600,9 @@ document.addEventListener(
         |--------------------------------------------------------------------------
         | HARDWARE DONUT
         |--------------------------------------------------------------------------
-        | Donut berdasarkan JENIS BARANG
+        |
+        | Menggunakan jenis hardware DINAMIS dari database.
+        |
         */
 
         const hardware =
@@ -2767,7 +2612,6 @@ document.addEventListener(
 
 
         if (hardware) {
-
 
             const total =
                 parseFloat(
@@ -2779,41 +2623,44 @@ document.addEventListener(
                 @json($hardwareJenis);
 
 
-            const jenisColors = {
+            /*
+            |--------------------------------------------------------------------------
+            | WARNA HARDWARE
+            |--------------------------------------------------------------------------
+            |
+            | Warna berdasarkan urutan data.
+            | Tidak tergantung nama jenis barang.
+            |
+            */
 
-                Laptop:
-                    '#079bd8',
+            const jenisColors = [
 
-                PC:
-                    '#6366f1',
+                '#079bd8',
+                '#6366f1',
+                '#8b5cf6',
+                '#ec4899',
+                '#f59e0b',
+                '#16a34a',
+                '#ef4444',
+                '#14b8a6',
+                '#f97316',
+                '#06b6d4',
+                '#84cc16',
+                '#a855f7',
+                '#e11d48',
+                '#0ea5e9',
+                '#64748b',
+                '#d946ef'
 
-                Printer:
-                    '#8b5cf6',
-
-                Monitor:
-                    '#ec4899',
-
-                Keyboard:
-                    '#f59e0b',
-
-                Mouse:
-                    '#16a34a',
-
-                Camera:
-                    '#ef4444'
-
-            };
+            ];
 
 
             if (total <= 0) {
 
-
                 hardware.style.background =
                     '#e5e7eb';
 
-
             } else {
-
 
                 const segments = [];
 
@@ -2823,8 +2670,7 @@ document.addEventListener(
                 Object.entries(
                     jenisData
                 ).forEach(
-                    function ([label,value]) {
-
+                    function ([label, value], index) {
 
                         value =
                             parseFloat(value)
@@ -2863,8 +2709,11 @@ document.addEventListener(
                                 end,
 
                             color:
-                                jenisColors[label]
-                                || '#9ca3af'
+                                jenisColors[
+                                    index
+                                    %
+                                    jenisColors.length
+                                ]
 
                         });
 
@@ -2872,9 +2721,18 @@ document.addEventListener(
                         currentDegree =
                             end;
 
-
                     }
                 );
+
+
+                if (segments.length === 0) {
+
+                    hardware.style.background =
+                        '#e5e7eb';
+
+                    return;
+
+                }
 
 
                 const start =
@@ -2882,7 +2740,6 @@ document.addEventListener(
 
 
                 function animateHardware(time) {
-
 
                     const progress =
                         Math.min(
@@ -2908,7 +2765,6 @@ document.addEventListener(
                         segments.map(
                             function (segment) {
 
-
                                 const animatedStart =
                                     segment.start
                                     * ease;
@@ -2925,7 +2781,6 @@ document.addEventListener(
                                     ${animatedEnd}deg
                                 `;
 
-
                             }
                         );
 
@@ -2938,14 +2793,11 @@ document.addEventListener(
 
                     if (progress < 1) {
 
-
                         requestAnimationFrame(
                             animateHardware
                         );
 
-
                     }
-
 
                 }
 
@@ -2954,12 +2806,9 @@ document.addEventListener(
                     animateHardware
                 );
 
-
             }
 
-
         }
-
 
 
         /*
@@ -2976,7 +2825,6 @@ document.addEventListener(
 
         if (software) {
 
-
             const targetBeli =
                 parseFloat(
                     software.dataset.beli
@@ -2991,20 +2839,16 @@ document.addEventListener(
 
             if (total <= 0) {
 
-
                 software.style.background =
                     '#e5e7eb';
 
-
             } else {
-
 
                 const start =
                     performance.now();
 
 
                 function animateSoftware(time) {
-
 
                     const progress =
                         Math.min(
@@ -3046,14 +2890,11 @@ document.addEventListener(
 
                     if (progress < 1) {
 
-
                         requestAnimationFrame(
                             animateSoftware
                         );
 
-
                     }
-
 
                 }
 
@@ -3062,18 +2903,18 @@ document.addEventListener(
                     animateSoftware
                 );
 
-
             }
 
-
         }
-
 
 
         /*
         |--------------------------------------------------------------------------
         | INFRASTRUKTUR DONUT
         |--------------------------------------------------------------------------
+        |
+        | Jaringan / Data Center
+        |
         */
 
         const infrastructure =
@@ -3084,27 +2925,102 @@ document.addEventListener(
 
         if (infrastructure) {
 
-
-            const targetBeli =
-                parseFloat(
-                    infrastructure.dataset.beli
-                ) || 0;
-
-
             const total =
                 parseFloat(
                     infrastructure.dataset.total
                 ) || 0;
 
 
-            if (total <= 0) {
+            const infraData =
+                @json($infraJenis);
 
+
+            const infraColors = {
+
+                'Jaringan':
+                    '#079bd8',
+
+                'Data Center':
+                    '#8b5cf6'
+
+            };
+
+
+            if (total <= 0) {
 
                 infrastructure.style.background =
                     '#e5e7eb';
 
-
             } else {
+
+                const segments = [];
+
+                let currentDegree = 0;
+
+
+                Object.entries(
+                    infraData
+                ).forEach(
+                    function ([label, value]) {
+
+                        value =
+                            parseFloat(value)
+                            || 0;
+
+
+                        if (value <= 0) {
+
+                            return;
+
+                        }
+
+
+                        const degree =
+                            (
+                                value
+                                / total
+                            ) * 360;
+
+
+                        const start =
+                            currentDegree;
+
+
+                        const end =
+                            currentDegree
+                            + degree;
+
+
+                        segments.push({
+
+                            start:
+                                start,
+
+                            end:
+                                end,
+
+                            color:
+                                infraColors[label]
+                                || '#9ca3af'
+
+                        });
+
+
+                        currentDegree =
+                            end;
+
+                    }
+                );
+
+
+                if (segments.length === 0) {
+
+                    infrastructure.style.background =
+                        '#e5e7eb';
+
+                    return;
+
+                }
 
 
                 const start =
@@ -3112,7 +3028,6 @@ document.addEventListener(
 
 
                 function animateInfrastructure(time) {
-
 
                     const progress =
                         Math.min(
@@ -3134,34 +3049,43 @@ document.addEventListener(
                         );
 
 
-                    const beli =
-                        targetBeli
-                        * ease;
+                    const gradientParts =
+                        segments.map(
+                            function (segment) {
+
+                                const animatedStart =
+                                    segment.start
+                                    * ease;
 
 
-                    infrastructure.style.background = `
-                        conic-gradient(
-                            #2f80d7
-                            0deg
-                            ${beli}deg,
+                                const animatedEnd =
+                                    segment.end
+                                    * ease;
 
-                            #9ca3af
-                            ${beli}deg
-                            360deg
-                        )
-                    `;
+
+                                return `
+                                    ${segment.color}
+                                    ${animatedStart}deg
+                                    ${animatedEnd}deg
+                                `;
+
+                            }
+                        );
+
+
+                    infrastructure.style.background =
+                        `conic-gradient(
+                            ${gradientParts.join(',')}
+                        )`;
 
 
                     if (progress < 1) {
-
 
                         requestAnimationFrame(
                             animateInfrastructure
                         );
 
-
                     }
-
 
                 }
 
@@ -3170,12 +3094,9 @@ document.addEventListener(
                     animateInfrastructure
                 );
 
-
             }
 
-
         }
-
 
 
         /*
@@ -3193,7 +3114,6 @@ document.addEventListener(
         bars.forEach(
             function (bar) {
 
-
                 const targetHeight =
                     parseFloat(
                         bar.dataset.height
@@ -3205,7 +3125,6 @@ document.addEventListener(
 
 
                 function animateBar(time) {
-
 
                     const progress =
                         Math.min(
@@ -3238,22 +3157,17 @@ document.addEventListener(
 
                     if (progress < 1) {
 
-
                         requestAnimationFrame(
                             animateBar
                         );
 
-
                     } else {
-
 
                         bar.style.height =
                             targetHeight
                             + 'px';
 
-
                     }
-
 
                 }
 
@@ -3262,10 +3176,8 @@ document.addEventListener(
                     animateBar
                 );
 
-
             }
         );
-
 
     }
 );

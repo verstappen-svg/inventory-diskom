@@ -116,7 +116,6 @@ class DataController extends Controller
             $show = 10;
         }
 
-        // Batasi pilihan agar aman
         if (!in_array($show, [10, 25, 50, 100])) {
             $show = 10;
         }
@@ -155,27 +154,22 @@ class DataController extends Controller
         // SUMMARY CARD
         // =====================================================
 
-        // Total seluruh dataset
         $totalData = Data::count();
 
-        // Total jenis data unik
         $totalJenis = Data::distinct(
             'jenis_data'
         )->count('jenis_data');
 
-        // Total menunggu persetujuan
         $totalPending = Data::where(
             'verifikasi',
             'Menunggu Disetujui'
         )->count();
 
-        // Total data disetujui
         $totalDisetujui = Data::where(
             'verifikasi',
             'Disetujui'
         )->count();
 
-        // Total data ditolak
         $totalDitolak = Data::where(
             'verifikasi',
             'Ditolak'

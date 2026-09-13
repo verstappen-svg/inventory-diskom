@@ -161,7 +161,6 @@ class DataCenterController extends Controller
 
         $query = DataCenter::query();
 
-
         /*
         |--------------------------------------------------------------------------
         | SEARCH
@@ -211,7 +210,6 @@ class DataCenterController extends Controller
                     ->orWhere('komentar', 'like', "%{$search}%");
             });
         }
-
 
         /*
         |--------------------------------------------------------------------------
@@ -287,7 +285,6 @@ class DataCenterController extends Controller
             );
         }
 
-
         /*
         |--------------------------------------------------------------------------
         | FILTER VERIFIKASI
@@ -301,7 +298,6 @@ class DataCenterController extends Controller
                 $request->verifikasi
             );
         }
-
 
         /*
         |--------------------------------------------------------------------------
@@ -319,7 +315,6 @@ class DataCenterController extends Controller
             ->orderByDesc('created_at')
             ->paginate(25)
             ->withQueryString();
-
 
         /*
         |--------------------------------------------------------------------------
@@ -342,7 +337,6 @@ class DataCenterController extends Controller
             'status',
             'Offline'
         )->count();
-
 
         /*
         |--------------------------------------------------------------------------
@@ -398,7 +392,6 @@ class DataCenterController extends Controller
             $this->allowedUHeights()
         );
 
-
         /*
         |--------------------------------------------------------------------------
         | PLATFORM
@@ -413,7 +406,6 @@ class DataCenterController extends Controller
             ->orderBy('platform')
             ->pluck('platform');
 
-
         /*
         |--------------------------------------------------------------------------
         | VERIFIKASI
@@ -427,7 +419,6 @@ class DataCenterController extends Controller
             ->distinct()
             ->orderBy('verifikasi')
             ->pluck('verifikasi');
-
 
         /*
         |--------------------------------------------------------------------------

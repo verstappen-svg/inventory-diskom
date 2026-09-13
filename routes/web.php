@@ -15,6 +15,7 @@ use App\Http\Controllers\SplpController;
 use App\Http\Controllers\SoftwareController;
 use App\Http\Controllers\DataController;
 use App\Http\Controllers\VerificationController;
+use App\Http\Controllers\NotificationController;
 
 
 /*
@@ -57,6 +58,18 @@ Route::middleware('auth')->group(function () {
         '/dashboard',
         [DashboardController::class, 'index']
     )->name('dashboard');
+
+
+    /*
+    |--------------------------------------------------------------------------
+    | NOTIFIKASI
+    |--------------------------------------------------------------------------
+    */
+
+    Route::get(
+        '/notifikasi',
+        [NotificationController::class, 'index']
+    )->name('notifikasi.index');
 
 
     /*
@@ -141,7 +154,9 @@ Route::middleware('auth')->group(function () {
     |--------------------------------------------------------------------------
     */
 
-    Route::middleware('menu.permission:hardware')->group(function () {
+    Route::middleware(
+        'menu.permission:hardware'
+    )->group(function () {
 
         Route::get(
             '/hardware',
@@ -162,12 +177,6 @@ Route::middleware('auth')->group(function () {
             '/hardware/{hardware}',
             [HardwareController::class, 'destroy']
         )->name('hardware.destroy');
-
-        /*
-        |--------------------------------------------------------------------------
-        | IMPORT EXCEL — HARDWARE
-        |--------------------------------------------------------------------------
-        */
 
         Route::post(
             '/hardware/import',
@@ -293,7 +302,9 @@ Route::middleware('auth')->group(function () {
     |--------------------------------------------------------------------------
     */
 
-    Route::middleware('menu.permission:data')->group(function () {
+    Route::middleware(
+        'menu.permission:data'
+    )->group(function () {
 
         Route::get(
             '/data',
@@ -333,7 +344,9 @@ Route::middleware('auth')->group(function () {
     |--------------------------------------------------------------------------
     */
 
-    Route::middleware('menu.permission:sdm')->group(function () {
+    Route::middleware(
+        'menu.permission:sdm'
+    )->group(function () {
 
         Route::get(
             '/sdm',
