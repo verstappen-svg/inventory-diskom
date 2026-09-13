@@ -13,6 +13,7 @@ use App\Http\Controllers\JaringanController;
 use App\Http\Controllers\DataCenterController;
 use App\Http\Controllers\SplpController;
 use App\Http\Controllers\SoftwareController;
+use App\Http\Controllers\SoftwareMasterController;
 use App\Http\Controllers\DataController;
 use App\Http\Controllers\VerificationController;
 
@@ -238,9 +239,57 @@ Route::middleware('menu.permission:hardware')->group(function () {
     |--------------------------------------------------------------------------
     */
 
+    /*
+    |--------------------------------------------------------------------------
+    | DATA MASTER SOFTWARE
+    |--------------------------------------------------------------------------
+    |
+    | Route Data Master diletakkan SEBELUM resource software.
+    | Jangan dipindahkan ke bawah Route::resource('software', ...),
+    | supaya /software/master tidak dianggap sebagai {software}.
+    |
+    */
+
+    Route::get('/software/master', [
+        SoftwareMasterController::class,
+        'index'
+    ])->name('software.master.index');
+
+    Route::post('/software/master', [
+        SoftwareMasterController::class,
+        'store'
+    ])->name('software.master.store');
+
+    Route::put('/software/master/{type}/{id}', [
+        SoftwareMasterController::class,
+        'update'
+    ])->name('software.master.update');
+
+    Route::patch('/software/master/{type}/{id}/toggle', [
+        SoftwareMasterController::class,
+        'toggle'
+    ])->name('software.master.toggle');
+
+    Route::delete('/software/master/{type}/{id}', [
+        SoftwareMasterController::class,
+        'destroy'
+    ])->name('software.master.destroy');
+
+
+    /*
+    |--------------------------------------------------------------------------
+    | SOFTWARE
+    |--------------------------------------------------------------------------
+    */
+
     Route::resource('software', SoftwareController::class)
         ->except(['show'])
         ->middleware('menu.permission:software');
+
+    Route::post('/software/import', [
+        SoftwareController::class,
+        'import'
+    ])->name('software.import');
 
 
     /*
@@ -290,27 +339,24 @@ Route::middleware('menu.permission:hardware')->group(function () {
 
 
     /*
-    |--------------------------------------------------------------------------
-    | INFRASTRUKTUR — SPLP
-    |--------------------------------------------------------------------------
-    */
+|--------------------------------------------------------------------------
+| INFRASTRUKTUR — SPLP
+|--------------------------------------------------------------------------
+*/
 
-    Route::resource(
-        'infrastruktur/splp',
-        SplpController::class
-    )
-        ->names([
-            'index'   => 'splp.index',
-            'create'  => 'splp.create',
-            'store'   => 'splp.store',
-            'show'    => 'splp.show',
-            'edit'    => 'splp.edit',
-            'update'  => 'splp.update',
-            'destroy' => 'splp.destroy',
-        ])
-        ->except(['show'])
-        ->middleware('menu.permission:infrastruktur.splp');
-
+Route::resource(
+    'infrastruktur/splp',
+    SplpController::class
+)->names([
+    'index'   => 'splp.index',
+    'create'  => 'splp.create',
+    'store'   => 'splp.store',
+    'show'    => 'splp.show',
+    'edit'    => 'splp.edit',
+    'update'  => 'splp.update',
+    'destroy' => 'splp.destroy',
+])->except(['show'])
+  ->middleware('menu.permission:infrastruktur.splp');
 
     /*
     |--------------------------------------------------------------------------
