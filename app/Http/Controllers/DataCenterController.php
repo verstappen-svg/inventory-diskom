@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use App\Exports\DataCenterTemplateExport;
 use App\Imports\DataCenterImport;
 use App\Models\DataCenter;
+use App\Models\Notification;
 use App\Models\VerificationRequest;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
@@ -139,11 +140,12 @@ class DataCenterController extends Controller
     }
 
     private function allowedUHeights(): array
-{
-    return collect(range(1, 42))
-        ->map(fn ($height) => (string) $height)
-        ->toArray();
-}
+    {
+        return collect(range(1, 42))
+            ->map(fn ($height) => (string) $height)
+            ->toArray();
+    }
+
 
     /*
     |--------------------------------------------------------------------------
@@ -153,23 +155,12 @@ class DataCenterController extends Controller
 
     public function index(Request $request)
     {
-        /*
-        |--------------------------------------------------------------------------
-        | QUERY DATA CENTER
-        |--------------------------------------------------------------------------
-        */
-
         $query = DataCenter::query();
 
         /*
         |--------------------------------------------------------------------------
         | SEARCH
         |--------------------------------------------------------------------------
-        |
-        | Search dilakukan langsung ke database.
-        | Jadi search tetap berlaku untuk seluruh data,
-        | bukan hanya 25 data yang sedang tampil.
-        |
         */
 
         if ($request->filled('search')) {
@@ -210,6 +201,7 @@ class DataCenterController extends Controller
                     ->orWhere('komentar', 'like', "%{$search}%");
             });
         }
+
 
         /*
         |--------------------------------------------------------------------------
@@ -285,6 +277,7 @@ class DataCenterController extends Controller
             );
         }
 
+
         /*
         |--------------------------------------------------------------------------
         | FILTER VERIFIKASI
@@ -299,16 +292,11 @@ class DataCenterController extends Controller
             );
         }
 
+
         /*
         |--------------------------------------------------------------------------
         | DATA + PAGINATION
         |--------------------------------------------------------------------------
-        |
-        | Maksimal 25 data per halaman.
-        |
-        | withQueryString() memastikan search dan filter tetap
-        | terbawa ketika user pindah halaman.
-        |
         */
 
         $dataCenters = $query
@@ -316,14 +304,11 @@ class DataCenterController extends Controller
             ->paginate(25)
             ->withQueryString();
 
+
         /*
         |--------------------------------------------------------------------------
         | SUMMARY
         |--------------------------------------------------------------------------
-        |
-        | Tidak perlu mengambil seluruh data dengan ->get().
-        | Langsung hitung melalui database supaya lebih ringan.
-        |
         */
 
         $totalDataCenter = DataCenter::count();
@@ -337,6 +322,7 @@ class DataCenterController extends Controller
             'status',
             'Offline'
         )->count();
+
 
         /*
         |--------------------------------------------------------------------------
@@ -392,6 +378,7 @@ class DataCenterController extends Controller
             $this->allowedUHeights()
         );
 
+
         /*
         |--------------------------------------------------------------------------
         | PLATFORM
@@ -406,6 +393,7 @@ class DataCenterController extends Controller
             ->orderBy('platform')
             ->pluck('platform');
 
+
         /*
         |--------------------------------------------------------------------------
         | VERIFIKASI
@@ -419,6 +407,7 @@ class DataCenterController extends Controller
             ->distinct()
             ->orderBy('verifikasi')
             ->pluck('verifikasi');
+
 
         /*
         |--------------------------------------------------------------------------
@@ -734,14 +723,27 @@ class DataCenterController extends Controller
         $validated['komentar'] =
             null;
 
+
         DB::transaction(function () use (
             $validated
         ) {
 
-            $dataCenter =
-                DataCenter::create(
-                    $validated
-                );
+            /*
+            |--------------------------------------------------------------------------
+            | SIMPAN DATA CENTER
+            |--------------------------------------------------------------------------
+            */
+
+            $dataCenter = DataCenter::create(
+                $validated
+            );
+
+
+            /*
+            |--------------------------------------------------------------------------
+            | VERIFICATION REQUEST
+            |--------------------------------------------------------------------------
+            */
 
             VerificationRequest::create([
 
@@ -763,7 +765,32 @@ class DataCenterController extends Controller
                 'submitted_by' =>
                     auth()->id(),
             ]);
+
+
+            /*
+            |--------------------------------------------------------------------------
+            | NOTIFIKASI
+            |--------------------------------------------------------------------------
+            */
+
+            Notification::create([
+
+                'judul' =>
+                    'Pengajuan Data Center Baru',
+
+                'pesan' =>
+                    auth()->user()->username .
+                    ' menambahkan Data Center "' .
+                    $dataCenter->name .
+                    '" dengan ID ' .
+                    $dataCenter->id .
+                    ' dan mengajukannya untuk persetujuan.',
+
+                'dibaca' =>
+                    false,
+            ]);
         });
+
 
         return redirect()
             ->route('data-center.index')
@@ -808,17 +835,45 @@ class DataCenterController extends Controller
             ]
         );
 
+
         try {
 
             DB::transaction(function () use (
                 $request
             ) {
 
+                /*
+                |--------------------------------------------------------------------------
+                | IMPORT DATA
+                |--------------------------------------------------------------------------
+                */
+
                 Excel::import(
                     new DataCenterImport(),
                     $request->file('file')
                 );
+
+
+                /*
+                |--------------------------------------------------------------------------
+                | NOTIFIKASI IMPORT
+                |--------------------------------------------------------------------------
+                */
+
+                Notification::create([
+
+                    'judul' =>
+                        'Import Data Center Baru',
+
+                    'pesan' =>
+                        auth()->user()->username .
+                        ' melakukan import data Data Center melalui file Excel dan data tersebut telah berhasil dimasukkan.',
+
+                    'dibaca' =>
+                        false,
+                ]);
             });
+
 
             return redirect()
                 ->route('data-center.index')
@@ -865,21 +920,31 @@ class DataCenterController extends Controller
         Request $request,
         $id
     ) {
+
         $validated = $request->validate(
             $this->dataCenterRules(),
             $this->dataCenterMessages()
         );
 
+
         $dataCenter =
             DataCenter::findOrFail($id);
 
+
         $validated['tenant_group'] =
             'Pemerintah Kota Bekasi';
+
 
         DB::transaction(function () use (
             $dataCenter,
             $validated
         ) {
+
+            /*
+            |--------------------------------------------------------------------------
+            | UPDATE DATA
+            |--------------------------------------------------------------------------
+            */
 
             $dataCenter->update([
 
@@ -892,7 +957,15 @@ class DataCenterController extends Controller
                     null,
             ]);
 
+
             $dataCenter->refresh();
+
+
+            /*
+            |--------------------------------------------------------------------------
+            | VERIFICATION REQUEST
+            |--------------------------------------------------------------------------
+            */
 
             VerificationRequest::create([
 
@@ -914,7 +987,32 @@ class DataCenterController extends Controller
                 'submitted_by' =>
                     auth()->id(),
             ]);
+
+
+            /*
+            |--------------------------------------------------------------------------
+            | NOTIFIKASI
+            |--------------------------------------------------------------------------
+            */
+
+            Notification::create([
+
+                'judul' =>
+                    'Perubahan Data Center Diajukan',
+
+                'pesan' =>
+                    auth()->user()->username .
+                    ' memperbarui Data Center "' .
+                    $dataCenter->name .
+                    '" dengan ID ' .
+                    $dataCenter->id .
+                    ' dan mengajukannya kembali untuk persetujuan.',
+
+                'dibaca' =>
+                    false,
+            ]);
         });
+
 
         return redirect()
             ->route('data-center.index')
@@ -936,9 +1034,16 @@ class DataCenterController extends Controller
         $dataCenter =
             DataCenter::findOrFail($id);
 
+
         DB::transaction(function () use (
             $dataCenter
         ) {
+
+            /*
+            |--------------------------------------------------------------------------
+            | TANDAI MENUNGGU VERIFIKASI
+            |--------------------------------------------------------------------------
+            */
 
             $dataCenter->update([
 
@@ -948,6 +1053,13 @@ class DataCenterController extends Controller
                 'komentar' =>
                     null,
             ]);
+
+
+            /*
+            |--------------------------------------------------------------------------
+            | VERIFICATION REQUEST
+            |--------------------------------------------------------------------------
+            */
 
             VerificationRequest::create([
 
@@ -969,7 +1081,32 @@ class DataCenterController extends Controller
                 'submitted_by' =>
                     auth()->id(),
             ]);
+
+
+            /*
+            |--------------------------------------------------------------------------
+            | NOTIFIKASI
+            |--------------------------------------------------------------------------
+            */
+
+            Notification::create([
+
+                'judul' =>
+                    'Penghapusan Data Center Diajukan',
+
+                'pesan' =>
+                    auth()->user()->username .
+                    ' mengajukan penghapusan Data Center "' .
+                    $dataCenter->name .
+                    '" dengan ID ' .
+                    $dataCenter->id .
+                    ' untuk persetujuan verifikator.',
+
+                'dibaca' =>
+                    false,
+            ]);
         });
+
 
         return redirect()
             ->route('data-center.index')
@@ -990,6 +1127,7 @@ class DataCenterController extends Controller
     {
         $prefix = 'INFDC-';
 
+
         $lastDataCenter =
             DataCenter::query()
                 ->where(
@@ -1002,6 +1140,7 @@ class DataCenterController extends Controller
                 )
                 ->first();
 
+
         $newNumber =
             $lastDataCenter
                 ? (
@@ -1011,6 +1150,7 @@ class DataCenterController extends Controller
                     )
                 ) + 1
                 : 1;
+
 
         return $prefix .
             str_pad(

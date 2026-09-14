@@ -3,9 +3,11 @@
 namespace App\Http\Controllers;
 
 use App\Models\Data;
+use App\Models\Notification;
 use App\Models\VerificationRequest;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Facades\Storage;
 
 class DataController extends Controller
 {
@@ -23,6 +25,7 @@ class DataController extends Controller
         | SEARCH
         |--------------------------------------------------------------------------
         */
+
         if ($request->filled('search')) {
 
             $search = $request->search;
@@ -34,24 +37,26 @@ class DataController extends Controller
                     'like',
                     "%{$search}%"
                 )
-                    ->orWhere(
-                        'jenis_data',
-                        'like',
-                        "%{$search}%"
-                    )
-                    ->orWhere(
-                        'tahun',
-                        'like',
-                        "%{$search}%"
-                    );
+                ->orWhere(
+                    'jenis_data',
+                    'like',
+                    "%{$search}%"
+                )
+                ->orWhere(
+                    'tahun',
+                    'like',
+                    "%{$search}%"
+                );
             });
         }
+
 
         /*
         |--------------------------------------------------------------------------
         | FILTER JENIS DATA
         |--------------------------------------------------------------------------
         */
+
         if ($request->filled('jenis_data')) {
 
             $query->where(
@@ -60,11 +65,13 @@ class DataController extends Controller
             );
         }
 
+
         /*
         |--------------------------------------------------------------------------
         | FILTER TAHUN
         |--------------------------------------------------------------------------
         */
+
         if ($request->filled('tahun')) {
 
             $query->where(
@@ -73,22 +80,22 @@ class DataController extends Controller
             );
         }
 
+
         /*
         |--------------------------------------------------------------------------
         | FILTER VERIFIKASI
         |--------------------------------------------------------------------------
-        |
-        | Sesuai ENUM database:
-        |
-        | - Menunggu Disetujui
-        | - Disetujui
-        | - Ditolak
-        |
-        |--------------------------------------------------------------------------
         */
+
         if ($request->filled('verifikasi')) {
 
-            $verifikasi = $request->verifikasi;
+            $verifikasi = strtolower(
+                trim($request->verifikasi)
+            );
+
+            if ($verifikasi === 'menunggu') {
+                $verifikasi = 'Menunggu Disetujui';
+            }
 
             $allowedStatuses = [
                 'Menunggu Disetujui',
@@ -105,18 +112,22 @@ class DataController extends Controller
             }
         }
 
+
         /*
         |--------------------------------------------------------------------------
         | PAGINATION
         |--------------------------------------------------------------------------
         */
-        $show = (int) $request->input('show', 10);
 
-        if (!in_array($show, [10, 25, 50, 100])) {
-            $show = 10;
-        }
+        $show = (int) $request->input(
+            'show',
+            10
+        );
 
-        if (!in_array($show, [10, 25, 50, 100])) {
+        if (!in_array(
+            $show,
+            [10, 25, 50, 100]
+        )) {
             $show = 10;
         }
 
@@ -125,24 +136,32 @@ class DataController extends Controller
             ->paginate($show)
             ->withQueryString();
 
+
         /*
         |--------------------------------------------------------------------------
-        | DATA UNTUK FILTER JENIS
+        | DATA JENIS UNTUK FILTER
         |--------------------------------------------------------------------------
         */
+
         $jenisData = Data::query()
             ->select('jenis_data')
             ->whereNotNull('jenis_data')
-            ->where('jenis_data', '!=', '')
+            ->where(
+                'jenis_data',
+                '!=',
+                ''
+            )
             ->distinct()
             ->orderBy('jenis_data')
             ->pluck('jenis_data');
 
+
         /*
         |--------------------------------------------------------------------------
-        | DATA UNTUK FILTER TAHUN
+        | DATA TAHUN UNTUK FILTER
         |--------------------------------------------------------------------------
         */
+
         $tahunData = Data::query()
             ->select('tahun')
             ->whereNotNull('tahun')
@@ -150,15 +169,24 @@ class DataController extends Controller
             ->orderByDesc('tahun')
             ->pluck('tahun');
 
-        // =====================================================
-        // SUMMARY CARD
-        // =====================================================
+
+        /*
+        |--------------------------------------------------------------------------
+        | SUMMARY
+        |--------------------------------------------------------------------------
+        */
 
         $totalData = Data::count();
 
-        $totalJenis = Data::distinct(
-            'jenis_data'
-        )->count('jenis_data');
+        $totalJenis = Data::query()
+            ->whereNotNull('jenis_data')
+            ->where(
+                'jenis_data',
+                '!=',
+                ''
+            )
+            ->distinct('jenis_data')
+            ->count('jenis_data');
 
         $totalPending = Data::where(
             'verifikasi',
@@ -175,9 +203,12 @@ class DataController extends Controller
             'Ditolak'
         )->count();
 
-        // =====================================================
-        // RETURN VIEW
-        // =====================================================
+
+        /*
+        |--------------------------------------------------------------------------
+        | VIEW
+        |--------------------------------------------------------------------------
+        */
 
         return view(
             'data.index',
@@ -197,7 +228,7 @@ class DataController extends Controller
 
     /**
      * =========================================================
-     * STORE
+     * STORE - TAMBAH BANYAK DATA SEKALIGUS
      * =========================================================
      */
     public function store(Request $request)
@@ -207,8 +238,16 @@ class DataController extends Controller
         | VALIDATION
         |--------------------------------------------------------------------------
         */
+
         $request->validate([
+
             'nama_dataset' => [
+                'required',
+                'array',
+                'min:1',
+            ],
+
+            'nama_dataset.*' => [
                 'required',
                 'string',
                 'max:255',
@@ -216,11 +255,23 @@ class DataController extends Controller
 
             'jenis_data' => [
                 'required',
+                'array',
+                'min:1',
+            ],
+
+            'jenis_data.*' => [
+                'required',
                 'string',
                 'max:255',
             ],
 
             'tahun' => [
+                'required',
+                'array',
+                'min:1',
+            ],
+
+            'tahun.*' => [
                 'required',
                 'integer',
                 'min:1900',
@@ -229,102 +280,221 @@ class DataController extends Controller
 
             'file_data' => [
                 'required',
+                'array',
+                'min:1',
+            ],
+
+            'file_data.*' => [
+                'required',
                 'file',
                 'mimes:csv,xls,xlsx,pdf,zip',
                 'max:10240',
             ],
         ]);
 
+
         /*
         |--------------------------------------------------------------------------
-        | UPLOAD FILE
+        | AMBIL DATA FORM
         |--------------------------------------------------------------------------
         */
-        $filePath = null;
 
-        if ($request->hasFile('file_data')) {
+        $namaDataset = $request->input(
+            'nama_dataset',
+            []
+        );
 
-            $filePath = $request
-                ->file('file_data')
-                ->store(
-                    'data',
-                    'public'
+        $jenisData = $request->input(
+            'jenis_data',
+            []
+        );
+
+        $tahun = $request->input(
+            'tahun',
+            []
+        );
+
+        $files = $request->file(
+            'file_data',
+            []
+        );
+
+
+        /*
+        |--------------------------------------------------------------------------
+        | CEK JUMLAH BARIS
+        |--------------------------------------------------------------------------
+        */
+
+        $jumlahData = count($namaDataset);
+
+        if (
+            count($jenisData) !== $jumlahData ||
+            count($tahun) !== $jumlahData ||
+            count($files) !== $jumlahData
+        ) {
+
+            return back()
+                ->withInput()
+                ->with(
+                    'error',
+                    'Data yang dikirim tidak lengkap. Silakan periksa kembali setiap baris.'
                 );
         }
 
+
         /*
         |--------------------------------------------------------------------------
-        | CREATE DATA + VERIFICATION REQUEST
+        | SIMPAN SEMUA DATA
         |--------------------------------------------------------------------------
         */
+
         DB::transaction(function () use (
             $request,
-            $filePath
+            $namaDataset,
+            $jenisData,
+            $tahun,
+            $files
         ) {
 
-            $data = Data::create([
-
-                'nama_dataset' =>
-                    $request->nama_dataset,
-
-                'jenis_data' =>
-                    $request->jenis_data,
-
-                'tahun' =>
-                    $request->tahun,
-
-                'file_data' =>
-                    $filePath,
+            foreach ($namaDataset as $index => $nama) {
 
                 /*
-                | Status SESUAI ENUM database
+                |--------------------------------------------------------------------------
+                | UPLOAD FILE
+                |--------------------------------------------------------------------------
                 */
-                'verifikasi' =>
-                    'Menunggu Disetujui',
 
-                'tanggal_pengajuan' =>
-                    now(),
+                $filePath = null;
 
-                'komentar_verifikasi' =>
-                    null,
-            ]);
+                if (
+                    isset($files[$index]) &&
+                    $files[$index] instanceof \Illuminate\Http\UploadedFile
+                ) {
 
-            /*
-            | VerificationRequest tetap menggunakan
-            | status internal "menunggu".
-            */
-            VerificationRequest::create([
+                    $filePath = $files[$index]->store(
+                        'data',
+                        'public'
+                    );
+                }
 
-                'module' =>
-                    'data',
 
-                'record_id' =>
-                    $data->id,
+                /*
+                |--------------------------------------------------------------------------
+                | CREATE DATA
+                |--------------------------------------------------------------------------
+                */
 
-                'action' =>
-                    'create',
+                $data = Data::create([
 
-                'data' =>
-                    $data->toArray(),
+                    'nama_dataset' =>
+                        $nama,
 
-                'status' =>
-                    'menunggu',
+                    'jenis_data' =>
+                        $jenisData[$index],
 
-                'submitted_by' =>
-                    auth()->id(),
-            ]);
+                    'tahun' =>
+                        $tahun[$index],
+
+                    'file_data' =>
+                        $filePath,
+
+                    'verifikasi' =>
+                        'Menunggu Disetujui',
+
+                    'tanggal_pengajuan' =>
+                        now(),
+
+                    'komentar_verifikasi' =>
+                        null,
+
+                ]);
+
+
+                /*
+                |--------------------------------------------------------------------------
+                | FORMAT ID
+                |--------------------------------------------------------------------------
+                */
+
+                $datasetId =
+                    'DS-' .
+                    str_pad(
+                        $data->id,
+                        5,
+                        '0',
+                        STR_PAD_LEFT
+                    );
+
+
+                /*
+                |--------------------------------------------------------------------------
+                | VERIFICATION REQUEST
+                |--------------------------------------------------------------------------
+                */
+
+                VerificationRequest::create([
+
+                    'module' =>
+                        'data',
+
+                    'record_id' =>
+                        $data->id,
+
+                    'action' =>
+                        'create',
+
+                    'data' =>
+                        $data->toArray(),
+
+                    'status' =>
+                        'menunggu',
+
+                    'submitted_by' =>
+                        auth()->id(),
+
+                ]);
+
+
+                /*
+                |--------------------------------------------------------------------------
+                | NOTIFICATION
+                |--------------------------------------------------------------------------
+                */
+
+                Notification::create([
+
+                    'judul' =>
+                        'Pengajuan Dataset Baru',
+
+                    'pesan' =>
+                        $request->user()->username .
+                        ' menambahkan dataset "' .
+                        $data->nama_dataset .
+                        '" dengan ID ' .
+                        $datasetId .
+                        ' dan mengajukannya untuk persetujuan.',
+
+                    'dibaca' =>
+                        false,
+
+                ]);
+            }
         });
+
 
         /*
         |--------------------------------------------------------------------------
         | REDIRECT
         |--------------------------------------------------------------------------
         */
+
         return redirect()
             ->route('data.index')
             ->with(
                 'success',
-                'Data berhasil ditambahkan dan menunggu verifikasi.'
+                $jumlahData .
+                ' dataset berhasil ditambahkan dan menunggu verifikasi.'
             );
     }
 
@@ -354,14 +524,18 @@ class DataController extends Controller
         Request $request,
         $id
     ) {
+
         $data = Data::findOrFail($id);
+
 
         /*
         |--------------------------------------------------------------------------
         | VALIDATION
         |--------------------------------------------------------------------------
         */
+
         $request->validate([
+
             'nama_dataset' => [
                 'required',
                 'string',
@@ -387,20 +561,25 @@ class DataController extends Controller
                 'mimes:csv,xls,xlsx,pdf,zip',
                 'max:10240',
             ],
+
         ]);
+
 
         /*
         |--------------------------------------------------------------------------
-        | SIMPAN DATA LAMA
+        | DATA LAMA
         |--------------------------------------------------------------------------
         */
+
         $dataLama = $data->toArray();
+
 
         /*
         |--------------------------------------------------------------------------
         | FILE
         |--------------------------------------------------------------------------
         */
+
         $filePath = $data->file_data;
 
         if ($request->hasFile('file_data')) {
@@ -413,16 +592,35 @@ class DataController extends Controller
                 );
         }
 
+
         /*
         |--------------------------------------------------------------------------
-        | UPDATE + VERIFICATION REQUEST
+        | FORMAT ID
         |--------------------------------------------------------------------------
         */
+
+        $datasetId =
+            'DS-' .
+            str_pad(
+                $data->id,
+                5,
+                '0',
+                STR_PAD_LEFT
+            );
+
+
+        /*
+        |--------------------------------------------------------------------------
+        | UPDATE + VERIFICATION
+        |--------------------------------------------------------------------------
+        */
+
         DB::transaction(function () use (
             $data,
             $request,
             $filePath,
-            $dataLama
+            $dataLama,
+            $datasetId
         ) {
 
             $data->update([
@@ -439,9 +637,6 @@ class DataController extends Controller
                 'file_data' =>
                     $filePath,
 
-                /*
-                | Status SESUAI ENUM database
-                */
                 'verifikasi' =>
                     'Menunggu Disetujui',
 
@@ -450,11 +645,16 @@ class DataController extends Controller
 
                 'tanggal_pengajuan' =>
                     now(),
+
             ]);
 
+
             /*
-            | Simpan snapshot perubahan
+            |--------------------------------------------------------------------------
+            | VERIFICATION REQUEST
+            |--------------------------------------------------------------------------
             */
+
             VerificationRequest::create([
 
                 'module' =>
@@ -467,11 +667,13 @@ class DataController extends Controller
                     'update',
 
                 'data' => [
+
                     'data_lama' =>
                         $dataLama,
 
                     'data_baru' =>
                         $data->fresh()->toArray(),
+
                 ],
 
                 'status' =>
@@ -479,14 +681,36 @@ class DataController extends Controller
 
                 'submitted_by' =>
                     auth()->id(),
+
+            ]);
+
+
+            /*
+            |--------------------------------------------------------------------------
+            | NOTIFICATION
+            |--------------------------------------------------------------------------
+            */
+
+            Notification::create([
+
+                'judul' =>
+                    'Perubahan Dataset Diajukan',
+
+                'pesan' =>
+                    $request->user()->username .
+                    ' memperbarui dataset "' .
+                    $data->nama_dataset .
+                    '" dengan ID ' .
+                    $datasetId .
+                    ' dan mengajukannya kembali untuk persetujuan.',
+
+                'dibaca' =>
+                    false,
+
             ]);
         });
 
-        /*
-        |--------------------------------------------------------------------------
-        | REDIRECT
-        |--------------------------------------------------------------------------
-        */
+
         return redirect()
             ->route('data.index')
             ->with(
@@ -514,7 +738,8 @@ class DataController extends Controller
         }
 
         $path = storage_path(
-            'app/public/' . $data->file_data
+            'app/public/' .
+            $data->file_data
         );
 
         if (!file_exists($path)) {
@@ -538,14 +763,47 @@ class DataController extends Controller
         Request $request,
         $id
     ) {
+
         $data = Data::findOrFail($id);
+
+
+        /*
+        |--------------------------------------------------------------------------
+        | DATA LAMA
+        |--------------------------------------------------------------------------
+        */
+
+        $dataLama = $data->toArray();
+
+
+        /*
+        |--------------------------------------------------------------------------
+        | FORMAT ID
+        |--------------------------------------------------------------------------
+        */
+
+        $datasetId =
+            'DS-' .
+            str_pad(
+                $data->id,
+                5,
+                '0',
+                STR_PAD_LEFT
+            );
+
 
         /*
         |--------------------------------------------------------------------------
         | AJUKAN PENGHAPUSAN
         |--------------------------------------------------------------------------
         */
-        DB::transaction(function () use ($data) {
+
+        DB::transaction(function () use (
+            $data,
+            $request,
+            $dataLama,
+            $datasetId
+        ) {
 
             VerificationRequest::create([
 
@@ -559,18 +817,23 @@ class DataController extends Controller
                     'delete',
 
                 'data' =>
-                    $data->toArray(),
+                    $dataLama,
 
                 'status' =>
                     'menunggu',
 
                 'submitted_by' =>
                     auth()->id(),
+
             ]);
 
+
             /*
-            | Data tetap ada sampai Verifikator menyetujui.
+            |--------------------------------------------------------------------------
+            | DATA TETAP ADA SAMPAI DISETUJUI
+            |--------------------------------------------------------------------------
             */
+
             $data->update([
 
                 'verifikasi' =>
@@ -578,14 +841,36 @@ class DataController extends Controller
 
                 'komentar_verifikasi' =>
                     null,
+
+            ]);
+
+
+            /*
+            |--------------------------------------------------------------------------
+            | NOTIFICATION
+            |--------------------------------------------------------------------------
+            */
+
+            Notification::create([
+
+                'judul' =>
+                    'Penghapusan Dataset Diajukan',
+
+                'pesan' =>
+                    $request->user()->username .
+                    ' mengajukan penghapusan dataset "' .
+                    $data->nama_dataset .
+                    '" dengan ID ' .
+                    $datasetId .
+                    ' untuk persetujuan verifikator.',
+
+                'dibaca' =>
+                    false,
+
             ]);
         });
 
-        /*
-        |--------------------------------------------------------------------------
-        | REDIRECT
-        |--------------------------------------------------------------------------
-        */
+
         return redirect()
             ->route('data.index')
             ->with(

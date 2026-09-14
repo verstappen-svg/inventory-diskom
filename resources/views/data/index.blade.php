@@ -1,3 +1,5 @@
+index.blade
+
 @extends('layouts.app')
 
 @section('title', 'Data')
@@ -7,6 +9,7 @@
 @section('content')
 
 <style>
+
 /* =========================================================
    DATA PAGE
 ========================================================= */
@@ -175,17 +178,19 @@
     display: flex;
     align-items: center;
     gap: 10px;
+    flex: 1;
 }
 
 .data-toolbar-title {
     color: #1f2937;
-    font-size: 14px;
+    font-size: 13px;
     font-weight: 700;
 }
 
 .data-toolbar-right {
     display: flex;
     align-items: center;
+    justify-content: flex-end;
     gap: 9px;
 }
 
@@ -196,7 +201,7 @@
 
 .data-search {
     position: relative;
-    width: 235px;
+    width: 270px;
 }
 
 .data-search i {
@@ -247,6 +252,7 @@
     font-weight: 600;
     cursor: pointer;
     transition: 0.2s ease;
+    white-space: nowrap;
 }
 
 .data-add-button:hover {
@@ -275,6 +281,7 @@
     font-size: 11px;
     font-weight: 600;
     cursor: pointer;
+    white-space: nowrap;
 }
 
 .data-filter-button:hover {
@@ -330,6 +337,7 @@
 .data-filter-actions {
     display: flex;
     justify-content: flex-end;
+    align-items: center;
     margin-top: 13px;
 }
 
@@ -354,7 +362,7 @@
 
 .data-table {
     width: 100%;
-    min-width: 1050px;
+    min-width: 1350px;
     border-collapse: collapse;
 }
 
@@ -387,7 +395,24 @@
 
 
 /* =========================================================
-   DATA NAME
+   ID
+========================================================= */
+
+.data-id {
+    display: inline-flex;
+    align-items: center;
+    padding: 5px 9px;
+    border-radius: 7px;
+    background: #eef2ff;
+    color: #3730a3;
+    font-size: 10px;
+    font-weight: 700;
+    white-space: nowrap;
+}
+
+
+/* =========================================================
+   NAME
 ========================================================= */
 
 .data-name {
@@ -396,14 +421,6 @@
     color: #1f2937;
     font-weight: 600;
     line-height: 1.35;
-}
-
-.data-type {
-    display: block;
-    margin-top: 3px;
-    color: #9ca3af;
-    font-size: 10px;
-    max-width: 230px;
 }
 
 
@@ -495,6 +512,32 @@
 
 
 /* =========================================================
+   COMMENT
+========================================================= */
+
+.data-comment {
+    display: block;
+    width: 220px;
+    max-width: 220px;
+    line-height: 1.4;
+    color: #64748b;
+    font-size: 10px;
+}
+
+.data-comment-text {
+    display: -webkit-box;
+    -webkit-line-clamp: 2;
+    -webkit-box-orient: vertical;
+    overflow: hidden;
+    word-break: break-word;
+}
+
+.data-comment-empty {
+    color: #9ca3af;
+}
+
+
+/* =========================================================
    DATE
 ========================================================= */
 
@@ -547,30 +590,7 @@
 
 
 /* =========================================================
-   COMMENT
-========================================================= */
-
-.data-comment-button {
-    display: inline-flex;
-    align-items: center;
-    gap: 5px;
-    border: none;
-    background: #fef3c7;
-    color: #92400e;
-    border-radius: 7px;
-    padding: 6px 9px;
-    font-size: 9px;
-    font-weight: 600;
-    cursor: pointer;
-}
-
-.data-comment-button:hover {
-    background: #fde68a;
-}
-
-
-/* =========================================================
-   EMPTY STATE
+   EMPTY
 ========================================================= */
 
 .data-empty {
@@ -605,7 +625,7 @@
 
 
 /* =========================================================
-   FOOTER / PAGINATION
+   FOOTER
 ========================================================= */
 
 .data-table-footer {
@@ -686,7 +706,7 @@ body.data-modal-open {
 }
 
 .data-modal {
-    width: min(760px, 100%);
+    width: min(1100px, 100%);
     max-height: 90vh;
     background: #ffffff;
     border-radius: 15px;
@@ -780,18 +800,138 @@ body.data-modal-open {
     border-radius: 10px;
 }
 
-.data-form-grid {
+
+/* =========================================================
+   BATCH TABLE
+========================================================= */
+
+.batch-info {
+    padding: 11px 13px;
+    margin-bottom: 14px;
+    border-radius: 9px;
+    background: #eff6ff;
+    border: 1px solid #dbeafe;
+    color: #1e40af;
+    font-size: 10px;
+    line-height: 1.5;
+}
+
+.batch-table-wrapper {
+    width: 100%;
+    overflow-x: auto;
+    border: 1px solid #e5e7eb;
+    border-radius: 10px;
+}
+
+.batch-table {
+    width: 100%;
+    min-width: 900px;
+    border-collapse: collapse;
+}
+
+.batch-table th {
+    padding: 10px 9px;
+    background: #f8fafc;
+    border-bottom: 1px solid #e5e7eb;
+    color: #475569;
+    font-size: 10px;
+    font-weight: 700;
+    text-align: left;
+    white-space: nowrap;
+}
+
+.batch-table td {
+    padding: 8px;
+    border-bottom: 1px solid #f1f5f9;
+    vertical-align: middle;
+}
+
+.batch-table tr:last-child td {
+    border-bottom: none;
+}
+
+.batch-row-number {
+    width: 35px;
+    text-align: center;
+    color: #64748b;
+    font-size: 10px;
+    font-weight: 700;
+}
+
+.batch-input {
+    width: 100%;
+    height: 36px;
+    padding: 0 9px;
+    border: 1px solid #d1d5db;
+    border-radius: 7px;
+    outline: none;
+    background: #ffffff;
+    color: #374151;
+    font-family: inherit;
+    font-size: 10px;
+    box-sizing: border-box;
+}
+
+.batch-input:focus {
+    border-color: #079bd8;
+    box-shadow: 0 0 0 3px rgba(7, 155, 216, 0.08);
+}
+
+.batch-file {
+    padding: 6px;
+}
+
+.batch-delete {
+    width: 30px;
+    height: 30px;
+    border: none;
+    border-radius: 7px;
+    background: #fee2e2;
+    color: #dc2626;
+    cursor: pointer;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.batch-delete:hover {
+    background: #fecaca;
+}
+
+.batch-add-row {
+    margin-top: 12px;
+    height: 36px;
+    padding: 0 13px;
+    border: 1px dashed #93c5fd;
+    border-radius: 8px;
+    background: #eff6ff;
+    color: #075985;
+    font-size: 10px;
+    font-weight: 700;
+    cursor: pointer;
+}
+
+.batch-add-row:hover {
+    background: #dbeafe;
+}
+
+
+/* =========================================================
+   EDIT FORM
+========================================================= */
+
+.edit-form-grid {
     display: grid;
     grid-template-columns: repeat(2, 1fr);
     gap: 16px;
 }
 
-.data-form-group {
+.edit-form-group {
     display: flex;
     flex-direction: column;
 }
 
-.data-form-group.full {
+.edit-form-group.full {
     grid-column: 1 / -1;
 }
 
@@ -825,11 +965,6 @@ body.data-modal-open {
     box-shadow: 0 0 0 3px rgba(7, 155, 216, 0.08);
 }
 
-textarea.data-form-control {
-    min-height: 85px;
-    resize: vertical;
-}
-
 .data-file-input {
     padding: 7px 9px;
 }
@@ -845,11 +980,6 @@ textarea.data-form-control {
     color: #dc2626;
     font-size: 9px;
 }
-
-
-/* =========================================================
-   CURRENT FILE
-========================================================= */
 
 .data-current-file {
     display: none;
@@ -915,6 +1045,11 @@ textarea.data-form-control {
     background: #050f63;
 }
 
+.data-modal-save:disabled {
+    opacity: 0.7;
+    cursor: not-allowed;
+}
+
 
 /* =========================================================
    COMMENT MODAL
@@ -929,6 +1064,7 @@ textarea.data-form-control {
     color: #475569;
     font-size: 12px;
     line-height: 1.6;
+    word-break: break-word;
 }
 
 .data-comment-box i {
@@ -941,46 +1077,46 @@ textarea.data-form-control {
    RESPONSIVE
 ========================================================= */
 
-@media (max-width: 1000px) {
+@media (max-width: 1200px) {
+
+    .data-toolbar {
+        flex-wrap: wrap;
+    }
+
+    .data-toolbar-left {
+        width: 100%;
+        flex-basis: 100%;
+    }
+
+    .data-toolbar-right {
+        width: 100%;
+        justify-content: flex-end;
+    }
+}
+
+@media (max-width: 800px) {
 
     .data-stats {
         grid-template-columns: repeat(2, 1fr);
     }
 
-    .data-toolbar {
-        flex-direction: column;
-        align-items: stretch;
-    }
-
-    .data-toolbar-left,
     .data-toolbar-right {
-        width: 100%;
-    }
-
-    .data-toolbar-right {
-        justify-content: flex-end;
+        justify-content: flex-start;
+        flex-wrap: wrap;
     }
 }
 
-@media (max-width: 700px) {
+@media (max-width: 600px) {
 
     .data-stats {
         grid-template-columns: 1fr;
     }
 
-    .data-toolbar-right {
-        flex-wrap: wrap;
-    }
-
-    .data-search {
-        width: 100%;
-    }
-
-    .data-form-grid {
+    .edit-form-grid {
         grid-template-columns: 1fr;
     }
 
-    .data-form-group.full {
+    .edit-form-group.full {
         grid-column: auto;
     }
 
@@ -997,6 +1133,7 @@ textarea.data-form-control {
         align-items: flex-start;
     }
 }
+
 </style>
 
 
@@ -1009,6 +1146,7 @@ textarea.data-form-control {
     <div class="data-header">
 
         <div>
+
             <h1 class="data-title">
                 Data
             </h1>
@@ -1016,6 +1154,7 @@ textarea.data-form-control {
             <p class="data-subtitle">
                 Kelola dataset dan informasi data yang tersimpan dalam inventory.
             </p>
+
         </div>
 
     </div>
@@ -1028,8 +1167,11 @@ textarea.data-form-control {
     @if(session('success'))
 
         <div class="data-alert data-alert-success">
+
             <i class="bi bi-check-circle-fill"></i>
+
             {{ session('success') }}
+
         </div>
 
     @endif
@@ -1042,8 +1184,11 @@ textarea.data-form-control {
     @if(session('error'))
 
         <div class="data-alert data-alert-error">
+
             <i class="bi bi-exclamation-circle-fill"></i>
+
             {{ session('error') }}
+
         </div>
 
     @endif
@@ -1058,17 +1203,23 @@ textarea.data-form-control {
         <div class="data-alert data-alert-error">
 
             <div>
+
                 <strong>
                     Data gagal disimpan.
                 </strong>
 
                 <ul>
+
                     @foreach($errors->all() as $error)
+
                         <li>
                             {{ $error }}
                         </li>
+
                     @endforeach
+
                 </ul>
+
             </div>
 
         </div>
@@ -1081,8 +1232,6 @@ textarea.data-form-control {
     ====================================================== --}}
 
     <div class="data-stats">
-
-        {{-- TOTAL DATA --}}
 
         <div class="data-stat-card">
 
@@ -1109,8 +1258,6 @@ textarea.data-form-control {
         </div>
 
 
-        {{-- DISETUJUI --}}
-
         <div class="data-stat-card">
 
             <div class="data-stat-icon green">
@@ -1124,7 +1271,7 @@ textarea.data-form-control {
                 </span>
 
                 <span class="data-stat-value">
-                    {{ $totalDisetujui ?? ($disetujui ?? 0) }}
+                    {{ $totalDisetujui ?? 0 }}
                 </span>
 
                 <span class="data-stat-description">
@@ -1135,8 +1282,6 @@ textarea.data-form-control {
 
         </div>
 
-
-        {{-- MENUNGGU --}}
 
         <div class="data-stat-card">
 
@@ -1151,7 +1296,7 @@ textarea.data-form-control {
                 </span>
 
                 <span class="data-stat-value">
-                    {{ $totalPending ?? ($menunggu ?? 0) }}
+                    {{ $totalPending ?? 0 }}
                 </span>
 
                 <span class="data-stat-description">
@@ -1163,15 +1308,15 @@ textarea.data-form-control {
         </div>
 
     </div>
-
-
     {{-- =====================================================
          MAIN CARD
     ====================================================== --}}
 
     <div class="data-card">
 
-        {{-- TOOLBAR --}}
+        {{-- =================================================
+             TOOLBAR
+        ================================================== --}}
 
         <div class="data-toolbar">
 
@@ -1194,13 +1339,31 @@ textarea.data-form-control {
                     class="data-search"
                 >
 
+                    <input
+                        type="hidden"
+                        name="jenis_data"
+                        value="{{ request('jenis_data') }}"
+                    >
+
+                    <input
+                        type="hidden"
+                        name="tahun"
+                        value="{{ request('tahun') }}"
+                    >
+
+                    <input
+                        type="hidden"
+                        name="verifikasi"
+                        value="{{ request('verifikasi') }}"
+                    >
+
                     <i class="bi bi-search"></i>
 
                     <input
                         type="text"
                         name="search"
                         value="{{ request('search') }}"
-                        placeholder="Cari dataset..."
+                        placeholder="Cari data..."
                         autocomplete="off"
                     >
 
@@ -1216,8 +1379,11 @@ textarea.data-form-control {
                         class="data-filter-button"
                         onclick="toggleDataFilter(event)"
                     >
+
                         <i class="bi bi-funnel-fill"></i>
+
                         Filter
+
                     </button>
 
 
@@ -1231,16 +1397,12 @@ textarea.data-form-control {
                             action="{{ route('data.index') }}"
                         >
 
-                            {{-- SEARCH --}}
-
                             <input
                                 type="hidden"
                                 name="search"
                                 value="{{ request('search') }}"
                             >
 
-
-                            {{-- JENIS DATA --}}
 
                             <div class="data-filter-group">
 
@@ -1254,7 +1416,7 @@ textarea.data-form-control {
                                         Semua Jenis
                                     </option>
 
-                                    @foreach(($jenisDataList ?? collect()) as $jenis)
+                                    @foreach(($jenisData ?? collect()) as $jenis)
 
                                         <option
                                             value="{{ $jenis }}"
@@ -1269,8 +1431,6 @@ textarea.data-form-control {
 
                             </div>
 
-
-                            {{-- TAHUN --}}
 
                             <div class="data-filter-group">
 
@@ -1299,8 +1459,6 @@ textarea.data-form-control {
 
                             </div>
 
-
-                            {{-- STATUS VERIFIKASI --}}
 
                             <div class="data-filter-group">
 
@@ -1347,34 +1505,6 @@ textarea.data-form-control {
                             </div>
 
 
-                            {{-- JUMLAH DATA --}}
-
-                            <div class="data-filter-group">
-
-                                <label class="data-filter-label">
-                                    Tampilkan
-                                </label>
-
-                                <select name="show">
-
-                                    @foreach([10, 25, 50, 100] as $jumlah)
-
-                                        <option
-                                            value="{{ $jumlah }}"
-                                            {{ request('show', 10) == $jumlah ? 'selected' : '' }}
-                                        >
-                                            {{ $jumlah }} data
-                                        </option>
-
-                                    @endforeach
-
-                                </select>
-
-                            </div>
-
-
-                            {{-- ACTION --}}
-
                             <div class="data-filter-actions">
 
                                 <button
@@ -1402,15 +1532,18 @@ textarea.data-form-control {
                 </div>
 
 
-                {{-- TAMBAH --}}
+                {{-- TAMBAH DATA --}}
 
                 <button
                     type="button"
                     class="data-add-button"
                     onclick="openDataModal()"
                 >
+
                     <i class="bi bi-plus-lg"></i>
+
                     Tambah Data
+
                 </button>
 
             </div>
@@ -1431,14 +1564,18 @@ textarea.data-form-control {
                     <thead>
 
                         <tr>
+
                             <th>No</th>
+                            <th>ID</th>
                             <th>Nama Dataset</th>
                             <th>Jenis Data</th>
                             <th>Tahun</th>
                             <th>File</th>
                             <th>Tanggal Pengajuan</th>
                             <th>Verifikasi</th>
+                            <th>Komentar</th>
                             <th>Aksi</th>
+
                         </tr>
 
                     </thead>
@@ -1470,7 +1607,8 @@ textarea.data-form-control {
 
                                     'ditolak' => 'Ditolak',
 
-                                    'menunggu disetujui' => 'Menunggu Disetujui',
+                                    'menunggu disetujui' =>
+                                        'Menunggu Disetujui',
 
                                     default => 'Menunggu',
 
@@ -1481,47 +1619,61 @@ textarea.data-form-control {
 
                             <tr>
 
-                                {{-- NO --}}
-
                                 <td>
                                     {{ $data->firstItem() + $loop->index }}
                                 </td>
 
 
-                                {{-- NAMA DATASET --}}
+                                <td>
+
+                                    <span class="data-id">
+
+                                        DS-{{
+                                            str_pad(
+                                                $row->id,
+                                                5,
+                                                '0',
+                                                STR_PAD_LEFT
+                                            )
+                                        }}
+
+                                    </span>
+
+                                </td>
+
 
                                 <td>
 
                                     <span class="data-name">
+
                                         {{ $row->nama_dataset }}
+
                                     </span>
 
                                 </td>
 
-
-                                {{-- JENIS DATA --}}
 
                                 <td>
 
                                     <span class="data-category-badge">
+
                                         {{ $row->jenis_data ?: '-' }}
+
                                     </span>
 
                                 </td>
 
-
-                                {{-- TAHUN --}}
 
                                 <td>
 
                                     <span class="data-year">
+
                                         {{ $row->tahun ?: '-' }}
+
                                     </span>
 
                                 </td>
 
-
-                                {{-- FILE --}}
 
                                 <td>
 
@@ -1532,7 +1684,6 @@ textarea.data-form-control {
                                             target="_blank"
                                             rel="noopener noreferrer"
                                             class="data-file"
-                                            title="Buka file"
                                         >
 
                                             <i class="bi bi-file-earmark-text-fill"></i>
@@ -1552,15 +1703,17 @@ textarea.data-form-control {
                                 </td>
 
 
-                                {{-- TANGGAL PENGAJUAN --}}
-
                                 <td>
 
                                     <span class="data-date">
 
                                         @if($row->tanggal_pengajuan)
 
-                                            {{ \Carbon\Carbon::parse($row->tanggal_pengajuan)->format('d/m/Y H:i') }}
+                                            {{
+                                                \Carbon\Carbon::parse(
+                                                    $row->tanggal_pengajuan
+                                                )->format('d/m/Y H:i')
+                                            }}
 
                                         @else
 
@@ -1573,11 +1726,11 @@ textarea.data-form-control {
                                 </td>
 
 
-                                {{-- VERIFIKASI --}}
-
                                 <td>
 
-                                    <span class="data-verification {{ $verificationClass }}">
+                                    <span
+                                        class="data-verification {{ $verificationClass }}"
+                                    >
 
                                         {{ $verificationLabel }}
 
@@ -1586,30 +1739,39 @@ textarea.data-form-control {
                                 </td>
 
 
-                                {{-- AKSI --}}
+                                <td>
+
+                                    @if(!empty($row->komentar_verifikasi))
+
+                                        <div
+                                            class="data-comment"
+                                            title="{{ $row->komentar_verifikasi }}"
+                                        >
+
+                                            <span class="data-comment-text">
+
+                                                {{
+                                                    $row->komentar_verifikasi
+                                                }}
+
+                                            </span>
+
+                                        </div>
+
+                                    @else
+
+                                        <span class="data-comment-empty">
+                                            -
+                                        </span>
+
+                                    @endif
+
+                                </td>
+
 
                                 <td>
 
                                     <div class="data-action-buttons">
-
-                                        {{-- KOMENTAR JIKA DITOLAK --}}
-
-                                        @if(
-                                            strtolower(trim($row->verifikasi ?? '')) === 'ditolak'
-                                            && !empty($row->komentar_verifikasi)
-                                        )
-
-                                            <button
-                                                type="button"
-                                                class="data-comment-button"
-                                                title="Lihat komentar"
-                                                onclick="showComment(@js($row->komentar_verifikasi))"
-                                            >
-                                                <i class="bi bi-chat-left-text"></i>
-                                            </button>
-
-                                        @endif
-
 
                                         {{-- EDIT --}}
 
@@ -1619,7 +1781,9 @@ textarea.data-form-control {
                                             title="Edit"
                                             onclick="openEditDataModal({{ $row->id }})"
                                         >
+
                                             <i class="bi bi-pencil-fill"></i>
+
                                         </button>
 
 
@@ -1633,6 +1797,7 @@ textarea.data-form-control {
                                         >
 
                                             @csrf
+
                                             @method('DELETE')
 
                                             <button
@@ -1640,7 +1805,9 @@ textarea.data-form-control {
                                                 class="data-action-button data-delete-button"
                                                 title="Hapus"
                                             >
+
                                                 <i class="bi bi-trash-fill"></i>
+
                                             </button>
 
                                         </form>
@@ -1662,7 +1829,9 @@ textarea.data-form-control {
                 <div class="data-empty">
 
                     <div class="data-empty-icon">
+
                         <i class="bi bi-database"></i>
+
                     </div>
 
                     <h3>
@@ -1733,12 +1902,12 @@ textarea.data-form-control {
 
                 <div class="data-pagination">
 
-                    {{-- PREVIOUS --}}
-
                     @if($data->onFirstPage())
 
                         <span class="data-page-link disabled">
+
                             <i class="bi bi-chevron-left"></i>
+
                         </span>
 
                     @else
@@ -1747,13 +1916,13 @@ textarea.data-form-control {
                             href="{{ $data->appends(request()->query())->previousPageUrl() }}"
                             class="data-page-link"
                         >
+
                             <i class="bi bi-chevron-left"></i>
+
                         </a>
 
                     @endif
 
-
-                    {{-- PAGE NUMBERS --}}
 
                     @foreach(
                         $data->getUrlRange(
@@ -1767,13 +1936,13 @@ textarea.data-form-control {
                             href="{{ $url }}"
                             class="data-page-link {{ $page == $data->currentPage() ? 'active' : '' }}"
                         >
+
                             {{ $page }}
+
                         </a>
 
                     @endforeach
 
-
-                    {{-- NEXT --}}
 
                     @if($data->hasMorePages())
 
@@ -1781,13 +1950,17 @@ textarea.data-form-control {
                             href="{{ $data->appends(request()->query())->nextPageUrl() }}"
                             class="data-page-link"
                         >
+
                             <i class="bi bi-chevron-right"></i>
+
                         </a>
 
                     @else
 
                         <span class="data-page-link disabled">
+
                             <i class="bi bi-chevron-right"></i>
+
                         </span>
 
                     @endif
@@ -1804,7 +1977,7 @@ textarea.data-form-control {
 
 
 {{-- =========================================================
-     MODAL TAMBAH / EDIT DATA
+     MODAL TAMBAH / EDIT
 ========================================================= --}}
 
 <div
@@ -1825,7 +1998,12 @@ textarea.data-form-control {
             <div class="data-modal-header-left">
 
                 <div class="data-modal-icon">
-                    <i class="bi bi-database-fill"></i>
+
+                    <i
+                        id="dataModalIcon"
+                        class="bi bi-database-fill"
+                    ></i>
+
                 </div>
 
                 <div>
@@ -1841,7 +2019,7 @@ textarea.data-form-control {
                         id="dataModalSubtitle"
                         class="data-modal-subtitle"
                     >
-                        Tambahkan dataset baru ke dalam sistem.
+                        Tambahkan beberapa dataset sekaligus ke dalam sistem.
                     </p>
 
                 </div>
@@ -1855,13 +2033,17 @@ textarea.data-form-control {
                 onclick="closeDataModal()"
                 title="Tutup"
             >
+
                 <i class="bi bi-x-lg"></i>
+
             </button>
 
         </div>
 
 
-        {{-- FORM --}}
+        {{-- =================================================
+             FORM
+        ================================================== --}}
 
         <form
             id="dataForm"
@@ -1880,192 +2062,210 @@ textarea.data-form-control {
             >
 
 
-            {{-- BODY --}}
-
             <div class="data-modal-body">
 
-                <div class="data-form-grid">
+                {{-- =================================================
+                     TAMBAH BATCH
+                ================================================== --}}
 
-                    {{-- NAMA DATASET --}}
+                <div id="batchFormContainer">
 
-                    <div class="data-form-group full">
+                    <div class="batch-info">
 
-                        <label
-                            for="data_nama_dataset"
-                            class="data-form-label"
-                        >
-                            Nama Dataset
-                            <span>*</span>
-                        </label>
+                        <i class="bi bi-info-circle-fill"></i>
 
-                        <input
-                            type="text"
-                            id="data_nama_dataset"
-                            name="nama_dataset"
-                            class="data-form-control"
-                            value="{{ old('nama_dataset') }}"
-                            placeholder="Contoh: Data Penduduk Kabupaten Bekasi"
-                            required
-                        >
-
-                        @error('nama_dataset')
-
-                            <small class="data-error">
-                                {{ $message }}
-                            </small>
-
-                        @enderror
+                        Kamu dapat menambahkan beberapa dataset sekaligus.
+                        Setiap baris merupakan satu dataset dan setiap dataset
+                        akan mendapatkan ID serta proses verifikasi masing-masing.
 
                     </div>
 
 
-                    {{-- JENIS DATA --}}
+                    <div class="batch-table-wrapper">
 
-                    <div class="data-form-group">
+                        <table class="batch-table">
 
-                        <label
-                            for="data_jenis_data"
-                            class="data-form-label"
-                        >
-                            Jenis Data
-                            <span>*</span>
-                        </label>
+                            <thead>
 
-                        <input
-                            type="text"
-                            id="data_jenis_data"
-                            name="jenis_data"
-                            class="data-form-control"
-                            value="{{ old('jenis_data') }}"
-                            placeholder="Contoh: Kependudukan"
-                            required
-                        >
+                                <tr>
 
-                        @error('jenis_data')
+                                    <th style="width:40px;">
+                                        No
+                                    </th>
 
-                            <small class="data-error">
-                                {{ $message }}
-                            </small>
+                                    <th style="width:27%;">
+                                        Nama Dataset
+                                    </th>
 
-                        @enderror
+                                    <th style="width:20%;">
+                                        Jenis Data
+                                    </th>
 
-                    </div>
+                                    <th style="width:100px;">
+                                        Tahun
+                                    </th>
+
+                                    <th style="width:30%;">
+                                        File Data
+                                    </th>
+
+                                    <th style="width:45px;">
+                                        Aksi
+                                    </th>
+
+                                </tr>
+
+                            </thead>
 
 
-                    {{-- TAHUN --}}
+                            <tbody id="batchRows">
 
-                    <div class="data-form-group">
+                            </tbody>
 
-                        <label
-                            for="data_tahun"
-                            class="data-form-label"
-                        >
-                            Tahun
-                            <span>*</span>
-                        </label>
-
-                        <input
-                            type="number"
-                            id="data_tahun"
-                            name="tahun"
-                            class="data-form-control"
-                            value="{{ old('tahun') }}"
-                            min="1900"
-                            max="2100"
-                            placeholder="Contoh: 2026"
-                            required
-                        >
-
-                        @error('tahun')
-
-                            <small class="data-error">
-                                {{ $message }}
-                            </small>
-
-                        @enderror
+                        </table>
 
                     </div>
 
 
-                    {{-- FILE --}}
+                    <button
+                        type="button"
+                        class="batch-add-row"
+                        onclick="addBatchRow()"
+                    >
 
-                    <div class="data-form-group full">
+                        <i class="bi bi-plus-lg"></i>
 
-                        <label
-                            for="data_file_data"
-                            class="data-form-label"
-                        >
-                            File Data
-                        </label>
+                        Tambah Baris
 
-                        <input
-                            type="file"
-                            id="data_file_data"
-                            name="file_data"
-                            class="data-form-control data-file-input"
-                            accept=".csv,.xls,.xlsx,.pdf,.zip"
-                        >
+                    </button>
 
-                        <small class="data-form-help">
-                            Format: CSV, XLS, XLSX, PDF, ZIP. Maksimal 10 MB.
-                        </small>
+                </div>
 
-                        <div
-                            id="dataCurrentFile"
-                            class="data-current-file"
-                        >
 
-                            <i class="bi bi-file-earmark"></i>
+                {{-- =================================================
+                     EDIT FORM
+                ================================================== --}}
 
-                            File saat ini:
+                <div
+                    id="editFormContainer"
+                    style="display:none;"
+                >
 
-                            <a
-                                id="dataCurrentFileLink"
-                                href="#"
-                                target="_blank"
-                                rel="noopener noreferrer"
+                    <div class="edit-form-grid">
+
+                        {{-- NAMA DATASET --}}
+
+                        <div class="edit-form-group full">
+
+                            <label class="data-form-label">
+
+                                Nama Dataset
+
+                                <span>*</span>
+
+                            </label>
+
+                            <input
+                                type="text"
+                                id="edit_nama_dataset"
+                                class="data-form-control"
+                                placeholder="Contoh: Data Penduduk"
                             >
-                                Lihat File
-                            </a>
 
                         </div>
 
-                        @error('file_data')
 
-                            <small class="data-error">
-                                {{ $message }}
+                        {{-- JENIS DATA --}}
+
+                        <div class="edit-form-group">
+
+                            <label class="data-form-label">
+
+                                Jenis Data
+
+                                <span>*</span>
+
+                            </label>
+
+                            <input
+                                type="text"
+                                id="edit_jenis_data"
+                                class="data-form-control"
+                                placeholder="Contoh: Kependudukan"
+                            >
+
+                        </div>
+
+
+                        {{-- TAHUN --}}
+
+                        <div class="edit-form-group">
+
+                            <label class="data-form-label">
+
+                                Tahun
+
+                                <span>*</span>
+
+                            </label>
+
+                            <input
+                                type="number"
+                                id="edit_tahun"
+                                class="data-form-control"
+                                min="1900"
+                                max="2100"
+                                placeholder="Contoh: 2026"
+                            >
+
+                        </div>
+
+
+                        {{-- FILE --}}
+
+                        <div class="edit-form-group full">
+
+                            <label class="data-form-label">
+
+                                File Data
+
+                            </label>
+
+                            <input
+                                type="file"
+                                id="edit_file_data"
+                                class="data-form-control data-file-input"
+                                accept=".csv,.xls,.xlsx,.pdf,.zip"
+                            >
+
+                            <small class="data-form-help">
+
+                                Kosongkan jika tidak ingin mengganti file.
+
                             </small>
 
-                        @enderror
 
-                    </div>
+                            <div
+                                id="dataCurrentFile"
+                                class="data-current-file"
+                            >
 
+                                <i class="bi bi-file-earmark"></i>
 
-                    {{-- KETERANGAN --}}
+                                File saat ini:
 
-                    <div class="data-form-group full">
+                                <a
+                                    id="dataCurrentFileLink"
+                                    href="#"
+                                    target="_blank"
+                                    rel="noopener noreferrer"
+                                >
+                                    Lihat File
+                                </a>
 
-                        <label
-                            for="data_komentar_verifikasi"
-                            class="data-form-label"
-                        >
-                            Keterangan
-                        </label>
+                            </div>
 
-                        <textarea
-                            id="data_komentar_verifikasi"
-                            name="komentar_verifikasi"
-                            class="data-form-control"
-                            placeholder="Tambahkan keterangan jika diperlukan..."
-                        >{{ old('komentar_verifikasi') }}</textarea>
-
-                        @error('komentar_verifikasi')
-
-                            <small class="data-error">
-                                {{ $message }}
-                            </small>
-
-                        @enderror
+                        </div>
 
                     </div>
 
@@ -2083,7 +2283,9 @@ textarea.data-form-control {
                     class="data-modal-cancel"
                     onclick="closeDataModal()"
                 >
+
                     Batal
+
                 </button>
 
                 <button
@@ -2091,8 +2293,11 @@ textarea.data-form-control {
                     class="data-modal-save"
                     id="dataSaveButton"
                 >
+
                     <i class="bi bi-check-lg"></i>
-                    Simpan Data
+
+                    Simpan Semua Data
+
                 </button>
 
             </div>
@@ -2124,7 +2329,9 @@ textarea.data-form-control {
             <div class="data-modal-header-left">
 
                 <div class="data-modal-icon">
+
                     <i class="bi bi-chat-left-text"></i>
+
                 </div>
 
                 <div>
@@ -2147,7 +2354,9 @@ textarea.data-form-control {
                 class="data-modal-close"
                 onclick="closeCommentModal()"
             >
+
                 <i class="bi bi-x-lg"></i>
+
             </button>
 
         </div>
@@ -2169,7 +2378,9 @@ textarea.data-form-control {
                 class="data-modal-cancel"
                 onclick="closeCommentModal()"
             >
+
                 Tutup
+
             </button>
 
         </div>
@@ -2229,16 +2440,314 @@ document.addEventListener('click', function(event)
         wrap &&
         !wrap.contains(event.target)
     ) {
+
         dropdown.classList.remove('show');
+
     }
 });
+
+
+/* =========================================================
+   BATCH ROW
+========================================================= */
+
+let batchRowNumber = 0;
+
+
+function addBatchRow(
+    nama = '',
+    jenis = '',
+    tahun = ''
+)
+{
+    batchRowNumber++;
+
+    const tbody =
+        document.getElementById('batchRows');
+
+    if (!tbody) {
+        return;
+    }
+
+    const row =
+        document.createElement('tr');
+
+    row.className =
+        'batch-data-row';
+
+
+    row.innerHTML = `
+
+        <td class="batch-row-number">
+            ${batchRowNumber}
+        </td>
+
+        <td>
+
+            <input
+                type="text"
+                name="nama_dataset[]"
+                class="batch-input"
+                placeholder="Nama dataset"
+                value="${escapeHtml(nama)}"
+                required
+            >
+
+        </td>
+
+        <td>
+
+            <input
+                type="text"
+                name="jenis_data[]"
+                class="batch-input"
+                placeholder="Jenis data"
+                value="${escapeHtml(jenis)}"
+                required
+            >
+
+        </td>
+
+        <td>
+
+            <input
+                type="number"
+                name="tahun[]"
+                class="batch-input"
+                min="1900"
+                max="2100"
+                placeholder="2026"
+                value="${escapeHtml(tahun)}"
+                required
+            >
+
+        </td>
+
+        <td>
+
+            <input
+                type="file"
+                name="file_data[]"
+                class="batch-input batch-file"
+                accept=".csv,.xls,.xlsx,.pdf,.zip"
+                required
+            >
+
+            <div
+                style="
+                    margin-top:4px;
+                    color:#9ca3af;
+                    font-size:8px;
+                "
+            >
+                CSV, XLS, XLSX, PDF, ZIP. Maks. 10 MB.
+            </div>
+
+        </td>
+
+        <td style="text-align:center;">
+
+            <button
+                type="button"
+                class="batch-delete"
+                title="Hapus baris"
+                onclick="removeBatchRow(this)"
+            >
+
+                <i class="bi bi-trash-fill"></i>
+
+            </button>
+
+        </td>
+
+    `;
+
+
+    tbody.appendChild(row);
+
+    updateBatchNumbers();
+}
+
+
+function removeBatchRow(button)
+{
+    const row =
+        button.closest('.batch-data-row');
+
+    if (!row) {
+        return;
+    }
+
+    const tbody =
+        document.getElementById('batchRows');
+
+
+    if (
+        tbody &&
+        tbody.querySelectorAll('.batch-data-row').length <= 1
+    ) {
+
+        alert(
+            'Minimal harus ada satu dataset.'
+        );
+
+        return;
+    }
+
+
+    row.remove();
+
+    updateBatchNumbers();
+}
+
+
+function updateBatchNumbers()
+{
+    const rows =
+        document.querySelectorAll(
+            '#batchRows .batch-data-row'
+        );
+
+
+    rows.forEach(function(row, index)
+    {
+
+        const number =
+            row.querySelector(
+                '.batch-row-number'
+            );
+
+        if (number) {
+
+            number.textContent =
+                index + 1;
+
+        }
+
+    });
+}
+
+
+function escapeHtml(value)
+{
+    if (value === null || value === undefined) {
+        return '';
+    }
+
+    return String(value)
+        .replace(/&/g, '&amp;')
+        .replace(/</g, '&lt;')
+        .replace(/>/g, '&gt;')
+        .replace(/"/g, '&quot;')
+        .replace(/'/g, '&#039;');
+}
+
+
+/* =========================================================
+   REMOVE EDIT NAME
+   MODE TAMBAH
+========================================================= */
+
+function disableEditFields()
+{
+    const nama =
+        document.getElementById('edit_nama_dataset');
+
+    const jenis =
+        document.getElementById('edit_jenis_data');
+
+    const tahun =
+        document.getElementById('edit_tahun');
+
+    const file =
+        document.getElementById('edit_file_data');
+
+
+    if (nama) {
+        nama.removeAttribute('name');
+        nama.disabled = true;
+    }
+
+    if (jenis) {
+        jenis.removeAttribute('name');
+        jenis.disabled = true;
+    }
+
+    if (tahun) {
+        tahun.removeAttribute('name');
+        tahun.disabled = true;
+    }
+
+    if (file) {
+        file.removeAttribute('name');
+        file.disabled = true;
+    }
+}
+
+
+/* =========================================================
+   ENABLE EDIT FIELDS
+   MODE EDIT
+========================================================= */
+
+function enableEditFields()
+{
+    const nama =
+        document.getElementById('edit_nama_dataset');
+
+    const jenis =
+        document.getElementById('edit_jenis_data');
+
+    const tahun =
+        document.getElementById('edit_tahun');
+
+    const file =
+        document.getElementById('edit_file_data');
+
+
+    if (nama) {
+        nama.setAttribute(
+            'name',
+            'nama_dataset'
+        );
+
+        nama.disabled = false;
+    }
+
+    if (jenis) {
+        jenis.setAttribute(
+            'name',
+            'jenis_data'
+        );
+
+        jenis.disabled = false;
+    }
+
+    if (tahun) {
+        tahun.setAttribute(
+            'name',
+            'tahun'
+        );
+
+        tahun.disabled = false;
+    }
+
+    if (file) {
+        file.setAttribute(
+            'name',
+            'file_data'
+        );
+
+        file.disabled = false;
+    }
+}
 
 
 /* =========================================================
    OPEN ADD
 ========================================================= */
 
-function openDataModal(resetForm = true)
+function openDataModal()
 {
     const modal =
         document.getElementById('dataModal');
@@ -2251,38 +2760,113 @@ function openDataModal(resetForm = true)
     }
 
 
-    if (resetForm) {
-        form.reset();
-    }
+    /*
+    |----------------------------------------------------------------------
+    | RESET FORM
+    |----------------------------------------------------------------------
+    */
 
+    form.reset();
+
+
+    /*
+    |----------------------------------------------------------------------
+    | MODE TAMBAH
+    |----------------------------------------------------------------------
+    */
+
+    disableEditFields();
+
+
+    /*
+    |----------------------------------------------------------------------
+    | ACTION
+    |----------------------------------------------------------------------
+    */
 
     form.action =
         "{{ route('data.store') }}";
 
 
-    document.getElementById('dataMethod').value =
-        'POST';
+    document.getElementById(
+        'dataMethod'
+    ).value = 'POST';
 
 
-    document.getElementById('dataModalTitle').textContent =
+    /*
+    |----------------------------------------------------------------------
+    | TITLE
+    |----------------------------------------------------------------------
+    */
+
+    document.getElementById(
+        'dataModalTitle'
+    ).textContent =
         'Tambah Data';
 
 
-    document.getElementById('dataModalSubtitle').textContent =
-        'Tambahkan dataset baru ke dalam sistem.';
+    document.getElementById(
+        'dataModalSubtitle'
+    ).textContent =
+        'Tambahkan beberapa dataset sekaligus ke dalam sistem.';
 
 
-    document.getElementById('dataSaveButton').innerHTML =
-        '<i class="bi bi-check-lg"></i> Simpan Data';
+    document.getElementById(
+        'dataSaveButton'
+    ).innerHTML =
+        '<i class="bi bi-check-lg"></i> Simpan Semua Data';
 
 
-    const currentFile =
-        document.getElementById('dataCurrentFile');
+    /*
+    |----------------------------------------------------------------------
+    | SHOW BATCH
+    |----------------------------------------------------------------------
+    */
 
-    if (currentFile) {
-        currentFile.style.display = 'none';
+    document.getElementById(
+        'batchFormContainer'
+    ).style.display =
+        'block';
+
+
+    document.getElementById(
+        'editFormContainer'
+    ).style.display =
+        'none';
+
+
+    /*
+    |----------------------------------------------------------------------
+    | RESET ROW
+    |----------------------------------------------------------------------
+    */
+
+    const tbody =
+        document.getElementById('batchRows');
+
+    if (tbody) {
+
+        tbody.innerHTML = '';
+
     }
 
+    batchRowNumber = 0;
+
+
+    /*
+    |----------------------------------------------------------------------
+    | ADD FIRST ROW
+    |----------------------------------------------------------------------
+    */
+
+    addBatchRow();
+
+
+    /*
+    |----------------------------------------------------------------------
+    | SHOW MODAL
+    |----------------------------------------------------------------------
+    */
 
     modal.classList.add('show');
 
@@ -2331,55 +2915,130 @@ function openEditDataModal(id)
     }
 
 
+    /*
+    |----------------------------------------------------------------------
+    | MODE EDIT
+    |----------------------------------------------------------------------
+    */
+
+    enableEditFields();
+
+
+    /*
+    |----------------------------------------------------------------------
+    | ACTION
+    |----------------------------------------------------------------------
+    */
+
     form.action =
         "{{ url('/data') }}/" + id;
 
 
-    document.getElementById('dataMethod').value =
+    document.getElementById(
+        'dataMethod'
+    ).value =
         'PUT';
 
 
-    document.getElementById('dataModalTitle').textContent =
+    /*
+    |----------------------------------------------------------------------
+    | TITLE
+    |----------------------------------------------------------------------
+    */
+
+    document.getElementById(
+        'dataModalTitle'
+    ).textContent =
         'Edit Data';
 
 
-    document.getElementById('dataModalSubtitle').textContent =
+    document.getElementById(
+        'dataModalSubtitle'
+    ).textContent =
         'Perbarui dataset yang dipilih.';
 
 
-    document.getElementById('dataSaveButton').innerHTML =
+    document.getElementById(
+        'dataSaveButton'
+    ).innerHTML =
         '<i class="bi bi-check-lg"></i> Simpan Perubahan';
 
 
-    document.getElementById('data_nama_dataset').value =
+    /*
+    |----------------------------------------------------------------------
+    | HIDE BATCH
+    |----------------------------------------------------------------------
+    */
+
+    document.getElementById(
+        'batchFormContainer'
+    ).style.display =
+        'none';
+
+
+    /*
+    |----------------------------------------------------------------------
+    | SHOW EDIT
+    |----------------------------------------------------------------------
+    */
+
+    document.getElementById(
+        'editFormContainer'
+    ).style.display =
+        'block';
+
+
+    /*
+    |----------------------------------------------------------------------
+    | DATA
+    |----------------------------------------------------------------------
+    */
+
+    document.getElementById(
+        'edit_nama_dataset'
+    ).value =
         data.nama_dataset ?? '';
 
 
-    document.getElementById('data_jenis_data').value =
+    document.getElementById(
+        'edit_jenis_data'
+    ).value =
         data.jenis_data ?? '';
 
 
-    document.getElementById('data_tahun').value =
+    document.getElementById(
+        'edit_tahun'
+    ).value =
         data.tahun ?? '';
 
 
-    document.getElementById('data_komentar_verifikasi').value =
-        data.komentar_verifikasi ?? '';
-
+    /*
+    |----------------------------------------------------------------------
+    | FILE
+    |----------------------------------------------------------------------
+    */
 
     const fileInput =
-        document.getElementById('data_file_data');
+        document.getElementById(
+            'edit_file_data'
+        );
 
     if (fileInput) {
+
         fileInput.value = '';
+
     }
 
 
     const currentFile =
-        document.getElementById('dataCurrentFile');
+        document.getElementById(
+            'dataCurrentFile'
+        );
 
     const currentFileLink =
-        document.getElementById('dataCurrentFileLink');
+        document.getElementById(
+            'dataCurrentFileLink'
+        );
 
 
     if (
@@ -2389,7 +3048,8 @@ function openEditDataModal(id)
     ) {
 
         currentFileLink.href =
-            "{{ asset('storage') }}/" + data.file_data;
+            "{{ asset('storage') }}/" +
+            data.file_data;
 
         currentFile.style.display =
             'block';
@@ -2401,6 +3061,12 @@ function openEditDataModal(id)
 
     }
 
+
+    /*
+    |----------------------------------------------------------------------
+    | SHOW MODAL
+    |----------------------------------------------------------------------
+    */
 
     modal.classList.add('show');
 
@@ -2506,7 +3172,9 @@ document
         function(event)
         {
             if (event.target === this) {
+
                 closeDataModal();
+
             }
         }
     );
@@ -2519,7 +3187,9 @@ document
         function(event)
         {
             if (event.target === this) {
+
                 closeCommentModal();
+
             }
         }
     );
@@ -2549,7 +3219,9 @@ document.addEventListener(
             dataModal &&
             dataModal.classList.contains('show')
         ) {
+
             closeDataModal();
+
         }
 
 
@@ -2557,14 +3229,16 @@ document.addEventListener(
             commentModal &&
             commentModal.classList.contains('show')
         ) {
+
             closeCommentModal();
+
         }
     }
 );
 
 
 /* =========================================================
-   AUTO OPEN VALIDATION ERROR
+   VALIDATION ERROR
 ========================================================= */
 
 @if($errors->any())
@@ -2573,11 +3247,46 @@ document.addEventListener(
     'DOMContentLoaded',
     function()
     {
-        openDataModal(false);
+        /*
+        |--------------------------------------------------------------
+        | BUKA MODAL DALAM MODE TAMBAH
+        |--------------------------------------------------------------
+        */
+
+        openDataModal();
+
     }
 );
 
 @endif
+
+
+/* =========================================================
+   PREVENT DOUBLE SUBMIT
+========================================================= */
+
+document
+    .getElementById('dataForm')
+    ?.addEventListener(
+        'submit',
+        function()
+        {
+            const button =
+                document.getElementById(
+                    'dataSaveButton'
+                );
+
+            if (!button) {
+                return;
+            }
+
+
+            button.disabled = true;
+
+            button.innerHTML =
+                '<i class="bi bi-hourglass-split"></i> Menyimpan...';
+        }
+    );
 
 </script>
 

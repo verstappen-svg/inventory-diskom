@@ -71,6 +71,12 @@ Route::middleware('auth')->group(function () {
         [NotificationController::class, 'index']
     )->name('notifikasi.index');
 
+    Route::get(
+        '/notifikasi/{id}/read',
+        [NotificationController::class, 'read']
+    )->name('notifikasi.read');
+
+
 
     /*
     |--------------------------------------------------------------------------
@@ -335,6 +341,7 @@ Route::middleware('auth')->group(function () {
             '/data/{id}',
             [DataController::class, 'destroy']
         )->name('data.destroy');
+
     });
 
 

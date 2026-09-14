@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use App\Models\Hardware;
 use App\Models\Lokasi;
+use App\Models\Notification;
 use App\Models\VerificationRequest;
 use App\Imports\HardwareImport;
 use Illuminate\Http\Request;
@@ -42,7 +43,6 @@ class HardwareController extends Controller
                             "%{$search}%"
                         );
                     });
-
             });
         }
 
@@ -67,89 +67,81 @@ class HardwareController extends Controller
 
 
     /*
-|--------------------------------------------------------------------------
-| GENERATE ASSET ID
-|--------------------------------------------------------------------------
-|
-| Format:
-|
-| ED-26-0001  -> End Device
-| SD-26-0001  -> Security Device
-| PD-26-0001  -> Peripheral / Supporting Device
-|
-*/
+    |--------------------------------------------------------------------------
+    | GENERATE ASSET ID
+    |--------------------------------------------------------------------------
+    |
+    | Format:
+    |
+    | ED-26-0001  -> End Device
+    | SD-26-0001  -> Security Device
+    | PD-26-0001  -> Peripheral / Supporting Device
+    |
+    */
 
-private function generateAssetId(string $jenisBarang): string
-{
-    $year = now()->format('y');
+    private function generateAssetId(string $jenisBarang): string
+    {
+        $year = now()->format('y');
 
-    /*
-     * Tentukan prefix berdasarkan jenis barang.
-     */
-    $endDevices = [
-        'PC All in One',
-        'PC Desktop',
-        'Laptop',
-        'NoteBook',
-        'Tablet',
-        'Smartphone',
-        'Perangkat Komunikasi',
-    ];
+        $endDevices = [
+            'PC All in One',
+            'PC Desktop',
+            'Laptop',
+            'NoteBook',
+            'Tablet',
+            'Smartphone',
+            'Perangkat Komunikasi',
+        ];
 
-    $securityDevices = [
-        'CCTV',
-    ];
+        $securityDevices = [
+            'CCTV',
+        ];
 
-    if (in_array($jenisBarang, $endDevices)) {
+        if (in_array($jenisBarang, $endDevices)) {
 
-        $prefix = 'ED-' . $year . '-';
+            $prefix = 'ED-' . $year . '-';
 
-    } elseif (in_array($jenisBarang, $securityDevices)) {
+        } elseif (in_array($jenisBarang, $securityDevices)) {
 
-        $prefix = 'SD-' . $year . '-';
+            $prefix = 'SD-' . $year . '-';
 
-    } else {
+        } else {
 
-        $prefix = 'PD-' . $year . '-';
-    }
+            $prefix = 'PD-' . $year . '-';
+        }
 
-
-    /*
-     * Cari nomor terakhir berdasarkan prefix.
-     */
-    $lastHardware = Hardware::where(
-        'asset_id',
-        'like',
-        $prefix . '%'
-    )
-        ->orderByRaw(
-            "CAST(SUBSTRING(asset_id, 8) AS UNSIGNED) DESC"
+        $lastHardware = Hardware::where(
+            'asset_id',
+            'like',
+            $prefix . '%'
         )
-        ->first();
+            ->orderByRaw(
+                "CAST(SUBSTRING(asset_id, 8) AS UNSIGNED) DESC"
+            )
+            ->first();
 
+        if (!$lastHardware) {
 
-    if (!$lastHardware) {
+            $number = 1;
 
-        $number = 1;
+        } else {
 
-    } else {
+            $lastNumber = (int) substr(
+                $lastHardware->asset_id,
+                strlen($prefix)
+            );
 
-        $lastNumber = (int) substr(
-            $lastHardware->asset_id,
-            strlen($prefix)
+            $number = $lastNumber + 1;
+        }
+
+        return $prefix . str_pad(
+            $number,
+            4,
+            '0',
+            STR_PAD_LEFT
         );
-
-        $number = $lastNumber + 1;
     }
 
-
-    return $prefix . str_pad(
-        $number,
-        4,
-        '0',
-        STR_PAD_LEFT
-    );
-}
 
     /*
     |--------------------------------------------------------------------------
@@ -159,10 +151,6 @@ private function generateAssetId(string $jenisBarang): string
 
     public function store(Request $request)
     {
-        // =====================================================
-        // VALIDASI
-        // =====================================================
-
         $validated = $request->validate([
 
             'nama_barang' => [
@@ -243,53 +231,87 @@ private function generateAssetId(string $jenisBarang): string
 
             'kondisi.required' =>
                 'Kondisi wajib dipilih.',
-
         ]);
 
 
         /*
-         * Kalau sistem operasi kosong,
-         * otomatis menjadi N/A.
-         */
+        |--------------------------------------------------------------------------
+        | DEFAULT SISTEM OPERASI
+        |--------------------------------------------------------------------------
+        */
+
         $validated['sistem_operasi'] =
             trim($validated['sistem_operasi'] ?? '') ?: 'N/A';
 
 
-        DB::transaction(function () use ($validated) {
+        /*
+        |--------------------------------------------------------------------------
+        | SIMPAN DATA + VERIFIKASI + NOTIFIKASI
+        |--------------------------------------------------------------------------
+        */
 
-    /*
-     * Asset ID dibuat OTOMATIS berdasarkan jenis barang.
-     */
-    $validated['asset_id'] = $this->generateAssetId(
-        $validated['jenis_barang']
-    );
+        DB::transaction(function () use (&$validated) {
+
+            /*
+             * Generate Asset ID otomatis.
+             */
+            $validated['asset_id'] = $this->generateAssetId(
+                $validated['jenis_barang']
+            );
 
 
-    /*
-     * Simpan hardware.
-     */
-    $hardware = Hardware::create($validated);
+            /*
+             * Simpan hardware.
+             */
+            $hardware = Hardware::create($validated);
 
 
-    /*
-     * Buat request verifikasi.
-     */
-    VerificationRequest::create([
+            /*
+             * Buat request verifikasi.
+             */
+            VerificationRequest::create([
 
-        'module' => 'hardware',
+                'module' =>
+                    'hardware',
 
-        'record_id' => $hardware->asset_id,
+                'record_id' =>
+                    $hardware->asset_id,
 
-        'action' => 'create',
+                'action' =>
+                    'create',
 
-        'data' => $hardware->toArray(),
+                'data' =>
+                    $hardware->toArray(),
 
-        'status' => 'menunggu',
+                'status' =>
+                    'menunggu',
 
-        'submitted_by' => auth()->id(),
+                'submitted_by' =>
+                    auth()->id(),
+            ]);
 
-    ]);
-});
+
+            /*
+             * Buat notifikasi.
+             */
+            Notification::create([
+
+                'judul' =>
+                    'Pengajuan Hardware Baru',
+
+                'pesan' =>
+                    auth()->user()->username .
+                    ' menambahkan hardware "' .
+                    $hardware->nama_barang .
+                    '" dengan ID ' .
+                    $hardware->asset_id .
+                    ' dan mengajukannya untuk persetujuan.',
+
+                'dibaca' =>
+                    false,
+            ]);
+        });
+
 
         return redirect()
             ->route('hardware.index')
@@ -329,11 +351,6 @@ private function generateAssetId(string $jenisBarang): string
 
 
         $validated = $request->validate([
-
-            /*
-             * Asset ID TIDAK perlu dikirim dari form.
-             * ID hardware tetap.
-             */
 
             'nama_barang' => [
                 'required',
@@ -410,23 +427,33 @@ private function generateAssetId(string $jenisBarang): string
 
             'kondisi.required' =>
                 'Kondisi wajib dipilih.',
-
         ]);
 
 
         /*
-         * Kalau sistem operasi dikosongkan ketika edit,
-         * otomatis kembali menjadi N/A.
-         */
+        |--------------------------------------------------------------------------
+        | DEFAULT SISTEM OPERASI
+        |--------------------------------------------------------------------------
+        */
+
         $validated['sistem_operasi'] =
             trim($validated['sistem_operasi'] ?? '') ?: 'N/A';
 
 
         /*
-         * Data lama untuk snapshot verifikasi.
-         */
+        |--------------------------------------------------------------------------
+        | DATA LAMA
+        |--------------------------------------------------------------------------
+        */
+
         $dataLama = $hardwareRecord->toArray();
 
+
+        /*
+        |--------------------------------------------------------------------------
+        | UPDATE + VERIFIKASI + NOTIFIKASI
+        |--------------------------------------------------------------------------
+        */
 
         DB::transaction(function () use (
             $hardwareRecord,
@@ -435,7 +462,7 @@ private function generateAssetId(string $jenisBarang): string
         ) {
 
             /*
-             * Jangan ubah asset_id ketika edit.
+             * Asset ID tetap.
              */
             $hardwareRecord->update($validated);
 
@@ -443,28 +470,55 @@ private function generateAssetId(string $jenisBarang): string
 
 
             /*
-             * Request verifikasi update.
+             * Buat request verifikasi update.
              */
             VerificationRequest::create([
 
-                'module' => 'hardware',
+                'module' =>
+                    'hardware',
 
-                'record_id' => $hardwareRecord->asset_id,
+                'record_id' =>
+                    $hardwareRecord->asset_id,
 
-                'action' => 'update',
+                'action' =>
+                    'update',
 
                 'data' => [
 
-                    'data_lama' => $dataLama,
+                    'data_lama' =>
+                        $dataLama,
 
-                    'data_baru' => $hardwareRecord->toArray(),
+                    'data_baru' =>
+                        $hardwareRecord->toArray(),
 
                 ],
 
-                'status' => 'menunggu',
+                'status' =>
+                    'menunggu',
 
-                'submitted_by' => auth()->id(),
+                'submitted_by' =>
+                    auth()->id(),
+            ]);
 
+
+            /*
+             * Buat notifikasi.
+             */
+            Notification::create([
+
+                'judul' =>
+                    'Perubahan Hardware Diajukan',
+
+                'pesan' =>
+                    auth()->user()->username .
+                    ' memperbarui hardware "' .
+                    $hardwareRecord->nama_barang .
+                    '" dengan ID ' .
+                    $hardwareRecord->asset_id .
+                    ' dan mengajukannya kembali untuk persetujuan.',
+
+                'dibaca' =>
+                    false,
             ]);
         });
 
@@ -478,45 +532,103 @@ private function generateAssetId(string $jenisBarang): string
     }
 
 
+    /*
+    |--------------------------------------------------------------------------
+    | IMPORT EXCEL / CSV
+    |--------------------------------------------------------------------------
+    */
+
     public function import(Request $request)
-{
-    $request->validate([
-        'file' => [
-            'required',
-            'file',
-            'mimes:xlsx,csv',
-            'max:10240',
-        ],
-    ], [
-        'file.required' => 'File import wajib dipilih.',
-        'file.file' => 'File yang dipilih tidak valid.',
-        'file.mimes' => 'File harus berformat Excel (.xlsx) atau CSV (.csv).',
-        'file.max' => 'Ukuran file maksimal 10 MB.',
-    ]);
+    {
+        $request->validate([
 
-    try {
-        Excel::import(
-            new HardwareImport,
-            $request->file('file')
-        );
+            'file' => [
+                'required',
+                'file',
+                'mimes:xlsx,csv',
+                'max:10240',
+            ],
 
-        return redirect()
-            ->route('hardware.index')
-            ->with(
-                'success',
-                'Data hardware berhasil diimport dan menunggu verifikasi.'
-            );
+        ], [
 
-    } catch (\Exception $e) {
+            'file.required' =>
+                'File import wajib dipilih.',
 
-        return redirect()
-            ->route('hardware.index')
-            ->with(
-                'error',
-                'Import gagal: ' . $e->getMessage()
-            );
+            'file.file' =>
+                'File yang dipilih tidak valid.',
+
+            'file.mimes' =>
+                'File harus berformat Excel (.xlsx) atau CSV (.csv).',
+
+            'file.max' =>
+                'Ukuran file maksimal 10 MB.',
+        ]);
+
+
+        try {
+
+            DB::transaction(function () use (
+                $request
+            ) {
+
+                /*
+                |--------------------------------------------------------------------------
+                | IMPORT DATA
+                |--------------------------------------------------------------------------
+                */
+
+                Excel::import(
+                    new HardwareImport,
+                    $request->file('file')
+                );
+
+
+                /*
+                |--------------------------------------------------------------------------
+                | NOTIFIKASI IMPORT
+                |--------------------------------------------------------------------------
+                |
+                | Hanya 1 notifikasi untuk 1 proses import.
+                | Jadi kalau Excel berisi 600 data,
+                | tidak dibuat 600 notification.
+                |
+                */
+
+                Notification::create([
+
+                    'judul' =>
+                        'Import Hardware Baru',
+
+                    'pesan' =>
+                        auth()->user()->username .
+                        ' melakukan import data hardware melalui file Excel/CSV dan data tersebut berhasil dimasukkan.',
+
+                    'dibaca' =>
+                        false,
+                ]);
+            });
+
+
+            return redirect()
+                ->route('hardware.index')
+                ->with(
+                    'success',
+                    'Data hardware berhasil diimport dan menunggu verifikasi.'
+                );
+
+        } catch (\Throwable $e) {
+
+            return redirect()
+                ->route('hardware.index')
+                ->with(
+                    'error',
+                    'Import gagal: ' .
+                    $e->getMessage()
+                );
+        }
     }
-}
+
+
     /*
     |--------------------------------------------------------------------------
     | DESTROY
@@ -542,22 +654,59 @@ private function generateAssetId(string $jenisBarang): string
         }
 
 
-        DB::transaction(function () use ($hardwareRecord) {
+        /*
+        |--------------------------------------------------------------------------
+        | PENGAJUAN HAPUS + NOTIFIKASI
+        |--------------------------------------------------------------------------
+        */
 
+        DB::transaction(function () use (
+            $hardwareRecord
+        ) {
+
+            /*
+             * Buat request verifikasi penghapusan.
+             */
             VerificationRequest::create([
 
-                'module' => 'hardware',
+                'module' =>
+                    'hardware',
 
-                'record_id' => $hardwareRecord->asset_id,
+                'record_id' =>
+                    $hardwareRecord->asset_id,
 
-                'action' => 'delete',
+                'action' =>
+                    'delete',
 
-                'data' => $hardwareRecord->toArray(),
+                'data' =>
+                    $hardwareRecord->toArray(),
 
-                'status' => 'menunggu',
+                'status' =>
+                    'menunggu',
 
-                'submitted_by' => auth()->id(),
+                'submitted_by' =>
+                    auth()->id(),
+            ]);
 
+
+            /*
+             * Buat notifikasi.
+             */
+            Notification::create([
+
+                'judul' =>
+                    'Pengajuan Penghapusan Hardware',
+
+                'pesan' =>
+                    auth()->user()->username .
+                    ' mengajukan penghapusan hardware "' .
+                    $hardwareRecord->nama_barang .
+                    '" dengan ID ' .
+                    $hardwareRecord->asset_id .
+                    ' untuk persetujuan verifikator.',
+
+                'dibaca' =>
+                    false,
             ]);
         });
 

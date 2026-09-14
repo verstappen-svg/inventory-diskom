@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use App\Models\Jaringan;
+use App\Models\Notification;
 use App\Models\VerificationRequest;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
@@ -278,10 +279,6 @@ class JaringanController extends Controller
         // ========================================================
         // DEFAULT VERIFIKASI
         // ========================================================
-        //
-        // Komentar TIDAK diisi di sini.
-        // Komentar hanya untuk verifikator.
-        //
 
         $validated['verifikasi'] = 'menunggu';
 
@@ -317,6 +314,24 @@ class JaringanController extends Controller
                 'status' => 'menunggu',
                 'submitted_by' => auth()->id(),
             ]);
+
+            // ----------------------------------------------------
+            // NOTIFIKASI
+            // ----------------------------------------------------
+
+            Notification::create([
+                'judul' => 'Pengajuan Jaringan Baru',
+                'pesan' =>
+                    auth()->user()->username .
+                    ' menambahkan jaringan "' .
+                    $jaringan->jenis_data .
+                    '" di lokasi "' .
+                    $jaringan->lokasi .
+                    '" dengan ID ' .
+                    $jaringan->id .
+                    ' dan mengajukannya untuk persetujuan.',
+                'dibaca' => false,
+            ]);
         });
 
         // ========================================================
@@ -350,10 +365,6 @@ class JaringanController extends Controller
         // ========================================================
         // JENIS DATA TIDAK BOLEH BERUBAH
         // ========================================================
-        //
-        // FO-001 harus tetap Jalur Kabel FO.
-        // LL-001 harus tetap Local Loop Sewa.
-        //
 
         if (
             $request->input('jenis_data') !==
@@ -470,10 +481,6 @@ class JaringanController extends Controller
             // ----------------------------------------------------
             // UPDATE DATA JARINGAN
             // ----------------------------------------------------
-            //
-            // Komentar TIDAK diubah.
-            // Komentar adalah milik verifikator.
-            //
 
             $jaringan->update([
                 'jenis_data' => $validated['jenis_data'],
@@ -498,23 +505,29 @@ class JaringanController extends Controller
                 'status' => 'menunggu',
                 'submitted_by' => auth()->id(),
             ]);
+
+            // ----------------------------------------------------
+            // NOTIFIKASI
+            // ----------------------------------------------------
+
+            Notification::create([
+                'judul' => 'Perubahan Jaringan Diajukan',
+                'pesan' =>
+                    auth()->user()->username .
+                    ' memperbarui jaringan "' .
+                    $jaringan->jenis_data .
+                    '" di lokasi "' .
+                    $jaringan->lokasi .
+                    '" dengan ID ' .
+                    $jaringan->id .
+                    ' dan mengajukannya kembali untuk persetujuan.',
+                'dibaca' => false,
+            ]);
         });
 
         // ========================================================
         // REDIRECT
         // ========================================================
-
-        Notification::create([
-            'judul' => 'Perubahan Jaringan Diajukan',
-            'pesan' =>
-                $request->user()->username .
-                ' memperbarui jaringan "' .
-                $jaringan->nama_infrastruktur .
-                '" dengan ID ' .
-                $jaringan->id .
-                ' dan mengajukannya kembali untuk persetujuan.',
-            'dibaca' => false,
-        ]);
 
         return redirect()
             ->route('jaringan.index')
@@ -541,18 +554,25 @@ class JaringanController extends Controller
 
         $jaringan = Jaringan::findOrFail($id);
 
+        // Simpan informasi sebelum proses transaksi
+        $jenisData = $jaringan->jenis_data;
+        $lokasi = $jaringan->lokasi;
+        $idJaringan = $jaringan->id;
+
         // ========================================================
         // TRANSACTION
         // ========================================================
 
-        DB::transaction(function () use ($jaringan) {
+        DB::transaction(function () use (
+            $jaringan,
+            $jenisData,
+            $lokasi,
+            $idJaringan
+        ) {
 
             // ----------------------------------------------------
             // TANDAI MENUNGGU VERIFIKASI
             // ----------------------------------------------------
-            //
-            // Komentar tidak diubah.
-            //
 
             $jaringan->update([
                 'verifikasi' => 'menunggu',
@@ -570,23 +590,29 @@ class JaringanController extends Controller
                 'status' => 'menunggu',
                 'submitted_by' => auth()->id(),
             ]);
+
+            // ----------------------------------------------------
+            // NOTIFIKASI
+            // ----------------------------------------------------
+
+            Notification::create([
+                'judul' => 'Penghapusan Jaringan Diajukan',
+                'pesan' =>
+                    auth()->user()->username .
+                    ' mengajukan penghapusan jaringan "' .
+                    $jenisData .
+                    '" di lokasi "' .
+                    $lokasi .
+                    '" dengan ID ' .
+                    $idJaringan .
+                    ' untuk persetujuan verifikator.',
+                'dibaca' => false,
+            ]);
         });
 
         // ========================================================
         // REDIRECT
         // ========================================================
-
-        Notification::create([
-            'judul' => 'Penghapusan Jaringan Diajukan',
-            'pesan' =>
-                $username .
-                ' mengajukan penghapusan jaringan "' .
-                $namaJaringan .
-                '" dengan ID ' .
-                $idJaringan .
-                ' untuk persetujuan verifikator.',
-            'dibaca' => false,
-        ]);
 
         return redirect()
             ->route('jaringan.index')
