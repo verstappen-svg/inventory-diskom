@@ -1,470 +1,370 @@
-{{-- =========================================================
-     MODAL TAMBAH SOFTWARE
-     File ini adalah PARTIAL.
-     JANGAN gunakan @extends / @section / @endsection.
-========================================================= --}}
-
 <style>
     /* =========================================================
-       MODAL OVERLAY
+       SOFTWARE CREATE MODAL
     ========================================================= */
 
-    #software-modal {
+    .software-create-wrapper {
         position: fixed;
         inset: 0;
         z-index: 9999;
+        background: rgba(15, 23, 42, 0.58);
 
+        /* PENTING:
+           Modal tidak muncul otomatis saat halaman Software dibuka */
         display: none;
 
         align-items: center;
         justify-content: center;
-
-        padding: 30px;
-
-        background: rgba(15, 23, 42, 0.55);
-
+        padding: 24px;
         overflow-y: auto;
     }
 
-    #software-modal.show {
+    .software-create-wrapper.show {
         display: flex;
     }
 
-    body.software-modal-open {
-        overflow: hidden;
-    }
-
-    /* =========================================================
-       MODAL BOX
-    ========================================================= */
-
-    .software-modal-box {
-        position: relative;
-
+    .software-create-modal {
         width: 100%;
-        max-width: 1050px;
-
-        max-height: calc(100vh - 60px);
-
+        max-width: 980px;
+        max-height: calc(100vh - 48px);
+        overflow-y: auto;
         background: #ffffff;
-
-        border-radius: 16px;
-
-        box-shadow:
-            0 20px 50px rgba(0, 0, 0, 0.20);
-
-        overflow: hidden;
-
-        animation: softwareModalShow 0.2s ease;
-    }
-
-    @keyframes softwareModalShow {
-        from {
-            opacity: 0;
-            transform: translateY(10px) scale(0.98);
-        }
-
-        to {
-            opacity: 1;
-            transform: translateY(0) scale(1);
-        }
+        border-radius: 18px;
+        box-shadow: 0 25px 70px rgba(0, 0, 0, 0.25);
     }
 
     /* =========================================================
-       MODAL HEADER
+       HEADER
     ========================================================= */
 
-    .software-modal-header {
+    .software-create-header {
         display: flex;
         align-items: center;
         justify-content: space-between;
-
-        padding: 20px 24px;
-
+        padding: 22px 28px;
         border-bottom: 1px solid #e5e7eb;
-
+        position: sticky;
+        top: 0;
+        z-index: 5;
         background: #ffffff;
     }
 
-    .software-modal-header-left {
-        display: flex;
-        align-items: center;
-        gap: 12px;
-    }
-
-    .software-modal-header-icon {
-        width: 40px;
-        height: 40px;
-
-        display: flex;
-        align-items: center;
-        justify-content: center;
-
-        border-radius: 10px;
-
-        background: #e0f2fe;
-        color: #075985;
-
-        font-size: 18px;
-    }
-
-    .software-modal-title {
+    .software-create-header-left h2 {
         margin: 0;
-
-        font-size: 17px;
+        font-size: 21px;
         font-weight: 700;
+        color: #111827;
+    }
 
+    .software-create-header-left p {
+        margin: 5px 0 0;
+        font-size: 13px;
+        color: #6b7280;
+    }
+
+    .software-create-close {
+        width: 36px;
+        height: 36px;
+        border: 0;
+        border-radius: 9px;
+        background: #f3f4f6;
+        color: #4b5563;
+        font-size: 22px;
+        line-height: 36px;
+        text-align: center;
+        cursor: pointer;
+        transition: .2s;
+    }
+
+    .software-create-close:hover {
+        background: #e5e7eb;
+        color: #111827;
+    }
+
+    /* =========================================================
+       BODY
+    ========================================================= */
+
+    .software-create-body {
+        padding: 26px 28px 28px;
+    }
+
+    .software-form-section {
+        margin-bottom: 26px;
+    }
+
+    .software-form-section:last-child {
+        margin-bottom: 0;
+    }
+
+    .software-section-title {
+        margin-bottom: 16px;
+        font-size: 15px;
+        font-weight: 700;
         color: #1f2937;
     }
 
-    .software-modal-subtitle {
-        margin: 3px 0 0;
-
-        font-size: 11px;
-
-        color: #9ca3af;
+    .software-form-grid {
+        display: grid;
+        grid-template-columns: repeat(2, minmax(0, 1fr));
+        gap: 17px 20px;
     }
 
-    .software-modal-close {
-        width: 34px;
-        height: 34px;
-
-        display: inline-flex;
-        align-items: center;
-        justify-content: center;
-
-        border: none;
-        border-radius: 8px;
-
-        background: #f3f4f6;
-
-        color: #6b7280;
-
-        font-size: 17px;
-
-        cursor: pointer;
-
-        transition: 0.2s ease;
+    .software-form-group {
+        min-width: 0;
     }
 
-    .software-modal-close:hover {
-        background: #fee2e2;
+    .software-form-group.full {
+        grid-column: 1 / -1;
+    }
+
+    .software-form-group label {
+        display: block;
+        margin-bottom: 7px;
+        font-size: 13px;
+        font-weight: 600;
+        color: #374151;
+    }
+
+    .required-mark {
         color: #dc2626;
     }
 
-    /* =========================================================
-       MODAL BODY
-    ========================================================= */
-
-    .software-modal-body {
-        max-height: calc(100vh - 155px);
-
-        padding: 24px;
-
-        overflow-y: auto;
-    }
-
-    /* =========================================================
-       FORM
-    ========================================================= */
-
-    .software-form-wrapper {
+    .software-input,
+    .software-select,
+    .software-textarea {
         width: 100%;
-    }
-
-    .form-card {
-        background: white;
-
-        border: 1px solid #e5e7eb;
-
-        border-radius: 14px;
-
-        padding: 24px;
-
-        margin-bottom: 18px;
-
-        box-shadow: 0 2px 6px rgba(0, 0, 0, .03);
-    }
-
-    .card-title {
-        display: flex;
-        align-items: center;
-
-        gap: 9px;
-
-        padding-bottom: 17px;
-
-        margin-bottom: 20px;
-
-        border-bottom: 1px solid #eef0f3;
-
-        color: #075985;
-
-        font-size: 15px;
-        font-weight: 700;
-    }
-
-    .card-title i {
-        font-size: 17px;
-    }
-
-    .form-grid {
-        display: grid;
-
-        grid-template-columns:
-            repeat(2, minmax(0, 1fr));
-
-        gap: 20px;
-    }
-
-    .form-group {
-        display: flex;
-        flex-direction: column;
-
-        gap: 7px;
-    }
-
-    .form-group label {
-        font-size: 12px;
-        font-weight: 600;
-
-        color: #374151;
-    }
-
-    .required {
-        color: #ef4444;
-    }
-
-    .form-group input,
-    .form-group select {
-        width: 100%;
-
-        height: 40px;
-
-        padding: 0 12px;
-
-        border: 1px solid #d1d5db;
-
-        border-radius: 8px;
-
-        outline: none;
-
-        background: white;
-
-        color: #374151;
-
-        font-size: 12px;
-
         box-sizing: border-box;
+        border: 1px solid #d1d5db;
+        border-radius: 9px;
+        background: #ffffff;
+        color: #111827;
+        font-family: inherit;
+        font-size: 13px;
+        outline: none;
+        transition: .2s;
     }
 
-    .form-group input:focus,
-    .form-group select:focus {
-        border-color: #079bd8;
+    .software-input,
+    .software-select {
+        height: 42px;
+        padding: 0 12px;
+    }
 
-        box-shadow:
-            0 0 0 3px rgba(7, 155, 216, .10);
+    .software-textarea {
+        min-height: 110px;
+        padding: 11px 12px;
+        resize: vertical;
+    }
+
+    .software-input:focus,
+    .software-select:focus,
+    .software-textarea:focus {
+        border-color: #2563eb;
+        box-shadow: 0 0 0 3px rgba(37, 99, 235, .10);
+    }
+
+    .software-input::placeholder,
+    .software-textarea::placeholder {
+        color: #9ca3af;
+    }
+
+    .software-input.error,
+    .software-select.error,
+    .software-textarea.error {
+        border-color: #ef4444;
+    }
+
+    .field-error {
+        margin-top: 5px;
+        color: #dc2626;
+        font-size: 11px;
     }
 
     /* =========================================================
-       PREFIX HARGA
+       SSL
     ========================================================= */
 
-    .input-prefix {
-        display: flex;
-
-        height: 40px;
-
-        border: 1px solid #d1d5db;
-
-        border-radius: 8px;
-
-        overflow: hidden;
-
-        background: white;
+    .ssl-select-wrapper {
+        position: relative;
     }
 
-    .input-prefix span {
-        display: flex;
-
-        align-items: center;
-
-        padding: 0 12px;
-
-        background: #f5f6fa;
-
-        border-right: 1px solid #d1d5db;
-
-        color: #6b7280;
-
+    .ssl-expire-info {
+        display: none;
+        margin-top: 7px;
+        padding: 8px 11px;
+        border-radius: 8px;
+        background: #eff6ff;
+        border: 1px solid #dbeafe;
+        color: #1d4ed8;
         font-size: 12px;
     }
 
-    .input-prefix input {
-        height: 100%;
-
-        border: none;
-
-        border-radius: 0;
-
-        box-shadow: none;
-    }
-
-    .input-prefix input:focus {
-        box-shadow: none;
-    }
-
-    /* =========================================================
-       PERIODE SEWA
-    ========================================================= */
-
-    #sewa-section {
-        display: none;
-
-        margin-top: 20px;
-
-        padding: 20px;
-
-        background: #f8fafc;
-
-        border: 1px solid #e2e8f0;
-
-        border-radius: 10px;
-    }
-
-    #sewa-section.show {
+    .ssl-expire-info.show {
         display: block;
     }
 
-    .sewa-title {
-        display: flex;
-        align-items: center;
-
-        gap: 8px;
-
-        margin-bottom: 15px;
-
-        color: #075985;
-
-        font-size: 12px;
-        font-weight: 700;
+    .ssl-expire-info.warning {
+        background: #fffbeb;
+        border-color: #fde68a;
+        color: #b45309;
     }
 
-    .sewa-grid {
-        display: grid;
-
-        grid-template-columns:
-            1fr 1fr;
-
-        gap: 20px;
+    .ssl-expire-info.expired {
+        background: #fef2f2;
+        border-color: #fecaca;
+        color: #b91c1c;
     }
 
     /* =========================================================
-       CUSTOM PERIODE
+       IP
     ========================================================= */
 
-    #custom-period {
-        display: none;
-
-        grid-template-columns:
-            1fr 1fr;
-
-        gap: 20px;
-
-        margin-top: 15px;
-
-        padding-top: 15px;
-
-        border-top: 1px dashed #cbd5e1;
-    }
-
-    #custom-period.show {
-        display: grid;
-    }
-
-    /* =========================================================
-       INFO & ERROR
-    ========================================================= */
-
-    .form-info {
-        font-size: 10px;
-
-        line-height: 1.5;
-
-        color: #94a3b8;
-    }
-
-    .error-message {
-        color: #ef4444;
-
-        font-size: 10px;
-    }
-
-    /* =========================================================
-       ACTION
-    ========================================================= */
-
-    .form-actions {
-        display: flex;
-
-        justify-content: flex-end;
-
-        gap: 10px;
-
+    .ip-hint {
         margin-top: 5px;
-
-        margin-bottom: 5px;
+        font-size: 11px;
+        color: #9ca3af;
     }
 
-    .btn-cancel,
-    .btn-save {
-        height: 40px;
+    /* =========================================================
+       CIA
+    ========================================================= */
 
-        padding: 0 18px;
-
-        display: inline-flex;
-
-        align-items: center;
-
-        justify-content: center;
-
-        gap: 7px;
-
-        border-radius: 8px;
-
-        font-size: 12px;
-
-        font-weight: 600;
-
-        text-decoration: none;
-
-        cursor: pointer;
+    .cia-grid {
+        display: grid;
+        grid-template-columns: repeat(3, minmax(0, 1fr));
+        gap: 14px;
     }
 
-    .btn-cancel {
-        background: white;
+    .cia-card {
+        padding: 14px;
+        border: 1px solid #e5e7eb;
+        border-radius: 10px;
+        background: #f9fafb;
+    }
 
-        border: 1px solid #d1d5db;
+    .cia-card label {
+        margin-bottom: 7px;
+    }
 
+    .cia-description {
+        margin-top: 5px;
+        font-size: 10px;
+        color: #9ca3af;
+    }
+
+    /* =========================================================
+       NILAI
+    ========================================================= */
+
+    .nilai-preview {
+        display: flex;
+        gap: 12px;
+        align-items: stretch;
+    }
+
+    .nilai-box {
+        flex: 1;
+        padding: 13px 15px;
+        border-radius: 10px;
+        border: 1px solid #dbeafe;
+        background: #eff6ff;
+    }
+
+    .nilai-box-label {
+        font-size: 11px;
         color: #6b7280;
+        margin-bottom: 3px;
     }
 
-    .btn-cancel:hover {
-        background: #f8fafc;
+    .nilai-box-value {
+        font-size: 20px;
+        font-weight: 700;
+        color: #1d4ed8;
+    }
 
+    .keterangan-box {
+        flex: 1;
+        padding: 13px 15px;
+        border-radius: 10px;
+        border: 1px solid #e5e7eb;
+        background: #f9fafb;
+    }
+
+    .keterangan-box-label {
+        font-size: 11px;
+        color: #6b7280;
+        margin-bottom: 3px;
+    }
+
+    .keterangan-box-value {
+        font-size: 15px;
+        font-weight: 700;
         color: #374151;
     }
 
-    .btn-save {
-        border: none;
+    /* =========================================================
+       FOOTER
+    ========================================================= */
 
-        background: #079bd8;
-
-        color: white;
+    .software-create-footer {
+        display: flex;
+        align-items: center;
+        justify-content: flex-end;
+        gap: 10px;
+        padding: 18px 28px;
+        border-top: 1px solid #e5e7eb;
+        background: #ffffff;
+        position: sticky;
+        bottom: 0;
+        z-index: 5;
     }
 
-    .btn-save:hover {
-        background: #075985;
+    .software-btn-cancel,
+    .software-btn-save {
+        height: 40px;
+        padding: 0 17px;
+        border-radius: 9px;
+        font-size: 13px;
+        font-weight: 600;
+        cursor: pointer;
+        font-family: inherit;
+    }
+
+    .software-btn-cancel {
+        border: 1px solid #d1d5db;
+        background: #ffffff;
+        color: #374151;
+    }
+
+    .software-btn-cancel:hover {
+        background: #f9fafb;
+    }
+
+    .software-btn-save {
+        border: 0;
+        background: #2563eb;
+        color: #ffffff;
+    }
+
+    .software-btn-save:hover {
+        background: #1d4ed8;
+    }
+
+    /* =========================================================
+       MASTER INFO
+    ========================================================= */
+
+    .master-info {
+        margin-top: 6px;
+        font-size: 11px;
+        color: #9ca3af;
+    }
+
+    .master-info a {
+        color: #2563eb;
+        text-decoration: none;
+        font-weight: 600;
     }
 
     /* =========================================================
@@ -473,353 +373,641 @@
 
     @media (max-width: 700px) {
 
-        #software-modal {
+        .software-create-wrapper {
             padding: 10px;
         }
 
-        .software-modal-box {
+        .software-create-modal {
             max-height: calc(100vh - 20px);
-
-            border-radius: 12px;
+            border-radius: 14px;
         }
 
-        .software-modal-body {
-            max-height: calc(100vh - 105px);
-
-            padding: 15px;
+        .software-create-header {
+            padding: 17px 18px;
         }
 
-        .form-grid,
-        .sewa-grid,
-        #custom-period {
+        .software-create-body {
+            padding: 20px 18px;
+        }
+
+        .software-form-grid {
             grid-template-columns: 1fr;
         }
 
-        .software-modal-header {
-            padding: 15px;
+        .software-form-group.full {
+            grid-column: auto;
         }
 
-        .form-card {
-            padding: 18px;
+        .cia-grid {
+            grid-template-columns: 1fr;
+        }
+
+        .nilai-preview {
+            flex-direction: column;
+        }
+
+        .software-create-footer {
+            padding: 15px 18px;
+        }
+
+        .software-btn-cancel,
+        .software-btn-save {
+            flex: 1;
         }
     }
 </style>
 
 
 {{-- =========================================================
-     MODAL
+     MODAL TAMBAH SOFTWARE
 ========================================================= --}}
 
 <div
-    id="software-modal"
+    class="software-create-wrapper"
+    id="softwareCreateModal"
     aria-hidden="true"
 >
 
-    <div class="software-modal-box">
+    <div
+        class="software-create-modal"
+        role="dialog"
+        aria-modal="true"
+        aria-labelledby="softwareCreateTitle"
+    >
 
-        {{-- =================================================
-             HEADER MODAL
-        ================================================== --}}
+        {{-- =====================================================
+             HEADER
+        ====================================================== --}}
 
-        <div class="software-modal-header">
+        <div class="software-create-header">
 
-            <div class="software-modal-header-left">
+            <div class="software-create-header-left">
 
-                <div class="software-modal-header-icon">
-                    <i class="bi bi-box"></i>
-                </div>
+                <h2 id="softwareCreateTitle">
+                    Tambah Software
+                </h2>
 
-                <div>
-
-                    <h2 class="software-modal-title">
-                        Tambah Software
-                    </h2>
-
-                    <p class="software-modal-subtitle">
-                        Tambahkan data software ke dalam inventory.
-                    </p>
-
-                </div>
+                <p>
+                    Tambahkan data aplikasi/software ke dalam inventory.
+                </p>
 
             </div>
 
             <button
                 type="button"
-                class="software-modal-close"
-                onclick="closeSoftwareModal()"
+                class="software-create-close"
+                onclick="closeSoftwareCreateModal()"
                 aria-label="Tutup"
             >
-                <i class="bi bi-x-lg"></i>
+                ×
             </button>
 
         </div>
 
 
-        {{-- =================================================
-             BODY MODAL
-        ================================================== --}}
+        {{-- =====================================================
+             FORM
+        ====================================================== --}}
 
-        <div class="software-modal-body">
+        <form
+            action="{{ route('software.store') }}"
+            method="POST"
+            id="softwareCreateForm"
+        >
 
-            <div class="software-form-wrapper">
+            @csrf
 
-                <form
-                    action="{{ route('software.store') }}"
-                    method="POST"
-                    id="software-form"
-                >
+            <div class="software-create-body">
 
-                    @csrf
+                {{-- =================================================
+                     INFORMASI SOFTWARE
+                ================================================== --}}
 
+                <div class="software-form-section">
 
-                    {{-- =====================================
-                         INFORMASI SOFTWARE
-                    ====================================== --}}
-
-                    <div class="form-card">
-
-                        <div class="card-title">
-
-                            <i class="bi bi-box"></i>
-
-                            <span>
-                                Informasi Software
-                            </span>
-
-                        </div>
-
-
-                        <div class="form-grid">
-
-                            {{-- JENIS --}}
-
-                            <div class="form-group">
-
-                                <label for="jenis">
-
-                                    Jenis Software
-
-                                    <span class="required">
-                                        *
-                                    </span>
-
-                                </label>
-
-                                <input
-                                    type="text"
-                                    id="jenis"
-                                    name="jenis"
-                                    value="{{ old('jenis') }}"
-                                    placeholder="Contoh: Adobe Creative Cloud"
-                                    required
-                                >
-
-                                @error('jenis')
-                                    <small class="error-message">
-                                        {{ $message }}
-                                    </small>
-                                @enderror
-
-                            </div>
-
-
-                            {{-- SPESIFIKASI --}}
-
-                            <div class="form-group">
-
-                                <label for="spesifikasi">
-                                    Spesifikasi
-                                </label>
-
-                                <input
-                                    type="text"
-                                    id="spesifikasi"
-                                    name="spesifikasi"
-                                    value="{{ old('spesifikasi') }}"
-                                    placeholder="Contoh: Premium, Business, Enterprise"
-                                >
-
-                                @error('spesifikasi')
-                                    <small class="error-message">
-                                        {{ $message }}
-                                    </small>
-                                @enderror
-
-                            </div>
-
-
-                            {{-- JUMLAH LISENSI --}}
-
-                            <div class="form-group">
-
-                                <label for="jumlah_lisensi">
-
-                                    Jumlah Lisensi
-
-                                    <span class="required">
-                                        *
-                                    </span>
-
-                                </label>
-
-                                <input
-                                    type="number"
-                                    id="jumlah_lisensi"
-                                    name="jumlah_lisensi"
-                                    value="{{ old('jumlah_lisensi', 1) }}"
-                                    min="1"
-                                    required
-                                >
-
-                                @error('jumlah_lisensi')
-                                    <small class="error-message">
-                                        {{ $message }}
-                                    </small>
-                                @enderror
-
-                            </div>
-
-                        </div>
-
+                    <div class="software-section-title">
+                        Informasi Software
                     </div>
 
+                    <div class="software-form-grid">
 
-                    {{-- =====================================
-                         PENGADAAN
-                    ====================================== --}}
+                        {{-- NAMA ASET --}}
 
-                    <div class="form-card">
+                        <div class="software-form-group full">
 
-                        <div class="card-title">
+                            <label for="nama_aset">
+                                Nama Aset / Nama Software
+                                <span class="required-mark">*</span>
+                            </label>
 
-                            <i class="bi bi-cart-check"></i>
+                            <input
+                                type="text"
+                                id="nama_aset"
+                                name="nama_aset"
+                                class="software-input @error('nama_aset') error @enderror"
+                                value="{{ old('nama_aset') }}"
+                                placeholder="Masukkan nama aplikasi/software"
+                                required
+                            >
 
-                            <span>
-                                Pengadaan
-                            </span>
+                            @error('nama_aset')
+                                <div class="field-error">
+                                    {{ $message }}
+                                </div>
+                            @enderror
 
                         </div>
 
 
-                        <div class="form-grid">
+                        {{-- KATEGORI --}}
 
-                            {{-- PENGADAAN --}}
+                        <div class="software-form-group">
 
-                            <div class="form-group">
+                            <label for="kategori_id">
+                                Kategori
+                                <span class="required-mark">*</span>
+                            </label>
 
-                                <label for="pengadaan">
+                            <select
+                                id="kategori_id"
+                                name="kategori_id"
+                                class="software-select @error('kategori_id') error @enderror"
+                                required
+                            >
 
-                                    Pengadaan
+                                <option value="">
+                                    Pilih Kategori
+                                </option>
 
-                                    <span class="required">
-                                        *
-                                    </span>
+                                @foreach($kategoriOptions as $kategori)
 
-                                </label>
+                                    <option
+                                        value="{{ $kategori->id }}"
+                                        {{ old('kategori_id') == $kategori->id ? 'selected' : '' }}
+                                    >
+                                        {{ $kategori->nama }}
+                                    </option>
+
+                                @endforeach
+
+                            </select>
+
+                            <div class="master-info">
+                                Data berasal dari
+                                <a href="{{ route('software.master.index') }}">
+                                    Data Master
+                                </a>
+                            </div>
+
+                            @error('kategori_id')
+                                <div class="field-error">
+                                    {{ $message }}
+                                </div>
+                            @enderror
+
+                        </div>
+
+
+                        {{-- SSL --}}
+
+                        <div class="software-form-group">
+
+                            <label for="ssl_id">
+                                SSL
+                                <span class="required-mark">*</span>
+                            </label>
+
+                            <div class="ssl-select-wrapper">
 
                                 <select
-                                    id="pengadaan"
-                                    name="pengadaan"
+                                    id="ssl_id"
+                                    name="ssl_id"
+                                    class="software-select @error('ssl_id') error @enderror"
                                     required
                                 >
 
                                     <option value="">
-                                        Pilih Pengadaan
+                                        Pilih SSL
                                     </option>
 
-                                    <option
-                                        value="Sewa"
-                                        {{ old('pengadaan') === 'Sewa' ? 'selected' : '' }}
-                                    >
-                                        Sewa
-                                    </option>
+                                    @foreach($sslOptions as $ssl)
+
+                                        <option
+                                            value="{{ $ssl->id }}"
+                                            data-expire="{{ $ssl->tanggal_expire ? $ssl->tanggal_expire->format('Y-m-d') : '' }}"
+                                            data-name="{{ $ssl->nama_ssl }}"
+                                            {{ old('ssl_id') == $ssl->id ? 'selected' : '' }}
+                                        >
+                                            {{ $ssl->nama_ssl }}
+                                        </option>
+
+                                    @endforeach
+
+                                </select>
+
+                                <div
+                                    id="sslExpireInfo"
+                                    class="ssl-expire-info"
+                                ></div>
+
+                            </div>
+
+                            <div class="master-info">
+                                SSL dikelola melalui
+                                <a href="{{ route('software.master.index') }}">
+                                    Data Master
+                                </a>
+                            </div>
+
+                            @error('ssl_id')
+                                <div class="field-error">
+                                    {{ $message }}
+                                </div>
+                            @enderror
+
+                        </div>
+
+
+                        {{-- URL HOMEPAGE --}}
+
+                        <div class="software-form-group full">
+
+                            <label for="url_homepage">
+                                URL Homepage
+                            </label>
+
+                            <input
+                                type="url"
+                                id="url_homepage"
+                                name="url_homepage"
+                                class="software-input @error('url_homepage') error @enderror"
+                                value="{{ old('url_homepage') }}"
+                                placeholder="https://contoh.bekasikota.go.id"
+                            >
+
+                            @error('url_homepage')
+                                <div class="field-error">
+                                    {{ $message }}
+                                </div>
+                            @enderror
+
+                        </div>
+
+
+                        {{-- IP PUBLIC --}}
+
+                        <div class="software-form-group">
+
+                            <label for="ip_public">
+                                IP Public
+                            </label>
+
+                            <input
+                                type="text"
+                                id="ip_public"
+                                name="ip_public"
+                                class="software-input @error('ip_public') error @enderror"
+                                value="{{ old('ip_public') }}"
+                                placeholder="Contoh: 103.123.45.67"
+                                inputmode="decimal"
+                                autocomplete="off"
+                            >
+
+                            <div class="ip-hint">
+                                Hanya menerima alamat IPv4/IPv6 yang valid.
+                            </div>
+
+                            @error('ip_public')
+                                <div class="field-error">
+                                    {{ $message }}
+                                </div>
+                            @enderror
+
+                        </div>
+
+
+                        {{-- IP PRIVATE --}}
+
+                        <div class="software-form-group">
+
+                            <label for="ip_private">
+                                IP Private
+                            </label>
+
+                            <input
+                                type="text"
+                                id="ip_private"
+                                name="ip_private"
+                                class="software-input @error('ip_private') error @enderror"
+                                value="{{ old('ip_private') }}"
+                                placeholder="Contoh: 192.168.1.10"
+                                inputmode="decimal"
+                                autocomplete="off"
+                            >
+
+                            <div class="ip-hint">
+                                Hanya menerima alamat IP yang valid.
+                            </div>
+
+                            @error('ip_private')
+                                <div class="field-error">
+                                    {{ $message }}
+                                </div>
+                            @enderror
+
+                        </div>
+
+                    </div>
+
+                </div>
+
+
+                {{-- =================================================
+                     SERVER / HOSTING
+                ================================================== --}}
+
+                <div class="software-form-section">
+
+                    <div class="software-section-title">
+                        Server & Hosting
+                    </div>
+
+                    <div class="software-form-grid">
+
+                        {{-- HOSTING --}}
+
+                        <div class="software-form-group">
+
+                            <label for="hosting_id">
+                                Hosting
+                                <span class="required-mark">*</span>
+                            </label>
+
+                            <select
+                                id="hosting_id"
+                                name="hosting_id"
+                                class="software-select @error('hosting_id') error @enderror"
+                                required
+                            >
+
+                                <option value="">
+                                    Pilih Hosting
+                                </option>
+
+                                @foreach($hostingOptions as $hosting)
 
                                     <option
-                                        value="Beli"
-                                        {{ old('pengadaan') === 'Beli' ? 'selected' : '' }}
+                                        value="{{ $hosting->id }}"
+                                        {{ old('hosting_id') == $hosting->id ? 'selected' : '' }}
                                     >
-                                        Beli
+                                        {{ $hosting->nama }}
+                                    </option>
+
+                                @endforeach
+
+                            </select>
+
+                            <div class="master-info">
+                                Data berasal dari
+                                <a href="{{ route('software.master.index') }}">
+                                    Data Master
+                                </a>
+                            </div>
+
+                            @error('hosting_id')
+                                <div class="field-error">
+                                    {{ $message }}
+                                </div>
+                            @enderror
+
+                        </div>
+
+
+                        {{-- STATUS --}}
+
+                        <div class="software-form-group">
+
+                            <label for="status">
+                                Status
+                                <span class="required-mark">*</span>
+                            </label>
+
+                            <select
+                                id="status"
+                                name="status"
+                                class="software-select @error('status') error @enderror"
+                                required
+                            >
+
+                                <option value="">
+                                    Pilih Status
+                                </option>
+
+                                <option
+                                    value="Aktif"
+                                    {{ old('status') === 'Aktif' ? 'selected' : '' }}
+                                >
+                                    Aktif
+                                </option>
+
+                                <option
+                                    value="Tidak Aktif"
+                                    {{ old('status') === 'Tidak Aktif' ? 'selected' : '' }}
+                                >
+                                    Tidak Aktif
+                                </option>
+
+                            </select>
+
+                            @error('status')
+                                <div class="field-error">
+                                    {{ $message }}
+                                </div>
+                            @enderror
+
+                        </div>
+
+                    </div>
+
+                </div>
+
+
+                {{-- =================================================
+                     PIC
+                ================================================== --}}
+
+                <div class="software-form-section">
+
+                    <div class="software-section-title">
+                        Penanggung Jawab
+                    </div>
+
+                    <div class="software-form-grid">
+
+                        <div class="software-form-group">
+
+                            <label for="pic_id">
+                                PIC
+                                <span class="required-mark">*</span>
+                            </label>
+
+                            <select
+                                id="pic_id"
+                                name="pic_id"
+                                class="software-select @error('pic_id') error @enderror"
+                                required
+                            >
+
+                                <option value="">
+                                    Pilih PIC
+                                </option>
+
+                                @foreach($picOptions as $pic)
+
+                                    <option
+                                        value="{{ $pic->id }}"
+                                        {{ old('pic_id') == $pic->id ? 'selected' : '' }}
+                                    >
+                                        {{ $pic->nama }}
+                                    </option>
+
+                                @endforeach
+
+                            </select>
+
+                            <div class="master-info">
+                                Data berasal dari
+                                <a href="{{ route('software.master.index') }}">
+                                    Data Master
+                                </a>
+                            </div>
+
+                            @error('pic_id')
+                                <div class="field-error">
+                                    {{ $message }}
+                                </div>
+                            @enderror
+
+                        </div>
+
+                    </div>
+
+                </div>
+
+
+                {{-- =================================================
+                     CIA
+                ================================================== --}}
+
+                <div class="software-form-section">
+
+                    <div class="software-section-title">
+                        Penilaian CIA
+                    </div>
+
+                    <div class="cia-grid">
+
+                        {{-- KERAHASIAAN --}}
+
+                        <div class="cia-card">
+
+                            <div class="software-form-group">
+
+                                <label for="kerahasiaan">
+                                    Kerahasiaan
+                                    <span class="required-mark">*</span>
+                                </label>
+
+                                <select
+                                    id="kerahasiaan"
+                                    name="kerahasiaan"
+                                    class="software-select @error('kerahasiaan') error @enderror"
+                                    required
+                                >
+
+                                    <option value="">
+                                        Pilih Nilai
+                                    </option>
+
+                                    <option value="1"
+                                        {{ old('kerahasiaan') == '1' ? 'selected' : '' }}>
+                                        1
+                                    </option>
+
+                                    <option value="2"
+                                        {{ old('kerahasiaan') == '2' ? 'selected' : '' }}>
+                                        2
+                                    </option>
+
+                                    <option value="3"
+                                        {{ old('kerahasiaan') == '3' ? 'selected' : '' }}>
+                                        3
                                     </option>
 
                                 </select>
 
-                                @error('pengadaan')
-                                    <small class="error-message">
-                                        {{ $message }}
-                                    </small>
-                                @enderror
-
-                            </div>
-
-
-                            {{-- HARGA --}}
-
-                            <div class="form-group">
-
-                                <label for="harga">
-
-                                    Harga
-
-                                    <span class="required">
-                                        *
-                                    </span>
-
-                                </label>
-
-                                <div class="input-prefix">
-
-                                    <span>
-                                        Rp
-                                    </span>
-
-                                    <input
-                                        type="number"
-                                        id="harga"
-                                        name="harga"
-                                        value="{{ old('harga', 0) }}"
-                                        min="0"
-                                        step="0.01"
-                                        placeholder="0"
-                                        required
-                                    >
-
+                                <div class="cia-description">
+                                    Tingkat kerahasiaan data.
                                 </div>
 
-                                @error('harga')
-                                    <small class="error-message">
+                                @error('kerahasiaan')
+                                    <div class="field-error">
                                         {{ $message }}
-                                    </small>
+                                    </div>
                                 @enderror
 
                             </div>
 
+                        </div>
 
-                            {{-- TANGGAL PENGADAAN --}}
 
-                            <div class="form-group">
+                        {{-- INTEGRITAS --}}
 
-                                <label for="tanggal_pengadaan">
+                        <div class="cia-card">
 
-                                    Tanggal Pengadaan
+                            <div class="software-form-group">
 
-                                    <span class="required">
-                                        *
-                                    </span>
-
+                                <label for="integritas">
+                                    Integritas
+                                    <span class="required-mark">*</span>
                                 </label>
 
-                                <input
-                                    type="date"
-                                    id="tanggal_pengadaan"
-                                    name="tanggal_pengadaan"
-                                    value="{{ old('tanggal_pengadaan') }}"
+                                <select
+                                    id="integritas"
+                                    name="integritas"
+                                    class="software-select @error('integritas') error @enderror"
                                     required
                                 >
 
-                                @error('tanggal_pengadaan')
-                                    <small class="error-message">
+                                    <option value="">
+                                        Pilih Nilai
+                                    </option>
+
+                                    <option value="1"
+                                        {{ old('integritas') == '1' ? 'selected' : '' }}>
+                                        1
+                                    </option>
+
+                                    <option value="2"
+                                        {{ old('integritas') == '2' ? 'selected' : '' }}>
+                                        2
+                                    </option>
+
+                                    <option value="3"
+                                        {{ old('integritas') == '3' ? 'selected' : '' }}>
+                                        3
+                                    </option>
+
+                                </select>
+
+                                <div class="cia-description">
+                                    Tingkat integritas data.
+                                </div>
+
+                                @error('integritas')
+                                    <div class="field-error">
                                         {{ $message }}
-                                    </small>
+                                    </div>
                                 @enderror
 
                             </div>
@@ -827,202 +1015,193 @@
                         </div>
 
 
-                        {{-- =================================
-                             PERIODE SEWA
-                        ================================== --}}
+                        {{-- KETERSEDIAAN --}}
 
-                        <div id="sewa-section">
+                        <div class="cia-card">
 
-                            <div class="sewa-title">
+                            <div class="software-form-group">
 
-                                <i class="bi bi-calendar-range"></i>
+                                <label for="ketersediaan">
+                                    Ketersediaan
+                                    <span class="required-mark">*</span>
+                                </label>
 
-                                <span>
-                                    Periode Sewa
-                                </span>
+                                <select
+                                    id="ketersediaan"
+                                    name="ketersediaan"
+                                    class="software-select @error('ketersediaan') error @enderror"
+                                    required
+                                >
 
-                            </div>
+                                    <option value="">
+                                        Pilih Nilai
+                                    </option>
 
+                                    <option value="1"
+                                        {{ old('ketersediaan') == '1' ? 'selected' : '' }}>
+                                        1
+                                    </option>
 
-                            <div class="sewa-grid">
+                                    <option value="2"
+                                        {{ old('ketersediaan') == '2' ? 'selected' : '' }}>
+                                        2
+                                    </option>
 
-                                {{-- PERIODE --}}
+                                    <option value="3"
+                                        {{ old('ketersediaan') == '3' ? 'selected' : '' }}>
+                                        3
+                                    </option>
 
-                                <div class="form-group">
+                                </select>
 
-                                    <label for="periode_sewa">
-                                        Pilih Periode Sewa
-                                    </label>
-
-                                    <select id="periode_sewa">
-
-                                        <option value="">
-                                            Pilih Periode
-                                        </option>
-
-                                        <option value="1">
-                                            1 Bulan
-                                        </option>
-
-                                        <option value="3">
-                                            3 Bulan
-                                        </option>
-
-                                        <option value="5">
-                                            5 Bulan
-                                        </option>
-
-                                        <option value="6">
-                                            6 Bulan
-                                        </option>
-
-                                        <option value="12">
-                                            12 Bulan
-                                        </option>
-
-                                        <option value="custom">
-                                            Lainnya
-                                        </option>
-
-                                    </select>
-
+                                <div class="cia-description">
+                                    Tingkat ketersediaan layanan.
                                 </div>
 
-
-                                {{-- TANGGAL BERAKHIR PREVIEW --}}
-
-                                <div class="form-group">
-
-                                    <label for="tanggal_berakhir_preview">
-                                        Tanggal Berakhir
-                                    </label>
-
-                                    <input
-                                        type="date"
-                                        id="tanggal_berakhir_preview"
-                                        readonly
-                                    >
-
-                                    <small class="form-info">
-                                        Tanggal berakhir dihitung otomatis
-                                        berdasarkan tanggal pengadaan dan
-                                        periode sewa.
-                                    </small>
-
-                                </div>
-
-                            </div>
-
-
-                            {{-- =================================
-                                 CUSTOM PERIODE
-                            ================================== --}}
-
-                            <div id="custom-period">
-
-                                <div class="form-group">
-
-                                    <label for="custom_jumlah">
-                                        Jumlah
-                                    </label>
-
-                                    <input
-                                        type="number"
-                                        id="custom_jumlah"
-                                        min="1"
-                                        placeholder="Contoh: 2"
-                                    >
-
-                                </div>
-
-
-                                <div class="form-group">
-
-                                    <label for="custom_satuan">
-                                        Satuan
-                                    </label>
-
-                                    <select id="custom_satuan">
-
-                                        <option value="months">
-                                            Bulan
-                                        </option>
-
-                                        <option value="years">
-                                            Tahun
-                                        </option>
-
-                                    </select>
-
-                                </div>
+                                @error('ketersediaan')
+                                    <div class="field-error">
+                                        {{ $message }}
+                                    </div>
+                                @enderror
 
                             </div>
 
                         </div>
 
+                    </div>
 
-                        {{-- =================================
-                             TANGGAL BERAKHIR DATABASE
-                        ================================== --}}
-
-                        <input
-                            type="hidden"
-                            id="tanggal_berakhir"
-                            name="tanggal_berakhir"
-                            value="{{ old('tanggal_berakhir') }}"
-                        >
+                </div>
 
 
-                        {{-- INFO BELI --}}
+                {{-- =================================================
+                     NILAI CIA
+                ================================================== --}}
 
-                        <div
-                            id="beli-info"
-                            class="form-info"
-                            style="margin-top: 15px;"
-                        >
+                <div class="software-form-section">
 
-                            Untuk software
-                            <strong>Beli</strong>,
-                            tanggal berakhir dapat dikosongkan
-                            karena dianggap perpetual.
+                    <div class="software-section-title">
+                        Hasil Penilaian
+                    </div>
+
+                    <div class="nilai-preview">
+
+                        <div class="nilai-box">
+
+                            <div class="nilai-box-label">
+                                Nilai CIA
+                            </div>
+
+                            <div
+                                class="nilai-box-value"
+                                id="nilaiPreview"
+                            >
+                                -
+                            </div>
+
+                        </div>
+
+                        <div class="keterangan-box">
+
+                            <div class="keterangan-box-label">
+                                Keterangan
+                            </div>
+
+                            <div
+                                class="keterangan-box-value"
+                                id="keteranganPreview"
+                            >
+                                -
+                            </div>
 
                         </div>
 
                     </div>
 
 
-                    {{-- =====================================
-                         ACTION
-                    ====================================== --}}
+                    {{-- Hidden input --}}
 
-                    <div class="form-actions">
+                    <input
+                        type="hidden"
+                        name="nilai"
+                        id="nilai"
+                        value="{{ old('nilai') }}"
+                    >
 
-                        <button
-                            type="button"
-                            class="btn-cancel"
-                            onclick="closeSoftwareModal()"
-                        >
-                            Batal
-                        </button>
+                    <input
+                        type="hidden"
+                        name="keterangan"
+                        id="keterangan"
+                        value="{{ old('keterangan') }}"
+                    >
 
-                        <button
-                            type="submit"
-                            class="btn-save"
-                        >
+                </div>
 
-                            <i class="bi bi-check-lg"></i>
 
-                            Simpan Software
+                {{-- =================================================
+                     DESKRIPSI
+                ================================================== --}}
 
-                        </button>
+                <div class="software-form-section">
+
+                    <div class="software-section-title">
+                        Deskripsi
+                    </div>
+
+                    <div class="software-form-grid">
+
+                        <div class="software-form-group full">
+
+                            <label for="deskripsi_aplikasi">
+                                Deskripsi Aplikasi
+                            </label>
+
+                            <textarea
+                                id="deskripsi_aplikasi"
+                                name="deskripsi_aplikasi"
+                                class="software-textarea @error('deskripsi_aplikasi') error @enderror"
+                                placeholder="Masukkan deskripsi aplikasi/software..."
+                            >{{ old('deskripsi_aplikasi') }}</textarea>
+
+                            @error('deskripsi_aplikasi')
+                                <div class="field-error">
+                                    {{ $message }}
+                                </div>
+                            @enderror
+
+                        </div>
 
                     </div>
 
-                </form>
+                </div>
 
             </div>
 
-        </div>
+
+            {{-- =====================================================
+                 FOOTER
+            ====================================================== --}}
+
+            <div class="software-create-footer">
+
+                <button
+                    type="button"
+                    class="software-btn-cancel"
+                    onclick="closeSoftwareCreateModal()"
+                >
+                    Batal
+                </button>
+
+                <button
+                    type="submit"
+                    class="software-btn-save"
+                    id="softwareSaveButton"
+                >
+                    Simpan Software
+                </button>
+
+            </div>
+
+        </form>
 
     </div>
 
@@ -1032,335 +1211,669 @@
 <script>
 (function () {
 
-    /* =====================================================
-       AMBIL ELEMENT
-    ===================================================== */
-
-    const pengadaan =
-        document.getElementById('pengadaan');
-
-    const tanggalPengadaan =
-        document.getElementById('tanggal_pengadaan');
-
-    const tanggalBerakhir =
-        document.getElementById('tanggal_berakhir');
-
-    const tanggalBerakhirPreview =
-        document.getElementById('tanggal_berakhir_preview');
-
-    const sewaSection =
-        document.getElementById('sewa-section');
-
-    const periodeSewa =
-        document.getElementById('periode_sewa');
-
-    const customPeriod =
-        document.getElementById('custom-period');
-
-    const customJumlah =
-        document.getElementById('custom_jumlah');
-
-    const customSatuan =
-        document.getElementById('custom_satuan');
-
-    const beliInfo =
-        document.getElementById('beli-info');
+    'use strict';
 
 
-    /* =====================================================
-       FORMAT DATE
-    ===================================================== */
+    /* =========================================================
+       OPEN MODAL
+    ========================================================= */
 
-    function formatDate(date)
-    {
-        const year =
-            date.getFullYear();
+    window.openSoftwareCreateModal = function () {
 
-        const month =
-            String(
-                date.getMonth() + 1
-            ).padStart(2, '0');
+        const modal =
+            document.getElementById('softwareCreateModal');
 
-        const day =
-            String(
-                date.getDate()
-            ).padStart(2, '0');
+        if (!modal) {
+            return;
+        }
 
-        return `${year}-${month}-${day}`;
+        modal.classList.add('show');
+
+        modal.setAttribute(
+            'aria-hidden',
+            'false'
+        );
+
+        document.body.style.overflow = 'hidden';
+
+
+        // Fokus ke nama software
+        setTimeout(function () {
+
+            const namaAset =
+                document.getElementById('nama_aset');
+
+            if (namaAset) {
+                namaAset.focus();
+            }
+
+        }, 100);
+    };
+
+
+    /* =========================================================
+       CLOSE MODAL
+    ========================================================= */
+
+    window.closeSoftwareCreateModal = function () {
+
+        const modal =
+            document.getElementById('softwareCreateModal');
+
+        if (!modal) {
+            return;
+        }
+
+        modal.classList.remove('show');
+
+        modal.setAttribute(
+            'aria-hidden',
+            'true'
+        );
+
+        document.body.style.overflow = '';
+    };
+
+
+    /* =========================================================
+       SSL EXPIRE
+    ========================================================= */
+
+    const sslSelect =
+        document.getElementById('ssl_id');
+
+    const sslExpireInfo =
+        document.getElementById('sslExpireInfo');
+
+
+    function updateSslExpire() {
+
+        if (!sslSelect || !sslExpireInfo) {
+            return;
+        }
+
+
+        const selected =
+            sslSelect.options[
+                sslSelect.selectedIndex
+            ];
+
+
+        if (!selected || !selected.value) {
+
+            sslExpireInfo.classList.remove(
+                'show',
+                'warning',
+                'expired'
+            );
+
+            sslExpireInfo.innerHTML = '';
+
+            return;
+        }
+
+
+        const expire =
+            selected.getAttribute('data-expire');
+
+        const name =
+            selected.getAttribute('data-name')
+            || selected.textContent.trim();
+
+
+        if (!expire) {
+
+            sslExpireInfo.classList.remove(
+                'warning',
+                'expired'
+            );
+
+            sslExpireInfo.classList.add('show');
+
+            sslExpireInfo.innerHTML =
+                '<strong>' +
+                name +
+                '</strong> — Tidak memiliki tanggal expire.';
+
+            return;
+        }
+
+
+        const expireDate =
+            new Date(expire + 'T00:00:00');
+
+
+        if (isNaN(expireDate.getTime())) {
+
+            sslExpireInfo.classList.remove(
+                'warning',
+                'expired'
+            );
+
+            sslExpireInfo.classList.add('show');
+
+            sslExpireInfo.innerHTML =
+                'Tanggal expire: ' + expire;
+
+            return;
+        }
+
+
+        const formattedDate =
+            expireDate.toLocaleDateString(
+                'id-ID',
+                {
+                    day: '2-digit',
+                    month: '2-digit',
+                    year: 'numeric'
+                }
+            );
+
+
+        const today =
+            new Date();
+
+        today.setHours(
+            0,
+            0,
+            0,
+            0
+        );
+
+
+        const diffTime =
+            expireDate.getTime() -
+            today.getTime();
+
+
+        const diffDays =
+            Math.ceil(
+                diffTime /
+                (1000 * 60 * 60 * 24)
+            );
+
+
+        sslExpireInfo.classList.remove(
+            'warning',
+            'expired'
+        );
+
+        sslExpireInfo.classList.add('show');
+
+
+        if (diffDays < 0) {
+
+            sslExpireInfo.classList.add(
+                'expired'
+            );
+
+            sslExpireInfo.innerHTML =
+                '<strong>' +
+                name +
+                '</strong> — Expire pada ' +
+                formattedDate +
+                ' <strong>(Expired)</strong>';
+
+        } else if (diffDays <= 30) {
+
+            sslExpireInfo.classList.add(
+                'warning'
+            );
+
+            sslExpireInfo.innerHTML =
+                '<strong>' +
+                name +
+                '</strong> — Expire pada ' +
+                formattedDate +
+                ' <strong>(' +
+                diffDays +
+                ' hari lagi)</strong>';
+
+        } else {
+
+            sslExpireInfo.innerHTML =
+                '<strong>' +
+                name +
+                '</strong> — Expire pada ' +
+                formattedDate;
+
+        }
     }
 
 
-    /* =====================================================
-       HITUNG TANGGAL BERAKHIR
-    ===================================================== */
+    if (sslSelect) {
 
-    function calculateEndDate()
-    {
-        if (!pengadaan) {
-            return;
-        }
+        sslSelect.addEventListener(
+            'change',
+            updateSslExpire
+        );
 
-        if (pengadaan.value !== 'Sewa') {
-
-            tanggalBerakhir.value = '';
-            tanggalBerakhirPreview.value = '';
-
-            return;
-        }
+        updateSslExpire();
+    }
 
 
-        if (!tanggalPengadaan.value) {
+    /* =========================================================
+       CIA CALCULATION
+    ========================================================= */
 
-            tanggalBerakhir.value = '';
-            tanggalBerakhirPreview.value = '';
+    const kerahasiaan =
+        document.getElementById('kerahasiaan');
 
-            return;
-        }
+    const integritas =
+        document.getElementById('integritas');
+
+    const ketersediaan =
+        document.getElementById('ketersediaan');
+
+    const nilaiPreview =
+        document.getElementById('nilaiPreview');
+
+    const keteranganPreview =
+        document.getElementById('keteranganPreview');
+
+    const nilaiInput =
+        document.getElementById('nilai');
+
+    const keteranganInput =
+        document.getElementById('keterangan');
 
 
-        let jumlah = 0;
-        let satuan = 'months';
-
-
-        /* ================================================
-           PERIODE BAWAAN
-        ================================================= */
+    function calculateCIA() {
 
         if (
-            periodeSewa.value &&
-            periodeSewa.value !== 'custom'
+            !kerahasiaan ||
+            !integritas ||
+            !ketersediaan
         ) {
+            return;
+        }
 
-            jumlah = parseInt(
-                periodeSewa.value,
+
+        const k =
+            parseInt(
+                kerahasiaan.value,
                 10
             );
 
-        }
+        const i =
+            parseInt(
+                integritas.value,
+                10
+            );
 
+        const a =
+            parseInt(
+                ketersediaan.value,
+                10
+            );
 
-        /* ================================================
-           CUSTOM
-        ================================================= */
 
         if (
-            periodeSewa.value === 'custom'
+            isNaN(k) ||
+            isNaN(i) ||
+            isNaN(a)
         ) {
 
-            jumlah =
-                parseInt(
-                    customJumlah.value,
-                    10
-                ) || 0;
+            if (nilaiPreview) {
+                nilaiPreview.textContent = '-';
+            }
 
-            satuan =
-                customSatuan.value;
+            if (keteranganPreview) {
+                keteranganPreview.textContent = '-';
+            }
 
-        }
+            if (nilaiInput) {
+                nilaiInput.value = '';
+            }
 
-
-        /* ================================================
-           BELUM MEMILIH PERIODE
-        ================================================= */
-
-        if (jumlah <= 0) {
-
-            tanggalBerakhir.value = '';
-            tanggalBerakhirPreview.value = '';
+            if (keteranganInput) {
+                keteranganInput.value = '';
+            }
 
             return;
         }
 
 
-        /* ================================================
-           BUAT DATE
-        ================================================= */
+        const nilai =
+            ((k + i + a) / 3).toFixed(2);
 
-        const date =
-            new Date(
-                tanggalPengadaan.value +
-                'T00:00:00'
+
+        let keterangan = '';
+
+
+        if (parseFloat(nilai) <= 1) {
+
+            keterangan = 'Rendah';
+
+        } else if (parseFloat(nilai) <= 2) {
+
+            keterangan = 'Sedang';
+
+        } else {
+
+            keterangan = 'Tinggi';
+
+        }
+
+
+        if (nilaiPreview) {
+            nilaiPreview.textContent = nilai;
+        }
+
+        if (keteranganPreview) {
+            keteranganPreview.textContent =
+                keterangan;
+        }
+
+        if (nilaiInput) {
+            nilaiInput.value = nilai;
+        }
+
+        if (keteranganInput) {
+            keteranganInput.value =
+                keterangan;
+        }
+    }
+
+
+    if (kerahasiaan) {
+
+        kerahasiaan.addEventListener(
+            'change',
+            calculateCIA
+        );
+
+    }
+
+
+    if (integritas) {
+
+        integritas.addEventListener(
+            'change',
+            calculateCIA
+        );
+
+    }
+
+
+    if (ketersediaan) {
+
+        ketersediaan.addEventListener(
+            'change',
+            calculateCIA
+        );
+
+    }
+
+
+    calculateCIA();
+
+
+    /* =========================================================
+       IP VALIDATION
+    ========================================================= */
+
+    const ipPublic =
+        document.getElementById('ip_public');
+
+    const ipPrivate =
+        document.getElementById('ip_private');
+
+
+    function isValidIPv4(ip) {
+
+        const parts =
+            ip.trim().split('.');
+
+
+        if (parts.length !== 4) {
+            return false;
+        }
+
+
+        return parts.every(
+            function (part) {
+
+                if (!/^\d+$/.test(part)) {
+                    return false;
+                }
+
+
+                const number =
+                    Number(part);
+
+
+                return (
+                    number >= 0 &&
+                    number <= 255
+                );
+            }
+        );
+    }
+
+
+    function isValidIPv6(ip) {
+
+        /*
+         * Validasi client-side sederhana.
+         * Validasi utama tetap dilakukan Laravel.
+         */
+
+        return (
+            /^[0-9a-fA-F:]+$/.test(ip) &&
+            ip.includes(':')
+        );
+    }
+
+
+    function isValidIP(ip) {
+
+        if (!ip || !ip.trim()) {
+            return true;
+        }
+
+
+        return (
+            isValidIPv4(ip) ||
+            isValidIPv6(ip)
+        );
+    }
+
+
+    function validateIPInput(input) {
+
+        if (!input) {
+            return true;
+        }
+
+
+        const value =
+            input.value.trim();
+
+
+        if (!value) {
+
+            input.classList.remove(
+                'error'
             );
 
-
-        /* ================================================
-           TAMBAH TAHUN
-        ================================================= */
-
-        if (satuan === 'years') {
-
-            date.setFullYear(
-                date.getFullYear() + jumlah
-            );
-
-        }
-
-        /* ================================================
-           TAMBAH BULAN
-        ================================================= */
-
-        else {
-
-            date.setMonth(
-                date.getMonth() + jumlah
-            );
-
+            return true;
         }
 
 
-        /* ================================================
-           SIMPAN
-        ================================================= */
+        const valid =
+            isValidIP(value);
 
-        const result =
-            formatDate(date);
 
-        tanggalBerakhir.value =
-            result;
+        input.classList.toggle(
+            'error',
+            !valid
+        );
 
-        tanggalBerakhirPreview.value =
-            result;
+
+        return valid;
     }
 
 
-    /* =====================================================
-       UPDATE PENGADAAN
-    ===================================================== */
+    if (ipPublic) {
 
-    function updatePengadaan()
-    {
-        if (!pengadaan) {
-            return;
-        }
+        ipPublic.addEventListener(
+            'blur',
+            function () {
 
+                validateIPInput(
+                    ipPublic
+                );
 
-        if (pengadaan.value === 'Sewa') {
-
-            sewaSection.classList.add('show');
-
-            beliInfo.style.display = 'none';
-
-        }
-
-        else {
-
-            sewaSection.classList.remove('show');
-
-            customPeriod.classList.remove('show');
-
-            periodeSewa.value = '';
-
-            customJumlah.value = '';
-
-            tanggalBerakhir.value = '';
-
-            tanggalBerakhirPreview.value = '';
-
-            beliInfo.style.display = 'block';
-
-        }
-
-
-        calculateEndDate();
-    }
-
-
-    /* =====================================================
-       UPDATE CUSTOM PERIOD
-    ===================================================== */
-
-    function updateCustomPeriod()
-    {
-        if (
-            periodeSewa.value === 'custom'
-        ) {
-
-            customPeriod.classList.add('show');
-
-        }
-
-        else {
-
-            customPeriod.classList.remove('show');
-
-        }
-
-
-        calculateEndDate();
-    }
-
-
-    /* =====================================================
-       EXPOSE FUNCTION KE INDEX
-    ===================================================== */
-
-    window.updatePengadaan =
-        updatePengadaan;
-
-
-    window.updateCustomPeriod =
-        updateCustomPeriod;
-
-
-    /* =====================================================
-       EVENT
-    ===================================================== */
-
-    if (pengadaan) {
-
-        pengadaan.addEventListener(
-            'change',
-            updatePengadaan
+            }
         );
 
     }
 
 
-    if (periodeSewa) {
+    if (ipPrivate) {
 
-        periodeSewa.addEventListener(
-            'change',
-            updateCustomPeriod
+        ipPrivate.addEventListener(
+            'blur',
+            function () {
+
+                validateIPInput(
+                    ipPrivate
+                );
+
+            }
         );
 
     }
 
 
-    if (customJumlah) {
+    /* =========================================================
+       FORM SUBMIT
+    ========================================================= */
 
-        customJumlah.addEventListener(
-            'input',
-            calculateEndDate
+    const form =
+        document.getElementById(
+            'softwareCreateForm'
+        );
+
+
+    if (form) {
+
+        form.addEventListener(
+            'submit',
+            function (event) {
+
+                const publicValid =
+                    validateIPInput(
+                        ipPublic
+                    );
+
+                const privateValid =
+                    validateIPInput(
+                        ipPrivate
+                    );
+
+
+                if (
+                    !publicValid ||
+                    !privateValid
+                ) {
+
+                    event.preventDefault();
+
+                    alert(
+                        'IP Public atau IP Private tidak valid. Silakan periksa kembali.'
+                    );
+
+                    return;
+                }
+
+
+                // Pastikan nilai CIA terbaru dikirim
+                calculateCIA();
+
+            }
         );
 
     }
 
 
-    if (customSatuan) {
+    /* =========================================================
+       ESC CLOSE
+    ========================================================= */
 
-        customSatuan.addEventListener(
-            'change',
-            calculateEndDate
+    document.addEventListener(
+        'keydown',
+        function (event) {
+
+            if (
+                event.key !== 'Escape'
+            ) {
+                return;
+            }
+
+
+            const modal =
+                document.getElementById(
+                    'softwareCreateModal'
+                );
+
+
+            if (
+                modal &&
+                modal.classList.contains('show')
+            ) {
+
+                closeSoftwareCreateModal();
+
+            }
+
+        }
+    );
+
+
+    /* =========================================================
+       CLICK OUTSIDE
+    ========================================================= */
+
+    const modal =
+        document.getElementById(
+            'softwareCreateModal'
+        );
+
+
+    if (modal) {
+
+        modal.addEventListener(
+            'click',
+            function (event) {
+
+                if (
+                    event.target === modal
+                ) {
+
+                    closeSoftwareCreateModal();
+
+                }
+
+            }
         );
 
     }
 
 
-    if (tanggalPengadaan) {
+    /* =========================================================
+       AUTO OPEN SAAT VALIDASI GAGAL
+       Kalau Laravel redirect back karena validation error,
+       modal otomatis dibuka kembali.
+    ========================================================= */
 
-        tanggalPengadaan.addEventListener(
-            'change',
-            calculateEndDate
-        );
+    @if($errors->any())
 
-    }
+        openSoftwareCreateModal();
 
+    @endif
 
-    /* =====================================================
-       INITIAL STATE
-    ===================================================== */
-
-    updatePengadaan();
 
 })();
 </script>
