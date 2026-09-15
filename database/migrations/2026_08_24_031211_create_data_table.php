@@ -6,9 +6,6 @@ use Illuminate\Support\Facades\Schema;
 
 return new class extends Migration
 {
-    /**
-     * Run the migrations.
-     */
     public function up(): void
     {
         Schema::create('data', function (Blueprint $table) {
@@ -18,13 +15,19 @@ return new class extends Migration
             // Nama dataset
             $table->string('nama_dataset');
 
-            // Jenis data
-            $table->string('jenis_data');
+            // Topik dataset
+            $table->string('topik');
 
             // Tahun data
             $table->year('tahun');
 
-            // File yang diajukan operator
+            // Deskripsi dataset
+            $table->text('deskripsi')->nullable();
+
+            // Metadata dari Sheet Metadata Excel
+            $table->json('metadata')->nullable();
+
+            // File Excel dataset
             $table->string('file_data')->nullable();
 
             // Status verifikasi
@@ -34,19 +37,16 @@ return new class extends Migration
                 'Ditolak'
             ])->default('Menunggu Disetujui');
 
-            // Waktu operator mengajukan data
+            // Waktu pengajuan
             $table->dateTime('tanggal_pengajuan')->nullable();
 
-            // Komentar dari verifikator jika ditolak
+            // Komentar verifikator
             $table->text('komentar_verifikasi')->nullable();
 
             $table->timestamps();
         });
     }
 
-    /**
-     * Reverse the migrations.
-     */
     public function down(): void
     {
         Schema::dropIfExists('data');
