@@ -25,6 +25,7 @@ class SoftwareAsset extends Model
 
         // Kolom lama — sementara tetap dipertahankan
         'kategori',
+        'kategori_sistem_elektronik',
         'ssl',
         'hosting',
         'pic',

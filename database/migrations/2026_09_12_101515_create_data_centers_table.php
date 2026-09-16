@@ -11,105 +11,159 @@ return new class extends Migration
      */
     public function up(): void
     {
-        Schema::create('data_centers', function (Blueprint $table) {
+        /*
+        |--------------------------------------------------------------------------
+        | TABEL SUDAH ADA
+        |--------------------------------------------------------------------------
+        |
+        | Tabel data_centers sudah dibuat oleh migration/versi sebelumnya.
+        | Migration ini hanya menambahkan field dari struktur Data Center
+        | terbaru dari branch Infrastruktur.
+        |
+        */
+
+        if (!Schema::hasTable('data_centers')) {
+            return;
+        }
+
+        Schema::table('data_centers', function (Blueprint $table) {
 
             // =========================================================
             // IDENTITAS PERANGKAT
             // =========================================================
 
-            // ID dibuat oleh controller, contoh: INFDC-001
-            $table->string('id', 20)->primary();
+            if (!Schema::hasColumn('data_centers', 'name')) {
+                $table->string('name')->nullable()->after('id');
+            }
 
-            $table->string('name')->nullable();
+            if (!Schema::hasColumn('data_centers', 'tenant')) {
+                $table->string('tenant')->nullable();
+            }
 
-            $table->string('status')->nullable();
+            if (!Schema::hasColumn('data_centers', 'site')) {
+                $table->string('site')->nullable();
+            }
 
-            $table->string('tenant')->nullable();
+            if (!Schema::hasColumn('data_centers', 'rack')) {
+                $table->string('rack')->nullable();
+            }
 
-            $table->string('site')->nullable();
+            if (!Schema::hasColumn('data_centers', 'role')) {
+                $table->string('role')->nullable();
+            }
 
-            $table->string('rack')->nullable();
-
-            $table->string('role')->nullable();
 
             // =========================================================
             // SPESIFIKASI PERANGKAT
             // =========================================================
 
-            $table->string('manufacturer')->nullable();
+            if (!Schema::hasColumn('data_centers', 'manufacturer')) {
+                $table->string('manufacturer')->nullable();
+            }
 
-            $table->string('type')->nullable();
+            if (!Schema::hasColumn('data_centers', 'type')) {
+                $table->string('type')->nullable();
+            }
 
-            $table->string('platform')->nullable();
+            if (!Schema::hasColumn('data_centers', 'platform')) {
+                $table->string('platform')->nullable();
+            }
 
-            $table->string('version')->nullable();
+            if (!Schema::hasColumn('data_centers', 'version')) {
+                $table->string('version')->nullable();
+            }
 
-            $table->string('serial_number')->nullable();
+            if (!Schema::hasColumn('data_centers', 'serial_number')) {
+                $table->string('serial_number')->nullable();
+            }
 
-            $table->string('ip_address')->nullable();
+            if (!Schema::hasColumn('data_centers', 'ip_address')) {
+                $table->string('ip_address')->nullable();
+            }
 
-            $table->text('cpu')->nullable();
+            if (!Schema::hasColumn('data_centers', 'cpu')) {
+                $table->text('cpu')->nullable();
+            }
 
-            $table->text('harddisk')->nullable();
+            if (!Schema::hasColumn('data_centers', 'harddisk')) {
+                $table->text('harddisk')->nullable();
+            }
 
-            $table->string('ram')->nullable();
+            if (!Schema::hasColumn('data_centers', 'ram')) {
+                $table->string('ram')->nullable();
+            }
 
-            $table->string('pic')->nullable();
+            if (!Schema::hasColumn('data_centers', 'pic')) {
+                $table->string('pic')->nullable();
+            }
+
 
             // =========================================================
             // INFORMASI ORGANISASI & LOKASI
             // =========================================================
 
-            $table->string('tenant_group')->nullable();
+            if (!Schema::hasColumn('data_centers', 'tenant_group')) {
+                $table->string('tenant_group')->nullable();
+            }
 
-            $table->string('region')->nullable();
+            if (!Schema::hasColumn('data_centers', 'region')) {
+                $table->string('region')->nullable();
+            }
 
-            $table->string('location')->nullable();
+            if (!Schema::hasColumn('data_centers', 'location')) {
+                $table->string('location')->nullable();
+            }
 
-            $table->string('position')->nullable();
+            if (!Schema::hasColumn('data_centers', 'position')) {
+                $table->string('position')->nullable();
+            }
 
-            $table->string('rack_face')->nullable();
+            if (!Schema::hasColumn('data_centers', 'rack_face')) {
+                $table->string('rack_face')->nullable();
+            }
 
-            $table->string('ipv4_address')->nullable();
+            if (!Schema::hasColumn('data_centers', 'ipv4_address')) {
+                $table->string('ipv4_address')->nullable();
+            }
 
-            $table->string('cluster')->nullable();
+            if (!Schema::hasColumn('data_centers', 'cluster')) {
+                $table->string('cluster')->nullable();
+            }
+
 
             // =========================================================
             // KETERANGAN
             // =========================================================
 
-            $table->text('description')->nullable();
+            if (!Schema::hasColumn('data_centers', 'description')) {
+                $table->text('description')->nullable();
+            }
 
-            $table->text('comments')->nullable();
+            if (!Schema::hasColumn('data_centers', 'comments')) {
+                $table->text('comments')->nullable();
+            }
+
 
             // =========================================================
             // OWNER
             // =========================================================
 
-            $table->string('owner_group')->nullable();
+            if (!Schema::hasColumn('data_centers', 'owner_group')) {
+                $table->string('owner_group')->nullable();
+            }
 
-            $table->string('owner')->nullable();
+            if (!Schema::hasColumn('data_centers', 'owner')) {
+                $table->string('owner')->nullable();
+            }
+
 
             // =========================================================
             // RACK
             // =========================================================
 
-            $table->string('u_height')->nullable();
-
-            // =========================================================
-            // VERIFIKASI
-            // =========================================================
-
-            $table->string('verifikasi', 50)
-                ->default('menunggu');
-
-            $table->text('komentar')->nullable();
-
-            // =========================================================
-            // TIMESTAMP
-            // =========================================================
-
-            $table->timestamps();
+            if (!Schema::hasColumn('data_centers', 'u_height')) {
+                $table->string('u_height')->nullable();
+            }
         });
     }
 
@@ -118,6 +172,52 @@ return new class extends Migration
      */
     public function down(): void
     {
-        Schema::dropIfExists('data_centers');
+        if (!Schema::hasTable('data_centers')) {
+            return;
+        }
+
+        $columns = [
+            'name',
+            'tenant',
+            'site',
+            'rack',
+            'role',
+            'manufacturer',
+            'type',
+            'platform',
+            'version',
+            'serial_number',
+            'ip_address',
+            'cpu',
+            'harddisk',
+            'ram',
+            'pic',
+            'tenant_group',
+            'region',
+            'location',
+            'position',
+            'rack_face',
+            'ipv4_address',
+            'cluster',
+            'description',
+            'comments',
+            'owner_group',
+            'owner',
+            'u_height',
+        ];
+
+        $existingColumns = [];
+
+        foreach ($columns as $column) {
+            if (Schema::hasColumn('data_centers', $column)) {
+                $existingColumns[] = $column;
+            }
+        }
+
+        if (!empty($existingColumns)) {
+            Schema::table('data_centers', function (Blueprint $table) use ($existingColumns) {
+                $table->dropColumn($existingColumns);
+            });
+        }
     }
 };

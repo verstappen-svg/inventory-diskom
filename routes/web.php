@@ -334,8 +334,7 @@ Route::resource(
     'destroy' => 'splp.destroy',
 ])->except(['show'])
   ->middleware('menu.permission:infrastruktur.splp');
-  
-  ->middleware('menu.permission:infrastruktur.splp');
+
     /*
     |--------------------------------------------------------------------------
     | DATA

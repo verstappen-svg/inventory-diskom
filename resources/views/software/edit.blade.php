@@ -1,941 +1,353 @@
 {{-- =========================================================
-     EDIT SOFTWARE MODAL
-========================================================= --}}
-
-<style>
-/* =========================================================
-   EDIT SOFTWARE MODAL
-========================================================= */
-
-.software-edit-modal {
-    position: fixed;
-    inset: 0;
-    z-index: 9999;
-
-    display: none;
-    align-items: flex-start;
-    justify-content: center;
-
-    padding: 25px 20px 40px;
-
-    background: rgba(0, 0, 0, 0.55);
-
-    overflow-y: auto;
-    box-sizing: border-box;
-}
-
-.software-edit-modal.show {
-    display: flex;
-}
-
-/* =========================================================
-   MODAL BOX
-========================================================= */
-
-.software-edit-modal-box {
-    width: 100%;
-    max-width: 700px;
-
-    margin: 0 auto;
-
-    background: #ffffff;
-
-    border-radius: 10px;
-
-    overflow: hidden;
-
-    box-shadow:
-        0 20px 45px rgba(0, 0, 0, 0.25),
-        0 8px 20px rgba(0, 0, 0, 0.12);
-
-    animation: softwareEditModalShow 0.18s ease-out;
-}
-
-@keyframes softwareEditModalShow {
-    from {
-        opacity: 0;
-        transform: translateY(-12px) scale(0.98);
-    }
-
-    to {
-        opacity: 1;
-        transform: translateY(0) scale(1);
-    }
-}
-
-/* =========================================================
-   HEADER
-========================================================= */
-
-.software-edit-modal-header {
-    min-height: 72px;
-
-    padding:
-        14px
-        18px
-        14px
-        22px;
-
-    display: flex;
-    align-items: center;
-    justify-content: space-between;
-
-    background: #ffffff;
-
-    border-bottom: 1px solid #e5e7eb;
-
-    box-sizing: border-box;
-}
-
-.software-edit-modal-header-text h2 {
-    margin: 0;
-
-    font-size: 21px;
-    font-weight: 700;
-
-    color: #071b88;
-}
-
-.software-edit-modal-header-text p {
-    margin: 5px 0 0;
-
-    font-size: 12px;
-
-    color: #6b7280;
-}
-
-/* =========================================================
-   CLOSE BUTTON
-========================================================= */
-
-.software-edit-close {
-    width: 32px;
-    height: 32px;
-
-    display: flex;
-    align-items: center;
-    justify-content: center;
-
-    border: none;
-    background: transparent;
-
-    color: #6b7280;
-
-    font-size: 17px;
-
-    cursor: pointer;
-
-    border-radius: 6px;
-
-    transition: 0.15s ease;
-
-    flex-shrink: 0;
-}
-
-.software-edit-close:hover {
-    background: #f3f4f6;
-    color: #111827;
-}
-
-/* =========================================================
-   BODY
-========================================================= */
-
-.software-edit-modal-body {
-    background: #ffffff;
-
-    padding: 20px 34px;
-
-    max-height: calc(100vh - 210px);
-
-    overflow-y: auto;
-
-    box-sizing: border-box;
-}
-
-/* =========================================================
-   SCROLLBAR
-========================================================= */
-
-.software-edit-modal-body::-webkit-scrollbar {
-    width: 7px;
-}
-
-.software-edit-modal-body::-webkit-scrollbar-track {
-    background: #f3f4f6;
-}
-
-.software-edit-modal-body::-webkit-scrollbar-thumb {
-    background: #c7cbd1;
-    border-radius: 10px;
-}
-
-.software-edit-modal-body::-webkit-scrollbar-thumb:hover {
-    background: #9ca3af;
-}
-
-/* =========================================================
-   FORM GROUP
-========================================================= */
-
-.software-edit-modal-body .edit-form-group {
-    display: flex;
-    flex-direction: column;
-
-    gap: 6px;
-
-    margin-bottom: 17px;
-}
-
-.software-edit-modal-body .edit-form-group label {
-    font-size: 12px;
-
-    font-weight: 600;
-
-    color: #374151;
-}
-
-.software-edit-modal-body .edit-form-group label span {
-    color: #ef4444;
-}
-
-/* =========================================================
-   INPUT / SELECT / TEXTAREA
-========================================================= */
-
-.software-edit-modal-body .edit-form-group input,
-.software-edit-modal-body .edit-form-group select,
-.software-edit-modal-body .edit-form-group textarea {
-    width: 100%;
-
-    min-height: 42px;
-
-    padding: 0 13px;
-
-    border: 1px solid #d1d5db;
-
-    border-radius: 8px;
-
-    outline: none;
-
-    background: #ffffff;
-
-    color: #374151;
-
-    font-family: Arial, sans-serif;
-
-    font-size: 13px;
-
-    box-sizing: border-box;
-
-    transition: 0.15s ease;
-}
-
-.software-edit-modal-body .edit-form-group textarea {
-    min-height: 90px;
-
-    padding-top: 11px;
-    padding-bottom: 11px;
-
-    resize: vertical;
-
-    line-height: 1.5;
-}
-
-.software-edit-modal-body .edit-form-group input:focus,
-.software-edit-modal-body .edit-form-group select:focus,
-.software-edit-modal-body .edit-form-group textarea:focus {
-    border-color: #071b88;
-
-    box-shadow:
-        0 0 0 3px rgba(7, 27, 136, 0.08);
-}
-
-.software-edit-modal-body .edit-form-group input::placeholder,
-.software-edit-modal-body .edit-form-group textarea::placeholder {
-    color: #aeb4bd;
-}
-
-.software-edit-modal-body .edit-form-group select {
-    cursor: pointer;
-}
-
-/* =========================================================
-   GRID
-========================================================= */
-
-.edit-form-grid {
-    display: grid;
-
-    grid-template-columns: 1fr 1fr;
-
-    gap: 18px;
-}
-
-/* =========================================================
-   Lainnya
-========================================================= */
-
-.edit-other-input {
-    display: none;
-}
-
-.edit-other-input.show {
-    display: flex;
-}
-
-/* =========================================================
-   CIA GRID
-========================================================= */
-
-.edit-cia-grid {
-    display: grid;
-
-    grid-template-columns:
-        repeat(3, 1fr);
-
-    gap: 18px;
-}
-
-/* =========================================================
-   CIA RESULT
-========================================================= */
-
-.edit-cia-result {
-    display: grid;
-
-    grid-template-columns: 1fr 1fr;
-
-    gap: 18px;
-
-    margin-top: 2px;
-}
-
-.edit-result-box {
-    display: flex;
-    flex-direction: column;
-
-    gap: 6px;
-}
-
-.edit-result-box label {
-    font-size: 12px;
-
-    font-weight: 600;
-
-    color: #374151;
-}
-
-.edit-result-value {
-    width: 100%;
-
-    height: 42px;
-
-    display: flex;
-    align-items: center;
-
-    padding: 0 13px;
-
-    border: 1px solid #d1d5db;
-
-    border-radius: 8px;
-
-    background: #f8fafc;
-
-    color: #374151;
-
-    font-size: 13px;
-
-    font-weight: 600;
-
-    box-sizing: border-box;
-}
-
-/* =========================================================
-   INFO
-========================================================= */
-
-.edit-form-info {
-    margin-top: 2px;
-
-    font-size: 10px;
-
-    line-height: 1.4;
-
-    color: #6b7280;
-}
-
-/* =========================================================
-   ERROR
-========================================================= */
-
-.edit-error-message {
-    font-size: 11px;
-
-    color: #dc2626;
-}
-
-/* =========================================================
-   FOOTER
-========================================================= */
-
-.software-edit-modal-footer {
-    min-height: 64px;
-
-    padding: 11px 22px;
-
-    display: flex;
-    align-items: center;
-    justify-content: flex-end;
-
-    gap: 10px;
-
-    background: #ffffff;
-
-    border-top: 1px solid #e5e7eb;
-
-    box-sizing: border-box;
-}
-
-/* =========================================================
-   BUTTON
-========================================================= */
-
-.edit-btn-cancel,
-.edit-btn-save {
-    min-width: 75px;
-
-    height: 38px;
-
-    padding: 0 17px;
-
-    display: inline-flex;
-    align-items: center;
-    justify-content: center;
-
-    gap: 6px;
-
-    border-radius: 7px;
-
-    font-size: 12px;
-
-    font-weight: 600;
-
-    cursor: pointer;
-
-    text-decoration: none;
-
-    font-family: Arial, sans-serif;
-
-    transition: 0.15s ease;
-
-    box-sizing: border-box;
-}
-
-.edit-btn-cancel {
-    background: #ffffff;
-
-    color: #374151;
-
-    border: 1px solid #d1d5db;
-}
-
-.edit-btn-cancel:hover {
-    background: #f9fafb;
-}
-
-.edit-btn-save {
-    background: #071b88;
-
-    color: #ffffff;
-
-    border: 1px solid #071b88;
-}
-
-.edit-btn-save:hover {
-    background: #050f63;
-}
-
-.edit-btn-save i {
-    font-size: 12px;
-}
-
-/* =========================================================
-   RESPONSIVE
-========================================================= */
-
-@media (max-width: 700px) {
-
-    .software-edit-modal {
-        padding: 15px 10px;
-    }
-
-    .software-edit-modal-box {
-        max-width: 100%;
-    }
-
-    .software-edit-modal-header {
-        padding-left: 16px;
-        padding-right: 14px;
-    }
-
-    .software-edit-modal-header-text h2 {
-        font-size: 18px;
-    }
-
-    .software-edit-modal-header-text p {
-        font-size: 11px;
-    }
-
-    .software-edit-modal-body {
-        padding: 18px 16px;
-    }
-
-    .edit-form-grid {
-        grid-template-columns: 1fr;
-
-        gap: 0;
-    }
-
-    .edit-cia-grid {
-        grid-template-columns: 1fr;
-
-        gap: 0;
-    }
-
-    .edit-cia-result {
-        grid-template-columns: 1fr;
-
-        gap: 0;
-    }
-
-    .software-edit-modal-footer {
-        padding: 10px 16px;
-    }
-}
-</style>
-
-
-{{-- =========================================================
-     EDIT MODAL
-========================================================= --}}
+     SOFTWARE EDIT MODAL
+     ========================================================= --}}
 
 <div
+    class="software-create-wrapper software-edit-modal"
     id="software-edit-modal-{{ $software->id }}"
-    class="software-edit-modal"
     data-software-id="{{ $software->id }}"
+    aria-hidden="true"
 >
+    <div class="software-create-modal">
 
-    <div class="software-edit-modal-box">
+        <div class="software-create-header">
 
-        {{-- =================================================
-             HEADER
-        ================================================== --}}
+            <div class="software-create-header-left">
 
-        <div class="software-edit-modal-header">
-
-            <div class="software-edit-modal-header-text">
-
-                <h2>
-                    Edit Data Software
-                </h2>
+                <h2>Edit Software</h2>
 
                 <p>
-                    Perbarui detail aset perangkat lunak yang tersimpan dalam sistem.
+                    Perbarui data aplikasi/software yang dipilih.
                 </p>
 
             </div>
 
             <button
                 type="button"
-                class="software-edit-close"
-                title="Tutup"
+                class="software-create-close"
                 onclick="closeEditSoftwareModal('{{ $software->id }}')"
+                aria-label="Tutup"
             >
-                <i class="bi bi-x-lg"></i>
+                ×
             </button>
 
         </div>
 
 
-        {{-- =================================================
-             FORM
-        ================================================== --}}
-
         <form
             action="{{ route('software.update', $software) }}"
             method="POST"
-            id="software-edit-form-{{ $software->id }}"
+            id="softwareEditForm{{ $software->id }}"
         >
 
             @csrf
-
             @method('PUT')
 
-
-            {{-- =================================================
-                 BODY
-            ================================================== --}}
-
-            <div class="software-edit-modal-body">
+            <div class="software-create-body">
 
                 {{-- =================================================
-                     NAMA ASET
+                     INFORMASI SOFTWARE
                 ================================================== --}}
 
-                <div class="edit-form-group">
+                <div class="software-form-section">
 
-                    <label
-                        for="edit-nama-aset-{{ $software->id }}"
-                    >
-                        Nama Aset
-                        <span>*</span>
-                    </label>
-
-                    <input
-                        type="text"
-                        id="edit-nama-aset-{{ $software->id }}"
-                        name="nama_aset"
-                        value="{{ old('nama_aset', $software->nama_aset ?? $software->jenis) }}"
-                        placeholder="Masukkan nama aset software"
-                        required
-                    >
-
-                    @error('nama_aset')
-                        <small class="edit-error-message">
-                            {{ $message }}
-                        </small>
-                    @enderror
-
-                </div>
-
-
-                {{-- =================================================
-                     KATEGORI + SSL
-                ================================================== --}}
-
-                <div class="edit-form-grid">
-
-                    {{-- KATEGORI --}}
-
-                    <div class="edit-form-group">
-
-                        <label
-                            for="edit-kategori-{{ $software->id }}"
-                        >
-                            Kategori
-                            <span>*</span>
-                        </label>
-
-                        <select
-                            id="edit-kategori-{{ $software->id }}"
-                            name="kategori"
-                            required
-                        >
-
-                            <option value="">
-                                Pilih Kategori
-                            </option>
-
-                            <option
-                                value="Website"
-                                {{ old('kategori', $software->kategori) === 'Website' ? 'selected' : '' }}
-                            >
-                                Website
-                            </option>
-
-                            <option
-                                value="Open Source"
-                                {{ old('kategori', $software->kategori) === 'Open Source' ? 'selected' : '' }}
-                            >
-                                Open Source
-                            </option>
-
-                            <option
-                                value="Utilities"
-                                {{ old('kategori', $software->kategori) === 'Utilities' ? 'selected' : '' }}
-                            >
-                                Utilities
-                            </option>
-
-                            <option
-                                value="Lainnya"
-                                {{ old('kategori', $software->kategori) === 'Lainnya' ? 'selected' : '' }}
-                            >
-                                Lainnya
-                            </option>
-
-                        </select>
-
-                        @error('kategori')
-                            <small class="edit-error-message">
-                                {{ $message }}
-                            </small>
-                        @enderror
-
+                    <div class="software-section-title">
+                        Informasi Software
                     </div>
 
+                    <div class="software-form-grid">
 
-                    {{-- SSL --}}
+                        {{-- KODE --}}
 
-                    <div class="edit-form-group">
+                        <div class="software-form-group">
 
-                        <label
-                            for="edit-ssl-{{ $software->id }}"
-                        >
-                            SSL
-                        </label>
+                            <label for="kode_{{ $software->id }}">
+                                Kode
+                            </label>
 
-                        <input
-                            type="date"
-                            id="edit-ssl-{{ $software->id }}"
-                            name="ssl"
-                            value="{{ old(
-                                'ssl',
-                                optional($software->ssl)->format('Y-m-d')
-                            ) }}"
-                        >
-
-                        <small class="edit-form-info">
-                            Isi tanggal berlaku/berakhir SSL jika website menggunakan SSL.
-                        </small>
-
-                        @error('ssl')
-                            <small class="edit-error-message">
-                                {{ $message }}
-                            </small>
-                        @enderror
-
-                    </div>
-
-                </div>
-
-
-                {{-- =================================================
-                     KATEGORI LAINNYA
-                ================================================== --}}
-
-                <div
-                    id="edit-kategori-other-{{ $software->id }}"
-                    class="edit-form-group edit-other-input"
-                >
-
-                    <label
-                        for="edit-kategori-lainnya-{{ $software->id }}"
-                    >
-                        Kategori Lainnya
-                    </label>
-
-                    <input
-                        type="text"
-                        id="edit-kategori-lainnya-{{ $software->id }}"
-                        name="kategori_lainnya"
-                        value="{{ old('kategori_lainnya') }}"
-                        placeholder="Masukkan kategori lainnya"
-                    >
-
-                </div>
-
-
-                {{-- =================================================
-                     URL HOMEPAGE
-                ================================================== --}}
-
-                <div class="edit-form-group">
-
-                    <label
-                        for="edit-url-homepage-{{ $software->id }}"
-                    >
-                        URL Homepage
-                    </label>
-
-                    <input
-                        type="url"
-                        id="edit-url-homepage-{{ $software->id }}"
-                        name="url_homepage"
-                        value="{{ old('url_homepage', $software->url_homepage) }}"
-                        placeholder="https://contoh.bekasikota.go.id"
-                    >
-
-                    @error('url_homepage')
-                        <small class="edit-error-message">
-                            {{ $message }}
-                        </small>
-                    @enderror
-
-                </div>
-
-
-                {{-- =================================================
-                     IP PUBLIC + IP PRIVATE
-                ================================================== --}}
-
-                <div class="edit-form-grid">
-
-                    {{-- IP PUBLIC --}}
-
-                    <div class="edit-form-group">
-
-                        <label
-                            for="edit-ip-public-{{ $software->id }}"
-                        >
-                            IP Public
-                        </label>
-
-                        <input
-                            type="text"
-                            id="edit-ip-public-{{ $software->id }}"
-                            name="ip_public"
-                            value="{{ old('ip_public', $software->ip_public) }}"
-                            placeholder="Contoh: 103.xxx.xxx.xxx"
-                        >
-
-                        @error('ip_public')
-                            <small class="edit-error-message">
-                                {{ $message }}
-                            </small>
-                        @enderror
-
-                    </div>
-
-
-                    {{-- IP PRIVATE --}}
-
-                    <div class="edit-form-group">
-
-                        <label
-                            for="edit-ip-private-{{ $software->id }}"
-                        >
-                            IP Private
-                        </label>
-
-                        <input
-                            type="text"
-                            id="edit-ip-private-{{ $software->id }}"
-                            name="ip_private"
-                            value="{{ old('ip_private', $software->ip_private) }}"
-                            placeholder="Contoh: 192.168.x.x"
-                        >
-
-                        @error('ip_private')
-                            <small class="edit-error-message">
-                                {{ $message }}
-                            </small>
-                        @enderror
-
-                    </div>
-
-                </div>
-
-
-                {{-- =================================================
-                     HOSTING + STATUS
-                ================================================== --}}
-
-                <div class="edit-form-grid">
-
-                    {{-- HOSTING --}}
-
-                    <div class="edit-form-group">
-
-                        <label
-                            for="edit-hosting-{{ $software->id }}"
-                        >
-                            Hosting
-                            <span>*</span>
-                        </label>
-
-                        <select
-                            id="edit-hosting-{{ $software->id }}"
-                            name="hosting"
-                            required
-                        >
-
-                            <option value="">
-                                Pilih Hosting
-                            </option>
-
-                            <option
-                                value="DC Pemerintahan Kota Bekasi"
-                                {{ old('hosting', $software->hosting) === 'DC Pemerintahan Kota Bekasi' ? 'selected' : '' }}
+                            <input
+                                type="text"
+                                id="kode_{{ $software->id }}"
+                                class="software-input"
+                                value="{{ $software->kode }}"
+                                readonly
                             >
-                                DC Pemerintahan Kota Bekasi
-                            </option>
 
-                            <option
-                                value="BAPENDA"
-                                {{ old('hosting', $software->hosting) === 'BAPENDA' ? 'selected' : '' }}
+                        </div>
+
+
+                        {{-- NAMA ASET --}}
+
+                        <div class="software-form-group">
+
+                            <label for="nama_aset_{{ $software->id }}">
+                                Nama Aset / Nama Software
+                                <span class="required-mark">*</span>
+                            </label>
+
+                            <input
+                                type="text"
+                                id="nama_aset_{{ $software->id }}"
+                                name="nama_aset"
+                                class="software-input @error('nama_aset') error @enderror"
+                                value="{{ old('nama_aset', $software->nama_aset ?: $software->jenis) }}"
+                                placeholder="Masukkan nama aplikasi/software"
+                                required
                             >
-                                BAPENDA
-                            </option>
 
-                            <option
-                                value="Vendor"
-                                {{ old('hosting', $software->hosting) === 'Vendor' ? 'selected' : '' }}
+                            @error('nama_aset')
+                                <div class="field-error">{{ $message }}</div>
+                            @enderror
+
+                        </div>
+
+
+                        {{-- KATEGORI --}}
+
+                        <div class="software-form-group">
+
+                            <label for="kategori_id_{{ $software->id }}">
+                                Kategori
+                                <span class="required-mark">*</span>
+                            </label>
+
+                            <select
+                                id="kategori_id_{{ $software->id }}"
+                                name="kategori_id"
+                                class="software-select @error('kategori_id') error @enderror"
+                                required
                             >
-                                Vendor
-                            </option>
 
-                            <option
-                                value="Lainnya"
-                                {{ old('hosting', $software->hosting) === 'Lainnya' ? 'selected' : '' }}
+                                <option value="">
+                                    Pilih Kategori
+                                </option>
+
+                                @foreach($kategoriOptions ?? [] as $kategori)
+
+                                    <option
+                                        value="{{ $kategori->id }}"
+                                        {{ old('kategori_id', $software->kategori_id) == $kategori->id ? 'selected' : '' }}
+                                    >
+                                        {{ $kategori->nama }}
+                                    </option>
+
+                                @endforeach
+
+                            </select>
+
+                            <div class="master-info">
+                                Data berasal dari
+                                <a href="{{ route('software.master.index') }}">
+                                    Data Master
+                                </a>
+                            </div>
+
+                            @error('kategori_id')
+                                <div class="field-error">{{ $message }}</div>
+                            @enderror
+
+                        </div>
+
+
+                        {{-- KATEGORI SISTEM ELEKTRONIK --}}
+
+                        <div class="software-form-group">
+
+                            <label for="kategori_sistem_elektronik_{{ $software->id }}">
+                                Kategori Sistem Elektronik
+                            </label>
+
+                            <select
+                                id="kategori_sistem_elektronik_{{ $software->id }}"
+                                name="kategori_sistem_elektronik"
+                                class="software-select @error('kategori_sistem_elektronik') error @enderror"
                             >
-                                Lainnya
-                            </option>
 
-                        </select>
+                                <option value="">
+                                    Pilih Kategori
+                                </option>
 
-                        @error('hosting')
-                            <small class="edit-error-message">
-                                {{ $message }}
-                            </small>
-                        @enderror
+                                <option
+                                    value="Rendah"
+                                    {{ old('kategori_sistem_elektronik', $software->kategori_sistem_elektronik) === 'Rendah' ? 'selected' : '' }}
+                                >
+                                    Rendah
+                                </option>
 
-                    </div>
+                                <option
+                                    value="Tinggi"
+                                    {{ old('kategori_sistem_elektronik', $software->kategori_sistem_elektronik) === 'Tinggi' ? 'selected' : '' }}
+                                >
+                                    Tinggi
+                                </option>
+
+                                <option
+                                    value="Strategis"
+                                    {{ old('kategori_sistem_elektronik', $software->kategori_sistem_elektronik) === 'Strategis' ? 'selected' : '' }}
+                                >
+                                    Strategis
+                                </option>
+
+                            </select>
+
+                            <div class="master-info">
+                                Opsional. Dapat dikosongkan.
+                                <a
+                                    href="https://pse.layanan.go.id/api/downloadguide?fileName=FORMAT%20KATEGORI%20SISTEM%20ELEKTRONIK.pdf&nd=1779680847073&utm_source=kominfo&utm_medium=shorturl"
+                                    target="_blank"
+                                    rel="noopener noreferrer"
+                                >
+                                    Lihat Template Penilaian
+                                </a>
+                            </div>
+
+                            @error('kategori_sistem_elektronik')
+                                <div class="field-error">{{ $message }}</div>
+                            @enderror
+
+                        </div>
 
 
-                    {{-- STATUS --}}
+                        {{-- SSL --}}
 
-                    <div class="edit-form-group">
+                        <div class="software-form-group">
 
-                        <label
-                            for="edit-status-{{ $software->id }}"
-                        >
-                            Status
-                            <span>*</span>
-                        </label>
+                            <label for="ssl_id_{{ $software->id }}">
+                                SSL
+                                <span class="required-mark">*</span>
+                            </label>
 
-                        <select
-                            id="edit-status-{{ $software->id }}"
-                            name="status"
-                            required
-                        >
+                            <div class="ssl-select-wrapper">
 
-                            <option value="">
-                                Pilih Status
-                            </option>
+                                <select
+                                    id="ssl_id_{{ $software->id }}"
+                                    name="ssl_id"
+                                    class="software-select @error('ssl_id') error @enderror"
+                                    required
+                                >
 
-                            <option
-                                value="Aktif"
-                                {{ old('status', $software->status) === 'Aktif' ? 'selected' : '' }}
+                                    <option value="">
+                                        Pilih SSL
+                                    </option>
+
+                                    @foreach($sslOptions ?? [] as $ssl)
+
+                                        <option
+                                            value="{{ $ssl->id }}"
+                                            data-expire="{{ $ssl->tanggal_expire ? $ssl->tanggal_expire->format('Y-m-d') : '' }}"
+                                            data-name="{{ $ssl->nama_ssl }}"
+                                            {{ old('ssl_id', $software->ssl_id) == $ssl->id ? 'selected' : '' }}
+                                        >
+                                            {{ $ssl->nama_ssl }}
+                                        </option>
+
+                                    @endforeach
+
+                                </select>
+
+                                <div
+                                    id="sslExpireInfoEdit{{ $software->id }}"
+                                    class="ssl-expire-info"
+                                ></div>
+
+                            </div>
+
+                            <div class="master-info">
+                                SSL dikelola melalui
+                                <a href="{{ route('software.master.index') }}">
+                                    Data Master
+                                </a>
+                            </div>
+
+                            @error('ssl_id')
+                                <div class="field-error">{{ $message }}</div>
+                            @enderror
+
+                        </div>
+
+
+                        {{-- URL HOMEPAGE --}}
+
+                        <div class="software-form-group full">
+
+                            <label for="url_homepage_{{ $software->id }}">
+                                URL Homepage
+                            </label>
+
+                            <input
+                                type="url"
+                                id="url_homepage_{{ $software->id }}"
+                                name="url_homepage"
+                                class="software-input @error('url_homepage') error @enderror"
+                                value="{{ old('url_homepage', $software->url_homepage) }}"
+                                placeholder="https://contoh.bekasikota.go.id"
                             >
-                                Aktif
-                            </option>
 
-                            <option
-                                value="Tidak Aktif"
-                                {{ old('status', $software->status) === 'Tidak Aktif' ? 'selected' : '' }}
+                            @error('url_homepage')
+                                <div class="field-error">{{ $message }}</div>
+                            @enderror
+
+                        </div>
+
+
+                        {{-- IP PUBLIC --}}
+
+                        <div class="software-form-group">
+
+                            <label for="ip_public_{{ $software->id }}">
+                                IP Public
+                            </label>
+
+                            <input
+                                type="text"
+                                id="ip_public_{{ $software->id }}"
+                                name="ip_public"
+                                class="software-input @error('ip_public') error @enderror"
+                                value="{{ old('ip_public', $software->ip_public) }}"
+                                placeholder="Contoh: 103.123.45.67"
+                                inputmode="decimal"
+                                autocomplete="off"
                             >
-                                Tidak Aktif
-                            </option>
 
-                        </select>
+                            <div class="ip-hint">
+                                Hanya menerima alamat IP yang valid.
+                            </div>
 
-                        @error('status')
-                            <small class="edit-error-message">
-                                {{ $message }}
-                            </small>
-                        @enderror
+                            @error('ip_public')
+                                <div class="field-error">{{ $message }}</div>
+                            @enderror
+
+                        </div>
+
+
+                        {{-- IP PRIVATE --}}
+
+                        <div class="software-form-group">
+
+                            <label for="ip_private_{{ $software->id }}">
+                                IP Private
+                            </label>
+
+                            <input
+                                type="text"
+                                id="ip_private_{{ $software->id }}"
+                                name="ip_private"
+                                class="software-input @error('ip_private') error @enderror"
+                                value="{{ old('ip_private', $software->ip_private) }}"
+                                placeholder="Contoh: 192.168.1.10"
+                                inputmode="decimal"
+                                autocomplete="off"
+                            >
+
+                            <div class="ip-hint">
+                                Hanya menerima alamat IP yang valid.
+                            </div>
+
+                            @error('ip_private')
+                                <div class="field-error">{{ $message }}</div>
+                            @enderror
+
+                        </div>
 
                     </div>
 
@@ -943,27 +355,107 @@
 
 
                 {{-- =================================================
-                     HOSTING LAINNYA
+                     SERVER & HOSTING
                 ================================================== --}}
 
-                <div
-                    id="edit-hosting-other-{{ $software->id }}"
-                    class="edit-form-group edit-other-input"
-                >
+                <div class="software-form-section">
 
-                    <label
-                        for="edit-hosting-lainnya-{{ $software->id }}"
-                    >
-                        Hosting Lainnya
-                    </label>
+                    <div class="software-section-title">
+                        Server & Hosting
+                    </div>
 
-                    <input
-                        type="text"
-                        id="edit-hosting-lainnya-{{ $software->id }}"
-                        name="hosting_lainnya"
-                        value="{{ old('hosting_lainnya') }}"
-                        placeholder="Masukkan hosting lainnya"
-                    >
+                    <div class="software-form-grid">
+
+                        {{-- HOSTING --}}
+
+                        <div class="software-form-group">
+
+                            <label for="hosting_id_{{ $software->id }}">
+                                Hosting
+                                <span class="required-mark">*</span>
+                            </label>
+
+                            <select
+                                id="hosting_id_{{ $software->id }}"
+                                name="hosting_id"
+                                class="software-select @error('hosting_id') error @enderror"
+                                required
+                            >
+
+                                <option value="">
+                                    Pilih Hosting
+                                </option>
+
+                                @foreach($hostingOptions ?? [] as $hosting)
+
+                                    <option
+                                        value="{{ $hosting->id }}"
+                                        {{ old('hosting_id', $software->hosting_id) == $hosting->id ? 'selected' : '' }}
+                                    >
+                                        {{ $hosting->nama }}
+                                    </option>
+
+                                @endforeach
+
+                            </select>
+
+                            <div class="master-info">
+                                Data berasal dari
+                                <a href="{{ route('software.master.index') }}">
+                                    Data Master
+                                </a>
+                            </div>
+
+                            @error('hosting_id')
+                                <div class="field-error">{{ $message }}</div>
+                            @enderror
+
+                        </div>
+
+
+                        {{-- STATUS --}}
+
+                        <div class="software-form-group">
+
+                            <label for="status_{{ $software->id }}">
+                                Status
+                                <span class="required-mark">*</span>
+                            </label>
+
+                            <select
+                                id="status_{{ $software->id }}"
+                                name="status"
+                                class="software-select @error('status') error @enderror"
+                                required
+                            >
+
+                                <option value="">
+                                    Pilih Status
+                                </option>
+
+                                <option
+                                    value="Aktif"
+                                    {{ old('status', $software->status) === 'Aktif' ? 'selected' : '' }}
+                                >
+                                    Aktif
+                                </option>
+
+                                <option
+                                    value="Tidak Aktif"
+                                    {{ old('status', $software->status) === 'Tidak Aktif' ? 'selected' : '' }}
+                                >
+                                    Tidak Aktif
+                                </option>
+
+                            </select>
+
+                            @error('status')
+                                <div class="field-error">{{ $message }}</div>
+                            @enderror
+
+                        </div>
+
+                    </div>
 
                 </div>
 
@@ -972,100 +464,59 @@
                      PIC
                 ================================================== --}}
 
-                <div class="edit-form-group">
+                <div class="software-form-section">
 
-                    <label
-                        for="edit-pic-{{ $software->id }}"
-                    >
-                        PIC
-                        <span>*</span>
-                    </label>
+                    <div class="software-section-title">
+                        Penanggung Jawab
+                    </div>
 
-                    <select
-                        id="edit-pic-{{ $software->id }}"
-                        name="pic"
-                        required
-                    >
+                    <div class="software-form-grid">
 
-                        <option value="">
-                            Pilih PIC
-                        </option>
+                        <div class="software-form-group">
 
-                        <option
-                            value="Diskominfostandi_E-Govermment"
-                            {{ old('pic', $software->pic) === 'Diskominfostandi_E-Govermment' ? 'selected' : '' }}
-                        >
-                            Diskominfostandi_E-Govermment
-                        </option>
+                            <label for="pic_id_{{ $software->id }}">
+                                PIC
+                                <span class="required-mark">*</span>
+                            </label>
 
-                        <option
-                            value="Diskomfostandi_Santik"
-                            {{ old('pic', $software->pic) === 'Diskomfostandi_Santik' ? 'selected' : '' }}
-                        >
-                            Diskomfostandi_Santik
-                        </option>
+                            <select
+                                id="pic_id_{{ $software->id }}"
+                                name="pic_id"
+                                class="software-select @error('pic_id') error @enderror"
+                                required
+                            >
 
-                        <option
-                            value="Diskominfostandi_Statistik"
-                            {{ old('pic', $software->pic) === 'Diskominfostandi_Statistik' ? 'selected' : '' }}
-                        >
-                            Diskominfostandi_Statistik
-                        </option>
+                                <option value="">
+                                    Pilih PIC
+                                </option>
 
-                        <option
-                            value="Diskominfostandi_Sekretariat"
-                            {{ old('pic', $software->pic) === 'Diskominfostandi_Sekretariat' ? 'selected' : '' }}
-                        >
-                            Diskominfostandi_Sekretariat
-                        </option>
+                                @foreach($picOptions ?? [] as $pic)
 
-                        <option
-                            value="Diskominfostandi_IKP"
-                            {{ old('pic', $software->pic) === 'Diskominfostandi_IKP' ? 'selected' : '' }}
-                        >
-                            Diskominfostandi_IKP
-                        </option>
+                                    <option
+                                        value="{{ $pic->id }}"
+                                        {{ old('pic_id', $software->pic_id) == $pic->id ? 'selected' : '' }}
+                                    >
+                                        {{ $pic->nama }}
+                                    </option>
 
-                        <option
-                            value="Lainnya"
-                            {{ old('pic', $software->pic) === 'Lainnya' ? 'selected' : '' }}
-                        >
-                            Lainnya
-                        </option>
+                                @endforeach
 
-                    </select>
+                            </select>
 
-                    @error('pic')
-                        <small class="edit-error-message">
-                            {{ $message }}
-                        </small>
-                    @enderror
+                            <div class="master-info">
+                                Data berasal dari
+                                <a href="{{ route('software.master.index') }}">
+                                    Data Master
+                                </a>
+                            </div>
 
-                </div>
+                            @error('pic_id')
+                                <div class="field-error">{{ $message }}</div>
+                            @enderror
 
+                        </div>
 
-                {{-- =================================================
-                     PIC LAINNYA
-                ================================================== --}}
-
-                <div
-                    id="edit-pic-other-{{ $software->id }}"
-                    class="edit-form-group edit-other-input"
-                >
-
-                    <label
-                        for="edit-pic-lainnya-{{ $software->id }}"
-                    >
-                        PIC Lainnya
-                    </label>
-
-                    <input
-                        type="text"
-                        id="edit-pic-lainnya-{{ $software->id }}"
-                        name="pic_lainnya"
-                        value="{{ old('pic_lainnya') }}"
-                        placeholder="Masukkan PIC lainnya"
-                    >
+                    </div>
 
                 </div>
 
@@ -1074,220 +525,131 @@
                      CIA
                 ================================================== --}}
 
-                <div class="edit-form-group">
+                <div class="software-form-section">
 
-                    <label>
+                    <div class="software-section-title">
                         Penilaian CIA
-                        <span>*</span>
-                    </label>
-
-                </div>
-
-
-                <div class="edit-cia-grid">
-
-                    {{-- KERAHASIAAN --}}
-
-                    <div class="edit-form-group">
-
-                        <label
-                            for="edit-kerahasiaan-{{ $software->id }}"
-                        >
-                            Kerahasiaan
-                            <span>*</span>
-                        </label>
-
-                        <select
-                            id="edit-kerahasiaan-{{ $software->id }}"
-                            name="kerahasiaan"
-                            required
-                        >
-
-                            <option value="">
-                                Pilih Nilai
-                            </option>
-
-                            <option
-                                value="1"
-                                {{ (string) old('kerahasiaan', $software->kerahasiaan) === '1' ? 'selected' : '' }}
-                            >
-                                1
-                            </option>
-
-                            <option
-                                value="2"
-                                {{ (string) old('kerahasiaan', $software->kerahasiaan) === '2' ? 'selected' : '' }}
-                            >
-                                2
-                            </option>
-
-                            <option
-                                value="3"
-                                {{ (string) old('kerahasiaan', $software->kerahasiaan) === '3' ? 'selected' : '' }}
-                            >
-                                3
-                            </option>
-
-                        </select>
-
-                        @error('kerahasiaan')
-                            <small class="edit-error-message">
-                                {{ $message }}
-                            </small>
-                        @enderror
-
                     </div>
 
+                    <div class="cia-grid">
 
-                    {{-- INTEGRITAS --}}
+                        {{-- KERAHASIAAN --}}
 
-                    <div class="edit-form-group">
+                        <div class="cia-card">
 
-                        <label
-                            for="edit-integritas-{{ $software->id }}"
-                        >
-                            Integritas
-                            <span>*</span>
-                        </label>
+                            <div class="software-form-group">
 
-                        <select
-                            id="edit-integritas-{{ $software->id }}"
-                            name="integritas"
-                            required
-                        >
+                                <label for="kerahasiaan_{{ $software->id }}">
+                                    Kerahasiaan
+                                    <span class="required-mark">*</span>
+                                </label>
 
-                            <option value="">
-                                Pilih Nilai
-                            </option>
+                                <select
+                                    id="kerahasiaan_{{ $software->id }}"
+                                    name="kerahasiaan"
+                                    class="software-select @error('kerahasiaan') error @enderror"
+                                    required
+                                >
 
-                            <option
-                                value="1"
-                                {{ (string) old('integritas', $software->integritas) === '1' ? 'selected' : '' }}
-                            >
-                                1
-                            </option>
+                                    <option value="">
+                                        Pilih Nilai
+                                    </option>
 
-                            <option
-                                value="2"
-                                {{ (string) old('integritas', $software->integritas) === '2' ? 'selected' : '' }}
-                            >
-                                2
-                            </option>
+                                    @for($i = 1; $i <= 3; $i++)
 
-                            <option
-                                value="3"
-                                {{ (string) old('integritas', $software->integritas) === '3' ? 'selected' : '' }}
-                            >
-                                3
-                            </option>
+                                        <option
+                                            value="{{ $i }}"
+                                            {{ old('kerahasiaan', $software->kerahasiaan) == $i ? 'selected' : '' }}
+                                        >
+                                            {{ $i }}
+                                        </option>
 
-                        </select>
+                                    @endfor
 
-                        @error('integritas')
-                            <small class="edit-error-message">
-                                {{ $message }}
-                            </small>
-                        @enderror
+                                </select>
 
-                    </div>
+                            </div>
 
-
-                    {{-- KETERSEDIAAN --}}
-
-                    <div class="edit-form-group">
-
-                        <label
-                            for="edit-ketersediaan-{{ $software->id }}"
-                        >
-                            Ketersediaan
-                            <span>*</span>
-                        </label>
-
-                        <select
-                            id="edit-ketersediaan-{{ $software->id }}"
-                            name="ketersediaan"
-                            required
-                        >
-
-                            <option value="">
-                                Pilih Nilai
-                            </option>
-
-                            <option
-                                value="1"
-                                {{ (string) old('ketersediaan', $software->ketersediaan) === '1' ? 'selected' : '' }}
-                            >
-                                1
-                            </option>
-
-                            <option
-                                value="2"
-                                {{ (string) old('ketersediaan', $software->ketersediaan) === '2' ? 'selected' : '' }}
-                            >
-                                2
-                            </option>
-
-                            <option
-                                value="3"
-                                {{ (string) old('ketersediaan', $software->ketersediaan) === '3' ? 'selected' : '' }}
-                            >
-                                3
-                            </option>
-
-                        </select>
-
-                        @error('ketersediaan')
-                            <small class="edit-error-message">
-                                {{ $message }}
-                            </small>
-                        @enderror
-
-                    </div>
-
-                </div>
-
-
-                {{-- =================================================
-                     NILAI + KETERANGAN
-                ================================================== --}}
-
-                <div class="edit-cia-result">
-
-                    {{-- NILAI --}}
-
-                    <div class="edit-result-box">
-
-                        <label
-                            for="edit-nilai-{{ $software->id }}"
-                        >
-                            Nilai
-                        </label>
-
-                        <div
-                            id="edit-nilai-{{ $software->id }}"
-                            class="edit-result-value"
-                        >
-                            {{ number_format((float) ($software->nilai ?? 0), 2) }}
                         </div>
 
-                    </div>
+
+                        {{-- INTEGRITAS --}}
+
+                        <div class="cia-card">
+
+                            <div class="software-form-group">
+
+                                <label for="integritas_{{ $software->id }}">
+                                    Integritas
+                                    <span class="required-mark">*</span>
+                                </label>
+
+                                <select
+                                    id="integritas_{{ $software->id }}"
+                                    name="integritas"
+                                    class="software-select @error('integritas') error @enderror"
+                                    required
+                                >
+
+                                    <option value="">
+                                        Pilih Nilai
+                                    </option>
+
+                                    @for($i = 1; $i <= 3; $i++)
+
+                                        <option
+                                            value="{{ $i }}"
+                                            {{ old('integritas', $software->integritas) == $i ? 'selected' : '' }}
+                                        >
+                                            {{ $i }}
+                                        </option>
+
+                                    @endfor
+
+                                </select>
+
+                            </div>
+
+                        </div>
 
 
-                    {{-- KETERANGAN --}}
+                        {{-- KETERSEDIAAN --}}
 
-                    <div class="edit-result-box">
+                        <div class="cia-card">
 
-                        <label
-                            for="edit-keterangan-{{ $software->id }}"
-                        >
-                            Keterangan
-                        </label>
+                            <div class="software-form-group">
 
-                        <div
-                            id="edit-keterangan-{{ $software->id }}"
-                            class="edit-result-value"
-                        >
-                            {{ $software->keterangan ?? '-' }}
+                                <label for="ketersediaan_{{ $software->id }}">
+                                    Ketersediaan
+                                    <span class="required-mark">*</span>
+                                </label>
+
+                                <select
+                                    id="ketersediaan_{{ $software->id }}"
+                                    name="ketersediaan"
+                                    class="software-select @error('ketersediaan') error @enderror"
+                                    required
+                                >
+
+                                    <option value="">
+                                        Pilih Nilai
+                                    </option>
+
+                                    @for($i = 1; $i <= 3; $i++)
+
+                                        <option
+                                            value="{{ $i }}"
+                                            {{ old('ketersediaan', $software->ketersediaan) == $i ? 'selected' : '' }}
+                                        >
+                                            {{ $i }}
+                                        </option>
+
+                                    @endfor
+
+                                </select>
+
+                            </div>
+
                         </div>
 
                     </div>
@@ -1296,70 +658,90 @@
 
 
                 {{-- =================================================
-                     HIDDEN NILAI
+                     NILAI CIA
                 ================================================== --}}
 
-                <input
-                    type="hidden"
-                    id="edit-nilai-hidden-{{ $software->id }}"
-                    name="nilai"
-                    value="{{ old('nilai', $software->nilai ?? '') }}"
-                >
+                <div class="software-form-section">
+
+                    <div class="software-section-title">
+                        Hasil Penilaian
+                    </div>
+
+                    <div class="nilai-preview">
+
+                        <div class="nilai-box">
+
+                            <div class="nilai-box-label">
+                                Nilai
+                            </div>
+
+                            <div class="nilai-box-value">
+                                {{ $software->nilai !== null ? number_format((float) $software->nilai, 2) : '-' }}
+                            </div>
+
+                        </div>
+
+
+                        <div class="keterangan-box">
+
+                            <div class="keterangan-box-label">
+                                Keterangan
+                            </div>
+
+                            <div class="keterangan-box-value">
+                                {{ $software->keterangan ?: '-' }}
+                            </div>
+
+                        </div>
+
+                    </div>
+
+                </div>
 
 
                 {{-- =================================================
-                     HIDDEN KETERANGAN
+                     DESKRIPSI
                 ================================================== --}}
 
-                <input
-                    type="hidden"
-                    id="edit-keterangan-hidden-{{ $software->id }}"
-                    name="keterangan"
-                    value="{{ old('keterangan', $software->keterangan ?? '') }}"
-                >
+                <div class="software-form-section">
 
+                    <div class="software-section-title">
+                        Deskripsi
+                    </div>
 
-                {{-- =================================================
-                     DESKRIPSI APLIKASI
-                ================================================== --}}
+                    <div class="software-form-grid">
 
-                <div
-                    class="edit-form-group"
-                    style="margin-top: 18px;"
-                >
+                        <div class="software-form-group full">
 
-                    <label
-                        for="edit-deskripsi-aplikasi-{{ $software->id }}"
-                    >
-                        Deskripsi Aplikasi
-                    </label>
+                            <label for="deskripsi_aplikasi_{{ $software->id }}">
+                                Deskripsi Aplikasi
+                            </label>
 
-                    <textarea
-                        id="edit-deskripsi-aplikasi-{{ $software->id }}"
-                        name="deskripsi_aplikasi"
-                        placeholder="Masukkan deskripsi aplikasi/software"
-                    >{{ old('deskripsi_aplikasi', $software->deskripsi_aplikasi) }}</textarea>
+                            <textarea
+                                id="deskripsi_aplikasi_{{ $software->id }}"
+                                name="deskripsi_aplikasi"
+                                class="software-textarea @error('deskripsi_aplikasi') error @enderror"
+                                placeholder="Masukkan deskripsi aplikasi/software"
+                            >{{ old('deskripsi_aplikasi', $software->deskripsi_aplikasi) }}</textarea>
 
-                    @error('deskripsi_aplikasi')
-                        <small class="edit-error-message">
-                            {{ $message }}
-                        </small>
-                    @enderror
+                            @error('deskripsi_aplikasi')
+                                <div class="field-error">{{ $message }}</div>
+                            @enderror
+
+                        </div>
+
+                    </div>
 
                 </div>
 
             </div>
 
 
-            {{-- =================================================
-                 FOOTER
-            ================================================== --}}
-
-            <div class="software-edit-modal-footer">
+            <div class="software-create-footer">
 
                 <button
                     type="button"
-                    class="edit-btn-cancel"
+                    class="software-btn-cancel"
                     onclick="closeEditSoftwareModal('{{ $software->id }}')"
                 >
                     Batal
@@ -1367,10 +749,8 @@
 
                 <button
                     type="submit"
-                    class="edit-btn-save"
+                    class="software-btn-save"
                 >
-                    <i class="bi bi-check-lg"></i>
-
                     Simpan Perubahan
                 </button>
 
@@ -1382,318 +762,167 @@
 
 </div>
 
-
 <script>
 (function () {
 
     const id = @json($software->id);
 
+    window['initEditSoftwareModal_' + id] = function () {
 
-    /* =========================================================
-       ELEMENT
-    ========================================================= */
+        const modal = document.getElementById(
+            'software-edit-modal-' + id
+        );
 
-    const kategori = document.getElementById(
-        'edit-kategori-' + id
-    );
-
-    const kategoriOther = document.getElementById(
-        'edit-kategori-other-' + id
-    );
-
-    const hosting = document.getElementById(
-        'edit-hosting-' + id
-    );
-
-    const hostingOther = document.getElementById(
-        'edit-hosting-other-' + id
-    );
-
-    const pic = document.getElementById(
-        'edit-pic-' + id
-    );
-
-    const picOther = document.getElementById(
-        'edit-pic-other-' + id
-    );
-
-
-    const kerahasiaan = document.getElementById(
-        'edit-kerahasiaan-' + id
-    );
-
-    const integritas = document.getElementById(
-        'edit-integritas-' + id
-    );
-
-    const ketersediaan = document.getElementById(
-        'edit-ketersediaan-' + id
-    );
-
-
-    const nilai = document.getElementById(
-        'edit-nilai-' + id
-    );
-
-    const nilaiHidden = document.getElementById(
-        'edit-nilai-hidden-' + id
-    );
-
-    const keterangan = document.getElementById(
-        'edit-keterangan-' + id
-    );
-
-    const keteranganHidden = document.getElementById(
-        'edit-keterangan-hidden-' + id
-    );
-
-
-    /* =========================================================
-       TOGGLE LAINNYA
-    ========================================================= */
-
-    function updateKategoriOther() {
-
-        if (!kategori || !kategoriOther) {
+        if (!modal) {
             return;
         }
 
-        if (kategori.value === 'Lainnya') {
+        modal.setAttribute('aria-hidden', 'false');
 
-            kategoriOther.classList.add('show');
+        const sslSelect = document.getElementById(
+            'ssl_id_' + id
+        );
+
+        const expireInfo = document.getElementById(
+            'sslExpireInfoEdit' + id
+        );
+
+        if (!sslSelect || !expireInfo) {
+            return;
+        }
+
+        const selected =
+            sslSelect.options[sslSelect.selectedIndex];
+
+        if (!selected || !selected.value) {
+            expireInfo.classList.remove(
+                'show',
+                'warning',
+                'expired'
+            );
+
+            expireInfo.innerHTML = '';
+
+            return;
+        }
+
+        const expire =
+            selected.getAttribute('data-expire');
+
+        const name =
+            selected.getAttribute('data-name') ||
+            selected.textContent.trim();
+
+        if (!expire) {
+
+            expireInfo.classList.remove(
+                'warning',
+                'expired'
+            );
+
+            expireInfo.classList.add('show');
+
+            expireInfo.innerHTML =
+                '<strong>' +
+                name +
+                '</strong> — Tidak memiliki tanggal expire.';
+
+            return;
+        }
+
+        const expireDate =
+            new Date(expire + 'T00:00:00');
+
+        const today = new Date();
+
+        today.setHours(
+            0,
+            0,
+            0,
+            0
+        );
+
+        const diffDays =
+            Math.ceil(
+                (
+                    expireDate.getTime() -
+                    today.getTime()
+                ) /
+                (1000 * 60 * 60 * 24)
+            );
+
+        expireInfo.classList.remove(
+            'warning',
+            'expired'
+        );
+
+        expireInfo.classList.add('show');
+
+        const formattedDate =
+            expireDate.toLocaleDateString(
+                'id-ID',
+                {
+                    day: '2-digit',
+                    month: '2-digit',
+                    year: 'numeric'
+                }
+            );
+
+        if (diffDays < 0) {
+
+            expireInfo.classList.add('expired');
+
+            expireInfo.innerHTML =
+                '<strong>' +
+                name +
+                '</strong> — Expire pada ' +
+                formattedDate +
+                ' <strong>(Expired)</strong>';
+
+        } else if (diffDays <= 30) {
+
+            expireInfo.classList.add('warning');
+
+            expireInfo.innerHTML =
+                '<strong>' +
+                name +
+                '</strong> — Expire pada ' +
+                formattedDate +
+                ' <strong>(' +
+                diffDays +
+                ' hari lagi)</strong>';
 
         } else {
 
-            kategoriOther.classList.remove('show');
+            expireInfo.innerHTML =
+                '<strong>' +
+                name +
+                '</strong> — Expire pada ' +
+                formattedDate;
 
         }
-    }
-
-
-    function updateHostingOther() {
-
-        if (!hosting || !hostingOther) {
-            return;
-        }
-
-        if (hosting.value === 'Lainnya') {
-
-            hostingOther.classList.add('show');
-
-        } else {
-
-            hostingOther.classList.remove('show');
-
-        }
-    }
-
-
-    function updatePicOther() {
-
-        if (!pic || !picOther) {
-            return;
-        }
-
-        if (pic.value === 'Lainnya') {
-
-            picOther.classList.add('show');
-
-        } else {
-
-            picOther.classList.remove('show');
-
-        }
-    }
-
-
-    /* =========================================================
-       HITUNG NILAI CIA
-    ========================================================= */
-
-    function calculateCIA() {
-
-        if (
-            !kerahasiaan ||
-            !integritas ||
-            !ketersediaan ||
-            !nilai ||
-            !keterangan
-        ) {
-            return;
-        }
-
-
-        const c = parseInt(
-            kerahasiaan.value,
-            10
-        );
-
-        const i = parseInt(
-            integritas.value,
-            10
-        );
-
-        const a = parseInt(
-            ketersediaan.value,
-            10
-        );
-
-
-        if (
-            isNaN(c) ||
-            isNaN(i) ||
-            isNaN(a)
-        ) {
-
-            nilai.textContent = '-';
-
-            keterangan.textContent = '-';
-
-            if (nilaiHidden) {
-                nilaiHidden.value = '';
-            }
-
-            if (keteranganHidden) {
-                keteranganHidden.value = '';
-            }
-
-            return;
-        }
-
-
-        const hasil = (
-            (c + i + a) / 3
-        ).toFixed(2);
-
-
-        let hasilKeterangan = '';
-
-
-        if (parseFloat(hasil) <= 1) {
-
-            hasilKeterangan = 'Rendah';
-
-        } else if (parseFloat(hasil) <= 2) {
-
-            hasilKeterangan = 'Sedang';
-
-        } else {
-
-            hasilKeterangan = 'Tinggi';
-
-        }
-
-
-        nilai.textContent = hasil;
-
-        keterangan.textContent = hasilKeterangan;
-
-
-        if (nilaiHidden) {
-            nilaiHidden.value = hasil;
-        }
-
-        if (keteranganHidden) {
-            keteranganHidden.value = hasilKeterangan;
-        }
-
-    }
-
-
-    /* =========================================================
-       EVENTS
-    ========================================================= */
-
-    if (kategori) {
-
-        kategori.addEventListener(
-            'change',
-            updateKategoriOther
-        );
-
-    }
-
-
-    if (hosting) {
-
-        hosting.addEventListener(
-            'change',
-            updateHostingOther
-        );
-
-    }
-
-
-    if (pic) {
-
-        pic.addEventListener(
-            'change',
-            updatePicOther
-        );
-
-    }
-
-
-    if (kerahasiaan) {
-
-        kerahasiaan.addEventListener(
-            'change',
-            calculateCIA
-        );
-
-    }
-
-
-    if (integritas) {
-
-        integritas.addEventListener(
-            'change',
-            calculateCIA
-        );
-
-    }
-
-
-    if (ketersediaan) {
-
-        ketersediaan.addEventListener(
-            'change',
-            calculateCIA
-        );
-
-    }
-
-
-    /* =========================================================
-       INITIAL STATE
-    ========================================================= */
-
-    window[
-        'initEditSoftwareModal_' + id
-    ] = function () {
-
-        updateKategoriOther();
-
-        updateHostingOther();
-
-        updatePicOther();
-
-        calculateCIA();
 
     };
 
 
-    /*
-     * Jalankan juga saat file Blade selesai dimuat.
-     */
-    updateKategoriOther();
+    const sslSelect = document.getElementById(
+        'ssl_id_' + id
+    );
 
-    updateHostingOther();
+    if (sslSelect) {
 
-    updatePicOther();
+        sslSelect.addEventListener(
+            'change',
+            function () {
 
-    calculateCIA();
+                window[
+                    'initEditSoftwareModal_' + id
+                ]();
 
+            }
+        );
+
+    }
 
 })();
 </script>

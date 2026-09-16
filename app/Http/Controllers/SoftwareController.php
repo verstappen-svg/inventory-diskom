@@ -491,6 +491,12 @@ class SoftwareController extends Controller
                 'kategori_id.exists' =>
                     'Kategori tidak valid atau sudah tidak aktif.',
 
+                'kategori_sistem_elektronik' => [
+                    'nullable',
+                    'string',
+                    'in:Rendah,Tinggi,Strategis',
+                ],
+
                 'ssl_id.exists' =>
                     'SSL tidak valid atau sudah tidak aktif.',
 
@@ -1399,6 +1405,12 @@ class SoftwareController extends Controller
 
                 'kategori_id.exists' =>
                     'Kategori tidak valid atau sudah tidak aktif.',
+
+                'kategori_sistem_elektronik' => [
+                    'nullable',
+                    'string',
+                    'in:Rendah,Tinggi,Strategis',
+                ],
 
                 'ssl_id.exists' =>
                     'SSL tidak valid atau sudah tidak aktif.',
