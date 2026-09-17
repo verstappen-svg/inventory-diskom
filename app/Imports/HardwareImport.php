@@ -5,6 +5,7 @@ namespace App\Imports;
 use App\Models\Hardware;
 use App\Models\Lokasi;
 use App\Models\VerificationRequest;
+use Illuminate\Database\Eloquent\Model;
 use Illuminate\Support\Facades\DB;
 use Maatwebsite\Excel\Concerns\ToModel;
 use Maatwebsite\Excel\Concerns\WithHeadingRow;
@@ -15,9 +16,6 @@ class HardwareImport implements
     WithHeadingRow,
     WithValidation
 {
-    /**
-     * Menentukan Asset ID berdasarkan jenis barang.
-     */
     private function generateAssetId(string $jenisBarang): string
     {
         $year = now()->format('y');
@@ -27,6 +25,7 @@ class HardwareImport implements
             'PC Desktop',
             'Laptop',
             'NoteBook',
+            'Notebook',
             'Tablet',
             'Smartphone',
             'Perangkat Komunikasi',
@@ -36,9 +35,9 @@ class HardwareImport implements
             'CCTV',
         ];
 
-        if (in_array($jenisBarang, $endDevices)) {
+        if (in_array($jenisBarang, $endDevices, true)) {
             $prefix = 'ED-' . $year . '-';
-        } elseif (in_array($jenisBarang, $securityDevices)) {
+        } elseif (in_array($jenisBarang, $securityDevices, true)) {
             $prefix = 'SD-' . $year . '-';
         } else {
             $prefix = 'PD-' . $year . '-';
@@ -73,38 +72,63 @@ class HardwareImport implements
         );
     }
 
-    /**
-     * Membaca setiap baris dari Excel.
-     */
-    public function model(array $row): \Illuminate\Database\Eloquent\Model|array|null
+    public function model(array $row): Model|array|null
     {
+        $namaBarang = trim(
+            (string) ($row['nama_barang'] ?? '')
+        );
+
+        $namaLokasi = trim(
+            (string) ($row['lokasi'] ?? '')
+        );
+
+        $jenisBarang = trim(
+            (string) ($row['jenis_barang'] ?? '')
+        );
+
+        $spesifikasi = trim(
+            (string) ($row['spesifikasi'] ?? '')
+        );
+
+        $sistemOperasi = trim(
+            (string) ($row['sistem_operasi'] ?? '')
+        );
+
+        $sistemOperasi = $sistemOperasi ?: 'N/A';
+
+        $tahunPembelian = $this->resolveTahunPembelian(
+            $row['tahun_perolehan'] ?? null
+        );
+
+        $harga = $this->normalizeHarga(
+            $row['harga_rp'] ?? 0
+        );
+
+        $kondisi = trim(
+            (string) ($row['kondisi'] ?? '')
+        );
+
+        $kondisi = $kondisi ?: 'N/A';
+
         $lokasi = Lokasi::where(
             'nama_lokasi',
-            trim($row['lokasi'] ?? '')
+            $namaLokasi
         )->first();
 
         if (!$lokasi) {
-            return null;
+            throw new \Exception(
+                "Lokasi '{$namaLokasi}' tidak ditemukan di Data Master."
+            );
         }
-
-        $jenisBarang = trim($row['jenis_barang'] ?? '');
-
-        $sistemOperasi = trim(
-            $row['sistem_operasi'] ?? ''
-        ) ?: 'N/A';
 
         $hardwareData = [
             'asset_id' => $this->generateAssetId(
                 $jenisBarang
             ),
 
-            'nama_barang' => trim(
-                $row['nama_barang'] ?? ''
-            ),
+            'nama_barang' => $namaBarang,
 
-            'spesifikasi' => trim(
-                $row['spesifikasi'] ?? ''
-            ),
+            'spesifikasi' => $spesifikasi ?: 'N/A',
 
             'jenis_barang' => $jenisBarang,
 
@@ -112,17 +136,11 @@ class HardwareImport implements
 
             'sistem_operasi' => $sistemOperasi,
 
-            'tahun_pembelian' => (int) (
-                $row['tahun_perolehan'] ?? 0
-            ),
+            'tahun_pembelian' => $tahunPembelian,
 
-            'harga' => $this->normalizeHarga(
-                $row['harga_rp'] ?? $row['harga'] ?? 0
-            ),
+            'harga' => $harga,
 
-            'kondisi' => trim(
-                $row['kondisi'] ?? ''
-            ),
+            'kondisi' => $kondisi,
         ];
 
         $hardware = null;
@@ -148,13 +166,48 @@ class HardwareImport implements
         return $hardware;
     }
 
-    /**
-     * Mengubah format harga Excel menjadi angka.
-     *
-     * Contoh:
-     * 7.300.000,00 -> 7300000
-     * 10604500    -> 10604500
-     */
+    private function resolveTahunPembelian($value): int
+    {
+        if ($value === null || $value === '') {
+            return now()->year;
+        }
+
+        if (is_numeric($value)) {
+            $value = (int) $value;
+
+            /*
+             * Excel date serial.
+             */
+            if ($value > 2100) {
+                try {
+                    $date =
+                        \PhpOffice\PhpSpreadsheet\Shared\Date
+                            ::excelToDateTimeObject($value);
+
+                    return (int) $date->format('Y');
+                } catch (\Throwable $e) {
+                    return now()->year;
+                }
+            }
+
+            if ($value >= 1900 && $value <= 2100) {
+                return $value;
+            }
+        }
+
+        $value = trim((string) $value);
+
+        /*
+         * Coba ambil tahun dari format tanggal
+         * seperti 2024-01-01 / 01-01-2024.
+         */
+        if (preg_match('/\b(19|20)\d{2}\b/', $value, $matches)) {
+            return (int) $matches[0];
+        }
+
+        return now()->year;
+    }
+
     private function normalizeHarga($harga): float
     {
         if ($harga === null || $harga === '') {
@@ -173,40 +226,25 @@ class HardwareImport implements
             $harga
         );
 
-        /*
-         * Format Indonesia:
-         * 7.300.000,00
-         */
         if (
             str_contains($harga, '.') &&
             str_contains($harga, ',')
         ) {
             $harga = str_replace('.', '', $harga);
             $harga = str_replace(',', '.', $harga);
-        }
-
-        /*
-         * Format angka dengan koma sebagai desimal:
-         * 7300000,00
-         */
-        elseif (str_contains($harga, ',')) {
+        } elseif (str_contains($harga, ',')) {
             $harga = str_replace(',', '.', $harga);
-        }
-
-        /*
-         * Format angka dengan titik sebagai pemisah ribuan:
-         * 7.300.000
-         */
-        elseif (str_contains($harga, '.')) {
+        } elseif (str_contains($harga, '.')) {
+            /*
+             * Format Indonesia:
+             * 1.500.000 -> 1500000
+             */
             $harga = str_replace('.', '', $harga);
         }
 
         return (float) $harga;
     }
 
-    /**
-     * Validasi setiap baris Excel.
-     */
     public function rules(): array
     {
         return [

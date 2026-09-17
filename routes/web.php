@@ -11,6 +11,7 @@ use App\Http\Controllers\PermissionController;
 use App\Http\Controllers\LogAktivitasController;
 use App\Http\Controllers\JaringanController;
 use App\Http\Controllers\DataCenterController;
+use App\Http\Controllers\DataCenterMasterController;
 use App\Http\Controllers\SplpController;
 use App\Http\Controllers\SoftwareController;
 use App\Http\Controllers\SoftwareMasterController;
@@ -76,7 +77,6 @@ Route::middleware('auth')->group(function () {
         '/notifikasi/{id}/read',
         [NotificationController::class, 'read']
     )->name('notifikasi.read');
-
 
 
     /*
@@ -192,154 +192,198 @@ Route::middleware('auth')->group(function () {
     });
 
 
-/*
-|--------------------------------------------------------------------------
-| SOFTWARE
-|--------------------------------------------------------------------------
-*/
+    /*
+    |--------------------------------------------------------------------------
+    | SOFTWARE
+    |--------------------------------------------------------------------------
+    */
 
-/*
-|--------------------------------------------------------------------------
-| DATA MASTER SOFTWARE
-|--------------------------------------------------------------------------
-|
-| Route Data Master diletakkan SEBELUM resource software.
-| Jangan dipindahkan ke bawah Route::resource('software', ...),
-| supaya /software/master tidak dianggap sebagai {software}.
-|
-*/
+    Route::middleware(
+        'menu.permission:software'
+    )->group(function () {
 
-Route::get('/software/master', [
-    SoftwareMasterController::class,
-    'index'
-])->name('software.master.index');
+        /*
+        |--------------------------------------------------------------------------
+        | DATA MASTER SOFTWARE
+        |--------------------------------------------------------------------------
+        */
 
-Route::post('/software/master', [
-    SoftwareMasterController::class,
-    'store'
-])->name('software.master.store');
+        Route::get(
+            '/software/master',
+            [SoftwareMasterController::class, 'index']
+        )->name('software.master.index');
 
-Route::put('/software/master/{type}/{id}', [
-    SoftwareMasterController::class,
-    'update'
-])->name('software.master.update');
+        Route::post(
+            '/software/master',
+            [SoftwareMasterController::class, 'store']
+        )->name('software.master.store');
 
-Route::patch('/software/master/{type}/{id}/toggle', [
-    SoftwareMasterController::class,
-    'toggle'
-])->name('software.master.toggle');
+        Route::put(
+            '/software/master/{type}/{id}',
+            [SoftwareMasterController::class, 'update']
+        )->name('software.master.update');
 
-Route::delete('/software/master/{type}/{id}', [
-    SoftwareMasterController::class,
-    'destroy'
-])->name('software.master.destroy');
+        Route::patch(
+            '/software/master/{type}/{id}/toggle',
+            [SoftwareMasterController::class, 'toggle']
+        )->name('software.master.toggle');
 
-
-/*
-|--------------------------------------------------------------------------
-| SOFTWARE
-|--------------------------------------------------------------------------
-*/
-
-Route::resource(
-    'software',
-    SoftwareController::class
-)->except(['show'])
-  ->middleware('menu.permission:software');
-
-Route::post('/software/import', [
-    SoftwareController::class,
-    'import'
-])->name('software.import');
+        Route::delete(
+            '/software/master/{type}/{id}',
+            [SoftwareMasterController::class, 'destroy']
+        )->name('software.master.destroy');
 
 
-/*
-|--------------------------------------------------------------------------
-| INFRASTRUKTUR — JARINGAN
-|--------------------------------------------------------------------------
-*/
+        /*
+        |--------------------------------------------------------------------------
+        | DATA SOFTWARE
+        |--------------------------------------------------------------------------
+        */
 
-Route::resource(
-    'infrastruktur/jaringan',
-    JaringanController::class
-)->names([
-    'index'   => 'jaringan.index',
-    'create'  => 'jaringan.create',
-    'store'   => 'jaringan.store',
-    'show'    => 'jaringan.show',
-    'edit'    => 'jaringan.edit',
-    'update'  => 'jaringan.update',
-    'destroy' => 'jaringan.destroy',
-])->except(['show'])
-  ->middleware('menu.permission:infrastruktur.jaringan');
+        Route::resource(
+            'software',
+            SoftwareController::class
+        )->except(['show']);
 
 
-/*
-|--------------------------------------------------------------------------
-| INFRASTRUKTUR — DATA CENTER
-|--------------------------------------------------------------------------
-*/
+        /*
+        |--------------------------------------------------------------------------
+        | IMPORT EXCEL SOFTWARE
+        |--------------------------------------------------------------------------
+        */
 
-Route::resource(
-    'infrastruktur/data-center',
-    DataCenterController::class
-)->names([
-    'index'   => 'data-center.index',
-    'create'  => 'data-center.create',
-    'store'    => 'data-center.store',
-    'show'    => 'data-center.show',
-    'edit'    => 'data-center.edit',
-    'update'  => 'data-center.update',
-    'destroy' => 'data-center.destroy',
-])->except(['show'])
-  ->middleware('menu.permission:infrastruktur.data-center');
+        Route::post(
+            '/software/import',
+            [SoftwareController::class, 'import']
+        )->name('software.import');
+    });
 
 
-/*
-|--------------------------------------------------------------------------
-| DOWNLOAD TEMPLATE EXCEL — DATA CENTER
-|--------------------------------------------------------------------------
-*/
+    /*
+    |--------------------------------------------------------------------------
+    | INFRASTRUKTUR — JARINGAN
+    |--------------------------------------------------------------------------
+    */
 
-Route::get(
-    '/infrastruktur/data-center/template',
-    [DataCenterController::class, 'downloadTemplate']
-)->name('data-center.template')
- ->middleware('menu.permission:infrastruktur.data-center');
-
-
-/*
-|--------------------------------------------------------------------------
-| IMPORT EXCEL — DATA CENTER
-|--------------------------------------------------------------------------
-*/
-
-Route::post(
-    '/infrastruktur/data-center/import',
-    [DataCenterController::class, 'import']
-)->name('data-center.import')
- ->middleware('menu.permission:infrastruktur.data-center');
+    Route::resource(
+        'infrastruktur/jaringan',
+        JaringanController::class
+    )->names([
+        'index'   => 'jaringan.index',
+        'create'  => 'jaringan.create',
+        'store'   => 'jaringan.store',
+        'show'    => 'jaringan.show',
+        'edit'    => 'jaringan.edit',
+        'update'  => 'jaringan.update',
+        'destroy' => 'jaringan.destroy',
+    ])->except(['show'])
+      ->middleware('menu.permission:infrastruktur.jaringan');
 
 
-/*
-|--------------------------------------------------------------------------
-| INFRASTRUKTUR — SPLP
-|--------------------------------------------------------------------------
-*/
+    /*
+    |--------------------------------------------------------------------------
+    | INFRASTRUKTUR — DATA CENTER
+    |--------------------------------------------------------------------------
+    */
 
-Route::resource(
-    'infrastruktur/splp',
-    SplpController::class
-)->names([
-    'index'   => 'splp.index',
-    'create'  => 'splp.create',
-    'store'   => 'splp.store',
-    'show'    => 'splp.show',
-    'edit'    => 'splp.edit',
-    'update'  => 'splp.update',
-    'destroy' => 'splp.destroy',
-])->except(['show'])
-  ->middleware('menu.permission:infrastruktur.splp');
+    Route::resource(
+        'infrastruktur/data-center',
+        DataCenterController::class
+    )->names([
+        'index'   => 'data-center.index',
+        'create'  => 'data-center.create',
+        'store'   => 'data-center.store',
+        'show'    => 'data-center.show',
+        'edit'    => 'data-center.edit',
+        'update'  => 'data-center.update',
+        'destroy' => 'data-center.destroy',
+    ])->except(['show'])
+      ->middleware('menu.permission:infrastruktur.data-center');
+
+
+    /*
+    |--------------------------------------------------------------------------
+    | DATA MASTER — DATA CENTER
+    |--------------------------------------------------------------------------
+    */
+
+    Route::get(
+        '/infrastruktur/data-center/master',
+        [DataCenterMasterController::class, 'index']
+    )->name('data-center.master')
+      ->middleware('menu.permission:infrastruktur.data-center');
+
+    Route::post(
+        '/infrastruktur/data-center/master',
+        [DataCenterMasterController::class, 'store']
+    )->name('data-center.master.store')
+      ->middleware('menu.permission:infrastruktur.data-center');
+
+    Route::put(
+        '/infrastruktur/data-center/master/{id}',
+        [DataCenterMasterController::class, 'update']
+    )->name('data-center.master.update')
+      ->middleware('menu.permission:infrastruktur.data-center');
+
+    Route::patch(
+        '/infrastruktur/data-center/master/{id}/toggle',
+        [DataCenterMasterController::class, 'toggleStatus']
+    )->name('data-center.master.toggle')
+      ->middleware('menu.permission:infrastruktur.data-center');
+
+    Route::delete(
+        '/infrastruktur/data-center/master/{id}',
+        [DataCenterMasterController::class, 'destroy']
+    )->name('data-center.master.destroy')
+      ->middleware('menu.permission:infrastruktur.data-center');
+
+
+    /*
+    |--------------------------------------------------------------------------
+    | DOWNLOAD TEMPLATE EXCEL — DATA CENTER
+    |--------------------------------------------------------------------------
+    */
+
+    Route::get(
+        '/infrastruktur/data-center/template',
+        [DataCenterController::class, 'downloadTemplate']
+    )->name('data-center.template')
+      ->middleware('menu.permission:infrastruktur.data-center');
+
+
+    /*
+    |--------------------------------------------------------------------------
+    | IMPORT EXCEL — DATA CENTER
+    |--------------------------------------------------------------------------
+    */
+
+    Route::post(
+        '/infrastruktur/data-center/import',
+        [DataCenterController::class, 'import']
+    )->name('data-center.import')
+      ->middleware('menu.permission:infrastruktur.data-center');
+
+
+    /*
+    |--------------------------------------------------------------------------
+    | INFRASTRUKTUR — SPLP
+    |--------------------------------------------------------------------------
+    */
+
+    Route::resource(
+        'infrastruktur/splp',
+        SplpController::class
+    )->names([
+        'index'   => 'splp.index',
+        'create'  => 'splp.create',
+        'store'   => 'splp.store',
+        'show'    => 'splp.show',
+        'edit'    => 'splp.edit',
+        'update'  => 'splp.update',
+        'destroy' => 'splp.destroy',
+    ])->except(['show'])
+      ->middleware('menu.permission:infrastruktur.splp');
+
 
     /*
     |--------------------------------------------------------------------------
@@ -380,7 +424,6 @@ Route::resource(
             '/data/{id}',
             [DataController::class, 'destroy']
         )->name('data.destroy');
-
     });
 
 
@@ -432,7 +475,9 @@ Route::resource(
     |--------------------------------------------------------------------------
     */
 
-    Route::middleware('menu.permission:laporan')->group(function () {
+    Route::middleware(
+        'menu.permission:laporan'
+    )->group(function () {
 
         Route::get(
             '/laporan',

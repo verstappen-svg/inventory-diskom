@@ -13,6 +13,7 @@ use App\Models\VerificationRequest;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Validation\Rule;
+use PhpOffice\PhpSpreadsheet\IOFactory;
 
 class SoftwareController extends Controller
 {
@@ -226,13 +227,6 @@ class SoftwareController extends Controller
         |--------------------------------------------------------------------------
         | DATA TABEL
         |--------------------------------------------------------------------------
-        |
-        | Wajib paginate karena Blade menggunakan:
-        | - total()
-        | - firstItem()
-        | - hasPages()
-        | - withQueryString()
-        |
         */
 
         $softwares = $query
@@ -243,12 +237,8 @@ class SoftwareController extends Controller
 
         /*
         |--------------------------------------------------------------------------
-        | QUERY STATISTIK
+        | STATISTIK
         |--------------------------------------------------------------------------
-        |
-        | Statistik menggunakan seluruh data.
-        | Jadi ketika tabel difilter, angka statistik tidak ikut berubah.
-        |
         */
 
         $allSoftwareQuery = SoftwareAsset::query();
@@ -548,12 +538,6 @@ class SoftwareController extends Controller
      */
     public function store(Request $request)
     {
-        /*
-        |--------------------------------------------------------------------------
-        | VALIDASI
-        |--------------------------------------------------------------------------
-        */
-
         $validated = $request->validate(
             $this->softwareRules(),
             [
@@ -605,12 +589,6 @@ class SoftwareController extends Controller
         );
 
 
-        /*
-        |--------------------------------------------------------------------------
-        | MASTER DATA
-        |--------------------------------------------------------------------------
-        */
-
         $masters = $this->resolveMasterData(
             $validated
         );
@@ -620,12 +598,6 @@ class SoftwareController extends Controller
             $masters
         );
 
-
-        /*
-        |--------------------------------------------------------------------------
-        | HITUNG NILAI CIA
-        |--------------------------------------------------------------------------
-        */
 
         $nilai = (
             $validated['kerahasiaan'] +
@@ -644,24 +616,12 @@ class SoftwareController extends Controller
             );
 
 
-        /*
-        |--------------------------------------------------------------------------
-        | KOMPATIBILITAS FIELD LAMA
-        |--------------------------------------------------------------------------
-        */
-
         $validated['jenis'] =
             $validated['nama_aset'];
 
         $validated['jumlah_lisensi'] =
             $validated['jumlah_lisensi'] ?? 1;
 
-
-        /*
-        |--------------------------------------------------------------------------
-        | HAPUS DATA BANTU
-        |--------------------------------------------------------------------------
-        */
 
         unset(
             $validated['kategori_name'],
@@ -671,29 +631,10 @@ class SoftwareController extends Controller
         );
 
 
-        /*
-        |--------------------------------------------------------------------------
-        | TRANSACTION
-        |--------------------------------------------------------------------------
-        */
-
         DB::transaction(function () use (&$validated) {
-
-            /*
-            |--------------------------------------------------------------------------
-            | KODE
-            |--------------------------------------------------------------------------
-            */
 
             $validated['kode'] =
                 $this->generateCode();
-
-
-            /*
-            |--------------------------------------------------------------------------
-            | VERIFIKASI
-            |--------------------------------------------------------------------------
-            */
 
             $validated['verifikasi'] =
                 'menunggu';
@@ -702,23 +643,11 @@ class SoftwareController extends Controller
                 null;
 
 
-            /*
-            |--------------------------------------------------------------------------
-            | SIMPAN SOFTWARE
-            |--------------------------------------------------------------------------
-            */
-
             $software =
                 SoftwareAsset::create(
                     $validated
                 );
 
-
-            /*
-            |--------------------------------------------------------------------------
-            | VERIFICATION REQUEST
-            |--------------------------------------------------------------------------
-            */
 
             VerificationRequest::create([
                 'module' =>
@@ -741,12 +670,6 @@ class SoftwareController extends Controller
             ]);
 
 
-            /*
-            |--------------------------------------------------------------------------
-            | NOTIFICATION
-            |--------------------------------------------------------------------------
-            */
-
             Notification::create([
                 'judul' =>
                     'Pengajuan Software Baru',
@@ -764,12 +687,6 @@ class SoftwareController extends Controller
             ]);
         });
 
-
-        /*
-        |--------------------------------------------------------------------------
-        | REDIRECT
-        |--------------------------------------------------------------------------
-        */
 
         return redirect()
             ->route('software.index')
@@ -806,7 +723,8 @@ class SoftwareController extends Controller
             'status',
             'Aktif'
         )
-            ->orderBy('nama')
+            ->orderBy('nama'
+            )
             ->get();
 
         $picOptions = SoftwarePic::where(
@@ -838,12 +756,6 @@ class SoftwareController extends Controller
         Request $request,
         SoftwareAsset $software
     ) {
-        /*
-        |--------------------------------------------------------------------------
-        | VALIDASI
-        |--------------------------------------------------------------------------
-        */
-
         $validated = $request->validate(
             $this->softwareRules(),
             [
@@ -895,12 +807,6 @@ class SoftwareController extends Controller
         );
 
 
-        /*
-        |--------------------------------------------------------------------------
-        | MASTER DATA
-        |--------------------------------------------------------------------------
-        */
-
         $masters = $this->resolveMasterData(
             $validated
         );
@@ -910,12 +816,6 @@ class SoftwareController extends Controller
             $masters
         );
 
-
-        /*
-        |--------------------------------------------------------------------------
-        | HITUNG CIA
-        |--------------------------------------------------------------------------
-        */
 
         $nilai = (
             $validated['kerahasiaan'] +
@@ -935,12 +835,6 @@ class SoftwareController extends Controller
             );
 
 
-        /*
-        |--------------------------------------------------------------------------
-        | KOMPATIBILITAS FIELD LAMA
-        |--------------------------------------------------------------------------
-        */
-
         $validated['jenis'] =
             $validated['nama_aset'];
 
@@ -956,21 +850,9 @@ class SoftwareController extends Controller
         );
 
 
-        /*
-        |--------------------------------------------------------------------------
-        | SIMPAN KODE LAMA
-        |--------------------------------------------------------------------------
-        */
-
         $kodeSoftware =
             $software->kode;
 
-
-        /*
-        |--------------------------------------------------------------------------
-        | TRANSACTION
-        |--------------------------------------------------------------------------
-        */
 
         DB::transaction(function () use (
             $validated,
@@ -978,21 +860,8 @@ class SoftwareController extends Controller
             $kodeSoftware
         ) {
 
-            /*
-            |--------------------------------------------------------------------------
-            | KODE TETAP
-            |--------------------------------------------------------------------------
-            */
-
             $validated['kode'] =
                 $kodeSoftware;
-
-
-            /*
-            |--------------------------------------------------------------------------
-            | VERIFIKASI
-            |--------------------------------------------------------------------------
-            */
 
             $validated['verifikasi'] =
                 'menunggu';
@@ -1001,24 +870,12 @@ class SoftwareController extends Controller
                 null;
 
 
-            /*
-            |--------------------------------------------------------------------------
-            | UPDATE SOFTWARE
-            |--------------------------------------------------------------------------
-            */
-
             $software->update(
                 $validated
             );
 
             $software->refresh();
 
-
-            /*
-            |--------------------------------------------------------------------------
-            | VERIFICATION REQUEST
-            |--------------------------------------------------------------------------
-            */
 
             VerificationRequest::create([
                 'module' =>
@@ -1041,12 +898,6 @@ class SoftwareController extends Controller
             ]);
 
 
-            /*
-            |--------------------------------------------------------------------------
-            | NOTIFICATION
-            |--------------------------------------------------------------------------
-            */
-
             Notification::create([
                 'judul' =>
                     'Perubahan Software Diajukan',
@@ -1065,12 +916,6 @@ class SoftwareController extends Controller
         });
 
 
-        /*
-        |--------------------------------------------------------------------------
-        | REDIRECT
-        |--------------------------------------------------------------------------
-        */
-
         return redirect()
             ->route('software.index')
             ->with(
@@ -1084,19 +929,10 @@ class SoftwareController extends Controller
      * ============================================================
      * DESTROY
      * ============================================================
-     *
-     * Data tidak langsung dihapus.
-     * Penghapusan dikirim sebagai request verifikasi.
      */
     public function destroy(
         SoftwareAsset $software
     ) {
-        /*
-        |--------------------------------------------------------------------------
-        | SIMPAN INFORMASI
-        |--------------------------------------------------------------------------
-        */
-
         $namaSoftware =
             $software->nama_aset
             ?: $software->jenis
@@ -1107,23 +943,11 @@ class SoftwareController extends Controller
             ?: '-';
 
 
-        /*
-        |--------------------------------------------------------------------------
-        | TRANSACTION
-        |--------------------------------------------------------------------------
-        */
-
         DB::transaction(function () use (
             $software,
             $namaSoftware,
             $kodeSoftware
         ) {
-
-            /*
-            |--------------------------------------------------------------------------
-            | TANDAI MENUNGGU VERIFIKASI
-            |--------------------------------------------------------------------------
-            */
 
             $software->update([
                 'verifikasi' =>
@@ -1133,12 +957,6 @@ class SoftwareController extends Controller
                     null,
             ]);
 
-
-            /*
-            |--------------------------------------------------------------------------
-            | REQUEST PENGHAPUSAN
-            |--------------------------------------------------------------------------
-            */
 
             VerificationRequest::create([
                 'module' =>
@@ -1161,12 +979,6 @@ class SoftwareController extends Controller
             ]);
 
 
-            /*
-            |--------------------------------------------------------------------------
-            | NOTIFICATION
-            |--------------------------------------------------------------------------
-            */
-
             Notification::create([
                 'judul' =>
                     'Penghapusan Software Diajukan',
@@ -1185,9 +997,756 @@ class SoftwareController extends Controller
         });
 
 
+        return redirect()
+            ->route('software.index')
+            ->with(
+                'success',
+                'Pengajuan penghapusan software berhasil dikirim dan menunggu verifikasi.'
+            );
+    }
+
+
+    /**
+     * ============================================================
+     * IMPORT
+     * ============================================================
+     */
+    public function import(Request $request)
+    {
         /*
         |--------------------------------------------------------------------------
-        | REDIRECT
+        | VALIDASI FILE
+        |--------------------------------------------------------------------------
+        */
+
+        $request->validate([
+            'file' => [
+                'required',
+                'file',
+                'mimes:xlsx,xls,csv',
+                'max:5120',
+            ],
+        ], [
+            'file.required' =>
+                'File Excel wajib dipilih.',
+
+            'file.file' =>
+                'File import tidak valid.',
+
+            'file.mimes' =>
+                'File harus berformat XLSX, XLS, atau CSV.',
+
+            'file.max' =>
+                'Ukuran file maksimal 5 MB.',
+        ]);
+
+
+        /*
+        |--------------------------------------------------------------------------
+        | BACA FILE
+        |--------------------------------------------------------------------------
+        */
+
+        try {
+
+            $file =
+                $request->file('file');
+
+            $reader =
+                IOFactory::createReaderForFile(
+                    $file->getRealPath()
+                );
+
+            $reader->setReadDataOnly(true);
+
+            $spreadsheet =
+                $reader->load(
+                    $file->getRealPath()
+                );
+
+            $worksheet =
+                $spreadsheet->getActiveSheet();
+
+            $rows =
+                $worksheet->toArray(
+                    null,
+                    true,
+                    true,
+                    false
+                );
+
+        } catch (\Throwable $e) {
+
+            return back()
+                ->with(
+                    'error',
+                    'File gagal dibaca: ' .
+                    $e->getMessage()
+                );
+        }
+
+
+        if (empty($rows)) {
+
+            return back()
+                ->with(
+                    'error',
+                    'File Excel kosong.'
+                );
+
+        }
+
+
+        /*
+        |--------------------------------------------------------------------------
+        | HEADER
+        |--------------------------------------------------------------------------
+        */
+
+        $rawHeaders =
+            array_shift(
+                $rows
+            );
+
+        $headerMap = [];
+
+
+        foreach (
+            $rawHeaders
+            as $index => $header
+        ) {
+
+            $normalized =
+                $this->normalizeImportHeader(
+                    $header
+                );
+
+            if ($normalized !== '') {
+
+                $headerMap[$normalized] =
+                    $index;
+
+            }
+
+        }
+
+
+        /*
+        |--------------------------------------------------------------------------
+        | HEADER WAJIB
+        |--------------------------------------------------------------------------
+        */
+
+        $requiredHeaders = [
+            'nama_aset',
+            'kategori',
+            'hosting',
+            'status',
+            'pic',
+            'kerahasiaan',
+            'integritas',
+            'ketersediaan',
+        ];
+
+
+        $missingHeaders = [];
+
+
+        foreach (
+            $requiredHeaders
+            as $required
+        ) {
+
+            if (
+                !array_key_exists(
+                    $required,
+                    $headerMap
+                )
+            ) {
+
+                $missingHeaders[] =
+                    $required;
+
+            }
+
+        }
+
+
+        if (!empty($missingHeaders)) {
+
+            return back()
+                ->with(
+                    'error',
+                    'Kolom Excel wajib tidak ditemukan: ' .
+                    implode(
+                        ', ',
+                        $missingHeaders
+                    )
+                );
+
+        }
+
+
+        /*
+        |--------------------------------------------------------------------------
+        | IMPORT
+        |--------------------------------------------------------------------------
+        */
+
+        try {
+
+            DB::transaction(function () use (
+                $rows,
+                $headerMap
+            ) {
+
+                foreach (
+                    $rows as $rowNumber => $row
+                ) {
+
+                    $excelRowNumber =
+                        $rowNumber + 2;
+
+
+                    /*
+                    |--------------------------------------------------------------
+                    | BARIS KOSONG
+                    |--------------------------------------------------------------
+                    */
+
+                    if (
+                        $this->isImportRowEmpty(
+                            $row
+                        )
+                    ) {
+
+                        continue;
+
+                    }
+
+
+                    /*
+                    |--------------------------------------------------------------
+                    | DATA ROW
+                    |--------------------------------------------------------------
+                    */
+
+                    $data =
+                        $this->getImportRowData(
+                            $row,
+                            $headerMap
+                        );
+
+
+                    /*
+                    |--------------------------------------------------------------
+                    | DATA DASAR
+                    |--------------------------------------------------------------
+                    */
+
+                    $namaAset =
+                        $this->nullableImportString(
+                            $data['nama_aset']
+                        );
+
+                    $kategoriNama =
+                        $this->nullableImportString(
+                            $data['kategori']
+                        );
+
+                    $hostingNama =
+                        $this->nullableImportString(
+                            $data['hosting']
+                        );
+
+                    $picNama =
+                        $this->nullableImportString(
+                            $data['pic']
+                        );
+
+                    $status =
+                        $this->nullableImportString(
+                            $data['status']
+                        );
+
+
+                    if (!$namaAset) {
+
+                        throw new \Exception(
+                            "Baris {$excelRowNumber}: Nama aset wajib diisi."
+                        );
+
+                    }
+
+                    if (!$kategoriNama) {
+
+                        throw new \Exception(
+                            "Baris {$excelRowNumber}: Kategori wajib diisi."
+                        );
+
+                    }
+
+                    if (!$hostingNama) {
+
+                        throw new \Exception(
+                            "Baris {$excelRowNumber}: Hosting wajib diisi."
+                        );
+
+                    }
+
+                    if (!$picNama) {
+
+                        throw new \Exception(
+                            "Baris {$excelRowNumber}: PIC wajib diisi."
+                        );
+
+                    }
+
+                    if (
+                        !in_array(
+                            $status,
+                            [
+                                'Aktif',
+                                'Tidak Aktif',
+                            ],
+                            true
+                        )
+                    ) {
+
+                        throw new \Exception(
+                            "Baris {$excelRowNumber}: Status harus Aktif atau Tidak Aktif."
+                        );
+
+                    }
+
+
+                    /*
+                    |--------------------------------------------------------------
+                    | KATEGORI MASTER
+                    |--------------------------------------------------------------
+                    */
+
+                    $category =
+                        SoftwareCategory::where(
+                            'status',
+                            'Aktif'
+                        )
+                        ->where(
+                            'nama',
+                            $kategoriNama
+                        )
+                        ->first();
+
+
+                    if (!$category) {
+
+                        throw new \Exception(
+                            "Baris {$excelRowNumber}: Kategori '{$kategoriNama}' tidak ditemukan di Data Master atau tidak aktif."
+                        );
+
+                    }
+
+
+                    /*
+                    |--------------------------------------------------------------
+                    | HOSTING MASTER
+                    |--------------------------------------------------------------
+                    */
+
+                    $hosting =
+                        SoftwareHosting::where(
+                            'status',
+                            'Aktif'
+                        )
+                        ->where(
+                            'nama',
+                            $hostingNama
+                        )
+                        ->first();
+
+
+                    if (!$hosting) {
+
+                        throw new \Exception(
+                            "Baris {$excelRowNumber}: Hosting '{$hostingNama}' tidak ditemukan di Data Master atau tidak aktif."
+                        );
+
+                    }
+
+
+                    /*
+                    |--------------------------------------------------------------
+                    | PIC MASTER
+                    |--------------------------------------------------------------
+                    */
+
+                    $pic =
+                        SoftwarePic::where(
+                            'status',
+                            'Aktif'
+                        )
+                        ->where(
+                            'nama',
+                            $picNama
+                        )
+                        ->first();
+
+
+                    if (!$pic) {
+
+                        throw new \Exception(
+                            "Baris {$excelRowNumber}: PIC '{$picNama}' tidak ditemukan di Data Master atau tidak aktif."
+                        );
+
+                    }
+
+
+                    /*
+                    |--------------------------------------------------------------
+                    | SSL MASTER
+                    |--------------------------------------------------------------
+                    */
+
+                    $sslValue =
+                        $this->nullableImportString(
+                            $data['ssl'] ?? null
+                        );
+
+                    try {
+
+                        $ssl =
+                            $this->resolveImportSsl(
+                                $sslValue
+                            );
+
+                    } catch (\Throwable $e) {
+
+                        throw new \Exception(
+                            "Baris {$excelRowNumber}: " .
+                            $e->getMessage()
+                        );
+
+                    }
+
+
+                    /*
+                    |--------------------------------------------------------------
+                    | CIA
+                    |--------------------------------------------------------------
+                    */
+
+                    $kerahasiaan =
+                        (int) (
+                            $data['kerahasiaan']
+                            ?? 0
+                        );
+
+                    $integritas =
+                        (int) (
+                            $data['integritas']
+                            ?? 0
+                        );
+
+                    $ketersediaan =
+                        (int) (
+                            $data['ketersediaan']
+                            ?? 0
+                        );
+
+
+                    $ciaValues = [
+                        'Kerahasiaan' =>
+                            $kerahasiaan,
+
+                        'Integritas' =>
+                            $integritas,
+
+                        'Ketersediaan' =>
+                            $ketersediaan,
+                    ];
+
+
+                    foreach (
+                        $ciaValues as $label => $value
+                    ) {
+
+                        if (
+                            !in_array(
+                                $value,
+                                [
+                                    1,
+                                    2,
+                                    3,
+                                ],
+                                true
+                            )
+                        ) {
+
+                            throw new \Exception(
+                                "Baris {$excelRowNumber}: {$label} harus bernilai 1, 2, atau 3."
+                            );
+
+                        }
+
+                    }
+
+
+                    /*
+                    |--------------------------------------------------------------
+                    | NILAI CIA
+                    |--------------------------------------------------------------
+                    */
+
+                    $nilai =
+                        (
+                            $kerahasiaan +
+                            $integritas +
+                            $ketersediaan
+                        ) / 3;
+
+
+                    /*
+                    |--------------------------------------------------------------
+                    | DATA SOFTWARE
+                    |--------------------------------------------------------------
+                    */
+
+                    $softwareData = [
+
+                        'kode' =>
+                            $this->generateCode(),
+
+                        'nama_aset' =>
+                            $namaAset,
+
+                        'jenis' =>
+                            $namaAset,
+
+                        'spesifikasi' =>
+                            $this->nullableImportString(
+                                $data['spesifikasi']
+                                ?? null
+                            ),
+
+                        'jumlah_lisensi' =>
+                            !empty(
+                                $data['jumlah_lisensi']
+                                ?? null
+                            )
+                            ? (int) $data['jumlah_lisensi']
+                            : 1,
+
+                        'pengadaan' =>
+                            $this->nullableImportString(
+                                $data['pengadaan']
+                                ?? null
+                            ),
+
+                        'harga' =>
+                            !empty(
+                                $data['harga']
+                                ?? null
+                            )
+                            ? $data['harga']
+                            : null,
+
+                        'tanggal_pengadaan' =>
+                            $this->normalizeImportDate(
+                                $data['tanggal_pengadaan']
+                                ?? null
+                            ),
+
+                        'tanggal_berakhir' =>
+                            $this->normalizeImportDate(
+                                $data['tanggal_berakhir']
+                                ?? null
+                            ),
+
+                        'periode_sewa' =>
+                            $this->nullableImportString(
+                                $data['periode_sewa']
+                                ?? null
+                            ),
+
+                        'kategori_id' =>
+                            $category->id,
+
+                        'kategori' =>
+                            $category->nama,
+
+                        'ssl_id' =>
+                            $ssl?->id,
+
+                        'ssl' =>
+                            $ssl?->nama_ssl,
+
+                        'hosting_id' =>
+                            $hosting->id,
+
+                        'hosting' =>
+                            $hosting->nama,
+
+                        'pic_id' =>
+                            $pic->id,
+
+                        'pic' =>
+                            $pic->nama,
+
+                        'url_homepage' =>
+                            $this->nullableImportString(
+                                $data['url_homepage']
+                                ?? null
+                            ),
+
+                        'ip_public' =>
+                            $this->nullableImportString(
+                                $data['ip_public']
+                                ?? null
+                            ),
+
+                        'ip_private' =>
+                            $this->nullableImportString(
+                                $data['ip_private']
+                                ?? null
+                            ),
+
+                        'status' =>
+                            $status,
+
+                        'kerahasiaan' =>
+                            $kerahasiaan,
+
+                        'integritas' =>
+                            $integritas,
+
+                        'ketersediaan' =>
+                            $ketersediaan,
+
+                        'nilai' =>
+                            round(
+                                $nilai,
+                                2
+                            ),
+
+                        'keterangan' =>
+                            $this->ciaKeterangan(
+                                $nilai
+                            ),
+
+                        'deskripsi_aplikasi' =>
+                            $this->nullableImportString(
+                                $data['deskripsi_aplikasi']
+                                ?? null
+                            ),
+
+                        'verifikasi' =>
+                            'menunggu',
+
+                        'komentar' =>
+                            null,
+                    ];
+
+
+                    /*
+                    |--------------------------------------------------------------
+                    | VALIDASI TANGGAL
+                    |--------------------------------------------------------------
+                    */
+
+                    if (
+                        $softwareData['tanggal_pengadaan'] &&
+                        $softwareData['tanggal_berakhir'] &&
+                        $softwareData['tanggal_berakhir']
+                            < $softwareData['tanggal_pengadaan']
+                    ) {
+
+                        throw new \Exception(
+                            "Baris {$excelRowNumber}: Tanggal berakhir tidak boleh sebelum tanggal pengadaan."
+                        );
+
+                    }
+
+
+                    /*
+                    |--------------------------------------------------------------
+                    | SIMPAN
+                    |--------------------------------------------------------------
+                    */
+
+                    $software =
+                        SoftwareAsset::create(
+                            $softwareData
+                        );
+
+
+                    /*
+                    |--------------------------------------------------------------
+                    | VERIFICATION REQUEST
+                    |--------------------------------------------------------------
+                    */
+
+                    VerificationRequest::create([
+                        'module' =>
+                            'software',
+
+                        'record_id' =>
+                            $software->id,
+
+                        'action' =>
+                            'create',
+
+                        'data' =>
+                            $software->toArray(),
+
+                        'status' =>
+                            'menunggu',
+
+                        'submitted_by' =>
+                            auth()->id(),
+                    ]);
+
+
+                    /*
+                    |--------------------------------------------------------------
+                    | NOTIFICATION
+                    |--------------------------------------------------------------
+                    */
+
+                    Notification::create([
+                        'judul' =>
+                            'Import Software Baru',
+
+                        'pesan' =>
+                            auth()->user()->username .
+                            ' mengimport software "' .
+                            ($software->nama_aset ?: $software->jenis) .
+                            '" dengan kode ' .
+                            $software->kode .
+                            ' dan mengajukannya untuk persetujuan.',
+
+                        'dibaca' =>
+                            false,
+                    ]);
+
+                }
+
+            });
+
+        } catch (\Throwable $e) {
+
+            return back()
+                ->with(
+                    'error',
+                    'Import gagal: ' .
+                    $e->getMessage()
+                );
+
+        }
+
+
+        /*
+        |--------------------------------------------------------------------------
+        | BERHASIL
         |--------------------------------------------------------------------------
         */
 
@@ -1195,7 +1754,7 @@ class SoftwareController extends Controller
             ->route('software.index')
             ->with(
                 'success',
-                'Pengajuan penghapusan software berhasil dikirim dan menunggu verifikasi.'
+                'Data software berhasil diimport dan diajukan untuk verifikasi.'
             );
     }
 
@@ -1210,24 +1769,11 @@ class SoftwareController extends Controller
     {
         return [
 
-            /*
-            |--------------------------------------------------------------------------
-            | NAMA
-            |--------------------------------------------------------------------------
-            */
-
             'nama_aset' => [
                 'required',
                 'string',
                 'max:255',
             ],
-
-
-            /*
-            |--------------------------------------------------------------------------
-            | KATEGORI
-            |--------------------------------------------------------------------------
-            */
 
             'kategori_id' => [
                 'required',
@@ -1245,13 +1791,6 @@ class SoftwareController extends Controller
                 ),
             ],
 
-
-            /*
-            |--------------------------------------------------------------------------
-            | SSL
-            |--------------------------------------------------------------------------
-            */
-
             'ssl_id' => [
                 'nullable',
                 'integer',
@@ -1268,25 +1807,11 @@ class SoftwareController extends Controller
                 ),
             ],
 
-
-            /*
-            |--------------------------------------------------------------------------
-            | URL
-            |--------------------------------------------------------------------------
-            */
-
             'url_homepage' => [
                 'nullable',
                 'string',
                 'max:500',
             ],
-
-
-            /*
-            |--------------------------------------------------------------------------
-            | IP
-            |--------------------------------------------------------------------------
-            */
 
             'ip_public' => [
                 'nullable',
@@ -1297,13 +1822,6 @@ class SoftwareController extends Controller
                 'nullable',
                 'ip',
             ],
-
-
-            /*
-            |--------------------------------------------------------------------------
-            | HOSTING
-            |--------------------------------------------------------------------------
-            */
 
             'hosting_id' => [
                 'required',
@@ -1321,13 +1839,6 @@ class SoftwareController extends Controller
                 ),
             ],
 
-
-            /*
-            |--------------------------------------------------------------------------
-            | STATUS
-            |--------------------------------------------------------------------------
-            */
-
             'status' => [
                 'required',
 
@@ -1336,13 +1847,6 @@ class SoftwareController extends Controller
                     'Tidak Aktif',
                 ]),
             ],
-
-
-            /*
-            |--------------------------------------------------------------------------
-            | PIC
-            |--------------------------------------------------------------------------
-            */
 
             'pic_id' => [
                 'required',
@@ -1359,13 +1863,6 @@ class SoftwareController extends Controller
                         )
                 ),
             ],
-
-
-            /*
-            |--------------------------------------------------------------------------
-            | CIA
-            |--------------------------------------------------------------------------
-            */
 
             'kerahasiaan' => [
                 'required',
@@ -1400,24 +1897,10 @@ class SoftwareController extends Controller
                 ]),
             ],
 
-
-            /*
-            |--------------------------------------------------------------------------
-            | DESKRIPSI
-            |--------------------------------------------------------------------------
-            */
-
             'deskripsi_aplikasi' => [
                 'nullable',
                 'string',
             ],
-
-
-            /*
-            |--------------------------------------------------------------------------
-            | FIELD LEGACY
-            |--------------------------------------------------------------------------
-            */
 
             'spesifikasi' => [
                 'nullable',
@@ -1476,12 +1959,6 @@ class SoftwareController extends Controller
         array $validated
     ): array {
 
-        /*
-        |--------------------------------------------------------------------------
-        | KATEGORI
-        |--------------------------------------------------------------------------
-        */
-
         $category =
             SoftwareCategory::where(
                 'status',
@@ -1491,12 +1968,6 @@ class SoftwareController extends Controller
                 $validated['kategori_id']
             );
 
-
-        /*
-        |--------------------------------------------------------------------------
-        | HOSTING
-        |--------------------------------------------------------------------------
-        */
 
         $hosting =
             SoftwareHosting::where(
@@ -1508,12 +1979,6 @@ class SoftwareController extends Controller
             );
 
 
-        /*
-        |--------------------------------------------------------------------------
-        | PIC
-        |--------------------------------------------------------------------------
-        */
-
         $pic =
             SoftwarePic::where(
                 'status',
@@ -1523,12 +1988,6 @@ class SoftwareController extends Controller
                 $validated['pic_id']
             );
 
-
-        /*
-        |--------------------------------------------------------------------------
-        | SSL
-        |--------------------------------------------------------------------------
-        */
 
         $ssl =
             !empty(
@@ -1871,7 +2330,7 @@ class SoftwareController extends Controller
 
         /*
         |--------------------------------------------------------------------------
-        | KOMPATIBILITAS TANGGAL EXPIRE
+        | CARI BERDASARKAN TANGGAL EXPIRE
         |--------------------------------------------------------------------------
         */
 
@@ -1883,15 +2342,21 @@ class SoftwareController extends Controller
 
         if ($date) {
 
-            return SoftwareSsl::where(
-                'status',
-                'Aktif'
-            )
-            ->whereDate(
-                'tanggal_expire',
-                $date
-            )
-            ->firstOrFail();
+            $ssl =
+                SoftwareSsl::where(
+                    'status',
+                    'Aktif'
+                )
+                ->whereDate(
+                    'tanggal_expire',
+                    $date
+                )
+                ->first();
+
+
+            if ($ssl) {
+                return $ssl;
+            }
 
         }
 
@@ -1961,7 +2426,7 @@ class SoftwareController extends Controller
 
         /*
         |--------------------------------------------------------------------------
-        | FORMAT DATE
+        | FORMAT TANGGAL
         |--------------------------------------------------------------------------
         */
 

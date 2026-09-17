@@ -1276,8 +1276,6 @@ body.software-modal-open {
 
     <div class="stats-grid">
 
-        {{-- TOTAL ASET --}}
-
         <div class="stat-card">
 
             <div class="stat-icon blue">
@@ -1303,8 +1301,6 @@ body.software-modal-open {
         </div>
 
 
-        {{-- TOTAL WEBSITE --}}
-
         <div class="stat-card">
 
             <div class="stat-icon purple">
@@ -1329,8 +1325,6 @@ body.software-modal-open {
 
         </div>
 
-
-        {{-- TOTAL MONITORING --}}
 
         <div class="stat-card">
 
@@ -1373,8 +1367,6 @@ body.software-modal-open {
 
     <div class="stats-grid">
 
-        {{-- WEBSITE AKTIF --}}
-
         <div class="stat-card">
 
             <div class="stat-icon green">
@@ -1399,8 +1391,6 @@ body.software-modal-open {
 
         </div>
 
-
-        {{-- WEBSITE TIDAK AKTIF --}}
 
         <div class="stat-card">
 
@@ -1443,8 +1433,6 @@ body.software-modal-open {
 
     <div class="stats-grid">
 
-        {{-- SSL BERLISENSI --}}
-
         <div class="stat-card">
 
             <div class="stat-icon green">
@@ -1470,8 +1458,6 @@ body.software-modal-open {
         </div>
 
 
-        {{-- SSL NON BERLISENSI --}}
-
         <div class="stat-card">
 
             <div class="stat-icon orange">
@@ -1496,8 +1482,6 @@ body.software-modal-open {
 
         </div>
 
-
-        {{-- TANPA SSL --}}
 
         <div class="stat-card">
 
@@ -1571,8 +1555,6 @@ body.software-modal-open {
 
         <div class="software-master-grid">
 
-            {{-- KATEGORI --}}
-
             <div class="software-master-item">
 
                 <div class="software-master-item-icon">
@@ -1597,8 +1579,6 @@ body.software-modal-open {
 
             </div>
 
-
-            {{-- SSL --}}
 
             <div class="software-master-item">
 
@@ -1625,8 +1605,6 @@ body.software-modal-open {
             </div>
 
 
-            {{-- HOSTING --}}
-
             <div class="software-master-item">
 
                 <div class="software-master-item-icon">
@@ -1651,8 +1629,6 @@ body.software-modal-open {
 
             </div>
 
-
-            {{-- PIC --}}
 
             <div class="software-master-item">
 
@@ -1689,10 +1665,6 @@ body.software-modal-open {
 
     <div class="software-table-card">
 
-        {{-- =================================================
-             TABLE HEADER
-        ================================================== --}}
-
         <div class="table-header">
 
             <div class="table-header-left">
@@ -1728,35 +1700,43 @@ body.software-modal-open {
                     >
 
                     @if(request('kategori'))
+
                         <input
                             type="hidden"
                             name="kategori"
                             value="{{ request('kategori') }}"
                         >
+
                     @endif
 
                     @if(request('hosting'))
+
                         <input
                             type="hidden"
                             name="hosting"
                             value="{{ request('hosting') }}"
                         >
+
                     @endif
 
                     @if(request('status'))
+
                         <input
                             type="hidden"
                             name="status"
                             value="{{ request('status') }}"
                         >
+
                     @endif
 
                     @if(request('pic'))
+
                         <input
                             type="hidden"
                             name="pic"
                             value="{{ request('pic') }}"
                         >
+
                     @endif
 
                 </form>
@@ -1814,9 +1794,7 @@ body.software-modal-open {
                 </button>
 
 
-                {{-- =================================================
-                     FILTER DROPDOWN
-                ================================================== --}}
+                {{-- FILTER DROPDOWN --}}
 
                 <div
                     id="filter-dropdown"
@@ -1839,8 +1817,6 @@ body.software-modal-open {
                             value="{{ request('search') }}"
                         >
 
-
-                        {{-- KATEGORI --}}
 
                         <label for="filter-kategori">
                             Kategori
@@ -1869,8 +1845,6 @@ body.software-modal-open {
                         </select>
 
 
-                        {{-- HOSTING --}}
-
                         <label for="filter-hosting">
                             Hosting
                         </label>
@@ -1897,8 +1871,6 @@ body.software-modal-open {
 
                         </select>
 
-
-                        {{-- STATUS --}}
 
                         <label for="filter-status">
                             Status
@@ -1930,8 +1902,6 @@ body.software-modal-open {
                         </select>
 
 
-                        {{-- PIC --}}
-
                         <label for="filter-pic">
                             PIC
                         </label>
@@ -1958,8 +1928,6 @@ body.software-modal-open {
 
                         </select>
 
-
-                        {{-- FILTER BUTTONS --}}
 
                         <div class="filter-buttons">
 
@@ -2071,7 +2039,6 @@ body.software-modal-open {
 
                                 };
 
-
                                 $kategoriClass = match($kategori) {
 
                                     'Website'
@@ -2087,7 +2054,6 @@ body.software-modal-open {
                                         => 'badge-gray',
 
                                 };
-
 
                                 $sslClass = match($ssl) {
 
@@ -2108,11 +2074,9 @@ body.software-modal-open {
 
                                 };
 
-
                                 $verifikasi =
                                     $software->verifikasi
                                     ?? 'menunggu';
-
 
                                 $verifikasiClass = match(
                                     strtolower($verifikasi)
@@ -2134,14 +2098,10 @@ body.software-modal-open {
 
                             <tr>
 
-                                {{-- NO --}}
-
                                 <td>
                                     {{ $softwares->firstItem() + $loop->index }}
                                 </td>
 
-
-                                {{-- KODE --}}
 
                                 <td>
 
@@ -2151,8 +2111,6 @@ body.software-modal-open {
 
                                 </td>
 
-
-                                {{-- NAMA --}}
 
                                 <td>
 
@@ -2177,8 +2135,6 @@ body.software-modal-open {
                                 </td>
 
 
-                                {{-- KATEGORI --}}
-
                                 <td>
 
                                     <span class="badge {{ $kategoriClass }}">
@@ -2187,8 +2143,6 @@ body.software-modal-open {
 
                                 </td>
 
-
-                                {{-- SSL --}}
 
                                 <td>
 
@@ -2214,8 +2168,6 @@ body.software-modal-open {
 
                                 </td>
 
-
-                                {{-- URL --}}
 
                                 <td>
 
@@ -2248,8 +2200,6 @@ body.software-modal-open {
                                 </td>
 
 
-                                {{-- IP PUBLIC --}}
-
                                 <td>
 
                                     <span
@@ -2263,8 +2213,6 @@ body.software-modal-open {
 
                                 </td>
 
-
-                                {{-- IP PRIVATE --}}
 
                                 <td>
 
@@ -2280,8 +2228,6 @@ body.software-modal-open {
                                 </td>
 
 
-                                {{-- HOSTING --}}
-
                                 <td>
 
                                     <span class="badge badge-blue">
@@ -2290,8 +2236,6 @@ body.software-modal-open {
 
                                 </td>
 
-
-                                {{-- STATUS --}}
 
                                 <td>
 
@@ -2304,14 +2248,10 @@ body.software-modal-open {
                                 </td>
 
 
-                                {{-- PIC --}}
-
                                 <td>
                                     {{ $pic }}
                                 </td>
 
-
-                                {{-- KERAHASIAAN --}}
 
                                 <td>
 
@@ -2322,8 +2262,6 @@ body.software-modal-open {
                                 </td>
 
 
-                                {{-- INTEGRITAS --}}
-
                                 <td>
 
                                     <span class="badge">
@@ -2333,8 +2271,6 @@ body.software-modal-open {
                                 </td>
 
 
-                                {{-- KETERSEDIAAN --}}
-
                                 <td>
 
                                     <span class="badge">
@@ -2343,8 +2279,6 @@ body.software-modal-open {
 
                                 </td>
 
-
-                                {{-- NILAI --}}
 
                                 <td>
 
@@ -2364,8 +2298,6 @@ body.software-modal-open {
 
                                 </td>
 
-
-                                {{-- KETERANGAN --}}
 
                                 <td>
 
@@ -2400,8 +2332,6 @@ body.software-modal-open {
                                 </td>
 
 
-                                {{-- VERIFIKASI --}}
-
                                 <td>
 
                                     <span
@@ -2416,8 +2346,6 @@ body.software-modal-open {
                                 </td>
 
 
-                                {{-- KOMENTAR --}}
-
                                 <td>
 
                                     <div class="software-comment">
@@ -2427,13 +2355,9 @@ body.software-modal-open {
                                 </td>
 
 
-                                {{-- AKSI --}}
-
                                 <td>
 
                                     <div class="action-buttons">
-
-                                        {{-- EDIT --}}
 
                                         <button
                                             type="button"
@@ -2453,8 +2377,6 @@ body.software-modal-open {
 
                                         </button>
 
-
-                                        {{-- DELETE --}}
 
                                         <form
                                             action="{{ route('software.destroy', $software) }}"
@@ -2510,9 +2432,7 @@ body.software-modal-open {
                 <div class="empty-state">
 
                     <div class="empty-state-icon">
-
                         <i class="bi bi-laptop"></i>
-
                     </div>
 
 
@@ -2608,16 +2528,12 @@ body.software-modal-open {
 
     <div class="import-software-modal-box">
 
-        {{-- HEADER --}}
-
         <div class="import-software-modal-header">
 
             <div class="import-software-modal-title-wrap">
 
                 <div class="import-software-modal-icon">
-
                     <i class="bi bi-file-earmark-spreadsheet-fill"></i>
-
                 </div>
 
                 <div>
@@ -2649,8 +2565,6 @@ body.software-modal-open {
         </div>
 
 
-        {{-- FORM --}}
-
         <form
             id="software-import-form"
             action="{{ route('software.import') }}"
@@ -2660,10 +2574,7 @@ body.software-modal-open {
 
             @csrf
 
-
             <div class="import-software-modal-body">
-
-                {{-- INFO --}}
 
                 <div class="import-software-info">
 
@@ -2680,8 +2591,6 @@ body.software-modal-open {
 
                 </div>
 
-
-                {{-- DROPZONE --}}
 
                 <label
                     for="software-import-file"
@@ -2717,8 +2626,6 @@ body.software-modal-open {
 
                 </label>
 
-
-                {{-- SELECTED FILE --}}
 
                 <div
                     id="software-import-selected"
@@ -2762,8 +2669,6 @@ body.software-modal-open {
                 </div>
 
 
-                {{-- ERROR --}}
-
                 <div
                     id="software-import-error"
                     class="import-software-error"
@@ -2771,8 +2676,6 @@ body.software-modal-open {
 
             </div>
 
-
-            {{-- FOOTER --}}
 
             <div class="import-software-modal-footer">
 
@@ -2816,13 +2719,17 @@ body.software-modal-open {
 function toggleFilter()
 {
     const dropdown =
-        document.getElementById('filter-dropdown');
+        document.getElementById(
+            'filter-dropdown'
+        );
 
     if (!dropdown) {
         return;
     }
 
-    dropdown.classList.toggle('show');
+    dropdown.classList.toggle(
+        'show'
+    );
 }
 
 
@@ -2830,70 +2737,100 @@ function toggleFilter()
    CLOSE FILTER WHEN CLICK OUTSIDE
 ========================================================= */
 
-document.addEventListener('click', function(event) {
+document.addEventListener(
+    'click',
+    function(event)
+    {
 
-    const dropdown =
-        document.getElementById('filter-dropdown');
+        const dropdown =
+            document.getElementById(
+                'filter-dropdown'
+            );
 
-    const button =
-        document.querySelector('.filter-button');
+        const button =
+            document.querySelector(
+                '.filter-button'
+            );
 
-    if (
-        dropdown &&
-        button &&
-        !dropdown.contains(event.target) &&
-        !button.contains(event.target)
-    ) {
-        dropdown.classList.remove('show');
+
+        if (
+            dropdown &&
+            button &&
+            !dropdown.contains(event.target) &&
+            !button.contains(event.target)
+        ) {
+
+            dropdown.classList.remove(
+                'show'
+            );
+
+        }
+
     }
-
-});
+);
 
 
 /* =========================================================
-   OPEN CREATE SOFTWARE MODAL
+   CREATE SOFTWARE MODAL
+   IMPORTANT:
+   ID HARUS softwareCreateModal
 ========================================================= */
 
 function openSoftwareModal()
 {
     const modal =
-        document.getElementById('software-modal');
+        document.getElementById(
+            'softwareCreateModal'
+        );
+
 
     if (!modal) {
 
         console.error(
-            'Modal Tambah Software tidak ditemukan. Pastikan create.blade.php memiliki id="software-modal".'
+            'Modal Tambah Software tidak ditemukan: #softwareCreateModal'
         );
 
         return;
+
     }
 
-    modal.classList.add('show');
+
+    modal.classList.add(
+        'show'
+    );
+
 
     modal.setAttribute(
         'aria-hidden',
         'false'
     );
 
+
     document.body.classList.add(
         'software-modal-open'
     );
 
 
+    /*
+    |--------------------------------------------------------------------------
+    | Jalankan fungsi dari create.blade.php jika tersedia
+    |--------------------------------------------------------------------------
+    */
+
     if (
-        typeof updatePengadaan === 'function'
+        typeof updateSslExpire === 'function'
     ) {
 
-        updatePengadaan();
+        updateSslExpire();
 
     }
 
 
     if (
-        typeof updateSslExpiry === 'function'
+        typeof calculateCIA === 'function'
     ) {
 
-        updateSslExpiry();
+        calculateCIA();
 
     }
 
@@ -2907,22 +2844,42 @@ function openSoftwareModal()
 function closeSoftwareModal()
 {
     const modal =
-        document.getElementById('software-modal');
+        document.getElementById(
+            'softwareCreateModal'
+        );
+
 
     if (!modal) {
         return;
     }
 
-    modal.classList.remove('show');
+
+    modal.classList.remove(
+        'show'
+    );
+
 
     modal.setAttribute(
         'aria-hidden',
         'true'
     );
 
+
     document.body.classList.remove(
         'software-modal-open'
     );
+}
+
+
+/*
+|--------------------------------------------------------------------------
+| ALIAS
+|--------------------------------------------------------------------------
+*/
+
+function closeSoftwareCreateModal()
+{
+    closeSoftwareModal();
 }
 
 
@@ -2937,6 +2894,7 @@ function openEditSoftwareModal(id)
             'software-edit-modal-' + id
         );
 
+
     if (!modal) {
 
         console.error(
@@ -2945,30 +2903,37 @@ function openEditSoftwareModal(id)
         );
 
         return;
+
     }
 
 
-    modal.classList.add('show');
+    modal.classList.add(
+        'show'
+    );
+
 
     modal.setAttribute(
         'aria-hidden',
         'false'
     );
 
+
     document.body.classList.add(
         'software-modal-open'
     );
 
 
-    if (
-        typeof window[
-            'initEditSoftwareModal_' + id
-        ] === 'function'
-    ) {
-
+    const initFunction =
         window[
             'initEditSoftwareModal_' + id
-        ]();
+        ];
+
+
+    if (
+        typeof initFunction === 'function'
+    ) {
+
+        initFunction();
 
     }
 
@@ -2986,16 +2951,22 @@ function closeEditSoftwareModal(id)
             'software-edit-modal-' + id
         );
 
+
     if (!modal) {
         return;
     }
 
-    modal.classList.remove('show');
+
+    modal.classList.remove(
+        'show'
+    );
+
 
     modal.setAttribute(
         'aria-hidden',
         'true'
     );
+
 
     document.body.classList.remove(
         'software-modal-open'
@@ -3012,12 +2983,17 @@ document.addEventListener(
     function(event)
     {
 
-        /* CREATE */
+        /*
+        |--------------------------------------------------------------------------
+        | CREATE MODAL
+        |--------------------------------------------------------------------------
+        */
 
         const createModal =
             document.getElementById(
-                'software-modal'
+                'softwareCreateModal'
             );
+
 
         if (
             createModal &&
@@ -3027,10 +3003,15 @@ document.addEventListener(
             closeSoftwareModal();
 
             return;
+
         }
 
 
-        /* EDIT */
+        /*
+        |--------------------------------------------------------------------------
+        | EDIT MODAL
+        |--------------------------------------------------------------------------
+        */
 
         if (
             event.target.classList &&
@@ -3042,9 +3023,12 @@ document.addEventListener(
             const id =
                 event.target.dataset.softwareId;
 
+
             if (id) {
 
-                closeEditSoftwareModal(id);
+                closeEditSoftwareModal(
+                    id
+                );
 
             }
 
@@ -3063,53 +3047,78 @@ document.addEventListener(
     function(event)
     {
 
-        if (event.key !== 'Escape') {
+        if (
+            event.key !== 'Escape'
+        ) {
+
             return;
+
         }
 
 
-        /* IMPORT */
+        /*
+        |--------------------------------------------------------------------------
+        | IMPORT
+        |--------------------------------------------------------------------------
+        */
 
         const importModal =
             document.getElementById(
                 'import-software-modal'
             );
 
+
         if (
             importModal &&
-            importModal.classList.contains('show')
+            importModal.classList.contains(
+                'show'
+            )
         ) {
 
             closeImportSoftwareModal();
 
             return;
+
         }
 
 
-        /* CREATE */
+        /*
+        |--------------------------------------------------------------------------
+        | CREATE
+        |--------------------------------------------------------------------------
+        */
 
         const createModal =
             document.getElementById(
-                'software-modal'
+                'softwareCreateModal'
             );
+
 
         if (
             createModal &&
-            createModal.classList.contains('show')
+            createModal.classList.contains(
+                'show'
+            )
         ) {
 
             closeSoftwareModal();
 
             return;
+
         }
 
 
-        /* EDIT */
+        /*
+        |--------------------------------------------------------------------------
+        | EDIT
+        |--------------------------------------------------------------------------
+        */
 
         const editModals =
             document.querySelectorAll(
                 '.software-edit-modal.show'
             );
+
 
         editModals.forEach(
             function(modal)
@@ -3118,9 +3127,12 @@ document.addEventListener(
                 const id =
                     modal.dataset.softwareId;
 
+
                 if (id) {
 
-                    closeEditSoftwareModal(id);
+                    closeEditSoftwareModal(
+                        id
+                    );
 
                 }
 
@@ -3135,8 +3147,13 @@ document.addEventListener(
    IMPORT EXCEL / CSV
 ========================================================= */
 
-let selectedImportSoftwareFile = null;
+let selectedImportSoftwareFile =
+    null;
 
+
+/* =========================================================
+   OPEN IMPORT MODAL
+========================================================= */
 
 function openImportSoftwareModal()
 {
@@ -3145,22 +3162,32 @@ function openImportSoftwareModal()
             'import-software-modal'
         );
 
+
     if (!modal) {
         return;
     }
 
-    modal.classList.add('show');
+
+    modal.classList.add(
+        'show'
+    );
+
 
     modal.setAttribute(
         'aria-hidden',
         'false'
     );
 
+
     document.body.classList.add(
         'software-modal-open'
     );
 }
 
+
+/* =========================================================
+   CLOSE IMPORT MODAL
+========================================================= */
 
 function closeImportSoftwareModal()
 {
@@ -3169,16 +3196,22 @@ function closeImportSoftwareModal()
             'import-software-modal'
         );
 
+
     if (!modal) {
         return;
     }
 
-    modal.classList.remove('show');
+
+    modal.classList.remove(
+        'show'
+    );
+
 
     modal.setAttribute(
         'aria-hidden',
         'true'
     );
+
 
     document.body.classList.remove(
         'software-modal-open'
@@ -3186,11 +3219,16 @@ function closeImportSoftwareModal()
 }
 
 
+/* =========================================================
+   FORMAT FILE SIZE
+========================================================= */
+
 function formatImportSoftwareSize(bytes)
 {
     if (!bytes) {
         return '0 B';
     }
+
 
     const units = [
         'B',
@@ -3199,15 +3237,21 @@ function formatImportSoftwareSize(bytes)
         'GB'
     ];
 
+
     const index =
         Math.floor(
             Math.log(bytes) /
             Math.log(1024)
         );
 
+
     const size =
         bytes /
-        Math.pow(1024, index);
+        Math.pow(
+            1024,
+            index
+        );
+
 
     return (
         size.toFixed(
@@ -3221,6 +3265,10 @@ function formatImportSoftwareSize(bytes)
 }
 
 
+/* =========================================================
+   SHOW IMPORT ERROR
+========================================================= */
+
 function showImportSoftwareError(message)
 {
     const error =
@@ -3228,18 +3276,25 @@ function showImportSoftwareError(message)
             'software-import-error'
         );
 
+
     if (!error) {
         return;
     }
 
+
     error.textContent =
         message;
+
 
     error.classList.add(
         'show'
     );
 }
 
+
+/* =========================================================
+   CLEAR IMPORT ERROR
+========================================================= */
 
 function clearImportSoftwareError()
 {
@@ -3248,11 +3303,15 @@ function clearImportSoftwareError()
             'software-import-error'
         );
 
+
     if (!error) {
         return;
     }
 
-    error.textContent = '';
+
+    error.textContent =
+        '';
+
 
     error.classList.remove(
         'show'
@@ -3260,9 +3319,14 @@ function clearImportSoftwareError()
 }
 
 
+/* =========================================================
+   HANDLE IMPORT FILE
+========================================================= */
+
 function handleImportSoftwareFile(file)
 {
     clearImportSoftwareError();
+
 
     if (!file) {
         return;
@@ -3284,16 +3348,21 @@ function handleImportSoftwareFile(file)
 
 
     if (
-        !allowedExtensions.includes(ext)
+        !allowedExtensions.includes(
+            ext
+        )
     ) {
 
         removeImportSoftwareFile();
+
 
         showImportSoftwareError(
             'Format file harus .xlsx, .xls, atau .csv.'
         );
 
+
         return;
+
     }
 
 
@@ -3301,15 +3370,20 @@ function handleImportSoftwareFile(file)
         5 * 1024 * 1024;
 
 
-    if (file.size > maxSize) {
+    if (
+        file.size > maxSize
+    ) {
 
         removeImportSoftwareFile();
+
 
         showImportSoftwareError(
             'Ukuran file maksimal 5 MB.'
         );
 
+
         return;
+
     }
 
 
@@ -3322,20 +3396,24 @@ function handleImportSoftwareFile(file)
             'software-import-file'
         );
 
+
     const name =
         document.getElementById(
             'software-import-name'
         );
+
 
     const size =
         document.getElementById(
             'software-import-size'
         );
 
+
     const selected =
         document.getElementById(
             'software-import-selected'
         );
+
 
     const submit =
         document.getElementById(
@@ -3353,9 +3431,11 @@ function handleImportSoftwareFile(file)
             const dataTransfer =
                 new DataTransfer();
 
+
             dataTransfer.items.add(
                 file
             );
+
 
             input.files =
                 dataTransfer.files;
@@ -3409,6 +3489,10 @@ function handleImportSoftwareFile(file)
 }
 
 
+/* =========================================================
+   REMOVE IMPORT FILE
+========================================================= */
+
 function removeImportSoftwareFile()
 {
     selectedImportSoftwareFile =
@@ -3420,10 +3504,12 @@ function removeImportSoftwareFile()
             'software-import-file'
         );
 
+
     const selected =
         document.getElementById(
             'software-import-selected'
         );
+
 
     const submit =
         document.getElementById(
@@ -3433,7 +3519,8 @@ function removeImportSoftwareFile()
 
     if (input) {
 
-        input.value = '';
+        input.value =
+            '';
 
     }
 
@@ -3471,15 +3558,18 @@ document.addEventListener(
                 'software-import-file'
             );
 
+
         const drop =
             document.getElementById(
                 'software-import-drop'
             );
 
+
         const modal =
             document.getElementById(
                 'import-software-modal'
             );
+
 
         const form =
             document.getElementById(
@@ -3487,7 +3577,9 @@ document.addEventListener(
             );
 
 
-        /* FILE INPUT */
+        /* =================================================
+           FILE INPUT
+        ================================================== */
 
         if (input) {
 
@@ -3506,7 +3598,9 @@ document.addEventListener(
         }
 
 
-        /* DRAG OVER */
+        /* =================================================
+           DRAG OVER
+        ================================================== */
 
         if (drop) {
 
@@ -3516,6 +3610,7 @@ document.addEventListener(
                 {
 
                     event.preventDefault();
+
 
                     drop.classList.add(
                         'dragover'
@@ -3538,6 +3633,10 @@ document.addEventListener(
             );
 
 
+            /* =================================================
+               DROP
+            ================================================== */
+
             drop.addEventListener(
                 'drop',
                 function(event)
@@ -3545,13 +3644,16 @@ document.addEventListener(
 
                     event.preventDefault();
 
+
                     drop.classList.remove(
                         'dragover'
                     );
 
 
                     const file =
-                        event.dataTransfer.files[0];
+                        event
+                            .dataTransfer
+                            .files[0];
 
 
                     if (!file) {
@@ -3566,9 +3668,11 @@ document.addEventListener(
                             const dataTransfer =
                                 new DataTransfer();
 
+
                             dataTransfer.items.add(
                                 file
                             );
+
 
                             input.files =
                                 dataTransfer.files;
@@ -3595,7 +3699,9 @@ document.addEventListener(
         }
 
 
-        /* BACKDROP */
+        /* =================================================
+           IMPORT BACKDROP
+        ================================================== */
 
         if (modal) {
 
@@ -3618,7 +3724,9 @@ document.addEventListener(
         }
 
 
-        /* FORM SUBMIT */
+        /* =================================================
+           IMPORT FORM SUBMIT
+        ================================================== */
 
         if (form) {
 
@@ -3638,11 +3746,14 @@ document.addEventListener(
 
                         event.preventDefault();
 
+
                         showImportSoftwareError(
                             'Pilih file Excel atau CSV terlebih dahulu.'
                         );
 
+
                         return;
+
                     }
 
 
@@ -3656,6 +3767,7 @@ document.addEventListener(
 
                         submit.disabled =
                             true;
+
 
                         submit.innerHTML =
                             '<i class="bi bi-hourglass-split"></i> Mengimpor...';
@@ -3672,7 +3784,8 @@ document.addEventListener(
 
 
 /* =========================================================
-   AUTO OPEN CREATE JIKA VALIDATION ERROR
+   AUTO OPEN CREATE MODAL
+   HANYA KALAU VALIDASI CREATE GAGAL
 ========================================================= */
 
 document.addEventListener(
@@ -3680,7 +3793,10 @@ document.addEventListener(
     function()
     {
 
-        @if($errors->any())
+        @if(
+            $errors->any() &&
+            old('_form') === 'software_create'
+        )
 
             openSoftwareModal();
 

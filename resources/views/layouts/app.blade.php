@@ -906,142 +906,153 @@
 
                     {{-- =================================================
                          NOTIFICATION
+                         HANYA UNTUK OPERATOR & VERIFIKATOR
                     ================================================== --}}
 
-                    @php
+                    @if(
+                        auth()->check() &&
+                        in_array(
+                            strtolower(trim(auth()->user()->role)),
+                            ['operator', 'verifikator']
+                        )
+                    )
 
-                        $latestNotifications =
-                            \App\Models\Notification::where(
-                                'dibaca',
-                                false
-                            )
-                            ->latest()
-                            ->take(5)
-                            ->get();
+                        @php
 
-                        $unreadNotifications =
-                            \App\Models\Notification::where(
-                                'dibaca',
-                                false
-                            )
-                            ->count();
-
-                    @endphp
-
-
-                    <div class="notification-wrapper">
-
-                        <button
-                            class="notification-button"
-                            type="button"
-                            title="Notifikasi"
-                            onclick="toggleNotification()"
-                        >
-
-                            <i class="bi bi-bell"></i>
-
-                            @if($unreadNotifications > 0)
-
-                                <span class="notification-badge">
-                                    {{
-                                        $unreadNotifications > 99
-                                            ? '99+'
-                                            : $unreadNotifications
-                                    }}
-                                </span>
-
-                            @endif
-
-                        </button>
-
-
-                        {{-- =================================================
-                             NOTIFICATION POPUP
-                        ================================================== --}}
-
-                        <div
-                            class="notification-popup"
-                            id="notificationPopup"
-                        >
-
-                            <div class="notification-popup-header">
-
-                                <strong>
-                                    Notifikasi
-                                </strong>
-
-                                <a href="{{ route('notifikasi.index') }}">
-                                    Lihat Semua
-                                </a>
-
-                            </div>
-
-
-                            <div class="notification-popup-list">
-
-                                @forelse(
-                                    $latestNotifications
-                                    as $notification
+                            $latestNotifications =
+                                \App\Models\Notification::where(
+                                    'dibaca',
+                                    false
                                 )
+                                ->latest()
+                                ->take(5)
+                                ->get();
 
-                                    <a
-                                        href="{{ route(
-                                            'notifikasi.read',
-                                            $notification->id
-                                        ) }}"
-                                        class="notification-item unread"
-                                    >
+                            $unreadNotifications =
+                                \App\Models\Notification::where(
+                                    'dibaca',
+                                    false
+                                )
+                                ->count();
 
-                                        <div class="notification-item-icon">
-                                            <i class="bi bi-bell-fill"></i>
-                                        </div>
-
-
-                                        <div class="notification-item-content">
-
-                                            <strong>
-                                                {{ $notification->judul }}
-                                            </strong>
-
-                                            <p>
-                                                {{ $notification->pesan }}
-                                            </p>
-
-                                            <small>
-                                                {{
-                                                    $notification
-                                                        ->created_at
-                                                        ->locale('id')
-                                                        ->diffForHumans()
-                                                }}
-                                            </small>
-
-                                        </div>
+                        @endphp
 
 
-                                        <span class="notification-unread-dot"></span>
+                        <div class="notification-wrapper">
 
+                            <button
+                                class="notification-button"
+                                type="button"
+                                title="Notifikasi"
+                                onclick="toggleNotification()"
+                            >
+
+                                <i class="bi bi-bell"></i>
+
+                                @if($unreadNotifications > 0)
+
+                                    <span class="notification-badge">
+                                        {{
+                                            $unreadNotifications > 99
+                                                ? '99+'
+                                                : $unreadNotifications
+                                        }}
+                                    </span>
+
+                                @endif
+
+                            </button>
+
+
+                            {{-- =================================================
+                                 NOTIFICATION POPUP
+                            ================================================== --}}
+
+                            <div
+                                class="notification-popup"
+                                id="notificationPopup"
+                            >
+
+                                <div class="notification-popup-header">
+
+                                    <strong>
+                                        Notifikasi
+                                    </strong>
+
+                                    <a href="{{ route('notifikasi.index') }}">
+                                        Lihat Semua
                                     </a>
 
-                                @empty
+                                </div>
 
-                                    <div class="notification-empty">
 
-                                        <i class="bi bi-bell-slash"></i>
+                                <div class="notification-popup-list">
 
-                                        <p>
-                                            Belum ada notifikasi baru
-                                        </p>
+                                    @forelse(
+                                        $latestNotifications
+                                        as $notification
+                                    )
 
-                                    </div>
+                                        <a
+                                            href="{{ route(
+                                                'notifikasi.read',
+                                                $notification->id
+                                            ) }}"
+                                            class="notification-item unread"
+                                        >
 
-                                @endforelse
+                                            <div class="notification-item-icon">
+                                                <i class="bi bi-bell-fill"></i>
+                                            </div>
+
+
+                                            <div class="notification-item-content">
+
+                                                <strong>
+                                                    {{ $notification->judul }}
+                                                </strong>
+
+                                                <p>
+                                                    {{ $notification->pesan }}
+                                                </p>
+
+                                                <small>
+                                                    {{
+                                                        $notification
+                                                            ->created_at
+                                                            ->locale('id')
+                                                            ->diffForHumans()
+                                                    }}
+                                                </small>
+
+                                            </div>
+
+
+                                            <span class="notification-unread-dot"></span>
+
+                                        </a>
+
+                                    @empty
+
+                                        <div class="notification-empty">
+
+                                            <i class="bi bi-bell-slash"></i>
+
+                                            <p>
+                                                Belum ada notifikasi baru
+                                            </p>
+
+                                        </div>
+
+                                    @endforelse
+
+                                </div>
 
                             </div>
 
                         </div>
 
-                    </div>
+                    @endif
 
 
                     {{-- =================================================

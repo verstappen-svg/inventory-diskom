@@ -9,6 +9,7 @@ class DataCenterTemplateExport implements FromArray, WithHeadings
 {
     /**
      * Data awal template.
+     *
      * Sengaja kosong karena file ini hanya digunakan
      * sebagai template input Excel.
      */
@@ -20,13 +21,16 @@ class DataCenterTemplateExport implements FromArray, WithHeadings
     /**
      * Header Excel.
      *
-     * Total 27 field.
+     * Total 28 field.
+     *
+     * Version TIDAK digunakan.
      * Comments TIDAK digunakan.
      */
     public function headings(): array
     {
         return [
             'Name',
+            'Tahun',
             'Status',
             'Tenant',
             'Site',

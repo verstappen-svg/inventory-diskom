@@ -14,7 +14,9 @@ class DataCenter extends Model
     |--------------------------------------------------------------------------
     */
 
-    protected $primaryKey = 'id';
+    // ID Data Center aplikasi
+    // Contoh: INFDC-001
+    protected $primaryKey = 'id_data_center';
 
     public $incrementing = false;
 
@@ -28,29 +30,27 @@ class DataCenter extends Model
     */
 
     protected $fillable = [
-        'id',
+        // ID Data Center aplikasi
+        'id_data_center',
 
-        // Identitas perangkat
+        // 28 field dari Excel
         'name',
+        'tahun',
         'status',
         'tenant',
         'site',
         'rack',
         'role',
-
-        // Spesifikasi perangkat
         'manufacturer',
         'type',
         'platform',
-        'version',
         'serial_number',
         'ip_address',
         'cpu',
         'harddisk',
         'ram',
         'pic',
-
-        // Organisasi & lokasi
+        'id',
         'tenant_group',
         'region',
         'location',
@@ -58,20 +58,24 @@ class DataCenter extends Model
         'rack_face',
         'ipv4_address',
         'cluster',
-
-        // Keterangan
         'description',
-        'comments',
-
-        // Owner
         'owner_group',
         'owner',
-
-        // Rack
         'u_height',
 
-        // Verifikasi
+        // Verifikasi aplikasi
         'verifikasi',
         'komentar',
+    ];
+
+
+    /*
+    |--------------------------------------------------------------------------
+    | CASTS
+    |--------------------------------------------------------------------------
+    */
+
+    protected $casts = [
+        'tahun' => 'integer',
     ];
 }

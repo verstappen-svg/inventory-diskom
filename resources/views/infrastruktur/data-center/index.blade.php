@@ -9,31 +9,35 @@
 NOTIFIKASI
 ========================================================= --}}
 
-@if(session('success')) <div class="alert alert-success" style="
-     margin-bottom: 20px;
-     padding: 14px 18px;
-     border-radius: 10px;
-     background: #d1fae5;
-     color: #065f46;
-     border: 1px solid #a7f3d0;
- "> <strong>Berhasil!</strong>
-{{ session('success') }} </div>
+@if(session('success'))
+    <div class="alert alert-success" style="
+        margin-bottom: 20px;
+        padding: 14px 18px;
+        border-radius: 10px;
+        background: #d1fae5;
+        color: #065f46;
+        border: 1px solid #a7f3d0;
+    ">
+        <strong>Berhasil!</strong>
+        {{ session('success') }}
+    </div>
 @endif
 
-@if(session('error')) <div class="alert alert-danger" style="
-     margin-bottom: 20px;
-     padding: 14px 18px;
-     border-radius: 10px;
-     background: #fee2e2;
-     color: #991b1b;
-     border: 1px solid #fecaca;
- "> <strong>Import Excel gagal.</strong>
+@if(session('error'))
+    <div class="alert alert-danger" style="
+        margin-bottom: 20px;
+        padding: 14px 18px;
+        border-radius: 10px;
+        background: #fee2e2;
+        color: #991b1b;
+        border: 1px solid #fecaca;
+    ">
+        <strong>Import Excel gagal.</strong>
 
-    <div style="margin-top: 8px; white-space: pre-line;">
-        {{ session('error') }}
+        <div style="margin-top: 8px; white-space: pre-line;">
+            {{ session('error') }}
+        </div>
     </div>
-</div>
-
 @endif
 
 <style>
@@ -74,12 +78,25 @@ NOTIFIKASI
 
 
 /* =========================================================
+   HEADER ACTIONS
+========================================================= */
+
+.dc-header-actions {
+    display: flex;
+    align-items: center;
+    gap: 9px;
+    flex-wrap: wrap;
+}
+
+
+/* =========================================================
    BUTTON
 ========================================================= */
 
 .add-dc-button,
 .import-dc-button,
-.download-dc-button {
+.download-dc-button,
+.data-center-master-button {
     display: inline-flex;
     align-items: center;
     justify-content: center;
@@ -97,6 +114,31 @@ NOTIFIKASI
     white-space: nowrap;
 
     transition: 0.2s ease;
+
+    box-sizing: border-box;
+}
+
+
+/* =========================================================
+   DATA MASTER
+========================================================= */
+
+.data-center-master-button {
+    border: 1px solid #d1d5db;
+    background: #ffffff;
+    color: #071b88;
+    text-decoration: none;
+}
+
+.data-center-master-button:hover {
+    background: #f4f6ff;
+    border-color: #071b88;
+    color: #071b88;
+    transform: translateY(-1px);
+}
+
+.data-center-master-button i {
+    font-size: 14px;
 }
 
 
@@ -364,12 +406,15 @@ NOTIFIKASI
     display: flex;
 
     align-items: center;
+    justify-content: flex-end;
 
     gap: 9px;
 
     margin-left: auto;
 
     flex-shrink: 0;
+
+    flex-wrap: wrap;
 }
 
 
@@ -1110,7 +1155,7 @@ textarea.dc-form-control {
 
     display: flex;
 
-    justify-content: space-between;
+    justify-content: flex-end;
 
     align-items: center;
 
@@ -1126,20 +1171,7 @@ textarea.dc-form-control {
 
 
 /* =========================================================
-   FOOTER LEFT — EXCEL
-========================================================= */
-
-.dc-footer-left {
-    display: flex;
-
-    align-items: center;
-
-    gap: 9px;
-}
-
-
-/* =========================================================
-   FOOTER RIGHT — FORM ACTION
+   FOOTER RIGHT
 ========================================================= */
 
 .dc-footer-right {
@@ -1472,6 +1504,81 @@ textarea.dc-form-control {
 
 
 /* =========================================================
+   PAGINATION
+========================================================= */
+
+.dc-pagination-wrapper {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 15px;
+
+    padding: 16px 20px;
+
+    border-top: 1px solid #e5e7eb;
+
+    background: #ffffff;
+}
+
+.dc-pagination-info {
+    font-size: 12px;
+    color: #64748b;
+}
+
+.dc-pagination-info strong {
+    color: #374151;
+}
+
+.dc-pagination {
+    display: flex;
+    align-items: center;
+    gap: 5px;
+}
+
+.dc-page-button {
+    min-width: 32px;
+    height: 32px;
+
+    padding: 0 9px;
+
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+
+    border: 1px solid #d1d5db;
+    border-radius: 7px;
+
+    background: #ffffff;
+    color: #475569;
+
+    text-decoration: none;
+
+    font-size: 12px;
+    font-weight: 600;
+
+    transition: 0.2s ease;
+}
+
+.dc-page-button:hover {
+    background: #f1f5f9;
+    border-color: #94a3b8;
+    color: #075985;
+}
+
+.dc-page-button.active {
+    background: #075985;
+    border-color: #075985;
+    color: #ffffff;
+}
+
+.dc-page-button.disabled {
+    opacity: 0.45;
+    cursor: not-allowed;
+    background: #f8fafc;
+}
+
+
+/* =========================================================
    BODY LOCK
 ========================================================= */
 
@@ -1528,14 +1635,16 @@ body.dc-import-modal-open {
         gap: 15px;
     }
 
+    .dc-header-actions {
+        width: 100%;
+    }
+
     .dc-table-header-actions {
         width: 100%;
 
         margin-left: 0;
-    }
 
-    .add-dc-button {
-        width: auto;
+        justify-content: flex-start;
     }
 
     .dc-toolbar {
@@ -1593,12 +1702,36 @@ body.dc-import-modal-open {
         flex: none;
     }
 
-    .dc-table-header-actions {
+    /* HEADER BUTTONS */
+
+    .dc-header-actions {
+        width: 100%;
+
         flex-direction: column;
+
         align-items: stretch;
+
+        gap: 8px;
     }
 
-    .add-dc-button {
+    .dc-header-actions > a,
+    .dc-header-actions > button {
+        width: 100%;
+    }
+
+    .dc-table-header-actions {
+        width: 100%;
+
+        flex-direction: column;
+
+        align-items: stretch;
+
+        gap: 8px;
+    }
+
+    .dc-table-header-actions .add-dc-button,
+    .dc-table-header-actions .import-dc-button,
+    .dc-table-header-actions .download-dc-button {
         width: 100%;
     }
 
@@ -1613,21 +1746,6 @@ body.dc-import-modal-open {
         gap: 12px;
 
         padding: 14px 15px;
-    }
-
-    .dc-footer-left {
-        width: 100%;
-
-        display: flex;
-
-        gap: 8px;
-    }
-
-    .dc-footer-left .download-dc-button,
-    .dc-footer-left .import-dc-button {
-        flex: 1;
-
-        width: auto;
     }
 
     .dc-footer-right {
@@ -1662,72 +1780,13 @@ body.dc-import-modal-open {
     .dc-import-submit {
         flex: 1;
     }
-}
 
-.dc-pagination-wrapper {
-    display: flex;
-    align-items: center;
-    justify-content: space-between;
-    gap: 15px;
-    padding: 16px 20px;
-    border-top: 1px solid #e5e7eb;
-    background: #ffffff;
-}
 
-.dc-pagination-info {
-    font-size: 12px;
-    color: #64748b;
-}
-
-.dc-pagination-info strong {
-    color: #374151;
-}
-
-.dc-pagination {
-    display: flex;
-    align-items: center;
-    gap: 5px;
-}
-
-.dc-page-button {
-    min-width: 32px;
-    height: 32px;
-    padding: 0 9px;
-    display: inline-flex;
-    align-items: center;
-    justify-content: center;
-    border: 1px solid #d1d5db;
-    border-radius: 7px;
-    background: #ffffff;
-    color: #475569;
-    text-decoration: none;
-    font-size: 12px;
-    font-weight: 600;
-    transition: 0.2s ease;
-}
-
-.dc-page-button:hover {
-    background: #f1f5f9;
-    border-color: #94a3b8;
-    color: #075985;
-}
-
-.dc-page-button.active {
-    background: #075985;
-    border-color: #075985;
-    color: #ffffff;
-}
-
-.dc-page-button.disabled {
-    opacity: 0.45;
-    cursor: not-allowed;
-    background: #f8fafc;
-}
-
-@media (max-width: 600px) {
+    /* PAGINATION */
 
     .dc-pagination-wrapper {
         flex-direction: column;
+
         align-items: stretch;
     }
 
@@ -1737,12 +1796,13 @@ body.dc-import-modal-open {
 
     .dc-pagination {
         justify-content: center;
+
         flex-wrap: wrap;
     }
-
 }
 
 </style>
+
 
 <div class="dc-page">
 
@@ -1750,19 +1810,29 @@ body.dc-import-modal-open {
 HEADER
 ====================================================== --}}
 
-<div class="dc-heading">
+<div class="dc-header">
 
-    <h2>
-        Data Center
-    </h2>
+    <div class="dc-heading">
 
-    <p>
-        Kelola data infrastruktur Data Center.
-    </p>
+        <h2>
+            Data Center
+        </h2>
+
+        <p>
+            Kelola data infrastruktur Data Center.
+        </p>
+
+    </div>
+
+
+    {{-- =================================================
+    HEADER ACTIONS
+    ================================================== --}}
+
+    <div class="dc-header-actions"></div>
 
 </div>
 
-</div>
 
 {{-- =====================================================
 SUCCESS
@@ -1782,6 +1852,7 @@ SUCCESS
 
 @endif
 
+
 {{-- =====================================================
 ERROR
 ====================================================== --}}
@@ -1799,6 +1870,7 @@ ERROR
 </div>
 
 @endif
+
 
 {{-- =====================================================
 VALIDATION ERROR
@@ -1826,72 +1898,75 @@ VALIDATION ERROR
 
 @endif
 
+
 {{-- =====================================================
 STATISTICS
 ====================================================== --}}
 
 <div class="dc-stats">
 
-{{-- TOTAL --}}
+    {{-- TOTAL --}}
 
-<div class="dc-stat-card">
+    <div class="dc-stat-card">
 
-    <div class="dc-stat-icon blue">
-        <i class="bi bi-hdd-stack-fill"></i>
-    </div>
+        <div class="dc-stat-icon blue">
+            <i class="bi bi-hdd-stack-fill"></i>
+        </div>
 
-    <div class="dc-stat-content">
+        <div class="dc-stat-content">
 
-        <span class="dc-stat-label">
-            Total Data Center
-        </span>
+            <span class="dc-stat-label">
+                Total Data Center
+            </span>
 
-        <span class="dc-stat-value">
-            {{ $totalDataCenter }}
-        </span>
+            <span class="dc-stat-value">
+                {{ $totalDataCenter }}
+            </span>
 
-        <span class="dc-stat-description">
-            Seluruh perangkat Data Center
-        </span>
+            <span class="dc-stat-description">
+                Seluruh perangkat Data Center
+            </span>
 
-    </div>
-
-</div>
-
-
-{{-- ACTIVE --}}
-
-<div class="dc-stat-card">
-
-    <div class="dc-stat-icon green">
-        <i class="bi bi-check-circle-fill"></i>
-    </div>
-
-    <div class="dc-stat-content">
-
-        <span class="dc-stat-label">
-            Active
-        </span>
-
-        <span class="dc-stat-value">
-            {{ $active }}
-        </span>
-
-        <span class="dc-stat-description">
-            Perangkat dalam kondisi aktif
-        </span>
+        </div>
 
     </div>
 
-</div>
+
+    {{-- ACTIVE --}}
+
+    <div class="dc-stat-card">
+
+        <div class="dc-stat-icon green">
+            <i class="bi bi-check-circle-fill"></i>
+        </div>
+
+        <div class="dc-stat-content">
+
+            <span class="dc-stat-label">
+                Active
+            </span>
+
+            <span class="dc-stat-value">
+                {{ $active }}
+            </span>
+
+            <span class="dc-stat-description">
+                Perangkat dalam kondisi aktif
+            </span>
+
+        </div>
+
+    </div>
 
 
-{{-- OFFLINE --}}
+    {{-- =====================================================
+   OFFLINE STAT CARD
+====================================================== --}}
 
 <div class="dc-stat-card">
 
     <div class="dc-stat-icon orange">
-        <i class="bi bi-power"></i>
+        <i class="bi bi-x-circle-fill"></i>
     </div>
 
     <div class="dc-stat-content">
@@ -1914,835 +1989,821 @@ STATISTICS
 
 </div>
 
+</div>
+
+
 {{-- =====================================================
-TABLE CARD
+   TABLE CARD
 ====================================================== --}}
 
 <div class="dc-table-card">
 
-{{-- =================================================
-     TABLE HEADER
-================================================== --}}
-
-<div class="dc-table-header">
-
-    <div class="dc-table-header-left">
-
-        <h3 class="dc-table-title">
-            Data Data Center
-        </h3>
-
-        <span class="dc-table-count">
-            ({{ $dataCenters->count() }} data)
-        </span>
-
-    </div>
-
-
     {{-- =================================================
-         HANYA TOMBOL TAMBAH
+       TABLE HEADER
     ================================================== --}}
 
-    <div class="dc-table-header-actions">
+    <div class="dc-table-header">
 
-        <button
-            type="button"
-            class="add-dc-button"
-            onclick="openAddDataCenterModal()"
-        >
+        <div class="dc-table-header-left">
 
-            <i class="bi bi-plus-lg"></i>
+            <h3 class="dc-table-title">
+                Data Data Center
+            </h3>
 
-            <span>
-                Tambah Data Center
+            <span class="dc-table-count">
+                ({{ $dataCenters->total() }} data)
             </span>
-
-        </button>
-
-    </div>
-
-
-    {{-- =================================================
-         TOOLBAR
-    ================================================== --}}
-
-    <div class="dc-toolbar">
-
-        {{-- SEARCH --}}
-
-        <div class="dc-search">
-
-            <i class="bi bi-search"></i>
-
-            <input
-                type="text"
-                id="dcSearch"
-                placeholder="Cari ID, nama, serial number..."
-            >
 
         </div>
 
 
-        {{-- STATUS --}}
+        {{-- =================================================
+           HEADER ACTIONS
+        ================================================== --}}
 
-        <select
-            id="filterStatus"
-            class="dc-filter-select"
-        >
+        <div class="dc-table-header-actions">
 
-            <option value="">
-                Semua Status
-            </option>
+            {{-- DOWNLOAD TEMPLATE --}}
 
-            @foreach($statuses as $status)
+            <a
+                href="{{ route('data-center.template') }}"
+                class="download-dc-button"
+                title="Download Template Excel"
+            >
+                <i class="bi bi-download"></i>
+                <span>Download Template</span>
+            </a>
 
-                <option
-                    value="{{ strtolower($status) }}"
+            {{-- IMPORT EXCEL --}}
+
+            <button
+                type="button"
+                class="import-dc-button"
+                onclick="openImportDataCenterModal()"
+                title="Import Data dari Excel"
+            >
+                <i class="bi bi-file-earmark-excel-fill"></i>
+                <span>Import Excel</span>
+            </button>
+
+            {{-- DATA MASTER --}}
+
+            <a
+                href="{{ route('data-center.master') }}"
+                class="data-center-master-button"
+                title="Kelola Data Master Data Center"
+            >
+                <i class="bi bi-database"></i>
+                <span>Data Master</span>
+            </a>
+
+            {{-- TAMBAH DATA CENTER --}}
+
+            <button
+                type="button"
+                class="add-dc-button"
+                onclick="openAddDataCenterModal()"
+            >
+                <i class="bi bi-plus-lg"></i>
+                <span>Tambah Data Center</span>
+            </button>
+
+        </div>
+
+
+        {{-- =================================================
+           TOOLBAR
+        ================================================== --}}
+
+        <div class="dc-toolbar">
+
+            {{-- SEARCH --}}
+
+            <div class="dc-search">
+
+                <i class="bi bi-search"></i>
+
+                <input
+                    type="text"
+                    id="dcSearch"
+                    value="{{ $search ?? '' }}"
+                    placeholder="Cari ID, nama, serial number..."
                 >
-                    {{ $status }}
+
+            </div>
+
+
+            {{-- STATUS --}}
+
+            <select
+                id="filterStatus"
+                class="dc-filter-select"
+            >
+
+                <option value="">
+                    Semua Status
                 </option>
 
-            @endforeach
+                @foreach($statuses as $statusOption)
 
-        </select>
+                    <option
+                        value="{{ $statusOption }}"
+                        {{ ($status ?? '') === $statusOption ? 'selected' : '' }}
+                    >
+                        {{ $statusOption }}
+                    </option>
+
+                @endforeach
+
+            </select>
 
 
-        {{-- TENANT --}}
+            {{-- TENANT --}}
 
-        <select
-            id="filterTenant"
-            class="dc-filter-select"
-        >
+            <select
+                id="filterTenant"
+                class="dc-filter-select"
+            >
 
-            <option value="">
-                Semua Tenant
-            </option>
-
-            @foreach($tenants as $tenant)
-
-                <option
-                    value="{{ strtolower($tenant) }}"
-                >
-                    {{ $tenant }}
+                <option value="">
+                    Semua Tenant
                 </option>
 
-            @endforeach
+                @foreach($tenants as $tenantOption)
 
-        </select>
+                    <option
+                        value="{{ $tenantOption }}"
+                    >
+                        {{ $tenantOption }}
+                    </option>
+
+                @endforeach
+
+            </select>
 
 
-        {{-- SITE --}}
+            {{-- SITE --}}
 
-        <select
-            id="filterSite"
-            class="dc-filter-select"
-        >
+            <select
+                id="filterSite"
+                class="dc-filter-select"
+            >
 
-            <option value="">
-                Semua Site
-            </option>
-
-            @foreach($sites as $site)
-
-                <option
-                    value="{{ strtolower($site) }}"
-                >
-                    {{ $site }}
+                <option value="">
+                    Semua Site
                 </option>
 
-            @endforeach
+                @foreach($sites as $siteOption)
 
-        </select>
+                    <option
+                        value="{{ $siteOption }}"
+                    >
+                        {{ $siteOption }}
+                    </option>
+
+                @endforeach
+
+            </select>
+
+
+            {{-- VERIFIKASI --}}
+
+            <select
+                id="filterVerifikasi"
+                class="dc-filter-select"
+            >
+
+                <option value="">
+                    Semua Verifikasi
+                </option>
+
+                @foreach($verifikasiOptions as $verifikasiOption)
+
+                    <option
+                        value="{{ $verifikasiOption }}"
+                        {{ ($verifikasi ?? '') === $verifikasiOption ? 'selected' : '' }}
+                    >
+                        {{ ucfirst($verifikasiOption) }}
+                    </option>
+
+                @endforeach
+
+            </select>
+
+        </div>
 
     </div>
 
-</div>
+
+    {{-- =================================================
+       TABLE
+    ================================================== --}}
+
+    <div class="dc-table-wrapper">
+
+        <table class="dc-table">
+
+            <thead>
+
+                <tr>
+
+                    <th>No</th>
+                    <th>ID Data Center</th>
+                    <th>Nama</th>
+                    <th>Tahun</th>
+                    <th>Status</th>
+                    <th>Tenant</th>
+                    <th>Site</th>
+                    <th>Rack</th>
+                    <th>Position</th>
+                    <th>U Height</th>
+                    <th>Rack Face</th>
+                    <th>Role</th>
+                    <th>Manufacturer</th>
+                    <th>Type</th>
+                    <th>Platform</th>
+                    <th>Serial Number</th>
+                    <th>IP Address</th>
+                    <th>IPv4 Address</th>
+                    <th>CPU</th>
+                    <th>Hard Disk</th>
+                    <th>RAM</th>
+                    <th>PIC</th>
+                    <th>ID</th>
+                    <th>Tenant Group</th>
+                    <th>Region</th>
+                    <th>Location</th>
+                    <th>Cluster</th>
+                    <th>Owner Group</th>
+                    <th>Owner</th>
+                    <th>Description</th>
+                    <th>Verifikasi</th>
+                    <th>Komentar</th>
+                    <th>Aksi</th>
+
+                </tr>
+
+            </thead>
 
 
-{{-- =================================================
-     TABLE
-================================================== --}}
+            <tbody id="dcTableBody">
 
-<div class="dc-table-wrapper">
+                @forelse($dataCenters as $index => $data)
 
-    <table class="dc-table">
+                    @php
 
-        <thead>
+                        $statusValue = strtolower(
+                            trim((string) ($data->status ?? ''))
+                        );
 
-            <tr>
+                        $verifikasiValue = strtolower(
+                            trim((string) ($data->verifikasi ?? 'menunggu'))
+                        );
 
-                <th>No</th>
-                <th>ID</th>
-                <th>Nama</th>
-                <th>Status</th>
-                <th>Tenant</th>
-                <th>Site</th>
-                <th>Rack</th>
-                <th>Position</th>
-                <th>U Height</th>
-                <th>Rack Face</th>
-                <th>Role</th>
-                <th>Manufacturer</th>
-                <th>Type</th>
-                <th>Platform</th>
-                <th>Version</th>
-                <th>Serial Number</th>
-                <th>IP Address</th>
-                <th>IPv4 Address</th>
-                <th>CPU</th>
-                <th>Hard Disk</th>
-                <th>RAM</th>
-                <th>PIC</th>
-                <th>Tenant Group</th>
-                <th>Region</th>
-                <th>Location</th>
-                <th>Cluster</th>
-                <th>Owner Group</th>
-                <th>Owner</th>
-                <th>Description</th>
-                <th>Verifikasi</th>
-                <th>Komentar</th>
-                <th>Aksi</th>
-
-            </tr>
-
-        </thead>
+                    @endphp
 
 
-        <tbody id="dcTableBody">
+                    <tr
+                        class="dc-row"
 
-            @forelse($dataCenters as $index => $data)
+                        data-search="{{ strtolower(
+                            ($data->id_data_center ?? '') . ' ' .
+                            ($data->id ?? '') . ' ' .
+                            ($data->name ?? '') . ' ' .
+                            ($data->tahun ?? '') . ' ' .
+                            ($data->serial_number ?? '') . ' ' .
+                            ($data->ip_address ?? '') . ' ' .
+                            ($data->ipv4_address ?? '') . ' ' .
+                            ($data->tenant ?? '') . ' ' .
+                            ($data->site ?? '') . ' ' .
+                            ($data->rack ?? '') . ' ' .
+                            ($data->role ?? '') . ' ' .
+                            ($data->manufacturer ?? '') . ' ' .
+                            ($data->type ?? '') . ' ' .
+                            ($data->platform ?? '') . ' ' .
+                            ($data->owner_group ?? '') . ' ' .
+                            ($data->owner ?? '') . ' ' .
+                            ($data->description ?? '') . ' ' .
+                            ($data->komentar ?? '')
+                        ) }}"
 
-                @php
+                        data-status="{{ $statusValue }}"
 
-                    $status = strtolower(
-                        (string) ($data->status ?? '')
-                    );
+                        data-tenant="{{ strtolower(
+                            trim((string) ($data->tenant ?? ''))
+                        ) }}"
 
-                    $verifikasi = strtolower(
-                        (string) (
-                            $data->verifikasi
-                            ?? 'menunggu'
-                        )
-                    );
+                        data-site="{{ strtolower(
+                            trim((string) ($data->site ?? ''))
+                        ) }}"
 
-                @endphp
-
-
-                <tr
-                    class="dc-row"
-
-                    data-search="{{ strtolower(
-                        ($data->id ?? '') . ' ' .
-                        ($data->name ?? '') . ' ' .
-                        ($data->serial_number ?? '') . ' ' .
-                        ($data->ip_address ?? '') . ' ' .
-                        ($data->ipv4_address ?? '') . ' ' .
-                        ($data->tenant ?? '') . ' ' .
-                        ($data->site ?? '') . ' ' .
-                        ($data->rack ?? '') . ' ' .
-                        ($data->role ?? '') . ' ' .
-                        ($data->manufacturer ?? '') . ' ' .
-                        ($data->platform ?? '') . ' ' .
-                        ($data->owner ?? '') . ' ' .
-                        ($data->description ?? '') . ' ' .
-                        ($data->komentar ?? '')
-                    ) }}"
-
-                    data-status="{{ $status }}"
-
-                    data-tenant="{{ strtolower(
-                        $data->tenant ?? ''
-                    ) }}"
-
-                    data-site="{{ strtolower(
-                        $data->site ?? ''
-                    ) }}"
-                >
+                        data-verifikasi="{{ $verifikasiValue }}"
+                    >
 
 
-                    {{-- NO --}}
+                        {{-- NO --}}
 
-                    <td class="row-number">
-                        {{ $index + 1 }}
-                    </td>
-
-
-                    {{-- ID --}}
-
-                    <td>
-                        <span class="dc-code">
-                            {{ $data->id }}
-                        </span>
-                    </td>
+                        <td class="row-number">
+                            {{ $dataCenters->firstItem() + $index }}
+                        </td>
 
 
-                    {{-- NAMA --}}
+                        {{-- ID DATA CENTER --}}
 
-                    <td>
-                        <div class="dc-name">
-                            {{ $data->name ?? '-' }}
-                        </div>
-                    </td>
-
-
-                    {{-- STATUS --}}
-
-                    <td>
-
-                        @if($status === 'active')
-
-                            <span class="dc-status-badge dc-status-active">
-                                Active
+                        <td>
+                            <span class="dc-code">
+                                {{ $data->id_data_center }}
                             </span>
+                        </td>
 
-                        @else
 
-                            <span class="dc-status-badge dc-status-offline">
-                                Offline
-                            </span>
+                        {{-- NAMA --}}
 
-                        @endif
+                        <td>
 
-                    </td>
-
-
-                    {{-- TENANT --}}
-
-                    <td>
-                        {{ $data->tenant ?? '-' }}
-                    </td>
-
-
-                    {{-- SITE --}}
-
-                    <td>
-                        {{ $data->site ?? '-' }}
-                    </td>
-
-
-                    {{-- RACK --}}
-
-                    <td>
-                        {{ $data->rack ?? '-' }}
-                    </td>
-
-
-                    {{-- POSITION --}}
-
-                    <td>
-                        {{ $data->position ?? '-' }}
-                    </td>
-
-
-                    {{-- U HEIGHT --}}
-
-                    <td>
-                        {{ $data->u_height ?? '-' }}
-                    </td>
-
-
-                    {{-- RACK FACE --}}
-
-                    <td>
-                        {{ $data->rack_face ?? '-' }}
-                    </td>
-
-
-                    {{-- ROLE --}}
-
-                    <td>
-                        {{ $data->role ?? '-' }}
-                    </td>
-
-
-                    {{-- MANUFACTURER --}}
-
-                    <td>
-                        {{ $data->manufacturer ?? '-' }}
-                    </td>
-
-
-                    {{-- TYPE --}}
-
-                    <td>
-                        {{ $data->type ?? '-' }}
-                    </td>
-
-
-                    {{-- PLATFORM --}}
-
-                    <td>
-                        {{ $data->platform ?? '-' }}
-                    </td>
-
-
-                    {{-- VERSION --}}
-
-                    <td>
-                        {{ $data->version ?? '-' }}
-                    </td>
-
-
-                    {{-- SERIAL NUMBER --}}
-
-                    <td>
-                        {{ $data->serial_number ?? '-' }}
-                    </td>
-
-
-                    {{-- IP ADDRESS --}}
-
-                    <td>
-                        {{ $data->ip_address ?? '-' }}
-                    </td>
-
-
-                    {{-- IPV4 ADDRESS --}}
-
-                    <td>
-                        {{ $data->ipv4_address ?? '-' }}
-                    </td>
-
-
-                    {{-- CPU --}}
-
-                    <td>
-                        {{ $data->cpu ?? '-' }}
-                    </td>
-
-
-                    {{-- HARD DISK --}}
-
-                    <td>
-                        {{ $data->harddisk ?? '-' }}
-                    </td>
-
-
-                    {{-- RAM --}}
-
-                    <td>
-                        {{ $data->ram ?? '-' }}
-                    </td>
-
-
-                    {{-- PIC --}}
-
-                    <td>
-                        {{ $data->pic ?? '-' }}
-                    </td>
-
-
-                    {{-- TENANT GROUP --}}
-
-                    <td>
-                        {{ $data->tenant_group ?? '-' }}
-                    </td>
-
-
-                    {{-- REGION --}}
-
-                    <td>
-                        {{ $data->region ?? '-' }}
-                    </td>
-
-
-                    {{-- LOCATION --}}
-
-                    <td>
-                        {{ $data->location ?? '-' }}
-                    </td>
-
-
-                    {{-- CLUSTER --}}
-
-                    <td>
-                        {{ $data->cluster ?? '-' }}
-                    </td>
-
-
-                    {{-- OWNER GROUP --}}
-
-                    <td>
-                        {{ $data->owner_group ?? '-' }}
-                    </td>
-
-
-                    {{-- OWNER --}}
-
-                    <td>
-                        {{ $data->owner ?? '-' }}
-                    </td>
-
-
-                    {{-- DESCRIPTION --}}
-
-                    <td>
-
-                        @if($data->description)
-
-                            <div
-                                class="dc-description"
-                                title="{{ $data->description }}"
-                            >
-                                {{ $data->description }}
+                            <div class="dc-name">
+                                {{ $data->name ?? '-' }}
                             </div>
 
-                        @else
+                        </td>
 
-                            <span class="dc-empty-value">
-                                -
+
+                        {{-- TAHUN --}}
+
+                        <td>
+                            {{ $data->tahun ?? '-' }}
+                        </td>
+
+
+                        {{-- STATUS --}}
+
+                        <td>
+
+                            @if($statusValue === 'active')
+
+                                <span class="dc-status-badge dc-status-active">
+                                    Active
+                                </span>
+
+                            @else
+
+                                <span class="dc-status-badge dc-status-offline">
+                                    Offline
+                                </span>
+
+                            @endif
+
+                        </td>
+
+
+                        {{-- TENANT --}}
+
+                        <td>
+                            {{ $data->tenant ?? '-' }}
+                        </td>
+
+
+                        {{-- SITE --}}
+
+                        <td>
+                            {{ $data->site ?? '-' }}
+                        </td>
+
+
+                        {{-- RACK --}}
+
+                        <td>
+                            {{ $data->rack ?? '-' }}
+                        </td>
+
+
+                        {{-- POSITION --}}
+
+                        <td>
+                            {{ $data->position ?? '-' }}
+                        </td>
+
+
+                        {{-- U HEIGHT --}}
+
+                        <td>
+                            {{ $data->u_height ?? '-' }}
+                        </td>
+
+
+                        {{-- RACK FACE --}}
+
+                        <td>
+                            {{ $data->rack_face ?? '-' }}
+                        </td>
+
+
+                        {{-- ROLE --}}
+
+                        <td>
+                            {{ $data->role ?? '-' }}
+                        </td>
+
+
+                        {{-- MANUFACTURER --}}
+
+                        <td>
+                            {{ $data->manufacturer ?? '-' }}
+                        </td>
+
+
+                        {{-- TYPE --}}
+
+                        <td>
+                            {{ $data->type ?? '-' }}
+                        </td>
+
+
+                        {{-- PLATFORM --}}
+
+                        <td>
+                            {{ $data->platform ?? '-' }}
+                        </td>
+
+
+                        {{-- SERIAL NUMBER --}}
+
+                        <td>
+                            {{ $data->serial_number ?? '-' }}
+                        </td>
+
+
+                        {{-- IP ADDRESS --}}
+
+                        <td>
+                            {{ $data->ip_address ?? '-' }}
+                        </td>
+
+
+                        {{-- IPV4 ADDRESS --}}
+
+                        <td>
+                            {{ $data->ipv4_address ?? '-' }}
+                        </td>
+
+
+                        {{-- CPU --}}
+
+                        <td>
+                            {{ $data->cpu ?? '-' }}
+                        </td>
+
+
+                        {{-- HARD DISK --}}
+
+                        <td>
+                            {{ $data->harddisk ?? '-' }}
+                        </td>
+
+
+                        {{-- RAM --}}
+
+                        <td>
+                            {{ $data->ram ?? '-' }}
+                        </td>
+
+
+                        {{-- PIC --}}
+
+                        <td>
+                            {{ $data->pic ?? '-' }}
+                        </td>
+
+                        {{-- ID EXCEL --}}
+
+                        <td>
+                            <span class="dc-code">
+                                {{ $data->id ?? '-' }}
                             </span>
-
-                        @endif
-
-                    </td>
+                        </td>
 
 
-                    {{-- VERIFIKASI --}}
+                        {{-- TENANT GROUP --}}
 
-                    <td>
-
-                        @if($verifikasi === 'disetujui')
-
-                            <span class="dc-verifikasi-badge dc-verifikasi-disetujui">
-                                Disetujui
-                            </span>
-
-                        @elseif($verifikasi === 'ditolak')
-
-                            <span class="dc-verifikasi-badge dc-verifikasi-ditolak">
-                                Ditolak
-                            </span>
-
-                        @else
-
-                            <span class="dc-verifikasi-badge dc-verifikasi-menunggu">
-                                Menunggu
-                            </span>
-
-                        @endif
-
-                    </td>
+                        <td>
+                            {{ $data->tenant_group ?? 'Pemerintah Kota Bekasi' }}
+                        </td>
 
 
-                    {{-- KOMENTAR --}}
+                        {{-- REGION --}}
 
-                    <td>
-
-                        @if($data->komentar)
-
-                            <div
-                                class="dc-komentar"
-                                title="{{ $data->komentar }}"
-                            >
-                                {{ $data->komentar }}
-                            </div>
-
-                        @else
-
-                            <span class="dc-empty-value">
-                                -
-                            </span>
-
-                        @endif
-
-                    </td>
+                        <td>
+                            {{ $data->region ?? '-' }}
+                        </td>
 
 
-                    {{-- AKSI --}}
+                        {{-- LOCATION --}}
 
-                    <td>
-
-                        <div class="dc-action-buttons">
-
-                            {{-- EDIT --}}
-
-                            <button
-                                type="button"
-                                class="dc-action-button dc-edit-button"
-                                title="Edit"
-                                onclick='openEditDataCenterModal(@json($data))'
-                            >
-
-                                <i class="bi bi-pencil-fill"></i>
-
-                            </button>
+                        <td>
+                            {{ $data->location ?? '-' }}
+                        </td>
 
 
-                            {{-- DELETE --}}
+                        {{-- CLUSTER --}}
 
-                            <form
-                                action="{{ route(
-                                    'data-center.destroy',
-                                    $data->id
-                                ) }}"
-                                method="POST"
-                                class="dc-delete-form"
+                        <td>
+                            {{ $data->cluster ?? '-' }}
+                        </td>
 
-                                onsubmit="return confirm(
-                                    'Yakin ingin mengajukan penghapusan data Data Center ini?'
-                                );"
-                            >
 
-                                @csrf
+                        {{-- OWNER GROUP --}}
 
-                                @method('DELETE')
+                        <td>
+                            {{ $data->owner_group ?? '-' }}
+                        </td>
+
+
+                        {{-- OWNER --}}
+
+                        <td>
+                            {{ $data->owner ?? '-' }}
+                        </td>
+
+
+                        {{-- DESCRIPTION --}}
+
+                        <td>
+
+                            @if(!empty($data->description))
+
+                                <div
+                                    class="dc-description"
+                                    title="{{ $data->description }}"
+                                >
+                                    {{ $data->description }}
+                                </div>
+
+                            @else
+
+                                <span class="dc-empty-value">
+                                    -
+                                </span>
+
+                            @endif
+
+                        </td>
+
+
+                        {{-- VERIFIKASI --}}
+
+                        <td>
+
+                            @if($verifikasiValue === 'disetujui')
+
+                                <span class="dc-verifikasi-badge dc-verifikasi-disetujui">
+                                    Disetujui
+                                </span>
+
+                            @elseif($verifikasiValue === 'ditolak')
+
+                                <span class="dc-verifikasi-badge dc-verifikasi-ditolak">
+                                    Ditolak
+                                </span>
+
+                            @else
+
+                                <span class="dc-verifikasi-badge dc-verifikasi-menunggu">
+                                    Menunggu
+                                </span>
+
+                            @endif
+
+                        </td>
+
+
+                        {{-- KOMENTAR --}}
+
+                        <td>
+
+                            @if(!empty($data->komentar))
+
+                                <div
+                                    class="dc-komentar"
+                                    title="{{ $data->komentar }}"
+                                >
+                                    {{ $data->komentar }}
+                                </div>
+
+                            @else
+
+                                <span class="dc-empty-value">
+                                    -
+                                </span>
+
+                            @endif
+
+                        </td>
+
+
+                        {{-- AKSI --}}
+
+                        <td>
+
+                            <div class="dc-action-buttons">
+
+                                {{-- EDIT --}}
 
                                 <button
-                                    type="submit"
-                                    class="dc-action-button dc-delete-button"
-                                    title="Hapus"
+                                    type="button"
+                                    class="dc-action-button dc-edit-button"
+                                    title="Edit"
+                                    onclick='openEditDataCenterModal(@json($data))'
                                 >
 
-                                    <i class="bi bi-trash-fill"></i>
+                                    <i class="bi bi-pencil-fill"></i>
 
                                 </button>
 
-                            </form>
 
-                        </div>
+                                {{-- DELETE --}}
 
-                    </td>
+                                <form
+                                    action="{{ route(
+                                        'data-center.destroy',
+                                        ['data_center' => $data->id_data_center]
+                                    ) }}"
+                                    method="POST"
+                                    class="dc-delete-form"
+                                    onsubmit="return confirm('Yakin ingin menghapus data Data Center ini?');"
+                                >
 
-                </tr>
+                                    @csrf
 
+                                    @method('DELETE')
 
-            @empty
+                                    <button
+                                        type="submit"
+                                        class="dc-action-button dc-delete-button"
+                                        title="Hapus"
+                                    >
 
-                <tr id="dcEmptyRow">
+                                        <i class="bi bi-trash-fill"></i>
 
-                    <td
-                        colspan="32"
-                        style="padding:0;"
-                    >
+                                    </button>
 
-                        <div class="dc-empty-state">
+                                </form>
 
-                            <div class="dc-empty-icon">
-                                <i class="bi bi-hdd-rack"></i>
                             </div>
 
-                            <h3>
-                                Belum ada data Data Center
-                            </h3>
+                        </td>
 
-                            <p>
-                                Data infrastruktur Data Center belum tersedia.
-                            </p>
+                    </tr>
 
-                        </div>
 
-                    </td>
+                @empty
 
-                </tr>
+                    <tr id="dcEmptyRow">
 
-            @endforelse
+                        <td
+                            colspan="33"
+                            style="padding:0;"
+                        >
 
-        </tbody>
+                            <div class="dc-empty-state">
 
-    </table>
+                                <div class="dc-empty-icon">
+                                    <i class="bi bi-hdd-rack"></i>
+                                </div>
 
-    @if($dataCenters->hasPages())
+                                <h3>
+                                    Belum ada data Data Center
+                                </h3>
 
-    <div class="dc-pagination-wrapper">
+                                <p>
+                                    Data infrastruktur Data Center belum tersedia.
+                                </p>
 
-        <div class="dc-pagination-info">
-            Menampilkan
-            <strong>{{ $dataCenters->firstItem() }}</strong>
-            -
-            <strong>{{ $dataCenters->lastItem() }}</strong>
-            dari
-            <strong>{{ $dataCenters->total() }}</strong>
-            data
-        </div>
+                            </div>
 
-        <div class="dc-pagination">
+                        </td>
 
-            @if($dataCenters->onFirstPage())
+                    </tr>
 
-                <span class="dc-page-button disabled">
-                    <i class="bi bi-chevron-left"></i>
-                </span>
+                @endforelse
 
-            @else
+            </tbody>
 
-                <a
-                    href="{{ $dataCenters->previousPageUrl() }}"
-                    class="dc-page-button"
-                >
-                    <i class="bi bi-chevron-left"></i>
-                </a>
+        </table>
 
-            @endif
 
-            @foreach(
-                $dataCenters->getUrlRange(
-                    max(1, $dataCenters->currentPage() - 2),
-                    min(
-                        $dataCenters->lastPage(),
-                        $dataCenters->currentPage() + 2
+        {{-- =================================================
+           PAGINATION
+        ================================================== --}}
+
+        @if($dataCenters->hasPages())
+
+            <div class="dc-pagination-wrapper">
+
+                <div class="dc-pagination-info">
+
+                    Menampilkan
+
+                    <strong>
+                        {{ $dataCenters->firstItem() }}
+                    </strong>
+
+                    -
+
+                    <strong>
+                        {{ $dataCenters->lastItem() }}
+                    </strong>
+
+                    dari
+
+                    <strong>
+                        {{ $dataCenters->total() }}
+                    </strong>
+
+                    data
+
+                </div>
+
+
+                <div class="dc-pagination">
+
+                    @if($dataCenters->onFirstPage())
+
+                        <span class="dc-page-button disabled">
+                            <i class="bi bi-chevron-left"></i>
+                        </span>
+
+                    @else
+
+                        <a
+                            href="{{ $dataCenters->previousPageUrl() }}"
+                            class="dc-page-button"
+                        >
+                            <i class="bi bi-chevron-left"></i>
+                        </a>
+
+                    @endif
+
+
+                    @foreach(
+                        $dataCenters->getUrlRange(
+                            max(1, $dataCenters->currentPage() - 2),
+                            min(
+                                $dataCenters->lastPage(),
+                                $dataCenters->currentPage() + 2
+                            )
+                        ) as $page => $url
                     )
-                ) as $page => $url
-            )
 
-                @if($page == $dataCenters->currentPage())
+                        @if($page == $dataCenters->currentPage())
 
-                    <span class="dc-page-button active">
-                        {{ $page }}
-                    </span>
+                            <span class="dc-page-button active">
+                                {{ $page }}
+                            </span>
 
-                @else
+                        @else
 
-                    <a
-                        href="{{ $url }}"
-                        class="dc-page-button"
-                    >
-                        {{ $page }}
-                    </a>
+                            <a
+                                href="{{ $url }}"
+                                class="dc-page-button"
+                            >
+                                {{ $page }}
+                            </a>
 
-                @endif
+                        @endif
 
-            @endforeach
+                    @endforeach
 
-            @if($dataCenters->hasMorePages())
 
-                <a
-                    href="{{ $dataCenters->nextPageUrl() }}"
-                    class="dc-page-button"
-                >
-                    <i class="bi bi-chevron-right"></i>
-                </a>
+                    @if($dataCenters->hasMorePages())
 
-            @else
+                        <a
+                            href="{{ $dataCenters->nextPageUrl() }}"
+                            class="dc-page-button"
+                        >
+                            <i class="bi bi-chevron-right"></i>
+                        </a>
 
-                <span class="dc-page-button disabled">
-                    <i class="bi bi-chevron-right"></i>
-                </span>
+                    @else
 
-            @endif
+                        <span class="dc-page-button disabled">
+                            <i class="bi bi-chevron-right"></i>
+                        </span>
 
-        </div>
+                    @endif
+
+                </div>
+
+            </div>
+
+        @endif
 
     </div>
 
-@endif
-
-    @if($dataCenters->hasPages())
-
-    <div class="dc-pagination-wrapper">
-
-        {{-- INFO DATA --}}
-        <div class="dc-pagination-info">
-
-            Menampilkan
-
-            <strong>
-                {{ $dataCenters->firstItem() }}
-            </strong>
-
-            -
-            
-            <strong>
-                {{ $dataCenters->lastItem() }}
-            </strong>
-
-            dari
-
-            <strong>
-                {{ $dataCenters->total() }}
-            </strong>
-
-            data
-
-        </div>
-
-
-        {{-- PAGINATION --}}
-        <div class="dc-pagination">
-
-            {{-- PREVIOUS --}}
-            @if($dataCenters->onFirstPage())
-
-                <span class="dc-page-button disabled">
-                    <i class="bi bi-chevron-left"></i>
-                </span>
-
-            @else
-
-                <a
-                    href="{{ $dataCenters->previousPageUrl() }}"
-                    class="dc-page-button"
-                >
-                    <i class="bi bi-chevron-left"></i>
-                </a>
-
-            @endif
-
-
-            {{-- NOMOR HALAMAN --}}
-            @foreach(
-                $dataCenters->getUrlRange(
-                    max(1, $dataCenters->currentPage() - 2),
-                    min(
-                        $dataCenters->lastPage(),
-                        $dataCenters->currentPage() + 2
-                    )
-                ) as $page => $url
-            )
-
-                @if($page == $dataCenters->currentPage())
-
-                    <span class="dc-page-button active">
-                        {{ $page }}
-                    </span>
-
-                @else
-
-                    <a
-                        href="{{ $url }}"
-                        class="dc-page-button"
-                    >
-                        {{ $page }}
-                    </a>
-
-                @endif
-
-            @endforeach
-
-
-            {{-- NEXT --}}
-            @if($dataCenters->hasMorePages())
-
-                <a
-                    href="{{ $dataCenters->nextPageUrl() }}"
-                    class="dc-page-button"
-                >
-                    <i class="bi bi-chevron-right"></i>
-                </a>
-
-            @else
-
-                <span class="dc-page-button disabled">
-                    <i class="bi bi-chevron-right"></i>
-                </span>
-
-            @endif
-
-        </div>
-
-    </div>
-
-@endif
-
 </div>
 
-</div>
-
-</div>
 
 {{-- =========================================================
-MODAL TAMBAH / EDIT
+   MODAL TAMBAH / EDIT
 ========================================================= --}}
 
 <div
@@ -2751,1176 +2812,1188 @@ MODAL TAMBAH / EDIT
     aria-hidden="true"
 >
 
-<div
-    class="dc-modal"
-    role="dialog"
-    aria-modal="true"
-    aria-labelledby="dcModalTitle"
->
+    <div
+        class="dc-modal"
+        role="dialog"
+        aria-modal="true"
+        aria-labelledby="dcModalTitle"
+    >
 
+        {{-- HEADER MODAL --}}
 
-    {{-- HEADER MODAL --}}
+        <div class="dc-modal-header">
 
-    <div class="dc-modal-header">
+            <div class="dc-modal-header-left">
 
-        <div class="dc-modal-header-left">
+                <div class="dc-modal-icon">
+                    <i class="bi bi-hdd-rack-fill"></i>
+                </div>
 
-            <div class="dc-modal-icon">
-                <i class="bi bi-hdd-rack-fill"></i>
+                <div class="dc-modal-header-text">
+
+                    <h2 id="dcModalTitle">
+                        Tambah Data Center
+                    </h2>
+
+                    <p id="dcModalDescription">
+                        Masukkan data infrastruktur Data Center baru.
+                    </p>
+
+                </div>
+
             </div>
 
-            <div class="dc-modal-header-text">
 
-                <h2 id="dcModalTitle">
-                    Tambah Data Center
-                </h2>
+            <button
+                type="button"
+                class="dc-modal-close"
+                onclick="closeDataCenterModal()"
+                title="Tutup"
+            >
 
-                <p id="dcModalDescription">
-                    Masukkan data infrastruktur Data Center baru.
-                </p>
+                <i class="bi bi-x-lg"></i>
 
-            </div>
+            </button>
 
         </div>
 
 
-        <button
-            type="button"
-            class="dc-modal-close"
-            onclick="closeDataCenterModal()"
-            title="Tutup"
+        {{-- FORM --}}
+
+        <form
+            id="dataCenterForm"
+            method="POST"
+            action="{{ route('data-center.store') }}"
         >
 
-            <i class="bi bi-x-lg"></i>
+            @csrf
 
-        </button>
+            <input
+                type="hidden"
+                name="_method"
+                id="dcMethod"
+                value="POST"
+            >
+
+
+            <div class="dc-modal-body">
+
+                <div class="dc-form-card">
+
+
+                    {{-- =================================================
+                       IDENTITAS
+                    ================================================== --}}
+
+                    <div class="dc-section">
+
+                        <div class="dc-section-header">
+
+                            <i class="bi bi-info-circle-fill"></i>
+
+                            <h3>
+                                Identitas Perangkat
+                            </h3>
+
+                        </div>
+
+
+                        <div class="dc-form-grid">
+
+
+                            {{-- ID DATA CENTER --}}
+
+                            <div class="dc-form-group">
+
+                                <label class="dc-form-label">
+                                    ID Data Center
+                                </label>
+
+                                <input
+                                    type="text"
+                                    class="dc-form-control"
+                                    value="{{ $nextId ?? 'Otomatis' }}"
+                                    readonly
+                                >
+
+                                <div class="dc-help">
+
+                                    <i class="bi bi-info-circle"></i>
+
+                                    ID dibuat otomatis oleh sistem.
+
+                                </div>
+
+                            </div>
+
+
+                            {{-- NAME --}}
+
+                            <div class="dc-form-group">
+
+                                <label
+                                    class="dc-form-label"
+                                    for="dc_name"
+                                >
+
+                                    Nama
+
+                                    <span class="dc-required">
+                                        *
+                                    </span>
+
+                                </label>
+
+                                <input
+                                    type="text"
+                                    name="name"
+                                    id="dc_name"
+                                    class="dc-form-control"
+                                    value="{{ old('name') }}"
+                                    placeholder="Masukkan nama perangkat"
+                                    maxlength="255"
+                                    required
+                                >
+
+                                @error('name')
+
+                                    <small class="dc-form-error">
+                                        {{ $message }}
+                                    </small>
+
+                                @enderror
+
+                            </div>
+
+                            {{-- TAHUN --}}
+
+                            <div class="dc-form-group">
+
+                                <label
+                                    class="dc-form-label"
+                                    for="dc_tahun"
+                                >
+                                    Tahun
+                                </label>
+
+                                <input
+                                    type="number"
+                                    name="tahun"
+                                    id="dc_tahun"
+                                    class="dc-form-control"
+                                    value="{{ old('tahun') }}"
+                                    min="1900"
+                                    max="{{ date('Y') + 1 }}"
+                                    placeholder="Contoh: 2026"
+                                >
+
+                                @error('tahun')
+
+                                    <small class="dc-form-error">
+                                        {{ $message }}
+                                    </small>
+
+                                @enderror
+
+                            </div>
+
+
+                            {{-- STATUS --}}
+
+                            <div class="dc-form-group">
+
+                                <label
+                                    class="dc-form-label"
+                                    for="dc_status"
+                                >
+
+                                    Status
+
+                                    <span class="dc-required">
+                                        *
+                                    </span>
+
+                                </label>
+
+                                <select
+                                    name="status"
+                                    id="dc_status"
+                                    class="dc-form-control"
+                                    required
+                                >
+
+                                    <option value="">
+                                        Pilih Status
+                                    </option>
+
+                                    @foreach($statuses as $statusOption)
+
+                                        <option
+                                            value="{{ $statusOption }}"
+                                            {{ old('status') === $statusOption ? 'selected' : '' }}
+                                        >
+                                            {{ $statusOption }}
+                                        </option>
+
+                                    @endforeach
+
+                                </select>
+
+                                @error('status')
+
+                                    <small class="dc-form-error">
+                                        {{ $message }}
+                                    </small>
+
+                                @enderror
+
+                            </div>
+
+
+                            {{-- TYPE --}}
+
+                            <div class="dc-form-group">
+
+                                <label
+                                    class="dc-form-label"
+                                    for="dc_type"
+                                >
+                                    Type
+                                </label>
+
+                                <input
+                                    type="text"
+                                    name="type"
+                                    id="dc_type"
+                                    class="dc-form-control"
+                                    value="{{ old('type') }}"
+                                    placeholder="Contoh: Server, Switch, Router"
+                                >
+
+                            </div>
+
+
+                            {{-- PLATFORM --}}
+
+                            <div class="dc-form-group">
+
+                                <label
+                                    class="dc-form-label"
+                                    for="dc_platform"
+                                >
+                                    Platform
+                                </label>
+
+                                <select
+                                    name="platform"
+                                    id="dc_platform"
+                                    class="dc-form-control"
+                                >
+
+                                    <option value="">
+                                        Pilih Platform
+                                    </option>
+
+                                    @foreach($platforms as $platform)
+
+                                        <option
+                                            value="{{ $platform }}"
+                                            {{ old('platform') === $platform ? 'selected' : '' }}
+                                        >
+                                            {{ $platform }}
+                                        </option>
+
+                                    @endforeach
+
+                                </select>
+
+                            </div>
+
+                        </div>
+
+                    </div>
+
+
+                    {{-- =================================================
+                       LOKASI & RACK
+                    ================================================== --}}
+
+                    <div class="dc-section">
+
+                        <div class="dc-section-header">
+
+                            <i class="bi bi-diagram-3-fill"></i>
+
+                            <h3>
+                                Lokasi & Rack
+                            </h3>
+
+                        </div>
+
+
+                        <div class="dc-form-grid">
+
+
+                            {{-- TENANT --}}
+
+                            <div class="dc-form-group">
+
+                                <label
+                                    class="dc-form-label"
+                                    for="dc_tenant"
+                                >
+                                    Tenant
+                                </label>
+
+                                <select
+                                    name="tenant"
+                                    id="dc_tenant"
+                                    class="dc-form-control"
+                                >
+
+                                    <option value="">
+                                        Pilih Tenant
+                                    </option>
+
+                                    @foreach($tenants as $tenant)
+
+                                        <option
+                                            value="{{ $tenant }}"
+                                            {{ old('tenant') === $tenant ? 'selected' : '' }}
+                                        >
+                                            {{ $tenant }}
+                                        </option>
+
+                                    @endforeach
+
+                                </select>
+
+                            </div>
+
+
+                            {{-- SITE --}}
+
+                            <div class="dc-form-group">
+
+                                <label
+                                    class="dc-form-label"
+                                    for="dc_site"
+                                >
+                                    Site
+                                </label>
+
+                                <select
+                                    name="site"
+                                    id="dc_site"
+                                    class="dc-form-control"
+                                >
+
+                                    <option value="">
+                                        Pilih Site
+                                    </option>
+
+                                    @foreach($sites as $site)
+
+                                        <option
+                                            value="{{ $site }}"
+                                            {{ old('site') === $site ? 'selected' : '' }}
+                                        >
+                                            {{ $site }}
+                                        </option>
+
+                                    @endforeach
+
+                                </select>
+
+                            </div>
+
+
+                            {{-- RACK --}}
+
+                            <div class="dc-form-group">
+
+                                <label
+                                    class="dc-form-label"
+                                    for="dc_rack"
+                                >
+                                    Rack
+                                </label>
+
+                                <select
+                                    name="rack"
+                                    id="dc_rack"
+                                    class="dc-form-control"
+                                >
+
+                                    <option value="">
+                                        Pilih Rack
+                                    </option>
+
+                                    @foreach($racks as $rack)
+
+                                        <option
+                                            value="{{ $rack }}"
+                                            {{ old('rack') === $rack ? 'selected' : '' }}
+                                        >
+                                            {{ $rack }}
+                                        </option>
+
+                                    @endforeach
+
+                                </select>
+
+                            </div>
+
+
+                            {{-- POSITION --}}
+
+                            <div class="dc-form-group">
+
+                                <label
+                                    class="dc-form-label"
+                                    for="dc_position"
+                                >
+                                    Position
+                                </label>
+
+                                <select
+                                    name="position"
+                                    id="dc_position"
+                                    class="dc-form-control"
+                                >
+
+                                    <option value="">
+                                        Pilih Position
+                                    </option>
+
+                                    @foreach($positions as $position)
+
+                                        <option
+                                            value="{{ $position }}"
+                                            {{ old('position') === $position ? 'selected' : '' }}
+                                        >
+                                            {{ $position }}
+                                        </option>
+
+                                    @endforeach
+
+                                </select>
+
+                            </div>
+
+
+                            {{-- U HEIGHT --}}
+
+                            <div class="dc-form-group">
+
+                                <label
+                                    class="dc-form-label"
+                                    for="dc_u_height"
+                                >
+                                    U Height
+                                </label>
+
+                                <select
+                                    name="u_height"
+                                    id="dc_u_height"
+                                    class="dc-form-control"
+                                >
+
+                                    <option value="">
+                                        Pilih U Height
+                                    </option>
+
+                                    @foreach($uHeights as $height)
+
+                                        <option
+                                            value="{{ $height }}"
+                                            {{ old('u_height') == $height ? 'selected' : '' }}
+                                        >
+                                            {{ $height }}
+                                        </option>
+
+                                    @endforeach
+
+                                </select>
+
+                            </div>
+
+
+                            {{-- RACK FACE --}}
+
+                            <div class="dc-form-group">
+
+                                <label
+                                    class="dc-form-label"
+                                    for="dc_rack_face"
+                                >
+                                    Rack Face
+                                </label>
+
+                                <select
+                                    name="rack_face"
+                                    id="dc_rack_face"
+                                    class="dc-form-control"
+                                >
+
+                                    <option value="">
+                                        Pilih Rack Face
+                                    </option>
+
+                                    @foreach($rackFaces as $face)
+
+                                        <option
+                                            value="{{ $face }}"
+                                            {{ old('rack_face') === $face ? 'selected' : '' }}
+                                        >
+                                            {{ $face }}
+                                        </option>
+
+                                    @endforeach
+
+                                </select>
+
+                            </div>
+
+
+                            {{-- REGION --}}
+
+                            <div class="dc-form-group">
+
+                                <label
+                                    class="dc-form-label"
+                                    for="dc_region"
+                                >
+                                    Region
+                                </label>
+
+                                <select
+                                    name="region"
+                                    id="dc_region"
+                                    class="dc-form-control"
+                                >
+
+                                    <option value="">
+                                        Pilih Region
+                                    </option>
+
+                                    @foreach($regions as $region)
+
+                                        <option
+                                            value="{{ $region }}"
+                                            {{ old('region') === $region ? 'selected' : '' }}
+                                        >
+                                            {{ $region }}
+                                        </option>
+
+                                    @endforeach
+
+                                </select>
+
+                            </div>
+
+
+                            {{-- LOCATION --}}
+
+                            <div class="dc-form-group">
+
+                                <label
+                                    class="dc-form-label"
+                                    for="dc_location"
+                                >
+                                    Location
+                                </label>
+
+                                <select
+                                    name="location"
+                                    id="dc_location"
+                                    class="dc-form-control"
+                                >
+
+                                    <option value="">
+                                        Pilih Location
+                                    </option>
+
+                                    @foreach($locations as $location)
+
+                                        <option
+                                            value="{{ $location }}"
+                                            {{ old('location') === $location ? 'selected' : '' }}
+                                        >
+                                            {{ $location }}
+                                        </option>
+
+                                    @endforeach
+
+                                </select>
+
+                            </div>
+
+
+                            {{-- CLUSTER --}}
+
+                            <div class="dc-form-group">
+
+                                <label
+                                    class="dc-form-label"
+                                    for="dc_cluster"
+                                >
+                                    Cluster
+                                </label>
+
+                                <select
+                                    name="cluster"
+                                    id="dc_cluster"
+                                    class="dc-form-control"
+                                >
+
+                                    <option value="">
+                                        Pilih Cluster
+                                    </option>
+
+                                    @foreach($clusters as $cluster)
+
+                                        <option
+                                            value="{{ $cluster }}"
+                                            {{ old('cluster') === $cluster ? 'selected' : '' }}
+                                        >
+                                            {{ $cluster }}
+                                        </option>
+
+                                    @endforeach
+
+                                </select>
+
+                            </div>
+
+                        </div>
+
+                    </div>
+
+
+                    {{-- =================================================
+                       SPESIFIKASI
+                    ================================================== --}}
+
+                    <div class="dc-section">
+
+                        <div class="dc-section-header">
+
+                            <i class="bi bi-cpu-fill"></i>
+
+                            <h3>
+                                Spesifikasi Perangkat
+                            </h3>
+
+                        </div>
+
+
+                        <div class="dc-form-grid">
+
+
+                            {{-- ROLE --}}
+
+                            <div class="dc-form-group">
+
+                                <label
+                                    class="dc-form-label"
+                                    for="dc_role"
+                                >
+                                    Role
+                                </label>
+
+                                <select
+                                    name="role"
+                                    id="dc_role"
+                                    class="dc-form-control"
+                                >
+
+                                    <option value="">
+                                        Pilih Role
+                                    </option>
+
+                                    @foreach($roles as $role)
+
+                                        <option
+                                            value="{{ $role }}"
+                                            {{ old('role') === $role ? 'selected' : '' }}
+                                        >
+                                            {{ $role }}
+                                        </option>
+
+                                    @endforeach
+
+                                </select>
+
+                            </div>
+
+
+                            {{-- MANUFACTURER --}}
+
+                            <div class="dc-form-group">
+
+                                <label
+                                    class="dc-form-label"
+                                    for="dc_manufacturer"
+                                >
+                                    Manufacturer
+                                </label>
+
+                                <select
+                                    name="manufacturer"
+                                    id="dc_manufacturer"
+                                    class="dc-form-control"
+                                >
+
+                                    <option value="">
+                                        Pilih Manufacturer
+                                    </option>
+
+                                    @foreach($manufacturers as $manufacturer)
+
+                                        <option
+                                            value="{{ $manufacturer }}"
+                                            {{ old('manufacturer') === $manufacturer ? 'selected' : '' }}
+                                        >
+                                            {{ $manufacturer }}
+                                        </option>
+
+                                    @endforeach
+
+                                </select>
+
+                            </div>
+
+
+                            {{-- RAM --}}
+
+                            <div class="dc-form-group">
+
+                                <label
+                                    class="dc-form-label"
+                                    for="dc_ram"
+                                >
+                                    RAM
+                                </label>
+
+                                <select
+                                    name="ram"
+                                    id="dc_ram"
+                                    class="dc-form-control"
+                                >
+
+                                    <option value="">
+                                        Pilih RAM
+                                    </option>
+
+                                    @foreach($rams as $ram)
+
+                                        <option
+                                            value="{{ $ram }}"
+                                            {{ old('ram') === $ram ? 'selected' : '' }}
+                                        >
+                                            {{ $ram }}
+                                        </option>
+
+                                    @endforeach
+
+                                </select>
+
+                            </div>
+
+
+                            {{-- CPU --}}
+
+                            <div class="dc-form-group">
+
+                                <label
+                                    class="dc-form-label"
+                                    for="dc_cpu"
+                                >
+                                    CPU
+                                </label>
+
+                                <textarea
+                                    name="cpu"
+                                    id="dc_cpu"
+                                    class="dc-form-control"
+                                    placeholder="Masukkan spesifikasi CPU"
+                                >{{ old('cpu') }}</textarea>
+
+                            </div>
+
+
+                            {{-- HARDDISK --}}
+
+                            <div class="dc-form-group">
+
+                                <label
+                                    class="dc-form-label"
+                                    for="dc_harddisk"
+                                >
+                                    Hard Disk
+                                </label>
+
+                                <textarea
+                                    name="harddisk"
+                                    id="dc_harddisk"
+                                    class="dc-form-control"
+                                    placeholder="Masukkan kapasitas / tipe harddisk"
+                                >{{ old('harddisk') }}</textarea>
+
+                            </div>
+
+
+                            {{-- SERIAL NUMBER --}}
+
+                            <div class="dc-form-group">
+
+                                <label
+                                    class="dc-form-label"
+                                    for="dc_serial_number"
+                                >
+                                    Serial Number
+                                </label>
+
+                                <input
+                                    type="text"
+                                    name="serial_number"
+                                    id="dc_serial_number"
+                                    class="dc-form-control"
+                                    value="{{ old('serial_number') }}"
+                                    placeholder="Masukkan serial number"
+                                >
+
+                            </div>
+
+                        </div>
+
+                    </div>
+
+
+                    {{-- =================================================
+                       NETWORK
+                    ================================================== --}}
+
+                    <div class="dc-section">
+
+                        <div class="dc-section-header">
+
+                            <i class="bi bi-router-fill"></i>
+
+                            <h3>
+                                Network
+                            </h3>
+
+                        </div>
+
+
+                        <div class="dc-form-grid">
+
+
+                            {{-- IP ADDRESS --}}
+
+                            <div class="dc-form-group">
+
+                                <label
+                                    class="dc-form-label"
+                                    for="dc_ip_address"
+                                >
+                                    IP Address
+                                </label>
+
+                                <input
+                                    type="text"
+                                    name="ip_address"
+                                    id="dc_ip_address"
+                                    class="dc-form-control"
+                                    value="{{ old('ip_address') }}"
+                                    placeholder="Masukkan IP Address"
+                                >
+
+                            </div>
+
+
+                            {{-- IPV4 --}}
+
+                            <div class="dc-form-group">
+
+                                <label
+                                    class="dc-form-label"
+                                    for="dc_ipv4_address"
+                                >
+                                    IPv4 Address
+                                </label>
+
+                                <input
+                                    type="text"
+                                    name="ipv4_address"
+                                    id="dc_ipv4_address"
+                                    class="dc-form-control"
+                                    value="{{ old('ipv4_address') }}"
+                                    placeholder="Masukkan IPv4 Address"
+                                >
+
+                            </div>
+
+                        </div>
+
+                    </div>
+
+
+                    {{-- =================================================
+                       PIC & OWNER
+                    ================================================== --}}
+
+                    <div class="dc-section">
+
+                        <div class="dc-section-header">
+
+                            <i class="bi bi-person-badge-fill"></i>
+
+                            <h3>
+                                PIC & Kepemilikan
+                            </h3>
+
+                        </div>
+
+
+                        <div class="dc-form-grid">
+
+
+                            {{-- PIC --}}
+
+                            <div class="dc-form-group">
+
+                                <label
+                                    class="dc-form-label"
+                                    for="dc_pic"
+                                >
+                                    PIC
+                                </label>
+
+                                <select
+                                    name="pic"
+                                    id="dc_pic"
+                                    class="dc-form-control"
+                                >
+
+                                    <option value="">
+                                        Pilih PIC
+                                    </option>
+
+                                    @foreach($pics as $pic)
+
+                                        <option
+                                            value="{{ $pic }}"
+                                            {{ old('pic') === $pic ? 'selected' : '' }}
+                                        >
+                                            {{ $pic }}
+                                        </option>
+
+                                    @endforeach
+
+                                </select>
+
+                            </div>
+
+
+                            {{-- ID EXCEL --}}
+
+                            <div class="dc-form-group">
+
+                                <label
+                                    class="dc-form-label"
+                                    for="dc_id"
+                                >
+                                    ID
+                                </label>
+
+                                <input
+                                    type="text"
+                                    name="id"
+                                    id="dc_id"
+                                    class="dc-form-control"
+                                    value="{{ old('id') }}"
+                                    placeholder="Masukkan ID"
+                                    maxlength="50"
+                                >
+
+                                @error('id')
+
+                                    <small class="dc-form-error">
+                                        {{ $message }}
+                                    </small>
+
+                                @enderror
+
+                            </div>
+
+
+                            {{-- OWNER GROUP --}}
+
+                            <div class="dc-form-group">
+
+                                <label
+                                    class="dc-form-label"
+                                    for="dc_owner_group"
+                                >
+                                    Owner Group
+                                </label>
+
+                                <input
+                                    type="text"
+                                    name="owner_group"
+                                    id="dc_owner_group"
+                                    class="dc-form-control"
+                                    value="{{ old('owner_group') }}"
+                                    placeholder="Masukkan owner group"
+                                >
+
+                            </div>
+
+
+                            {{-- OWNER --}}
+
+                            <div class="dc-form-group">
+
+                                <label
+                                    class="dc-form-label"
+                                    for="dc_owner"
+                                >
+                                    Owner
+                                </label>
+
+                                <input
+                                    type="text"
+                                    name="owner"
+                                    id="dc_owner"
+                                    class="dc-form-control"
+                                    value="{{ old('owner') }}"
+                                    placeholder="Masukkan owner"
+                                >
+
+                            </div>
+
+
+                            {{-- TENANT GROUP --}}
+
+                            <div class="dc-form-group">
+
+                                <label class="dc-form-label">
+                                    Tenant Group
+                                </label>
+
+                                <input
+                                    type="text"
+                                    class="dc-form-control"
+                                    value="Pemerintah Kota Bekasi"
+                                    readonly
+                                >
+
+                                <div class="dc-help">
+
+                                    <i class="bi bi-info-circle"></i>
+
+                                    Diatur otomatis oleh sistem.
+
+                                </div>
+
+                            </div>
+
+                        </div>
+
+                    </div>
+
+
+                    {{-- =================================================
+                       KETERANGAN
+                    ================================================== --}}
+
+                    <div class="dc-section">
+
+                        <div class="dc-section-header">
+
+                            <i class="bi bi-card-text"></i>
+
+                            <h3>
+                                Keterangan
+                            </h3>
+
+                        </div>
+
+
+                        <div class="dc-form-grid">
+
+                            <div class="dc-form-group full">
+
+                                <label
+                                    class="dc-form-label"
+                                    for="dc_description"
+                                >
+                                    Description
+                                </label>
+
+                                <textarea
+                                    name="description"
+                                    id="dc_description"
+                                    class="dc-form-control"
+                                    placeholder="Masukkan deskripsi perangkat"
+                                >{{ old('description') }}</textarea>
+
+                            </div>
+
+                        </div>
+
+                    </div>
+
+                </div>
+
+            </div>
+
+
+            {{-- =================================================
+               FOOTER FORM
+            ================================================== --}}
+
+            <div class="dc-modal-footer">
+
+                <div class="dc-footer-right">
+
+                    <button
+                        type="button"
+                        class="dc-btn-batal"
+                        onclick="closeDataCenterModal()"
+                    >
+                        Batal
+                    </button>
+
+
+                    <button
+                        type="submit"
+                        class="dc-btn-simpan"
+                        id="dcSaveButton"
+                    >
+
+                        <i class="bi bi-check-lg"></i>
+
+                        Simpan Data Center
+
+                    </button>
+
+                </div>
+
+            </div>
+
+        </form>
 
     </div>
 
-
-    {{-- FORM --}}
-
-    <form
-        id="dataCenterForm"
-        method="POST"
-        action="{{ route('data-center.store') }}"
-    >
-
-        @csrf
-
-        <input
-            type="hidden"
-            name="_method"
-            id="dcMethod"
-            value="POST"
-        >
-
-
-        <div class="dc-modal-body">
-
-            <div class="dc-form-card">
-
-
-                {{-- =================================================
-                     IDENTITAS
-                ================================================== --}}
-
-                <div class="dc-section">
-
-                    <div class="dc-section-header">
-
-                        <i class="bi bi-info-circle-fill"></i>
-
-                        <h3>
-                            Identitas Perangkat
-                        </h3>
-
-                    </div>
-
-
-                    <div class="dc-form-grid">
-
-
-                        {{-- ID --}}
-
-                        <div class="dc-form-group">
-
-                            <label class="dc-form-label">
-                                ID Data Center
-                            </label>
-
-                            <input
-                                type="text"
-                                class="dc-form-control"
-                                value="Otomatis"
-                                readonly
-                            >
-
-                            <div class="dc-help">
-
-                                <i class="bi bi-info-circle"></i>
-
-                                ID dibuat otomatis oleh sistem.
-
-                            </div>
-
-                        </div>
-
-
-                        {{-- NAME --}}
-
-                        <div class="dc-form-group">
-
-                            <label
-                                class="dc-form-label"
-                                for="dc_name"
-                            >
-
-                                Nama
-
-                                <span class="dc-required">
-                                    *
-                                </span>
-
-                            </label>
-
-                            <input
-                                type="text"
-                                name="name"
-                                id="dc_name"
-                                class="dc-form-control"
-                                value="{{ old('name') }}"
-                                placeholder="Masukkan nama perangkat"
-                                maxlength="255"
-                                required
-                            >
-
-                            @error('name')
-
-                                <small class="dc-form-error">
-                                    {{ $message }}
-                                </small>
-
-                            @enderror
-
-                        </div>
-
-
-                        {{-- STATUS --}}
-
-                        <div class="dc-form-group">
-
-                            <label
-                                class="dc-form-label"
-                                for="dc_status"
-                            >
-
-                                Status
-
-                                <span class="dc-required">
-                                    *
-                                </span>
-
-                            </label>
-
-                            <select
-                                name="status"
-                                id="dc_status"
-                                class="dc-form-control"
-                                required
-                            >
-
-                                <option value="">
-                                    Pilih Status
-                                </option>
-
-                                @foreach($statuses as $status)
-
-                                    <option
-                                        value="{{ $status }}"
-                                        {{ old('status') === $status
-                                            ? 'selected'
-                                            : '' }}
-                                    >
-                                        {{ $status }}
-                                    </option>
-
-                                @endforeach
-
-                            </select>
-
-                            @error('status')
-
-                                <small class="dc-form-error">
-                                    {{ $message }}
-                                </small>
-
-                            @enderror
-
-                        </div>
-
-
-                        {{-- TYPE --}}
-
-                        <div class="dc-form-group">
-
-                            <label
-                                class="dc-form-label"
-                                for="dc_type"
-                            >
-                                Type
-                            </label>
-
-                            <input
-                                type="text"
-                                name="type"
-                                id="dc_type"
-                                class="dc-form-control"
-                                value="{{ old('type') }}"
-                                placeholder="Contoh: Server, Switch, Router"
-                            >
-
-                        </div>
-
-
-                        {{-- PLATFORM --}}
-
-                        <div class="dc-form-group">
-
-                            <label
-                                class="dc-form-label"
-                                for="dc_platform"
-                            >
-                                Platform
-                            </label>
-
-                            <input
-                                type="text"
-                                name="platform"
-                                id="dc_platform"
-                                class="dc-form-control"
-                                value="{{ old('platform') }}"
-                                placeholder="Masukkan platform"
-                            >
-
-                        </div>
-
-
-                        {{-- VERSION --}}
-
-                        <div class="dc-form-group">
-
-                            <label
-                                class="dc-form-label"
-                                for="dc_version"
-                            >
-                                Version
-                            </label>
-
-                            <input
-                                type="text"
-                                name="version"
-                                id="dc_version"
-                                class="dc-form-control"
-                                value="{{ old('version') }}"
-                                placeholder="Masukkan versi"
-                            >
-
-                        </div>
-
-                    </div>
-
-                </div>
-
-
-                {{-- =================================================
-                     LOKASI & RACK
-                ================================================== --}}
-
-                <div class="dc-section">
-
-                    <div class="dc-section-header">
-
-                        <i class="bi bi-diagram-3-fill"></i>
-
-                        <h3>
-                            Lokasi & Rack
-                        </h3>
-
-                    </div>
-
-
-                    <div class="dc-form-grid">
-
-
-                        {{-- TENANT --}}
-
-                        <div class="dc-form-group">
-
-                            <label
-                                class="dc-form-label"
-                                for="dc_tenant"
-                            >
-                                Tenant
-                            </label>
-
-                            <select
-                                name="tenant"
-                                id="dc_tenant"
-                                class="dc-form-control"
-                            >
-
-                                <option value="">
-                                    Pilih Tenant
-                                </option>
-
-                                @foreach($tenants as $tenant)
-
-                                    <option
-                                        value="{{ $tenant }}"
-                                        {{ old('tenant') === $tenant
-                                            ? 'selected'
-                                            : '' }}
-                                    >
-                                        {{ $tenant }}
-                                    </option>
-
-                                @endforeach
-
-                            </select>
-
-                        </div>
-
-
-                        {{-- SITE --}}
-
-                        <div class="dc-form-group">
-
-                            <label
-                                class="dc-form-label"
-                                for="dc_site"
-                            >
-                                Site
-                            </label>
-
-                            <select
-                                name="site"
-                                id="dc_site"
-                                class="dc-form-control"
-                            >
-
-                                <option value="">
-                                    Pilih Site
-                                </option>
-
-                                @foreach($sites as $site)
-
-                                    <option
-                                        value="{{ $site }}"
-                                        {{ old('site') === $site
-                                            ? 'selected'
-                                            : '' }}
-                                    >
-                                        {{ $site }}
-                                    </option>
-
-                                @endforeach
-
-                            </select>
-
-                        </div>
-
-
-                        {{-- RACK --}}
-
-                        <div class="dc-form-group">
-
-                            <label
-                                class="dc-form-label"
-                                for="dc_rack"
-                            >
-                                Rack
-                            </label>
-
-                            <select
-                                name="rack"
-                                id="dc_rack"
-                                class="dc-form-control"
-                            >
-
-                                <option value="">
-                                    Pilih Rack
-                                </option>
-
-                                @foreach($racks as $rack)
-
-                                    <option
-                                        value="{{ $rack }}"
-                                        {{ old('rack') === $rack
-                                            ? 'selected'
-                                            : '' }}
-                                    >
-                                        {{ $rack }}
-                                    </option>
-
-                                @endforeach
-
-                            </select>
-
-                        </div>
-
-
-                        {{-- POSITION --}}
-
-                        <div class="dc-form-group">
-
-                            <label
-                                class="dc-form-label"
-                                for="dc_position"
-                            >
-                                Position
-                            </label>
-
-                            <select
-                                name="position"
-                                id="dc_position"
-                                class="dc-form-control"
-                            >
-
-                                <option value="">
-                                    Pilih Position
-                                </option>
-
-                                @foreach($positions as $position)
-
-                                    <option
-                                        value="{{ $position }}"
-                                        {{ old('position') === $position
-                                            ? 'selected'
-                                            : '' }}
-                                    >
-                                        {{ $position }}
-                                    </option>
-
-                                @endforeach
-
-                            </select>
-
-                        </div>
-
-
-                        {{-- U HEIGHT --}}
-
-                        <div class="dc-form-group">
-
-                            <label
-                                class="dc-form-label"
-                                for="dc_u_height"
-                            >
-                                U Height
-                            </label>
-
-                            <select
-                                name="u_height"
-                                id="dc_u_height"
-                                class="dc-form-control"
-                            >
-
-                                <option value="">
-                                    Pilih U Height
-                                </option>
-
-                                @foreach ($uHeights as $height)
-        <option value="{{ $height }}">
-            {{ $height }}
-        </option>
-    @endforeach
-
-                            </select>
-
-                        </div>
-
-
-                        {{-- RACK FACE --}}
-
-                        <div class="dc-form-group">
-
-                            <label
-                                class="dc-form-label"
-                                for="dc_rack_face"
-                            >
-                                Rack Face
-                            </label>
-
-                            <select
-                                name="rack_face"
-                                id="dc_rack_face"
-                                class="dc-form-control"
-                            >
-
-                                <option value="">
-                                    Pilih Rack Face
-                                </option>
-
-                                @foreach($rackFaces as $face)
-
-                                    <option
-                                        value="{{ $face }}"
-                                        {{ old('rack_face') === $face
-                                            ? 'selected'
-                                            : '' }}
-                                    >
-                                        {{ $face }}
-                                    </option>
-
-                                @endforeach
-
-                            </select>
-
-                        </div>
-
-
-                        {{-- REGION --}}
-
-                        <div class="dc-form-group">
-
-                            <label
-                                class="dc-form-label"
-                                for="dc_region"
-                            >
-                                Region
-                            </label>
-
-                            <select
-                                name="region"
-                                id="dc_region"
-                                class="dc-form-control"
-                            >
-
-                                <option value="">
-                                    Pilih Region
-                                </option>
-
-                                @foreach($regions as $region)
-
-                                    <option
-                                        value="{{ $region }}"
-                                        {{ old('region') === $region
-                                            ? 'selected'
-                                            : '' }}
-                                    >
-                                        {{ $region }}
-                                    </option>
-
-                                @endforeach
-
-                            </select>
-
-                        </div>
-
-
-                        {{-- LOCATION --}}
-
-                        <div class="dc-form-group">
-
-                            <label
-                                class="dc-form-label"
-                                for="dc_location"
-                            >
-                                Location
-                            </label>
-
-                            <input
-                                type="text"
-                                name="location"
-                                id="dc_location"
-                                class="dc-form-control"
-                                value="{{ old('location') }}"
-                                placeholder="Masukkan lokasi"
-                            >
-
-                        </div>
-
-
-                        {{-- CLUSTER --}}
-
-                        <div class="dc-form-group">
-
-                            <label
-                                class="dc-form-label"
-                                for="dc_cluster"
-                            >
-                                Cluster
-                            </label>
-
-                            <select
-                                name="cluster"
-                                id="dc_cluster"
-                                class="dc-form-control"
-                            >
-
-                                <option value="">
-                                    Pilih Cluster
-                                </option>
-
-                                @foreach($clusters as $cluster)
-
-                                    <option
-                                        value="{{ $cluster }}"
-                                        {{ old('cluster') === $cluster
-                                            ? 'selected'
-                                            : '' }}
-                                    >
-                                        {{ $cluster }}
-                                    </option>
-
-                                @endforeach
-
-                            </select>
-
-                        </div>
-
-                    </div>
-
-                </div>
-
-
-                {{-- =================================================
-                     SPESIFIKASI
-                ================================================== --}}
-
-                <div class="dc-section">
-
-                    <div class="dc-section-header">
-
-                        <i class="bi bi-cpu-fill"></i>
-
-                        <h3>
-                            Spesifikasi Perangkat
-                        </h3>
-
-                    </div>
-
-
-                    <div class="dc-form-grid">
-
-
-                        {{-- ROLE --}}
-
-                        <div class="dc-form-group">
-
-                            <label
-                                class="dc-form-label"
-                                for="dc_role"
-                            >
-                                Role
-                            </label>
-
-                            <select
-                                name="role"
-                                id="dc_role"
-                                class="dc-form-control"
-                            >
-
-                                <option value="">
-                                    Pilih Role
-                                </option>
-
-                                @foreach($roles as $role)
-
-                                    <option
-                                        value="{{ $role }}"
-                                        {{ old('role') === $role
-                                            ? 'selected'
-                                            : '' }}
-                                    >
-                                        {{ $role }}
-                                    </option>
-
-                                @endforeach
-
-                            </select>
-
-                        </div>
-
-
-                        {{-- MANUFACTURER --}}
-
-                        <div class="dc-form-group">
-
-                            <label
-                                class="dc-form-label"
-                                for="dc_manufacturer"
-                            >
-                                Manufacturer
-                            </label>
-
-                            <select
-                                name="manufacturer"
-                                id="dc_manufacturer"
-                                class="dc-form-control"
-                            >
-
-                                <option value="">
-                                    Pilih Manufacturer
-                                </option>
-
-                                @foreach($manufacturers as $manufacturer)
-
-                                    <option
-                                        value="{{ $manufacturer }}"
-                                        {{ old('manufacturer') === $manufacturer
-                                            ? 'selected'
-                                            : '' }}
-                                    >
-                                        {{ $manufacturer }}
-                                    </option>
-
-                                @endforeach
-
-                            </select>
-
-                        </div>
-
-
-                        {{-- RAM --}}
-
-                        <div class="dc-form-group">
-
-                            <label
-                                class="dc-form-label"
-                                for="dc_ram"
-                            >
-                                RAM
-                            </label>
-
-                            <select
-                                name="ram"
-                                id="dc_ram"
-                                class="dc-form-control"
-                            >
-
-                                <option value="">
-                                    Pilih RAM
-                                </option>
-
-                                @foreach($rams as $ram)
-
-                                    <option
-                                        value="{{ $ram }}"
-                                        {{ old('ram') === $ram
-                                            ? 'selected'
-                                            : '' }}
-                                    >
-                                        {{ $ram }}
-                                    </option>
-
-                                @endforeach
-
-                            </select>
-
-                        </div>
-
-
-                        {{-- CPU --}}
-
-                        <div class="dc-form-group">
-
-                            <label
-                                class="dc-form-label"
-                                for="dc_cpu"
-                            >
-                                CPU
-                            </label>
-
-                            <textarea
-                                name="cpu"
-                                id="dc_cpu"
-                                class="dc-form-control"
-                                placeholder="Masukkan spesifikasi CPU"
-                            >{{ old('cpu') }}</textarea>
-
-                        </div>
-
-
-                        {{-- HARDDISK --}}
-
-                        <div class="dc-form-group">
-
-                            <label
-                                class="dc-form-label"
-                                for="dc_harddisk"
-                            >
-                                Hard Disk
-                            </label>
-
-                            <textarea
-                                name="harddisk"
-                                id="dc_harddisk"
-                                class="dc-form-control"
-                                placeholder="Masukkan kapasitas / tipe harddisk"
-                            >{{ old('harddisk') }}</textarea>
-
-                        </div>
-
-
-                        {{-- SERIAL NUMBER --}}
-
-                        <div class="dc-form-group">
-
-                            <label
-                                class="dc-form-label"
-                                for="dc_serial_number"
-                            >
-                                Serial Number
-                            </label>
-
-                            <input
-                                type="text"
-                                name="serial_number"
-                                id="dc_serial_number"
-                                class="dc-form-control"
-                                value="{{ old('serial_number') }}"
-                                placeholder="Masukkan serial number"
-                            >
-
-                        </div>
-
-                    </div>
-
-                </div>
-
-
-                {{-- =================================================
-                     NETWORK
-                ================================================== --}}
-
-                <div class="dc-section">
-
-                    <div class="dc-section-header">
-
-                        <i class="bi bi-router-fill"></i>
-
-                        <h3>
-                            Network
-                        </h3>
-
-                    </div>
-
-
-                    <div class="dc-form-grid">
-
-
-                        {{-- IP ADDRESS --}}
-
-                        <div class="dc-form-group">
-
-                            <label
-                                class="dc-form-label"
-                                for="dc_ip_address"
-                            >
-                                IP Address
-                            </label>
-
-                            <input
-                                type="text"
-                                name="ip_address"
-                                id="dc_ip_address"
-                                class="dc-form-control"
-                                value="{{ old('ip_address') }}"
-                                placeholder="Masukkan IP Address"
-                            >
-
-                        </div>
-
-
-                        {{-- IPV4 --}}
-
-                        <div class="dc-form-group">
-
-                            <label
-                                class="dc-form-label"
-                                for="dc_ipv4_address"
-                            >
-                                IPv4 Address
-                            </label>
-
-                            <input
-                                type="text"
-                                name="ipv4_address"
-                                id="dc_ipv4_address"
-                                class="dc-form-control"
-                                value="{{ old('ipv4_address') }}"
-                                placeholder="Masukkan IPv4 Address"
-                            >
-
-                        </div>
-
-                    </div>
-
-                </div>
-
-
-                {{-- =================================================
-                     PIC & OWNER
-                ================================================== --}}
-
-                <div class="dc-section">
-
-                    <div class="dc-section-header">
-
-                        <i class="bi bi-person-badge-fill"></i>
-
-                        <h3>
-                            PIC & Kepemilikan
-                        </h3>
-
-                    </div>
-
-
-                    <div class="dc-form-grid">
-
-
-                        {{-- PIC --}}
-
-                        <div class="dc-form-group">
-
-                            <label
-                                class="dc-form-label"
-                                for="dc_pic"
-                            >
-                                PIC
-                            </label>
-
-                            <input
-                                type="text"
-                                name="pic"
-                                id="dc_pic"
-                                class="dc-form-control"
-                                value="{{ old('pic') }}"
-                                placeholder="Masukkan PIC"
-                            >
-
-                        </div>
-
-
-                        {{-- OWNER GROUP --}}
-
-                        <div class="dc-form-group">
-
-                            <label
-                                class="dc-form-label"
-                                for="dc_owner_group"
-                            >
-                                Owner Group
-                            </label>
-
-                            <input
-                                type="text"
-                                name="owner_group"
-                                id="dc_owner_group"
-                                class="dc-form-control"
-                                value="{{ old('owner_group') }}"
-                                placeholder="Masukkan owner group"
-                            >
-
-                        </div>
-
-
-                        {{-- OWNER --}}
-
-                        <div class="dc-form-group">
-
-                            <label
-                                class="dc-form-label"
-                                for="dc_owner"
-                            >
-                                Owner
-                            </label>
-
-                            <input
-                                type="text"
-                                name="owner"
-                                id="dc_owner"
-                                class="dc-form-control"
-                                value="{{ old('owner') }}"
-                                placeholder="Masukkan owner"
-                            >
-
-                        </div>
-
-
-                        {{-- TENANT GROUP --}}
-
-                        <div class="dc-form-group">
-
-                            <label class="dc-form-label">
-                                Tenant Group
-                            </label>
-
-                            <input
-                                type="text"
-                                class="dc-form-control"
-                                value="Pemerintah Kota Bekasi"
-                                readonly
-                            >
-
-                            <div class="dc-help">
-
-                                <i class="bi bi-info-circle"></i>
-
-                                Diatur otomatis oleh sistem.
-
-                            </div>
-
-                        </div>
-
-                    </div>
-
-                </div>
-
-
-                {{-- =================================================
-                     KETERANGAN
-                ================================================== --}}
-
-                <div class="dc-section">
-
-                    <div class="dc-section-header">
-
-                        <i class="bi bi-card-text"></i>
-
-                        <h3>
-                            Keterangan
-                        </h3>
-
-                    </div>
-
-
-                    <div class="dc-form-grid">
-
-                        <div class="dc-form-group full">
-
-                            <label
-                                class="dc-form-label"
-                                for="dc_description"
-                            >
-                                Description
-                            </label>
-
-                            <textarea
-                                name="description"
-                                id="dc_description"
-                                class="dc-form-control"
-                                placeholder="Masukkan deskripsi perangkat"
-                            >{{ old('description') }}</textarea>
-
-                        </div>
-
-                    </div>
-
-                </div>
-
-            </div>
-
-        </div>
-
-
-        {{-- =================================================
-             FOOTER FORM
-        ================================================== --}}
-
-        <div class="dc-modal-footer">
-
-
-            {{-- =================================================
-                 KIRI — DOWNLOAD & IMPORT EXCEL
-            ================================================== --}}
-
-            <div class="dc-footer-left">
-
-
-                {{-- DOWNLOAD TEMPLATE --}}
-
-                <a
-                    href="{{ route('data-center.template') }}"
-                    class="download-dc-button"
-                    title="Download Template Excel"
-                >
-
-                    <i class="bi bi-download"></i>
-
-                    <span>
-                        Download Template
-                    </span>
-
-                </a>
-
-
-                {{-- IMPORT EXCEL --}}
-
-                <button
-                    type="button"
-                    class="import-dc-button"
-                    onclick="openImportDataCenterModal()"
-                    title="Import Data dari Excel"
-                >
-
-                    <i class="bi bi-file-earmark-excel-fill"></i>
-
-                    <span>
-                        Import Excel
-                    </span>
-
-                </button>
-
-            </div>
-
-
-            {{-- =================================================
-                 KANAN — BATAL & SIMPAN
-            ================================================== --}}
-
-            <div class="dc-footer-right">
-
-
-                {{-- BATAL --}}
-
-                <button
-                    type="button"
-                    class="dc-btn-batal"
-                    onclick="closeDataCenterModal()"
-                >
-                    Batal
-                </button>
-
-
-                {{-- SIMPAN --}}
-
-                <button
-                    type="submit"
-                    class="dc-btn-simpan"
-                    id="dcSaveButton"
-                >
-
-                    <i class="bi bi-check-lg"></i>
-
-                    Simpan Data Center
-
-                </button>
-
-            </div>
-
-        </div>
-
-    </form>
-
 </div>
 
-</div>
 
 {{-- =========================================================
-MODAL IMPORT EXCEL
+   MODAL IMPORT EXCEL
 ========================================================= --}}
 
 <div
@@ -3929,153 +4002,155 @@ MODAL IMPORT EXCEL
     aria-hidden="true"
 >
 
-<div
-    class="dc-import-modal"
-    role="dialog"
-    aria-modal="true"
-    aria-labelledby="dcImportModalTitle"
->
-
-
-    {{-- HEADER --}}
-
-    <div class="dc-import-header">
-
-        <div class="dc-import-header-left">
-
-            <div class="dc-import-icon">
-
-                <i class="bi bi-file-earmark-excel-fill"></i>
-
-            </div>
-
-            <div class="dc-import-title">
-
-                <h3 id="dcImportModalTitle">
-                    Import Data Center
-                </h3>
-
-                <p>
-                    Import banyak data Data Center sekaligus.
-                </p>
-
-            </div>
-
-        </div>
-
-
-        <button
-            type="button"
-            class="dc-import-close"
-            onclick="closeImportDataCenterModal()"
-            title="Tutup"
-        >
-
-            <i class="bi bi-x-lg"></i>
-
-        </button>
-
-    </div>
-
-
-    {{-- FORM IMPORT --}}
-
-    <form
-        action="{{ route('data-center.import') }}"
-        method="POST"
-        enctype="multipart/form-data"
+    <div
+        class="dc-import-modal"
+        role="dialog"
+        aria-modal="true"
+        aria-labelledby="dcImportModalTitle"
     >
 
-        @csrf
 
+        {{-- HEADER --}}
 
-        <div class="dc-import-body">
+        <div class="dc-import-header">
 
+            <div class="dc-import-header-left">
 
-            {{-- INFO --}}
+                <div class="dc-import-icon">
 
-            <div class="dc-import-info">
+                    <i class="bi bi-file-earmark-excel-fill"></i>
 
-                <i class="bi bi-info-circle-fill"></i>
+                </div>
 
-                File Excel dapat digunakan untuk memasukkan
-                banyak data Data Center sekaligus.
-                ID Data Center dan Tenant Group akan dibuat
-                otomatis oleh sistem.
+                <div class="dc-import-title">
 
-            </div>
+                    <h3 id="dcImportModalTitle">
+                        Import Data Center
+                    </h3>
 
-
-            {{-- FILE --}}
-
-            <div class="dc-import-file-wrapper">
-
-                <label
-                    for="dc_import_file"
-                    class="dc-import-label"
-                >
-                    File Excel
-                </label>
-
-                <input
-                    type="file"
-                    name="file"
-                    id="dc_import_file"
-                    class="dc-import-file"
-                    accept=".xlsx,.xls"
-                    required
-                >
-
-                <div class="dc-import-help">
-
-                    <i class="bi bi-info-circle"></i>
-
-                    Format yang diperbolehkan:
-                    <strong>.xlsx</strong> atau
-                    <strong>.xls</strong>.
-                    Maksimal 10 MB.
+                    <p>
+                        Import banyak data Data Center sekaligus.
+                    </p>
 
                 </div>
 
             </div>
 
-        </div>
-
-
-        {{-- FOOTER IMPORT --}}
-
-        <div class="dc-import-footer">
 
             <button
                 type="button"
-                class="dc-import-cancel"
+                class="dc-import-close"
                 onclick="closeImportDataCenterModal()"
-            >
-                Batal
-            </button>
-
-
-            <button
-                type="submit"
-                class="dc-import-submit"
+                title="Tutup"
             >
 
-                <i class="bi bi-upload"></i>
-
-                Import Data
+                <i class="bi bi-x-lg"></i>
 
             </button>
 
         </div>
 
-    </form>
+
+        {{-- FORM IMPORT --}}
+
+        <form
+            action="{{ route('data-center.import') }}"
+            method="POST"
+            enctype="multipart/form-data"
+        >
+
+            @csrf
+
+
+            <div class="dc-import-body">
+
+
+                {{-- INFO --}}
+
+                <div class="dc-import-info">
+
+                    <i class="bi bi-info-circle-fill"></i>
+
+                    File Excel dapat digunakan untuk memasukkan
+                    banyak data Data Center sekaligus.
+                    ID Data Center dan Tenant Group akan dibuat
+                    otomatis oleh sistem.
+
+                </div>
+
+
+                {{-- FILE --}}
+
+                <div class="dc-import-file-wrapper">
+
+                    <label
+                        for="dc_import_file"
+                        class="dc-import-label"
+                    >
+                        File Excel
+                    </label>
+
+                    <input
+                        type="file"
+                        name="file"
+                        id="dc_import_file"
+                        class="dc-import-file"
+                        accept=".xlsx,.xls,.csv"
+                        required
+                    >
+
+                    <div class="dc-import-help">
+
+                        <i class="bi bi-info-circle"></i>
+
+                        Format yang diperbolehkan:
+                        <strong>.xlsx</strong>,
+                        <strong>.xls</strong>, atau
+                        <strong>.csv</strong>.
+                        Maksimal 10 MB.
+
+                    </div>
+
+                </div>
+
+            </div>
+
+
+            {{-- FOOTER IMPORT --}}
+
+            <div class="dc-import-footer">
+
+                <button
+                    type="button"
+                    class="dc-import-cancel"
+                    onclick="closeImportDataCenterModal()"
+                >
+                    Batal
+                </button>
+
+
+                <button
+                    type="submit"
+                    class="dc-import-submit"
+                >
+
+                    <i class="bi bi-upload"></i>
+
+                    Import Data
+
+                </button>
+
+            </div>
+
+        </form>
+
+    </div>
 
 </div>
 
-</div>
 
 {{-- =========================================================
-JAVASCRIPT
+   JAVASCRIPT
 ========================================================= --}}
 
 <script>
@@ -4113,6 +4188,9 @@ function setupDataCenterFilter()
 
     const siteFilter =
         document.getElementById('filterSite');
+
+    const verifikasiFilter =
+        document.getElementById('filterVerifikasi');
 
     const rows =
         document.querySelectorAll('.dc-row');
@@ -4153,6 +4231,14 @@ function setupDataCenterFilter()
             .trim();
 
 
+        const verifikasi =
+            (
+                verifikasiFilter?.value || ''
+            )
+            .toLowerCase()
+            .trim();
+
+
         let number = 1;
 
 
@@ -4187,6 +4273,13 @@ function setupDataCenterFilter()
                     .toLowerCase();
 
 
+                const rowVerifikasi =
+                    (
+                        row.dataset.verifikasi || ''
+                    )
+                    .toLowerCase();
+
+
                 const matchSearch =
                     !search ||
                     rowSearch.includes(search);
@@ -4207,11 +4300,17 @@ function setupDataCenterFilter()
                     rowSite === site;
 
 
+                const matchVerifikasi =
+                    !verifikasi ||
+                    rowVerifikasi === verifikasi;
+
+
                 const show =
                     matchSearch &&
                     matchStatus &&
                     matchTenant &&
-                    matchSite;
+                    matchSite &&
+                    matchVerifikasi;
 
 
                 row.style.display =
@@ -4263,6 +4362,13 @@ function setupDataCenterFilter()
         'change',
         filterDataCenter
     );
+
+
+    verifikasiFilter?.addEventListener(
+        'change',
+        filterDataCenter
+    );
+
 }
 
 
@@ -4386,7 +4492,7 @@ function openEditDataCenterModal(data)
 
     form.action =
         "{{ url('/infrastruktur/data-center') }}/" +
-        encodeURIComponent(data.id);
+        encodeURIComponent(data.id_data_center);
 
 
     document.getElementById(
@@ -4441,6 +4547,11 @@ function openEditDataCenterModal(data)
     );
 
     setValue(
+        'dc_tahun',
+        data.tahun
+    );
+
+    setValue(
         'dc_status',
         data.status
     );
@@ -4453,11 +4564,6 @@ function openEditDataCenterModal(data)
     setValue(
         'dc_platform',
         data.platform
-    );
-
-    setValue(
-        'dc_version',
-        data.version
     );
 
 
@@ -4563,6 +4669,11 @@ function openEditDataCenterModal(data)
     );
 
     setValue(
+        'dc_id',
+        data.id
+    );
+
+    setValue(
         'dc_owner_group',
         data.owner_group
     );
@@ -4610,7 +4721,7 @@ function openEditDataCenterModal(data)
 
 
 /* =========================================================
-   CLOSE ADD / EDIT MODAL
+   CLOSE DATA CENTER MODAL
 ========================================================= */
 
 function closeDataCenterModal()

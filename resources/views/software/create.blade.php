@@ -6,18 +6,24 @@
     .software-create-wrapper {
         position: fixed;
         inset: 0;
-        z-index: 9999;
+        z-index: 99999;
+
         background: rgba(15, 23, 42, 0.58);
 
-        /* PENTING:
-           Modal tidak muncul otomatis saat halaman Software dibuka */
+        /* DEFAULT HIDDEN */
         display: none;
 
         align-items: center;
         justify-content: center;
+
         padding: 24px;
+
         overflow-y: auto;
     }
+
+    /* =========================================================
+       MODAL OPEN
+    ========================================================= */
 
     .software-create-wrapper.show {
         display: flex;
@@ -26,12 +32,19 @@
     .software-create-modal {
         width: 100%;
         max-width: 980px;
+
         max-height: calc(100vh - 48px);
+
         overflow-y: auto;
+
         background: #ffffff;
+
         border-radius: 18px;
-        box-shadow: 0 25px 70px rgba(0, 0, 0, 0.25);
+
+        box-shadow:
+            0 25px 70px rgba(0, 0, 0, 0.25);
     }
+
 
     /* =========================================================
        HEADER
@@ -41,45 +54,65 @@
         display: flex;
         align-items: center;
         justify-content: space-between;
+
         padding: 22px 28px;
+
         border-bottom: 1px solid #e5e7eb;
+
         position: sticky;
         top: 0;
+
         z-index: 5;
+
         background: #ffffff;
     }
 
     .software-create-header-left h2 {
         margin: 0;
+
         font-size: 21px;
         font-weight: 700;
+
         color: #111827;
     }
 
     .software-create-header-left p {
         margin: 5px 0 0;
+
         font-size: 13px;
+
         color: #6b7280;
     }
 
     .software-create-close {
         width: 36px;
         height: 36px;
+
         border: 0;
+
         border-radius: 9px;
+
         background: #f3f4f6;
+
         color: #4b5563;
+
         font-size: 22px;
+
         line-height: 36px;
+
         text-align: center;
+
         cursor: pointer;
+
         transition: .2s;
     }
 
     .software-create-close:hover {
         background: #e5e7eb;
+
         color: #111827;
     }
+
 
     /* =========================================================
        BODY
@@ -99,14 +132,20 @@
 
     .software-section-title {
         margin-bottom: 16px;
+
         font-size: 15px;
+
         font-weight: 700;
+
         color: #1f2937;
     }
 
     .software-form-grid {
         display: grid;
-        grid-template-columns: repeat(2, minmax(0, 1fr));
+
+        grid-template-columns:
+            repeat(2, minmax(0, 1fr));
+
         gap: 17px 20px;
     }
 
@@ -120,9 +159,13 @@
 
     .software-form-group label {
         display: block;
+
         margin-bottom: 7px;
+
         font-size: 13px;
+
         font-weight: 600;
+
         color: #374151;
     }
 
@@ -130,30 +173,47 @@
         color: #dc2626;
     }
 
+
+    /* =========================================================
+       INPUT
+    ========================================================= */
+
     .software-input,
     .software-select,
     .software-textarea {
         width: 100%;
+
         box-sizing: border-box;
+
         border: 1px solid #d1d5db;
+
         border-radius: 9px;
+
         background: #ffffff;
+
         color: #111827;
+
         font-family: inherit;
+
         font-size: 13px;
+
         outline: none;
+
         transition: .2s;
     }
 
     .software-input,
     .software-select {
         height: 42px;
+
         padding: 0 12px;
     }
 
     .software-textarea {
         min-height: 110px;
+
         padding: 11px 12px;
+
         resize: vertical;
     }
 
@@ -161,7 +221,9 @@
     .software-select:focus,
     .software-textarea:focus {
         border-color: #2563eb;
-        box-shadow: 0 0 0 3px rgba(37, 99, 235, .10);
+
+        box-shadow:
+            0 0 0 3px rgba(37, 99, 235, .10);
     }
 
     .software-input::placeholder,
@@ -177,9 +239,12 @@
 
     .field-error {
         margin-top: 5px;
+
         color: #dc2626;
+
         font-size: 11px;
     }
+
 
     /* =========================================================
        SSL
@@ -191,12 +256,19 @@
 
     .ssl-expire-info {
         display: none;
+
         margin-top: 7px;
+
         padding: 8px 11px;
+
         border-radius: 8px;
+
         background: #eff6ff;
+
         border: 1px solid #dbeafe;
+
         color: #1d4ed8;
+
         font-size: 12px;
     }
 
@@ -206,15 +278,20 @@
 
     .ssl-expire-info.warning {
         background: #fffbeb;
+
         border-color: #fde68a;
+
         color: #b45309;
     }
 
     .ssl-expire-info.expired {
         background: #fef2f2;
+
         border-color: #fecaca;
+
         color: #b91c1c;
     }
+
 
     /* =========================================================
        IP
@@ -222,9 +299,12 @@
 
     .ip-hint {
         margin-top: 5px;
+
         font-size: 11px;
+
         color: #9ca3af;
     }
+
 
     /* =========================================================
        CIA
@@ -232,14 +312,20 @@
 
     .cia-grid {
         display: grid;
-        grid-template-columns: repeat(3, minmax(0, 1fr));
+
+        grid-template-columns:
+            repeat(3, minmax(0, 1fr));
+
         gap: 14px;
     }
 
     .cia-card {
         padding: 14px;
+
         border: 1px solid #e5e7eb;
+
         border-radius: 10px;
+
         background: #f9fafb;
     }
 
@@ -249,9 +335,12 @@
 
     .cia-description {
         margin-top: 5px;
+
         font-size: 10px;
+
         color: #9ca3af;
     }
+
 
     /* =========================================================
        NILAI
@@ -259,49 +348,68 @@
 
     .nilai-preview {
         display: flex;
+
         gap: 12px;
+
         align-items: stretch;
     }
 
     .nilai-box {
         flex: 1;
+
         padding: 13px 15px;
+
         border-radius: 10px;
+
         border: 1px solid #dbeafe;
+
         background: #eff6ff;
     }
 
     .nilai-box-label {
         font-size: 11px;
+
         color: #6b7280;
+
         margin-bottom: 3px;
     }
 
     .nilai-box-value {
         font-size: 20px;
+
         font-weight: 700;
+
         color: #1d4ed8;
     }
 
     .keterangan-box {
         flex: 1;
+
         padding: 13px 15px;
+
         border-radius: 10px;
+
         border: 1px solid #e5e7eb;
+
         background: #f9fafb;
     }
 
     .keterangan-box-label {
         font-size: 11px;
+
         color: #6b7280;
+
         margin-bottom: 3px;
     }
 
     .keterangan-box-value {
         font-size: 15px;
+
         font-weight: 700;
+
         color: #374151;
     }
+
 
     /* =========================================================
        FOOTER
@@ -309,31 +417,48 @@
 
     .software-create-footer {
         display: flex;
+
         align-items: center;
+
         justify-content: flex-end;
+
         gap: 10px;
+
         padding: 18px 28px;
+
         border-top: 1px solid #e5e7eb;
+
         background: #ffffff;
+
         position: sticky;
+
         bottom: 0;
+
         z-index: 5;
     }
 
     .software-btn-cancel,
     .software-btn-save {
         height: 40px;
+
         padding: 0 17px;
+
         border-radius: 9px;
+
         font-size: 13px;
+
         font-weight: 600;
+
         cursor: pointer;
+
         font-family: inherit;
     }
 
     .software-btn-cancel {
         border: 1px solid #d1d5db;
+
         background: #ffffff;
+
         color: #374151;
     }
 
@@ -343,7 +468,9 @@
 
     .software-btn-save {
         border: 0;
+
         background: #2563eb;
+
         color: #ffffff;
     }
 
@@ -351,21 +478,27 @@
         background: #1d4ed8;
     }
 
+
     /* =========================================================
        MASTER INFO
     ========================================================= */
 
     .master-info {
         margin-top: 6px;
+
         font-size: 11px;
+
         color: #9ca3af;
     }
 
     .master-info a {
         color: #2563eb;
+
         text-decoration: none;
+
         font-weight: 600;
     }
+
 
     /* =========================================================
        RESPONSIVE
@@ -379,6 +512,7 @@
 
         .software-create-modal {
             max-height: calc(100vh - 20px);
+
             border-radius: 14px;
         }
 
@@ -428,12 +562,7 @@
     aria-hidden="true"
 >
 
-    <div
-        class="software-create-modal"
-        role="dialog"
-        aria-modal="true"
-        aria-labelledby="softwareCreateTitle"
-    >
+    <div class="software-create-modal">
 
         {{-- =====================================================
              HEADER
@@ -443,7 +572,7 @@
 
             <div class="software-create-header-left">
 
-                <h2 id="softwareCreateTitle">
+                <h2>
                     Tambah Software
                 </h2>
 
@@ -477,7 +606,16 @@
 
             @csrf
 
+            {{-- Penanda bahwa ini form create software --}}
+            <input
+                type="hidden"
+                name="_form"
+                value="software_create"
+            >
+
+
             <div class="software-create-body">
+
 
                 {{-- =================================================
                      INFORMASI SOFTWARE
@@ -491,13 +629,19 @@
 
                     <div class="software-form-grid">
 
+
                         {{-- NAMA ASET --}}
 
                         <div class="software-form-group full">
 
                             <label for="nama_aset">
+
                                 Nama Aset / Nama Software
-                                <span class="required-mark">*</span>
+
+                                <span class="required-mark">
+                                    *
+                                </span>
+
                             </label>
 
                             <input
@@ -511,9 +655,11 @@
                             >
 
                             @error('nama_aset')
+
                                 <div class="field-error">
                                     {{ $message }}
                                 </div>
+
                             @enderror
 
                         </div>
@@ -524,8 +670,13 @@
                         <div class="software-form-group">
 
                             <label for="kategori_id">
+
                                 Kategori
-                                <span class="required-mark">*</span>
+
+                                <span class="required-mark">
+                                    *
+                                </span>
+
                             </label>
 
                             <select
@@ -552,17 +703,26 @@
 
                             </select>
 
+
                             <div class="master-info">
+
                                 Data berasal dari
-                                <a href="{{ route('software.master.index') }}">
+
+                                <a
+                                    href="{{ route('software.master.index') }}"
+                                >
                                     Data Master
                                 </a>
+
                             </div>
 
+
                             @error('kategori_id')
+
                                 <div class="field-error">
                                     {{ $message }}
                                 </div>
+
                             @enderror
 
                         </div>
@@ -573,8 +733,13 @@
                         <div class="software-form-group">
 
                             <label for="ssl_id">
+
                                 SSL
-                                <span class="required-mark">*</span>
+
+                                <span class="required-mark">
+                                    *
+                                </span>
+
                             </label>
 
                             <div class="ssl-select-wrapper">
@@ -605,6 +770,7 @@
 
                                 </select>
 
+
                                 <div
                                     id="sslExpireInfo"
                                     class="ssl-expire-info"
@@ -612,17 +778,26 @@
 
                             </div>
 
+
                             <div class="master-info">
+
                                 SSL dikelola melalui
-                                <a href="{{ route('software.master.index') }}">
+
+                                <a
+                                    href="{{ route('software.master.index') }}"
+                                >
                                     Data Master
                                 </a>
+
                             </div>
 
+
                             @error('ssl_id')
+
                                 <div class="field-error">
                                     {{ $message }}
                                 </div>
+
                             @enderror
 
                         </div>
@@ -646,9 +821,11 @@
                             >
 
                             @error('url_homepage')
+
                                 <div class="field-error">
                                     {{ $message }}
                                 </div>
+
                             @enderror
 
                         </div>
@@ -678,9 +855,11 @@
                             </div>
 
                             @error('ip_public')
+
                                 <div class="field-error">
                                     {{ $message }}
                                 </div>
+
                             @enderror
 
                         </div>
@@ -710,9 +889,11 @@
                             </div>
 
                             @error('ip_private')
+
                                 <div class="field-error">
                                     {{ $message }}
                                 </div>
+
                             @enderror
 
                         </div>
@@ -734,13 +915,19 @@
 
                     <div class="software-form-grid">
 
+
                         {{-- HOSTING --}}
 
                         <div class="software-form-group">
 
                             <label for="hosting_id">
+
                                 Hosting
-                                <span class="required-mark">*</span>
+
+                                <span class="required-mark">
+                                    *
+                                </span>
+
                             </label>
 
                             <select
@@ -767,17 +954,26 @@
 
                             </select>
 
+
                             <div class="master-info">
+
                                 Data berasal dari
-                                <a href="{{ route('software.master.index') }}">
+
+                                <a
+                                    href="{{ route('software.master.index') }}"
+                                >
                                     Data Master
                                 </a>
+
                             </div>
 
+
                             @error('hosting_id')
+
                                 <div class="field-error">
                                     {{ $message }}
                                 </div>
+
                             @enderror
 
                         </div>
@@ -788,8 +984,13 @@
                         <div class="software-form-group">
 
                             <label for="status">
+
                                 Status
-                                <span class="required-mark">*</span>
+
+                                <span class="required-mark">
+                                    *
+                                </span>
+
                             </label>
 
                             <select
@@ -819,10 +1020,13 @@
 
                             </select>
 
+
                             @error('status')
+
                                 <div class="field-error">
                                     {{ $message }}
                                 </div>
+
                             @enderror
 
                         </div>
@@ -847,8 +1051,13 @@
                         <div class="software-form-group">
 
                             <label for="pic_id">
+
                                 PIC
-                                <span class="required-mark">*</span>
+
+                                <span class="required-mark">
+                                    *
+                                </span>
+
                             </label>
 
                             <select
@@ -875,17 +1084,26 @@
 
                             </select>
 
+
                             <div class="master-info">
+
                                 Data berasal dari
-                                <a href="{{ route('software.master.index') }}">
+
+                                <a
+                                    href="{{ route('software.master.index') }}"
+                                >
                                     Data Master
                                 </a>
+
                             </div>
 
+
                             @error('pic_id')
+
                                 <div class="field-error">
                                     {{ $message }}
                                 </div>
+
                             @enderror
 
                         </div>
@@ -907,6 +1125,7 @@
 
                     <div class="cia-grid">
 
+
                         {{-- KERAHASIAAN --}}
 
                         <div class="cia-card">
@@ -914,8 +1133,13 @@
                             <div class="software-form-group">
 
                                 <label for="kerahasiaan">
+
                                     Kerahasiaan
-                                    <span class="required-mark">*</span>
+
+                                    <span class="required-mark">
+                                        *
+                                    </span>
+
                                 </label>
 
                                 <select
@@ -929,31 +1153,41 @@
                                         Pilih Nilai
                                     </option>
 
-                                    <option value="1"
-                                        {{ old('kerahasiaan') == '1' ? 'selected' : '' }}>
+                                    <option
+                                        value="1"
+                                        {{ old('kerahasiaan') == '1' ? 'selected' : '' }}
+                                    >
                                         1
                                     </option>
 
-                                    <option value="2"
-                                        {{ old('kerahasiaan') == '2' ? 'selected' : '' }}>
+                                    <option
+                                        value="2"
+                                        {{ old('kerahasiaan') == '2' ? 'selected' : '' }}
+                                    >
                                         2
                                     </option>
 
-                                    <option value="3"
-                                        {{ old('kerahasiaan') == '3' ? 'selected' : '' }}>
+                                    <option
+                                        value="3"
+                                        {{ old('kerahasiaan') == '3' ? 'selected' : '' }}
+                                    >
                                         3
                                     </option>
 
                                 </select>
 
+
                                 <div class="cia-description">
                                     Tingkat kerahasiaan data.
                                 </div>
 
+
                                 @error('kerahasiaan')
+
                                     <div class="field-error">
                                         {{ $message }}
                                     </div>
+
                                 @enderror
 
                             </div>
@@ -968,8 +1202,13 @@
                             <div class="software-form-group">
 
                                 <label for="integritas">
+
                                     Integritas
-                                    <span class="required-mark">*</span>
+
+                                    <span class="required-mark">
+                                        *
+                                    </span>
+
                                 </label>
 
                                 <select
@@ -983,31 +1222,41 @@
                                         Pilih Nilai
                                     </option>
 
-                                    <option value="1"
-                                        {{ old('integritas') == '1' ? 'selected' : '' }}>
+                                    <option
+                                        value="1"
+                                        {{ old('integritas') == '1' ? 'selected' : '' }}
+                                    >
                                         1
                                     </option>
 
-                                    <option value="2"
-                                        {{ old('integritas') == '2' ? 'selected' : '' }}>
+                                    <option
+                                        value="2"
+                                        {{ old('integritas') == '2' ? 'selected' : '' }}
+                                    >
                                         2
                                     </option>
 
-                                    <option value="3"
-                                        {{ old('integritas') == '3' ? 'selected' : '' }}>
+                                    <option
+                                        value="3"
+                                        {{ old('integritas') == '3' ? 'selected' : '' }}
+                                    >
                                         3
                                     </option>
 
                                 </select>
 
+
                                 <div class="cia-description">
                                     Tingkat integritas data.
                                 </div>
 
+
                                 @error('integritas')
+
                                     <div class="field-error">
                                         {{ $message }}
                                     </div>
+
                                 @enderror
 
                             </div>
@@ -1022,8 +1271,13 @@
                             <div class="software-form-group">
 
                                 <label for="ketersediaan">
+
                                     Ketersediaan
-                                    <span class="required-mark">*</span>
+
+                                    <span class="required-mark">
+                                        *
+                                    </span>
+
                                 </label>
 
                                 <select
@@ -1037,31 +1291,41 @@
                                         Pilih Nilai
                                     </option>
 
-                                    <option value="1"
-                                        {{ old('ketersediaan') == '1' ? 'selected' : '' }}>
+                                    <option
+                                        value="1"
+                                        {{ old('ketersediaan') == '1' ? 'selected' : '' }}
+                                    >
                                         1
                                     </option>
 
-                                    <option value="2"
-                                        {{ old('ketersediaan') == '2' ? 'selected' : '' }}>
+                                    <option
+                                        value="2"
+                                        {{ old('ketersediaan') == '2' ? 'selected' : '' }}
+                                    >
                                         2
                                     </option>
 
-                                    <option value="3"
-                                        {{ old('ketersediaan') == '3' ? 'selected' : '' }}>
+                                    <option
+                                        value="3"
+                                        {{ old('ketersediaan') == '3' ? 'selected' : '' }}
+                                    >
                                         3
                                     </option>
 
                                 </select>
 
+
                                 <div class="cia-description">
                                     Tingkat ketersediaan layanan.
                                 </div>
 
+
                                 @error('ketersediaan')
+
                                     <div class="field-error">
                                         {{ $message }}
                                     </div>
+
                                 @enderror
 
                             </div>
@@ -1074,7 +1338,7 @@
 
 
                 {{-- =================================================
-                     NILAI CIA
+                     HASIL PENILAIAN
                 ================================================== --}}
 
                 <div class="software-form-section">
@@ -1084,6 +1348,7 @@
                     </div>
 
                     <div class="nilai-preview">
+
 
                         <div class="nilai-box">
 
@@ -1099,6 +1364,7 @@
                             </div>
 
                         </div>
+
 
                         <div class="keterangan-box">
 
@@ -1117,8 +1383,6 @@
 
                     </div>
 
-
-                    {{-- Hidden input --}}
 
                     <input
                         type="hidden"
@@ -1162,10 +1426,13 @@
                                 placeholder="Masukkan deskripsi aplikasi/software..."
                             >{{ old('deskripsi_aplikasi') }}</textarea>
 
+
                             @error('deskripsi_aplikasi')
+
                                 <div class="field-error">
                                     {{ $message }}
                                 </div>
+
                             @enderror
 
                         </div>
@@ -1191,6 +1458,7 @@
                     Batal
                 </button>
 
+
                 <button
                     type="submit"
                     class="software-btn-save"
@@ -1215,81 +1483,138 @@
 
 
     /* =========================================================
-       OPEN MODAL
+       MODAL
     ========================================================= */
 
-    window.openSoftwareCreateModal = function () {
+    const modal =
+        document.getElementById(
+            'softwareCreateModal'
+        );
 
-        const modal =
-            document.getElementById('softwareCreateModal');
 
-        if (!modal) {
+    /*
+    |--------------------------------------------------------------------------
+    | OPEN
+    |--------------------------------------------------------------------------
+    */
+
+    window.openSoftwareModal = function () {
+
+        const target =
+            document.getElementById(
+                'softwareCreateModal'
+            );
+
+
+        if (!target) {
+
+            console.error(
+                'Element #softwareCreateModal tidak ditemukan.'
+            );
+
             return;
+
         }
 
-        modal.classList.add('show');
 
-        modal.setAttribute(
+        target.classList.add(
+            'show'
+        );
+
+
+        target.setAttribute(
             'aria-hidden',
             'false'
         );
 
-        document.body.style.overflow = 'hidden';
+
+        document.body.classList.add(
+            'software-modal-open'
+        );
 
 
-        // Fokus ke nama software
-        setTimeout(function () {
+        updateSslExpire();
 
-            const namaAset =
-                document.getElementById('nama_aset');
+        calculateCIA();
 
-            if (namaAset) {
-                namaAset.focus();
-            }
-
-        }, 100);
     };
 
 
-    /* =========================================================
-       CLOSE MODAL
-    ========================================================= */
+    /*
+    |--------------------------------------------------------------------------
+    | CLOSE
+    |--------------------------------------------------------------------------
+    */
 
     window.closeSoftwareCreateModal = function () {
 
-        const modal =
-            document.getElementById('softwareCreateModal');
+        const target =
+            document.getElementById(
+                'softwareCreateModal'
+            );
 
-        if (!modal) {
+
+        if (!target) {
             return;
         }
 
-        modal.classList.remove('show');
 
-        modal.setAttribute(
+        target.classList.remove(
+            'show'
+        );
+
+
+        target.setAttribute(
             'aria-hidden',
             'true'
         );
 
-        document.body.style.overflow = '';
+
+        document.body.classList.remove(
+            'software-modal-open'
+        );
+
+    };
+
+
+    /*
+    |--------------------------------------------------------------------------
+    | ALIAS
+    |--------------------------------------------------------------------------
+    */
+
+    window.closeSoftwareModal = function () {
+
+        window.closeSoftwareCreateModal();
+
     };
 
 
     /* =========================================================
-       SSL EXPIRE
+       SSL
     ========================================================= */
 
     const sslSelect =
-        document.getElementById('ssl_id');
+        document.getElementById(
+            'ssl_id'
+        );
+
 
     const sslExpireInfo =
-        document.getElementById('sslExpireInfo');
+        document.getElementById(
+            'sslExpireInfo'
+        );
 
 
     function updateSslExpire() {
 
-        if (!sslSelect || !sslExpireInfo) {
+        if (
+            !sslSelect ||
+            !sslExpireInfo
+        ) {
+
             return;
+
         }
 
 
@@ -1299,7 +1624,10 @@
             ];
 
 
-        if (!selected || !selected.value) {
+        if (
+            !selected ||
+            !selected.value
+        ) {
 
             sslExpireInfo.classList.remove(
                 'show',
@@ -1307,19 +1635,34 @@
                 'expired'
             );
 
-            sslExpireInfo.innerHTML = '';
+
+            sslExpireInfo.innerHTML =
+                '';
+
 
             return;
+
         }
 
 
         const expire =
-            selected.getAttribute('data-expire');
+            selected.getAttribute(
+                'data-expire'
+            );
+
 
         const name =
-            selected.getAttribute('data-name')
-            || selected.textContent.trim();
+            selected.getAttribute(
+                'data-name'
+            ) ||
+            selected.textContent.trim();
 
+
+        /*
+        |--------------------------------------------------------------------------
+        | TANPA EXPIRE
+        |--------------------------------------------------------------------------
+        */
 
         if (!expire) {
 
@@ -1328,34 +1671,53 @@
                 'expired'
             );
 
-            sslExpireInfo.classList.add('show');
+
+            sslExpireInfo.classList.add(
+                'show'
+            );
+
 
             sslExpireInfo.innerHTML =
                 '<strong>' +
                 name +
                 '</strong> — Tidak memiliki tanggal expire.';
 
+
             return;
+
         }
 
 
         const expireDate =
-            new Date(expire + 'T00:00:00');
+            new Date(
+                expire + 'T00:00:00'
+            );
 
 
-        if (isNaN(expireDate.getTime())) {
+        if (
+            isNaN(
+                expireDate.getTime()
+            )
+        ) {
 
             sslExpireInfo.classList.remove(
                 'warning',
                 'expired'
             );
 
-            sslExpireInfo.classList.add('show');
+
+            sslExpireInfo.classList.add(
+                'show'
+            );
+
 
             sslExpireInfo.innerHTML =
-                'Tanggal expire: ' + expire;
+                'Tanggal expire: ' +
+                expire;
+
 
             return;
+
         }
 
 
@@ -1372,6 +1734,7 @@
 
         const today =
             new Date();
+
 
         today.setHours(
             0,
@@ -1398,14 +1761,26 @@
             'expired'
         );
 
-        sslExpireInfo.classList.add('show');
+
+        sslExpireInfo.classList.add(
+            'show'
+        );
 
 
-        if (diffDays < 0) {
+        /*
+        |--------------------------------------------------------------------------
+        | EXPIRED
+        |--------------------------------------------------------------------------
+        */
+
+        if (
+            diffDays < 0
+        ) {
 
             sslExpireInfo.classList.add(
                 'expired'
             );
+
 
             sslExpireInfo.innerHTML =
                 '<strong>' +
@@ -1414,11 +1789,23 @@
                 formattedDate +
                 ' <strong>(Expired)</strong>';
 
-        } else if (diffDays <= 30) {
+        }
+
+
+        /*
+        |--------------------------------------------------------------------------
+        | <= 30 HARI
+        |--------------------------------------------------------------------------
+        */
+
+        else if (
+            diffDays <= 30
+        ) {
 
             sslExpireInfo.classList.add(
                 'warning'
             );
+
 
             sslExpireInfo.innerHTML =
                 '<strong>' +
@@ -1429,7 +1816,16 @@
                 diffDays +
                 ' hari lagi)</strong>';
 
-        } else {
+        }
+
+
+        /*
+        |--------------------------------------------------------------------------
+        | MASIH AMAN
+        |--------------------------------------------------------------------------
+        */
+
+        else {
 
             sslExpireInfo.innerHTML =
                 '<strong>' +
@@ -1438,6 +1834,7 @@
                 formattedDate;
 
         }
+
     }
 
 
@@ -1448,34 +1845,53 @@
             updateSslExpire
         );
 
-        updateSslExpire();
     }
 
 
     /* =========================================================
-       CIA CALCULATION
+       CIA
     ========================================================= */
 
     const kerahasiaan =
-        document.getElementById('kerahasiaan');
+        document.getElementById(
+            'kerahasiaan'
+        );
+
 
     const integritas =
-        document.getElementById('integritas');
+        document.getElementById(
+            'integritas'
+        );
+
 
     const ketersediaan =
-        document.getElementById('ketersediaan');
+        document.getElementById(
+            'ketersediaan'
+        );
+
 
     const nilaiPreview =
-        document.getElementById('nilaiPreview');
+        document.getElementById(
+            'nilaiPreview'
+        );
+
 
     const keteranganPreview =
-        document.getElementById('keteranganPreview');
+        document.getElementById(
+            'keteranganPreview'
+        );
+
 
     const nilaiInput =
-        document.getElementById('nilai');
+        document.getElementById(
+            'nilai'
+        );
+
 
     const keteranganInput =
-        document.getElementById('keterangan');
+        document.getElementById(
+            'keterangan'
+        );
 
 
     function calculateCIA() {
@@ -1485,26 +1901,27 @@
             !integritas ||
             !ketersediaan
         ) {
+
             return;
+
         }
 
 
         const k =
             parseInt(
-                kerahasiaan.value,
-                10
+                kerahasiaan.value
             );
+
 
         const i =
             parseInt(
-                integritas.value,
-                10
+                integritas.value
             );
+
 
         const a =
             parseInt(
-                ketersediaan.value,
-                10
+                ketersediaan.value
             );
 
 
@@ -1515,64 +1932,108 @@
         ) {
 
             if (nilaiPreview) {
-                nilaiPreview.textContent = '-';
+
+                nilaiPreview.textContent =
+                    '-';
+
             }
+
 
             if (keteranganPreview) {
-                keteranganPreview.textContent = '-';
+
+                keteranganPreview.textContent =
+                    '-';
+
             }
+
 
             if (nilaiInput) {
-                nilaiInput.value = '';
+
+                nilaiInput.value =
+                    '';
+
             }
+
 
             if (keteranganInput) {
-                keteranganInput.value = '';
+
+                keteranganInput.value =
+                    '';
+
             }
 
+
             return;
+
         }
 
 
         const nilai =
-            ((k + i + a) / 3).toFixed(2);
+            (
+                (k + i + a) / 3
+            ).toFixed(2);
 
 
-        let keterangan = '';
+        let keterangan;
 
 
-        if (parseFloat(nilai) <= 1) {
+        if (
+            parseFloat(nilai) <= 1
+        ) {
 
-            keterangan = 'Rendah';
+            keterangan =
+                'Rendah';
 
-        } else if (parseFloat(nilai) <= 2) {
+        }
 
-            keterangan = 'Sedang';
+        else if (
+            parseFloat(nilai) <= 2
+        ) {
 
-        } else {
+            keterangan =
+                'Sedang';
 
-            keterangan = 'Tinggi';
+        }
+
+        else {
+
+            keterangan =
+                'Tinggi';
 
         }
 
 
         if (nilaiPreview) {
-            nilaiPreview.textContent = nilai;
+
+            nilaiPreview.textContent =
+                nilai;
+
         }
+
 
         if (keteranganPreview) {
+
             keteranganPreview.textContent =
                 keterangan;
+
         }
+
 
         if (nilaiInput) {
-            nilaiInput.value = nilai;
+
+            nilaiInput.value =
+                nilai;
+
         }
 
+
         if (keteranganInput) {
+
             keteranganInput.value =
                 keterangan;
+
         }
+
     }
 
 
@@ -1606,18 +2067,20 @@
     }
 
 
-    calculateCIA();
-
-
     /* =========================================================
        IP VALIDATION
     ========================================================= */
 
     const ipPublic =
-        document.getElementById('ip_public');
+        document.getElementById(
+            'ip_public'
+        );
+
 
     const ipPrivate =
-        document.getElementById('ip_private');
+        document.getElementById(
+            'ip_private'
+        );
 
 
     function isValidIPv4(ip) {
@@ -1626,16 +2089,24 @@
             ip.trim().split('.');
 
 
-        if (parts.length !== 4) {
+        if (
+            parts.length !== 4
+        ) {
+
             return false;
+
         }
 
 
         return parts.every(
             function (part) {
 
-                if (!/^\d+$/.test(part)) {
+                if (
+                    !/^\d+$/.test(part)
+                ) {
+
                     return false;
+
                 }
 
 
@@ -1647,29 +2118,32 @@
                     number >= 0 &&
                     number <= 255
                 );
+
             }
         );
+
     }
 
 
     function isValidIPv6(ip) {
 
-        /*
-         * Validasi client-side sederhana.
-         * Validasi utama tetap dilakukan Laravel.
-         */
-
         return (
             /^[0-9a-fA-F:]+$/.test(ip) &&
             ip.includes(':')
         );
+
     }
 
 
     function isValidIP(ip) {
 
-        if (!ip || !ip.trim()) {
+        if (
+            !ip ||
+            !ip.trim()
+        ) {
+
             return true;
+
         }
 
 
@@ -1677,13 +2151,16 @@
             isValidIPv4(ip) ||
             isValidIPv6(ip)
         );
+
     }
 
 
     function validateIPInput(input) {
 
         if (!input) {
+
             return true;
+
         }
 
 
@@ -1697,7 +2174,9 @@
                 'error'
             );
 
+
             return true;
+
         }
 
 
@@ -1712,6 +2191,7 @@
 
 
         return valid;
+
     }
 
 
@@ -1768,6 +2248,7 @@
                         ipPublic
                     );
 
+
                 const privateValid =
                     validateIPInput(
                         ipPrivate
@@ -1781,15 +2262,17 @@
 
                     event.preventDefault();
 
+
                     alert(
                         'IP Public atau IP Private tidak valid. Silakan periksa kembali.'
                     );
 
+
                     return;
+
                 }
 
 
-                // Pastikan nilai CIA terbaru dikirim
                 calculateCIA();
 
             }
@@ -1799,7 +2282,7 @@
 
 
     /* =========================================================
-       ESC CLOSE
+       ESC
     ========================================================= */
 
     document.addEventListener(
@@ -1809,19 +2292,21 @@
             if (
                 event.key !== 'Escape'
             ) {
+
                 return;
+
             }
 
 
-            const modal =
+            const target =
                 document.getElementById(
                     'softwareCreateModal'
                 );
 
 
             if (
-                modal &&
-                modal.classList.contains('show')
+                target &&
+                target.classList.contains('show')
             ) {
 
                 closeSoftwareCreateModal();
@@ -1835,12 +2320,6 @@
     /* =========================================================
        CLICK OUTSIDE
     ========================================================= */
-
-    const modal =
-        document.getElementById(
-            'softwareCreateModal'
-        );
-
 
     if (modal) {
 
@@ -1863,17 +2342,12 @@
 
 
     /* =========================================================
-       AUTO OPEN SAAT VALIDASI GAGAL
-       Kalau Laravel redirect back karena validation error,
-       modal otomatis dibuka kembali.
+       INITIAL
     ========================================================= */
 
-    @if($errors->any())
+    updateSslExpire();
 
-        openSoftwareCreateModal();
-
-    @endif
-
+    calculateCIA();
 
 })();
 </script>
