@@ -11,7 +11,22 @@ return new class extends Migration
      */
     public function up(): void
     {
-        Schema::create('data_centers', function (Blueprint $table) {
+        /*
+        |--------------------------------------------------------------------------
+        | TABEL SUDAH ADA
+        |--------------------------------------------------------------------------
+        |
+        | Tabel data_centers sudah dibuat oleh migration/versi sebelumnya.
+        | Migration ini hanya menambahkan field dari struktur Data Center
+        | terbaru dari branch Infrastruktur.
+        |
+        */
+
+        if (!Schema::hasTable('data_centers')) {
+            return;
+        }
+
+        Schema::table('data_centers', function (Blueprint $table) {
 
             // =========================================================
             // IDENTITAS DATA CENTER
@@ -133,6 +148,52 @@ return new class extends Migration
      */
     public function down(): void
     {
-        Schema::dropIfExists('data_centers');
+        if (!Schema::hasTable('data_centers')) {
+            return;
+        }
+
+        $columns = [
+            'name',
+            'tenant',
+            'site',
+            'rack',
+            'role',
+            'manufacturer',
+            'type',
+            'platform',
+            'version',
+            'serial_number',
+            'ip_address',
+            'cpu',
+            'harddisk',
+            'ram',
+            'pic',
+            'tenant_group',
+            'region',
+            'location',
+            'position',
+            'rack_face',
+            'ipv4_address',
+            'cluster',
+            'description',
+            'comments',
+            'owner_group',
+            'owner',
+            'u_height',
+        ];
+
+        $existingColumns = [];
+
+        foreach ($columns as $column) {
+            if (Schema::hasColumn('data_centers', $column)) {
+                $existingColumns[] = $column;
+            }
+        }
+
+        if (!empty($existingColumns)) {
+            Schema::table('data_centers', function (Blueprint $table) use ($existingColumns) {
+                $table->dropColumn($existingColumns);
+            });
+        }
     }
 };

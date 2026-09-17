@@ -5,75 +5,39 @@ namespace App\Http\Controllers;
 use App\Models\SoftwareAsset;
 use App\Models\SoftwareCategory;
 use App\Models\SoftwareCounter;
-use App\Models\SoftwareSsl;
 use App\Models\SoftwareHosting;
 use App\Models\SoftwarePic;
-use App\Models\Notification;
+use App\Models\SoftwareSsl;
 use App\Models\VerificationRequest;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Validation\Rule;
-use PhpOffice\PhpSpreadsheet\IOFactory;
 
 class SoftwareController extends Controller
 {
-    /**
-     * ============================================================
-     * INDEX
-     * ============================================================
-     */
+    /*
+    |--------------------------------------------------------------------------
+    | INDEX
+    |--------------------------------------------------------------------------
+    */
     public function index(Request $request)
     {
-        /*
-        |--------------------------------------------------------------------------
-        | DATA MASTER
-        |--------------------------------------------------------------------------
-        */
-
-        $kategoriOptions = SoftwareCategory::where('status', 'Aktif')
-            ->orderBy('nama')
-            ->get();
-
-        $sslOptions = SoftwareSsl::where('status', 'Aktif')
-            ->orderBy('nama_ssl')
-            ->get();
-
-        $hostingOptions = SoftwareHosting::where('status', 'Aktif')
-            ->orderBy('nama')
-            ->get();
-
-        $picOptions = SoftwarePic::where('status', 'Aktif')
-            ->orderBy('nama')
-            ->get();
-
-
-        /*
-        |--------------------------------------------------------------------------
-        | QUERY TABEL SOFTWARE
-        |--------------------------------------------------------------------------
-        */
-
-        $query = SoftwareAsset::query()
-            ->with([
-                'category',
-                'sslMaster',
-                'hostingMaster',
-                'picMaster',
-            ]);
-
+        $query = SoftwareAsset::query()->with([
+            'category',
+            'sslMaster',
+            'hostingMaster',
+            'picMaster',
+        ]);
 
         /*
         |--------------------------------------------------------------------------
         | SEARCH
         |--------------------------------------------------------------------------
         */
-
         if ($request->filled('search')) {
-
             $search = trim($request->search);
 
             $query->where(function ($q) use ($search) {
-
                 $q->where('kode', 'like', "%{$search}%")
                     ->orWhere('nama_aset', 'like', "%{$search}%")
                     ->orWhere('jenis', 'like', "%{$search}%")
@@ -84,381 +48,354 @@ class SoftwareController extends Controller
                     ->orWhere('url_homepage', 'like', "%{$search}%")
                     ->orWhere('ip_public', 'like', "%{$search}%")
                     ->orWhere('ip_private', 'like', "%{$search}%")
-                    ->orWhereHas('category', function ($q) use ($search) {
-
-                        $q->where(
+                    ->orWhereHas(
+                        'category',
+                        fn ($q) => $q->where(
                             'nama',
                             'like',
                             "%{$search}%"
-                        );
-
-                    })
-                    ->orWhereHas('sslMaster', function ($q) use ($search) {
-
-                        $q->where(
+                        )
+                    )
+                    ->orWhereHas(
+                        'sslMaster',
+                        fn ($q) => $q->where(
                             'nama_ssl',
                             'like',
                             "%{$search}%"
-                        );
-
-                    })
-                    ->orWhereHas('hostingMaster', function ($q) use ($search) {
-
-                        $q->where(
+                        )
+                    )
+                    ->orWhereHas(
+                        'hostingMaster',
+                        fn ($q) => $q->where(
                             'nama',
                             'like',
                             "%{$search}%"
-                        );
-
-                    })
-                    ->orWhereHas('picMaster', function ($q) use ($search) {
-
-                        $q->where(
+                        )
+                    )
+                    ->orWhereHas(
+                        'picMaster',
+                        fn ($q) => $q->where(
                             'nama',
                             'like',
                             "%{$search}%"
-                        );
-
-                    });
-
+                        )
+                    );
             });
-
         }
-
 
         /*
         |--------------------------------------------------------------------------
         | FILTER KATEGORI
         |--------------------------------------------------------------------------
         */
-
         if ($request->filled('kategori')) {
-
-            $kategori = $request->kategori;
-
-            $query->where(function ($q) use ($kategori) {
-
-                $q->where('kategori', $kategori)
-                    ->orWhereHas('category', function ($categoryQuery) use ($kategori) {
-
-                        $categoryQuery->where(
-                            'nama',
-                            $kategori
-                        );
-
-                    });
-
-            });
-
+            if (is_numeric($request->kategori)) {
+                $query->where(
+                    'kategori_id',
+                    (int) $request->kategori
+                );
+            } else {
+                // Kompatibilitas dengan filter lama.
+                $query->where(
+                    'kategori',
+                    $request->kategori
+                );
+            }
         }
-
 
         /*
         |--------------------------------------------------------------------------
         | FILTER HOSTING
         |--------------------------------------------------------------------------
         */
-
         if ($request->filled('hosting')) {
-
-            $hosting = $request->hosting;
-
-            $query->where(function ($q) use ($hosting) {
-
-                $q->where('hosting', $hosting)
-                    ->orWhereHas('hostingMaster', function ($hostingQuery) use ($hosting) {
-
-                        $hostingQuery->where(
-                            'nama',
-                            $hosting
-                        );
-
-                    });
-
-            });
-
+            if (is_numeric($request->hosting)) {
+                $query->where(
+                    'hosting_id',
+                    (int) $request->hosting
+                );
+            } else {
+                $query->where(
+                    'hosting',
+                    $request->hosting
+                );
+            }
         }
-
 
         /*
         |--------------------------------------------------------------------------
         | FILTER STATUS
         |--------------------------------------------------------------------------
         */
-
         if ($request->filled('status')) {
-
             $query->where(
                 'status',
                 $request->status
             );
-
         }
-
 
         /*
         |--------------------------------------------------------------------------
         | FILTER PIC
         |--------------------------------------------------------------------------
         */
-
         if ($request->filled('pic')) {
-
-            $pic = $request->pic;
-
-            $query->where(function ($q) use ($pic) {
-
-                $q->where('pic', $pic)
-                    ->orWhereHas('picMaster', function ($picQuery) use ($pic) {
-
-                        $picQuery->where(
-                            'nama',
-                            $pic
-                        );
-
-                    });
-
-            });
-
+            if (is_numeric($request->pic)) {
+                $query->where(
+                    'pic_id',
+                    (int) $request->pic
+                );
+            } else {
+                $query->where(
+                    'pic',
+                    $request->pic
+                );
+            }
         }
-
 
         /*
         |--------------------------------------------------------------------------
-        | DATA TABEL
+        | DATA TABLE
         |--------------------------------------------------------------------------
         */
-
         $softwares = $query
-            ->latest()
+            ->latest('id')
             ->paginate(10)
             ->withQueryString();
-
 
         /*
         |--------------------------------------------------------------------------
         | STATISTIK
         |--------------------------------------------------------------------------
         */
+        $totalAset = SoftwareAsset::count();
 
-        $allSoftwareQuery = SoftwareAsset::query();
+        $totalWebsite = SoftwareAsset::whereHas(
+            'category',
+            fn ($q) => $q->where(
+                'nama',
+                'Website'
+            )
+        )->count();
 
+        $totalAplikasiMonitoring = SoftwareAsset::where(
+            function ($query) {
+                $query->whereRaw(
+                    'LOWER(nama_aset) LIKE ?',
+                    ['%monitor%']
+                )->orWhereRaw(
+                    'LOWER(jenis) LIKE ?',
+                    ['%monitor%']
+                );
+            }
+        )->count();
 
-        /*
-        |--------------------------------------------------------------------------
-        | TOTAL ASET
-        |--------------------------------------------------------------------------
-        */
-
-        $totalAset = (clone $allSoftwareQuery)
-            ->count();
-
-
-        /*
-        |--------------------------------------------------------------------------
-        | TOTAL WEBSITE
-        |--------------------------------------------------------------------------
-        */
-
-        $totalWebsite = (clone $allSoftwareQuery)
-            ->where(function ($q) {
-
-                $q->where(
-                    'kategori',
-                    'Website'
-                )
-                ->orWhereHas('category', function ($categoryQuery) {
-
-                    $categoryQuery->where(
-                        'nama',
-                        'Website'
-                    );
-
-                });
-
-            })
-            ->count();
-
-
-        /*
-        |--------------------------------------------------------------------------
-        | TOTAL APLIKASI MONITORING
-        |--------------------------------------------------------------------------
-        */
-
-        $totalAplikasiMonitoring = (clone $allSoftwareQuery)
-            ->where(function ($q) {
-
-                $q->where(
-                    'kategori',
-                    'Aplikasi Monitoring'
-                )
-                ->orWhere(
-                    'jenis',
-                    'Aplikasi Monitoring'
-                )
-                ->orWhere(
-                    'nama_aset',
-                    'like',
-                    '%Monitoring%'
-                )
-                ->orWhereHas('category', function ($categoryQuery) {
-
-                    $categoryQuery->where(
-                        'nama',
-                        'Aplikasi Monitoring'
-                    );
-
-                });
-
-            })
-            ->count();
-
-
-        /*
-        |--------------------------------------------------------------------------
-        | WEBSITE AKTIF
-        |--------------------------------------------------------------------------
-        */
-
-        $websiteAktif = (clone $allSoftwareQuery)
+        $websiteAktif = SoftwareAsset::whereHas(
+            'category',
+            fn ($q) => $q->where(
+                'nama',
+                'Website'
+            )
+        )
             ->where(
                 'status',
                 'Aktif'
             )
-            ->where(function ($q) {
-
-                $q->where(
-                    'kategori',
-                    'Website'
-                )
-                ->orWhereHas('category', function ($categoryQuery) {
-
-                    $categoryQuery->where(
-                        'nama',
-                        'Website'
-                    );
-
-                });
-
-            })
             ->count();
 
-
-        /*
-        |--------------------------------------------------------------------------
-        | WEBSITE TIDAK AKTIF
-        |--------------------------------------------------------------------------
-        */
-
-        $websiteTidakAktif = (clone $allSoftwareQuery)
+        $websiteTidakAktif = SoftwareAsset::whereHas(
+            'category',
+            fn ($q) => $q->where(
+                'nama',
+                'Website'
+            )
+        )
             ->where(
                 'status',
                 'Tidak Aktif'
             )
-            ->where(function ($q) {
-
-                $q->where(
-                    'kategori',
-                    'Website'
-                )
-                ->orWhereHas('category', function ($categoryQuery) {
-
-                    $categoryQuery->where(
-                        'nama',
-                        'Website'
-                    );
-
-                });
-
-            })
             ->count();
-
 
         /*
         |--------------------------------------------------------------------------
-        | SSL BERLISENSI
+        | STATISTIK SSL
         |--------------------------------------------------------------------------
+        |
+        | Tetap mendukung data lama.
+        |
         */
-
-        $sslBerlisensi = (clone $allSoftwareQuery)
-            ->where(function ($q) {
-
-                $q->where(
+        $sslBerlisensi = SoftwareAsset::where(
+            function ($q) {
+                $q->whereHas(
+                    'sslMaster',
+                    fn ($ssl) => $ssl->where(
+                        'nama_ssl',
+                        'SSL Bekasi Kota'
+                    )
+                )->orWhere(
                     'ssl',
                     'Berlisensi.go.id'
-                )
-                ->orWhereHas('sslMaster', function ($sslQuery) {
+                );
+            }
+        )->count();
 
-                    $sslQuery->where(
+        $sslNonBerlisensi = SoftwareAsset::where(
+            function ($q) {
+                $q->whereHas(
+                    'sslMaster',
+                    fn ($ssl) => $ssl->where(
                         'nama_ssl',
-                        'Berlisensi.go.id'
-                    );
-
-                });
-
-            })
-            ->count();
-
-
-        /*
-        |--------------------------------------------------------------------------
-        | SSL NON BERLISENSI
-        |--------------------------------------------------------------------------
-        */
-
-        $sslNonBerlisensi = (clone $allSoftwareQuery)
-            ->where(function ($q) {
-
-                $q->where(
+                        'SSL Vendor'
+                    )
+                )->orWhere(
                     'ssl',
                     'Non berlisensi.go.id'
-                )
-                ->orWhereHas('sslMaster', function ($sslQuery) {
+                );
+            }
+        )->count();
 
-                    $sslQuery->where(
+        $sslTidakMenerapkan = SoftwareAsset::where(
+            function ($q) {
+                $q->whereHas(
+                    'sslMaster',
+                    fn ($ssl) => $ssl->where(
                         'nama_ssl',
-                        'Non berlisensi.go.id'
-                    );
-
-                });
-
-            })
-            ->count();
-
-
-        /*
-        |--------------------------------------------------------------------------
-        | SSL TIDAK MENERAPKAN
-        |--------------------------------------------------------------------------
-        */
-
-        $sslTidakMenerapkan = (clone $allSoftwareQuery)
-            ->where(function ($q) {
-
-                $q->whereIn('ssl', [
-                    'Tidak Menerapkan SSL',
-                    'Tidak Menggunakan SSL',
-                ])
-                ->orWhereHas('sslMaster', function ($sslQuery) {
-
-                    $sslQuery->whereIn('nama_ssl', [
-                        'Tidak Menerapkan SSL',
-                        'Tidak Menggunakan SSL',
-                    ]);
-
-                });
-
-            })
-            ->count();
-
+                        'Tidak Menggunakan SSL'
+                    )
+                )
+                    ->orWhere(
+                        'ssl',
+                        'Tidak Menerapkan SSL'
+                    )
+                    ->orWhereNull('ssl_id');
+            }
+        )->count();
 
         /*
         |--------------------------------------------------------------------------
-        | RETURN VIEW
+        | DATA LEGACY
         |--------------------------------------------------------------------------
         */
+        $totalLisensi = SoftwareAsset::sum(
+            'jumlah_lisensi'
+        );
 
+        $today = now()->startOfDay();
+
+        $thirtyDaysLater = now()
+            ->copy()
+            ->addDays(30)
+            ->endOfDay();
+
+        $akanBerakhir = SoftwareAsset::whereNotNull(
+            'tanggal_berakhir'
+        )
+            ->whereBetween(
+                'tanggal_berakhir',
+                [
+                    $today,
+                    $thirtyDaysLater,
+                ]
+            )
+            ->count();
+
+        $expired = SoftwareAsset::whereNotNull(
+            'tanggal_berakhir'
+        )
+            ->where(
+                'tanggal_berakhir',
+                '<',
+                $today
+            )
+            ->count();
+
+        $tersedia = SoftwareAsset::where(
+            function ($query) {
+                $query->where(
+                    'status',
+                    'Aktif'
+                )->orWhereNull(
+                    'status'
+                );
+            }
+        )->count();
+
+        /*
+        |--------------------------------------------------------------------------
+        | TOTAL PENGELUARAN PER TAHUN
+        |--------------------------------------------------------------------------
+        */
+        $allSoftwares = SoftwareAsset::all();
+
+        $totalPengeluaranPertahun = $allSoftwares->sum(
+            function ($software) {
+
+                $harga = (float) $software->harga;
+
+                if ($software->pengadaan === 'Beli') {
+                    return $harga;
+                }
+
+                if (
+                    !$software->tanggal_pengadaan ||
+                    !$software->tanggal_berakhir
+                ) {
+                    return 0;
+                }
+
+                $jumlahBulan = max(
+                    1,
+                    $software
+                        ->tanggal_pengadaan
+                        ->diffInMonths(
+                            $software->tanggal_berakhir
+                        )
+                );
+
+                return (
+                    $harga / $jumlahBulan
+                ) * 12;
+            }
+        );
+
+        /*
+        |--------------------------------------------------------------------------
+        | DATA MASTER AKTIF
+        |--------------------------------------------------------------------------
+        */
+        $kategoriOptions = SoftwareCategory::where(
+            'status',
+            'Aktif'
+        )
+            ->orderBy('nama')
+            ->get();
+
+        $sslOptions = SoftwareSsl::where(
+            'status',
+            'Aktif'
+        )
+            ->orderBy('nama_ssl')
+            ->get();
+
+        $hostingOptions = SoftwareHosting::where(
+            'status',
+            'Aktif'
+        )
+            ->orderBy('nama')
+            ->get();
+
+        $picOptions = SoftwarePic::where(
+            'status',
+            'Aktif'
+        )
+            ->orderBy('nama')
+            ->get();
+
+        /*
+        |--------------------------------------------------------------------------
+        | VIEW
+        |--------------------------------------------------------------------------
+        */
         return view(
             'software.index',
             compact(
@@ -475,6 +412,12 @@ class SoftwareController extends Controller
                 'sslNonBerlisensi',
                 'sslTidakMenerapkan',
 
+                'totalLisensi',
+                'akanBerakhir',
+                'expired',
+                'tersedia',
+                'totalPengeluaranPertahun',
+
                 'kategoriOptions',
                 'sslOptions',
                 'hostingOptions',
@@ -483,12 +426,11 @@ class SoftwareController extends Controller
         );
     }
 
-
-    /**
-     * ============================================================
-     * CREATE
-     * ============================================================
-     */
+    /*
+    |--------------------------------------------------------------------------
+    | CREATE
+    |--------------------------------------------------------------------------
+    */
     public function create()
     {
         $kategoriOptions = SoftwareCategory::where(
@@ -530,25 +472,30 @@ class SoftwareController extends Controller
         );
     }
 
-
-    /**
-     * ============================================================
-     * STORE
-     * ============================================================
-     */
+    /*
+    |--------------------------------------------------------------------------
+    | STORE
+    |--------------------------------------------------------------------------
+    */
     public function store(Request $request)
     {
         $validated = $request->validate(
             $this->softwareRules(),
             [
                 'nama_aset.required' =>
-                    'Nama aset software wajib diisi.',
+                    'Nama aset wajib diisi.',
 
                 'kategori_id.required' =>
                     'Kategori wajib dipilih.',
 
                 'kategori_id.exists' =>
                     'Kategori tidak valid atau sudah tidak aktif.',
+
+                'kategori_sistem_elektronik' => [
+                    'nullable',
+                    'string',
+                    'in:Rendah,Tinggi,Strategis',
+                ],
 
                 'ssl_id.exists' =>
                     'SSL tidak valid atau sudah tidak aktif.',
@@ -582,13 +529,14 @@ class SoftwareController extends Controller
 
                 'ip_private.ip' =>
                     'IP Private tidak valid.',
-
-                'tanggal_berakhir.after_or_equal' =>
-                    'Tanggal berakhir tidak boleh sebelum tanggal pengadaan.',
             ]
         );
 
-
+        /*
+        |--------------------------------------------------------------------------
+        | AMBIL DATA MASTER
+        |--------------------------------------------------------------------------
+        */
         $masters = $this->resolveMasterData(
             $validated
         );
@@ -598,225 +546,11 @@ class SoftwareController extends Controller
             $masters
         );
 
-
-        $nilai = (
-            $validated['kerahasiaan'] +
-            $validated['integritas'] +
-            $validated['ketersediaan']
-        ) / 3;
-
-        $validated['nilai'] = round(
-            $nilai,
-            2
-        );
-
-        $validated['keterangan'] =
-            $this->ciaKeterangan(
-                $nilai
-            );
-
-
-        $validated['jenis'] =
-            $validated['nama_aset'];
-
-        $validated['jumlah_lisensi'] =
-            $validated['jumlah_lisensi'] ?? 1;
-
-
-        unset(
-            $validated['kategori_name'],
-            $validated['ssl_name'],
-            $validated['hosting_name'],
-            $validated['pic_name']
-        );
-
-
-        DB::transaction(function () use (&$validated) {
-
-            $validated['kode'] =
-                $this->generateCode();
-
-            $validated['verifikasi'] =
-                'menunggu';
-
-            $validated['komentar'] =
-                null;
-
-
-            $software =
-                SoftwareAsset::create(
-                    $validated
-                );
-
-
-            VerificationRequest::create([
-                'module' =>
-                    'software',
-
-                'record_id' =>
-                    $software->id,
-
-                'action' =>
-                    'create',
-
-                'data' =>
-                    $software->toArray(),
-
-                'status' =>
-                    'menunggu',
-
-                'submitted_by' =>
-                    auth()->id(),
-            ]);
-
-
-            Notification::create([
-                'judul' =>
-                    'Pengajuan Software Baru',
-
-                'pesan' =>
-                    auth()->user()->username .
-                    ' menambahkan software "' .
-                    ($software->nama_aset ?: $software->jenis) .
-                    '" dengan kode ' .
-                    $software->kode .
-                    ' dan mengajukannya untuk persetujuan.',
-
-                'dibaca' =>
-                    false,
-            ]);
-        });
-
-
-        return redirect()
-            ->route('software.index')
-            ->with(
-                'success',
-                'Pengajuan penambahan software berhasil dikirim dan menunggu verifikasi.'
-            );
-    }
-
-
-    /**
-     * ============================================================
-     * EDIT
-     * ============================================================
-     */
-    public function edit(
-        SoftwareAsset $software
-    ) {
-        $kategoriOptions = SoftwareCategory::where(
-            'status',
-            'Aktif'
-        )
-            ->orderBy('nama')
-            ->get();
-
-        $sslOptions = SoftwareSsl::where(
-            'status',
-            'Aktif'
-        )
-            ->orderBy('nama_ssl')
-            ->get();
-
-        $hostingOptions = SoftwareHosting::where(
-            'status',
-            'Aktif'
-        )
-            ->orderBy('nama'
-            )
-            ->get();
-
-        $picOptions = SoftwarePic::where(
-            'status',
-            'Aktif'
-        )
-            ->orderBy('nama')
-            ->get();
-
-        return view(
-            'software.edit',
-            compact(
-                'software',
-                'kategoriOptions',
-                'sslOptions',
-                'hostingOptions',
-                'picOptions'
-            )
-        );
-    }
-
-
-    /**
-     * ============================================================
-     * UPDATE
-     * ============================================================
-     */
-    public function update(
-        Request $request,
-        SoftwareAsset $software
-    ) {
-        $validated = $request->validate(
-            $this->softwareRules(),
-            [
-                'nama_aset.required' =>
-                    'Nama aset software wajib diisi.',
-
-                'kategori_id.required' =>
-                    'Kategori wajib dipilih.',
-
-                'kategori_id.exists' =>
-                    'Kategori tidak valid atau sudah tidak aktif.',
-
-                'ssl_id.exists' =>
-                    'SSL tidak valid atau sudah tidak aktif.',
-
-                'hosting_id.required' =>
-                    'Hosting wajib dipilih.',
-
-                'hosting_id.exists' =>
-                    'Hosting tidak valid atau sudah tidak aktif.',
-
-                'status.required' =>
-                    'Status wajib dipilih.',
-
-                'pic_id.required' =>
-                    'PIC wajib dipilih.',
-
-                'pic_id.exists' =>
-                    'PIC tidak valid atau sudah tidak aktif.',
-
-                'kerahasiaan.required' =>
-                    'Nilai kerahasiaan wajib dipilih.',
-
-                'integritas.required' =>
-                    'Nilai integritas wajib dipilih.',
-
-                'ketersediaan.required' =>
-                    'Nilai ketersediaan wajib dipilih.',
-
-                'ip_public.ip' =>
-                    'IP Public tidak valid.',
-
-                'ip_private.ip' =>
-                    'IP Private tidak valid.',
-
-                'tanggal_berakhir.after_or_equal' =>
-                    'Tanggal berakhir tidak boleh sebelum tanggal pengadaan.',
-            ]
-        );
-
-
-        $masters = $this->resolveMasterData(
-            $validated
-        );
-
-        $validated = array_merge(
-            $validated,
-            $masters
-        );
-
-
+        /*
+        |--------------------------------------------------------------------------
+        | HITUNG CIA
+        |--------------------------------------------------------------------------
+        */
         $nilai = (
             $validated['kerahasiaan'] +
             $validated['integritas'] +
@@ -834,14 +568,22 @@ class SoftwareController extends Controller
                 $nilai
             );
 
-
+        /*
+        |--------------------------------------------------------------------------
+        | KOMPATIBILITAS FIELD LAMA
+        |--------------------------------------------------------------------------
+        */
         $validated['jenis'] =
             $validated['nama_aset'];
 
         $validated['jumlah_lisensi'] =
             $validated['jumlah_lisensi'] ?? 1;
 
-
+        /*
+        |--------------------------------------------------------------------------
+        | HAPUS DATA BANTU
+        |--------------------------------------------------------------------------
+        */
         unset(
             $validated['kategori_name'],
             $validated['ssl_name'],
@@ -849,843 +591,50 @@ class SoftwareController extends Controller
             $validated['pic_name']
         );
 
-
-        $kodeSoftware =
-            $software->kode;
-
-
-        DB::transaction(function () use (
-            $validated,
-            $software,
-            $kodeSoftware
-        ) {
-
-            $validated['kode'] =
-                $kodeSoftware;
-
-            $validated['verifikasi'] =
-                'menunggu';
-
-            $validated['komentar'] =
-                null;
-
-
-            $software->update(
-                $validated
-            );
-
-            $software->refresh();
-
-
-            VerificationRequest::create([
-                'module' =>
-                    'software',
-
-                'record_id' =>
-                    $software->id,
-
-                'action' =>
-                    'update',
-
-                'data' =>
-                    $software->toArray(),
-
-                'status' =>
-                    'menunggu',
-
-                'submitted_by' =>
-                    auth()->id(),
-            ]);
-
-
-            Notification::create([
-                'judul' =>
-                    'Perubahan Software Diajukan',
-
-                'pesan' =>
-                    auth()->user()->username .
-                    ' memperbarui software "' .
-                    ($software->nama_aset ?: $software->jenis) .
-                    '" dengan kode ' .
-                    $software->kode .
-                    ' dan mengajukannya kembali untuk persetujuan.',
-
-                'dibaca' =>
-                    false,
-            ]);
-        });
-
-
-        return redirect()
-            ->route('software.index')
-            ->with(
-                'success',
-                'Perubahan software berhasil disimpan dan menunggu verifikasi.'
-            );
-    }
-
-
-    /**
-     * ============================================================
-     * DESTROY
-     * ============================================================
-     */
-    public function destroy(
-        SoftwareAsset $software
-    ) {
-        $namaSoftware =
-            $software->nama_aset
-            ?: $software->jenis
-            ?: '-';
-
-        $kodeSoftware =
-            $software->kode
-            ?: '-';
-
-
-        DB::transaction(function () use (
-            $software,
-            $namaSoftware,
-            $kodeSoftware
-        ) {
-
-            $software->update([
-                'verifikasi' =>
-                    'menunggu',
-
-                'komentar' =>
-                    null,
-            ]);
-
-
-            VerificationRequest::create([
-                'module' =>
-                    'software',
-
-                'record_id' =>
-                    $software->id,
-
-                'action' =>
-                    'delete',
-
-                'data' =>
-                    $software->fresh()->toArray(),
-
-                'status' =>
-                    'menunggu',
-
-                'submitted_by' =>
-                    auth()->id(),
-            ]);
-
-
-            Notification::create([
-                'judul' =>
-                    'Penghapusan Software Diajukan',
-
-                'pesan' =>
-                    auth()->user()->username .
-                    ' mengajukan penghapusan software "' .
-                    $namaSoftware .
-                    '" dengan kode ' .
-                    $kodeSoftware .
-                    ' untuk persetujuan verifikator.',
-
-                'dibaca' =>
-                    false,
-            ]);
-        });
-
-
-        return redirect()
-            ->route('software.index')
-            ->with(
-                'success',
-                'Pengajuan penghapusan software berhasil dikirim dan menunggu verifikasi.'
-            );
-    }
-
-
-    /**
-     * ============================================================
-     * IMPORT
-     * ============================================================
-     */
-    public function import(Request $request)
-    {
         /*
         |--------------------------------------------------------------------------
-        | VALIDASI FILE
+        | TRANSACTION
         |--------------------------------------------------------------------------
         */
-
-        $request->validate([
-            'file' => [
-                'required',
-                'file',
-                'mimes:xlsx,xls,csv',
-                'max:5120',
-            ],
-        ], [
-            'file.required' =>
-                'File Excel wajib dipilih.',
-
-            'file.file' =>
-                'File import tidak valid.',
-
-            'file.mimes' =>
-                'File harus berformat XLSX, XLS, atau CSV.',
-
-            'file.max' =>
-                'Ukuran file maksimal 5 MB.',
-        ]);
-
-
-        /*
-        |--------------------------------------------------------------------------
-        | BACA FILE
-        |--------------------------------------------------------------------------
-        */
-
-        try {
-
-            $file =
-                $request->file('file');
-
-            $reader =
-                IOFactory::createReaderForFile(
-                    $file->getRealPath()
-                );
-
-            $reader->setReadDataOnly(true);
-
-            $spreadsheet =
-                $reader->load(
-                    $file->getRealPath()
-                );
-
-            $worksheet =
-                $spreadsheet->getActiveSheet();
-
-            $rows =
-                $worksheet->toArray(
-                    null,
-                    true,
-                    true,
-                    false
-                );
-
-        } catch (\Throwable $e) {
-
-            return back()
-                ->with(
-                    'error',
-                    'File gagal dibaca: ' .
-                    $e->getMessage()
-                );
-        }
-
-
-        if (empty($rows)) {
-
-            return back()
-                ->with(
-                    'error',
-                    'File Excel kosong.'
-                );
-
-        }
-
-
-        /*
-        |--------------------------------------------------------------------------
-        | HEADER
-        |--------------------------------------------------------------------------
-        */
-
-        $rawHeaders =
-            array_shift(
-                $rows
-            );
-
-        $headerMap = [];
-
-
-        foreach (
-            $rawHeaders
-            as $index => $header
-        ) {
-
-            $normalized =
-                $this->normalizeImportHeader(
-                    $header
-                );
-
-            if ($normalized !== '') {
-
-                $headerMap[$normalized] =
-                    $index;
-
-            }
-
-        }
-
-
-        /*
-        |--------------------------------------------------------------------------
-        | HEADER WAJIB
-        |--------------------------------------------------------------------------
-        */
-
-        $requiredHeaders = [
-            'nama_aset',
-            'kategori',
-            'hosting',
-            'status',
-            'pic',
-            'kerahasiaan',
-            'integritas',
-            'ketersediaan',
-        ];
-
-
-        $missingHeaders = [];
-
-
-        foreach (
-            $requiredHeaders
-            as $required
-        ) {
-
-            if (
-                !array_key_exists(
-                    $required,
-                    $headerMap
-                )
-            ) {
-
-                $missingHeaders[] =
-                    $required;
-
-            }
-
-        }
-
-
-        if (!empty($missingHeaders)) {
-
-            return back()
-                ->with(
-                    'error',
-                    'Kolom Excel wajib tidak ditemukan: ' .
-                    implode(
-                        ', ',
-                        $missingHeaders
-                    )
-                );
-
-        }
-
-
-        /*
-        |--------------------------------------------------------------------------
-        | IMPORT
-        |--------------------------------------------------------------------------
-        */
-
-        try {
-
-            DB::transaction(function () use (
-                $rows,
-                $headerMap
-            ) {
-
-                foreach (
-                    $rows as $rowNumber => $row
-                ) {
-
-                    $excelRowNumber =
-                        $rowNumber + 2;
-
-
-                    /*
-                    |--------------------------------------------------------------
-                    | BARIS KOSONG
-                    |--------------------------------------------------------------
-                    */
-
-                    if (
-                        $this->isImportRowEmpty(
-                            $row
-                        )
-                    ) {
-
-                        continue;
-
-                    }
-
-
-                    /*
-                    |--------------------------------------------------------------
-                    | DATA ROW
-                    |--------------------------------------------------------------
-                    */
-
-                    $data =
-                        $this->getImportRowData(
-                            $row,
-                            $headerMap
-                        );
-
-
-                    /*
-                    |--------------------------------------------------------------
-                    | DATA DASAR
-                    |--------------------------------------------------------------
-                    */
-
-                    $namaAset =
-                        $this->nullableImportString(
-                            $data['nama_aset']
-                        );
-
-                    $kategoriNama =
-                        $this->nullableImportString(
-                            $data['kategori']
-                        );
-
-                    $hostingNama =
-                        $this->nullableImportString(
-                            $data['hosting']
-                        );
-
-                    $picNama =
-                        $this->nullableImportString(
-                            $data['pic']
-                        );
-
-                    $status =
-                        $this->nullableImportString(
-                            $data['status']
-                        );
-
-
-                    if (!$namaAset) {
-
-                        throw new \Exception(
-                            "Baris {$excelRowNumber}: Nama aset wajib diisi."
-                        );
-
-                    }
-
-                    if (!$kategoriNama) {
-
-                        throw new \Exception(
-                            "Baris {$excelRowNumber}: Kategori wajib diisi."
-                        );
-
-                    }
-
-                    if (!$hostingNama) {
-
-                        throw new \Exception(
-                            "Baris {$excelRowNumber}: Hosting wajib diisi."
-                        );
-
-                    }
-
-                    if (!$picNama) {
-
-                        throw new \Exception(
-                            "Baris {$excelRowNumber}: PIC wajib diisi."
-                        );
-
-                    }
-
-                    if (
-                        !in_array(
-                            $status,
-                            [
-                                'Aktif',
-                                'Tidak Aktif',
-                            ],
-                            true
-                        )
-                    ) {
-
-                        throw new \Exception(
-                            "Baris {$excelRowNumber}: Status harus Aktif atau Tidak Aktif."
-                        );
-
-                    }
-
-
-                    /*
-                    |--------------------------------------------------------------
-                    | KATEGORI MASTER
-                    |--------------------------------------------------------------
-                    */
-
-                    $category =
-                        SoftwareCategory::where(
-                            'status',
-                            'Aktif'
-                        )
-                        ->where(
-                            'nama',
-                            $kategoriNama
-                        )
-                        ->first();
-
-
-                    if (!$category) {
-
-                        throw new \Exception(
-                            "Baris {$excelRowNumber}: Kategori '{$kategoriNama}' tidak ditemukan di Data Master atau tidak aktif."
-                        );
-
-                    }
-
-
-                    /*
-                    |--------------------------------------------------------------
-                    | HOSTING MASTER
-                    |--------------------------------------------------------------
-                    */
-
-                    $hosting =
-                        SoftwareHosting::where(
-                            'status',
-                            'Aktif'
-                        )
-                        ->where(
-                            'nama',
-                            $hostingNama
-                        )
-                        ->first();
-
-
-                    if (!$hosting) {
-
-                        throw new \Exception(
-                            "Baris {$excelRowNumber}: Hosting '{$hostingNama}' tidak ditemukan di Data Master atau tidak aktif."
-                        );
-
-                    }
-
-
-                    /*
-                    |--------------------------------------------------------------
-                    | PIC MASTER
-                    |--------------------------------------------------------------
-                    */
-
-                    $pic =
-                        SoftwarePic::where(
-                            'status',
-                            'Aktif'
-                        )
-                        ->where(
-                            'nama',
-                            $picNama
-                        )
-                        ->first();
-
-
-                    if (!$pic) {
-
-                        throw new \Exception(
-                            "Baris {$excelRowNumber}: PIC '{$picNama}' tidak ditemukan di Data Master atau tidak aktif."
-                        );
-
-                    }
-
-
-                    /*
-                    |--------------------------------------------------------------
-                    | SSL MASTER
-                    |--------------------------------------------------------------
-                    */
-
-                    $sslValue =
-                        $this->nullableImportString(
-                            $data['ssl'] ?? null
-                        );
-
-                    try {
-
-                        $ssl =
-                            $this->resolveImportSsl(
-                                $sslValue
-                            );
-
-                    } catch (\Throwable $e) {
-
-                        throw new \Exception(
-                            "Baris {$excelRowNumber}: " .
-                            $e->getMessage()
-                        );
-
-                    }
-
-
-                    /*
-                    |--------------------------------------------------------------
-                    | CIA
-                    |--------------------------------------------------------------
-                    */
-
-                    $kerahasiaan =
-                        (int) (
-                            $data['kerahasiaan']
-                            ?? 0
-                        );
-
-                    $integritas =
-                        (int) (
-                            $data['integritas']
-                            ?? 0
-                        );
-
-                    $ketersediaan =
-                        (int) (
-                            $data['ketersediaan']
-                            ?? 0
-                        );
-
-
-                    $ciaValues = [
-                        'Kerahasiaan' =>
-                            $kerahasiaan,
-
-                        'Integritas' =>
-                            $integritas,
-
-                        'Ketersediaan' =>
-                            $ketersediaan,
-                    ];
-
-
-                    foreach (
-                        $ciaValues as $label => $value
-                    ) {
-
-                        if (
-                            !in_array(
-                                $value,
-                                [
-                                    1,
-                                    2,
-                                    3,
-                                ],
-                                true
-                            )
-                        ) {
-
-                            throw new \Exception(
-                                "Baris {$excelRowNumber}: {$label} harus bernilai 1, 2, atau 3."
-                            );
-
-                        }
-
-                    }
-
-
-                    /*
-                    |--------------------------------------------------------------
-                    | NILAI CIA
-                    |--------------------------------------------------------------
-                    */
-
-                    $nilai =
-                        (
-                            $kerahasiaan +
-                            $integritas +
-                            $ketersediaan
-                        ) / 3;
-
-
-                    /*
-                    |--------------------------------------------------------------
-                    | DATA SOFTWARE
-                    |--------------------------------------------------------------
-                    */
-
-                    $softwareData = [
-
-                        'kode' =>
-                            $this->generateCode(),
-
-                        'nama_aset' =>
-                            $namaAset,
-
-                        'jenis' =>
-                            $namaAset,
-
-                        'spesifikasi' =>
-                            $this->nullableImportString(
-                                $data['spesifikasi']
-                                ?? null
-                            ),
-
-                        'jumlah_lisensi' =>
-                            !empty(
-                                $data['jumlah_lisensi']
-                                ?? null
-                            )
-                            ? (int) $data['jumlah_lisensi']
-                            : 1,
-
-                        'pengadaan' =>
-                            $this->nullableImportString(
-                                $data['pengadaan']
-                                ?? null
-                            ),
-
-                        'harga' =>
-                            !empty(
-                                $data['harga']
-                                ?? null
-                            )
-                            ? $data['harga']
-                            : null,
-
-                        'tanggal_pengadaan' =>
-                            $this->normalizeImportDate(
-                                $data['tanggal_pengadaan']
-                                ?? null
-                            ),
-
-                        'tanggal_berakhir' =>
-                            $this->normalizeImportDate(
-                                $data['tanggal_berakhir']
-                                ?? null
-                            ),
-
-                        'periode_sewa' =>
-                            $this->nullableImportString(
-                                $data['periode_sewa']
-                                ?? null
-                            ),
-
-                        'kategori_id' =>
-                            $category->id,
-
-                        'kategori' =>
-                            $category->nama,
-
-                        'ssl_id' =>
-                            $ssl?->id,
-
-                        'ssl' =>
-                            $ssl?->nama_ssl,
-
-                        'hosting_id' =>
-                            $hosting->id,
-
-                        'hosting' =>
-                            $hosting->nama,
-
-                        'pic_id' =>
-                            $pic->id,
-
-                        'pic' =>
-                            $pic->nama,
-
-                        'url_homepage' =>
-                            $this->nullableImportString(
-                                $data['url_homepage']
-                                ?? null
-                            ),
-
-                        'ip_public' =>
-                            $this->nullableImportString(
-                                $data['ip_public']
-                                ?? null
-                            ),
-
-                        'ip_private' =>
-                            $this->nullableImportString(
-                                $data['ip_private']
-                                ?? null
-                            ),
-
-                        'status' =>
-                            $status,
-
-                        'kerahasiaan' =>
-                            $kerahasiaan,
-
-                        'integritas' =>
-                            $integritas,
-
-                        'ketersediaan' =>
-                            $ketersediaan,
-
-                        'nilai' =>
-                            round(
-                                $nilai,
-                                2
-                            ),
-
-                        'keterangan' =>
-                            $this->ciaKeterangan(
-                                $nilai
-                            ),
-
-                        'deskripsi_aplikasi' =>
-                            $this->nullableImportString(
-                                $data['deskripsi_aplikasi']
-                                ?? null
-                            ),
-
-                        'verifikasi' =>
-                            'menunggu',
-
-                        'komentar' =>
-                            null,
-                    ];
-
-
-                    /*
-                    |--------------------------------------------------------------
-                    | VALIDASI TANGGAL
-                    |--------------------------------------------------------------
-                    */
-
-                    if (
-                        $softwareData['tanggal_pengadaan'] &&
-                        $softwareData['tanggal_berakhir'] &&
-                        $softwareData['tanggal_berakhir']
-                            < $softwareData['tanggal_pengadaan']
-                    ) {
-
-                        throw new \Exception(
-                            "Baris {$excelRowNumber}: Tanggal berakhir tidak boleh sebelum tanggal pengadaan."
-                        );
-
-                    }
-
-
-                    /*
-                    |--------------------------------------------------------------
-                    | SIMPAN
-                    |--------------------------------------------------------------
-                    */
-
-                    $software =
-                        SoftwareAsset::create(
-                            $softwareData
-                        );
-
-
-                    /*
-                    |--------------------------------------------------------------
-                    | VERIFICATION REQUEST
-                    |--------------------------------------------------------------
-                    */
-
-                    VerificationRequest::create([
+        DB::transaction(
+            function () use (&$validated) {
+
+                /*
+                |--------------------------------------------------------------------------
+                | GENERATE KODE
+                |--------------------------------------------------------------------------
+                */
+                $validated['kode'] =
+                    $this->generateCode();
+
+                /*
+                |--------------------------------------------------------------------------
+                | STATUS VERIFIKASI
+                |--------------------------------------------------------------------------
+                */
+                $validated['verifikasi'] =
+                    'menunggu';
+
+                $validated['komentar'] =
+                    null;
+
+                /*
+                |--------------------------------------------------------------------------
+                | SIMPAN SOFTWARE
+                |--------------------------------------------------------------------------
+                */
+                $software =
+                    SoftwareAsset::create(
+                        $validated
+                    );
+
+                /*
+                |--------------------------------------------------------------------------
+                | VERIFICATION REQUEST
+                |--------------------------------------------------------------------------
+                */
+                VerificationRequest::create(
+                    [
                         'module' =>
                             'software',
 
@@ -1703,82 +652,1039 @@ class SoftwareController extends Controller
 
                         'submitted_by' =>
                             auth()->id(),
-                    ]);
-
-
-                    /*
-                    |--------------------------------------------------------------
-                    | NOTIFICATION
-                    |--------------------------------------------------------------
-                    */
-
-                    Notification::create([
-                        'judul' =>
-                            'Import Software Baru',
-
-                        'pesan' =>
-                            auth()->user()->username .
-                            ' mengimport software "' .
-                            ($software->nama_aset ?: $software->jenis) .
-                            '" dengan kode ' .
-                            $software->kode .
-                            ' dan mengajukannya untuk persetujuan.',
-
-                        'dibaca' =>
-                            false,
-                    ]);
-
-                }
-
-            });
-
-        } catch (\Throwable $e) {
-
-            return back()
-                ->with(
-                    'error',
-                    'Import gagal: ' .
-                    $e->getMessage()
+                    ]
                 );
-
-        }
-
-
-        /*
-        |--------------------------------------------------------------------------
-        | BERHASIL
-        |--------------------------------------------------------------------------
-        */
+            }
+        );
 
         return redirect()
-            ->route('software.index')
+            ->route(
+                'software.index'
+            )
             ->with(
                 'success',
-                'Data software berhasil diimport dan diajukan untuk verifikasi.'
+                'Pengajuan penambahan software berhasil dikirim dan menunggu verifikasi.'
             );
     }
 
+    /*
+    |--------------------------------------------------------------------------
+    | IMPORT EXCEL / CSV
+    |--------------------------------------------------------------------------
+    */
+    public function import(Request $request)
+    {
+        $request->validate(
+            [
+                'file' => [
+                    'required',
+                    'file',
+                    'mimes:xlsx,xls,csv,txt',
+                    'max:5120',
+                ],
+            ],
+            [
+                'file.required' =>
+                    'File Excel/CSV wajib dipilih.',
+
+                'file.file' =>
+                    'File yang dipilih tidak valid.',
+
+                'file.mimes' =>
+                    'Format file harus XLSX, XLS, CSV, atau TXT.',
+
+                'file.max' =>
+                    'Ukuran file maksimal 5 MB.',
+            ]
+        );
+
+        try {
+
+            /*
+            |--------------------------------------------------------------------------
+            | LOAD FILE
+            |--------------------------------------------------------------------------
+            */
+            $spreadsheet =
+                \PhpOffice\PhpSpreadsheet\IOFactory::load(
+                    $request
+                        ->file('file')
+                        ->getRealPath()
+                );
+
+            $sheet =
+                $spreadsheet->getActiveSheet();
+
+            $rows =
+                $sheet->toArray(
+                    null,
+                    true,
+                    true,
+                    false
+                );
+
+            if (empty($rows)) {
+                return back()->with(
+                    'error',
+                    'File import kosong atau tidak memiliki data.'
+                );
+            }
+
+            /*
+            |--------------------------------------------------------------------------
+            | HEADER
+            |--------------------------------------------------------------------------
+            */
+            $rawHeaders =
+                array_shift($rows);
+
+            $headers =
+                array_map(
+                    fn ($header) =>
+                        $this->normalizeImportHeader(
+                            $header
+                        ),
+                    $rawHeaders
+                );
+
+            $requiredHeaders = [
+                'nama_aset',
+                'kategori',
+                'ssl',
+                'url_homepage',
+                'ip_public',
+                'ip_private',
+                'hosting',
+                'status',
+                'pic',
+                'kerahasiaan',
+                'integritas',
+                'ketersediaan',
+                'deskripsi_aplikasi',
+            ];
+
+            foreach ($requiredHeaders as $requiredHeader) {
+
+                if (
+                    !in_array(
+                        $requiredHeader,
+                        $headers,
+                        true
+                    )
+                ) {
+                    return back()->with(
+                        'error',
+                        'Kolom "' .
+                        str_replace(
+                            '_',
+                            ' ',
+                            $requiredHeader
+                        ) .
+                        '" tidak ditemukan di file import.'
+                    );
+                }
+            }
+
+            $headerMap =
+                array_flip($headers);
+
+            $imported = 0;
+            $failed = 0;
+            $errors = [];
+
+            /*
+            |--------------------------------------------------------------------------
+            | TRANSACTION
+            |--------------------------------------------------------------------------
+            */
+            DB::transaction(
+                function () use (
+                    $rows,
+                    $headerMap,
+                    &$imported,
+                    &$failed,
+                    &$errors
+                ) {
+
+                    foreach ($rows as $rowNumber => $row) {
+
+                        $excelRow =
+                            $rowNumber + 2;
+
+                        if (
+                            $this->isImportRowEmpty(
+                                $row
+                            )
+                        ) {
+                            continue;
+                        }
+
+                        try {
+
+                            $data =
+                                $this->getImportRowData(
+                                    $row,
+                                    $headerMap
+                                );
+
+                            /*
+                            |--------------------------------------------------------------------------
+                            | NAMA
+                            |--------------------------------------------------------------------------
+                            */
+                            $namaAset =
+                                trim(
+                                    (string)
+                                    (
+                                        $data['nama_aset']
+                                        ?? ''
+                                    )
+                                );
+
+                            if ($namaAset === '') {
+                                throw new \Exception(
+                                    'Nama aset wajib diisi.'
+                                );
+                            }
+
+                            /*
+                            |--------------------------------------------------------------------------
+                            | MASTER DATA
+                            |--------------------------------------------------------------------------
+                            */
+                            $kategori =
+                                $this->nullableImportString(
+                                    $data['kategori']
+                                    ?? null
+                                );
+
+                            $sslRaw =
+                                $this->nullableImportString(
+                                    $data['ssl']
+                                    ?? null
+                                );
+
+                            $hosting =
+                                $this->nullableImportString(
+                                    $data['hosting']
+                                    ?? null
+                                );
+
+                            $status =
+                                $this->nullableImportString(
+                                    $data['status']
+                                    ?? null
+                                );
+
+                            $pic =
+                                $this->nullableImportString(
+                                    $data['pic']
+                                    ?? null
+                                );
+
+                            /*
+                            |--------------------------------------------------------------------------
+                            | KATEGORI
+                            |--------------------------------------------------------------------------
+                            */
+                            $categoryMaster =
+                                SoftwareCategory::where(
+                                    'status',
+                                    'Aktif'
+                                )
+                                    ->where(
+                                        'nama',
+                                        $kategori
+                                    )
+                                    ->first();
+
+                            if (!$categoryMaster) {
+                                throw new \Exception(
+                                    'Kategori tidak ditemukan di Data Master: ' .
+                                    ($kategori ?: '-')
+                                );
+                            }
+
+                            /*
+                            |--------------------------------------------------------------------------
+                            | HOSTING
+                            |--------------------------------------------------------------------------
+                            */
+                            $hostingMaster =
+                                SoftwareHosting::where(
+                                    'status',
+                                    'Aktif'
+                                )
+                                    ->where(
+                                        'nama',
+                                        $hosting
+                                    )
+                                    ->first();
+
+                            if (!$hostingMaster) {
+                                throw new \Exception(
+                                    'Hosting tidak ditemukan di Data Master: ' .
+                                    ($hosting ?: '-')
+                                );
+                            }
+
+                            /*
+                            |--------------------------------------------------------------------------
+                            | PIC
+                            |--------------------------------------------------------------------------
+                            */
+                            $picMaster =
+                                SoftwarePic::where(
+                                    'status',
+                                    'Aktif'
+                                )
+                                    ->where(
+                                        'nama',
+                                        $pic
+                                    )
+                                    ->first();
+
+                            if (!$picMaster) {
+                                throw new \Exception(
+                                    'PIC tidak ditemukan di Data Master: ' .
+                                    ($pic ?: '-')
+                                );
+                            }
+
+                            /*
+                            |--------------------------------------------------------------------------
+                            | SSL
+                            |--------------------------------------------------------------------------
+                            */
+                            $sslMaster =
+                                $this->resolveImportSsl(
+                                    $sslRaw
+                                );
+
+                            /*
+                            |--------------------------------------------------------------------------
+                            | STATUS
+                            |--------------------------------------------------------------------------
+                            */
+                            if (
+                                !in_array(
+                                    $status,
+                                    [
+                                        'Aktif',
+                                        'Tidak Aktif',
+                                    ],
+                                    true
+                                )
+                            ) {
+                                throw new \Exception(
+                                    'Status harus Aktif atau Tidak Aktif.'
+                                );
+                            }
+
+                            /*
+                            |--------------------------------------------------------------------------
+                            | CIA
+                            |--------------------------------------------------------------------------
+                            */
+                            $kerahasiaan =
+                                (int)
+                                (
+                                    $data['kerahasiaan']
+                                    ?? 0
+                                );
+
+                            $integritas =
+                                (int)
+                                (
+                                    $data['integritas']
+                                    ?? 0
+                                );
+
+                            $ketersediaan =
+                                (int)
+                                (
+                                    $data['ketersediaan']
+                                    ?? 0
+                                );
+
+                            foreach (
+                                [
+                                    'kerahasiaan' =>
+                                        $kerahasiaan,
+
+                                    'integritas' =>
+                                        $integritas,
+
+                                    'ketersediaan' =>
+                                        $ketersediaan,
+                                ]
+                                as $field => $value
+                            ) {
+
+                                if (
+                                    !in_array(
+                                        $value,
+                                        [1, 2, 3],
+                                        true
+                                    )
+                                ) {
+                                    throw new \Exception(
+                                        ucfirst($field) .
+                                        ' harus 1, 2, atau 3.'
+                                    );
+                                }
+                            }
+
+                            /*
+                            |--------------------------------------------------------------------------
+                            | IP
+                            |--------------------------------------------------------------------------
+                            */
+                            $ipPublic =
+                                $this->nullableImportString(
+                                    $data['ip_public']
+                                    ?? null
+                                );
+
+                            $ipPrivate =
+                                $this->nullableImportString(
+                                    $data['ip_private']
+                                    ?? null
+                                );
+
+                            if (
+                                $ipPublic !== null &&
+                                !filter_var(
+                                    $ipPublic,
+                                    FILTER_VALIDATE_IP
+                                )
+                            ) {
+                                throw new \Exception(
+                                    'IP Public tidak valid: ' .
+                                    $ipPublic
+                                );
+                            }
+
+                            if (
+                                $ipPrivate !== null &&
+                                !filter_var(
+                                    $ipPrivate,
+                                    FILTER_VALIDATE_IP
+                                )
+                            ) {
+                                throw new \Exception(
+                                    'IP Private tidak valid: ' .
+                                    $ipPrivate
+                                );
+                            }
+
+                            /*
+                            |--------------------------------------------------------------------------
+                            | CIA RESULT
+                            |--------------------------------------------------------------------------
+                            */
+                            $nilai =
+                                round(
+                                    (
+                                        $kerahasiaan +
+                                        $integritas +
+                                        $ketersediaan
+                                    ) / 3,
+                                    2
+                                );
+
+                            /*
+                            |--------------------------------------------------------------------------
+                            | SIMPAN
+                            |--------------------------------------------------------------------------
+                            */
+                            $software =
+                                SoftwareAsset::create(
+                                    [
+                                        'kode' =>
+                                            $this->generateCode(),
+
+                                        'nama_aset' =>
+                                            $namaAset,
+
+                                        'jenis' =>
+                                            $namaAset,
+
+                                        'spesifikasi' =>
+                                            null,
+
+                                        /*
+                                        | Master ID
+                                        */
+                                        'kategori_id' =>
+                                            $categoryMaster->id,
+
+                                        'ssl_id' =>
+                                            $sslMaster?->id,
+
+                                        'hosting_id' =>
+                                            $hostingMaster->id,
+
+                                        'pic_id' =>
+                                            $picMaster->id,
+
+                                        /*
+                                        | Legacy string
+                                        */
+                                        'kategori' =>
+                                            $categoryMaster->nama,
+
+                                        'ssl' =>
+                                            $sslMaster?->nama_ssl,
+
+                                        'hosting' =>
+                                            $hostingMaster->nama,
+
+                                        'pic' =>
+                                            $picMaster->nama,
+
+                                        /*
+                                        | Data aplikasi
+                                        */
+                                        'url_homepage' =>
+                                            $this->nullableImportString(
+                                                $data['url_homepage']
+                                                ?? null
+                                            ),
+
+                                        'ip_public' =>
+                                            $ipPublic,
+
+                                        'ip_private' =>
+                                            $ipPrivate,
+
+                                        'status' =>
+                                            $status,
+
+                                        /*
+                                        | CIA
+                                        */
+                                        'kerahasiaan' =>
+                                            $kerahasiaan,
+
+                                        'integritas' =>
+                                            $integritas,
+
+                                        'ketersediaan' =>
+                                            $ketersediaan,
+
+                                        'nilai' =>
+                                            $nilai,
+
+                                        'keterangan' =>
+                                            $this->ciaKeterangan(
+                                                $nilai
+                                            ),
+
+                                        'deskripsi_aplikasi' =>
+                                            $this->nullableImportString(
+                                                $data['deskripsi_aplikasi']
+                                                ?? null
+                                            ),
+
+                                        /*
+                                        | Legacy fields
+                                        */
+                                        'jumlah_lisensi' =>
+                                            1,
+
+                                        'pengadaan' =>
+                                            null,
+
+                                        'periode_sewa' =>
+                                            null,
+
+                                        'harga' =>
+                                            null,
+
+                                        'tanggal_pengadaan' =>
+                                            null,
+
+                                        'tanggal_berakhir' =>
+                                            null,
+
+                                        /*
+                                        | Verification
+                                        */
+                                        'verifikasi' =>
+                                            'menunggu',
+
+                                        'komentar' =>
+                                            null,
+                                    ]
+                                );
+
+                            /*
+                            |--------------------------------------------------------------------------
+                            | VERIFICATION REQUEST
+                            |--------------------------------------------------------------------------
+                            */
+                            VerificationRequest::create(
+                                [
+                                    'module' =>
+                                        'software',
+
+                                    'record_id' =>
+                                        $software->id,
+
+                                    'action' =>
+                                        'create',
+
+                                    'data' =>
+                                        $software->toArray(),
+
+                                    'status' =>
+                                        'menunggu',
+
+                                    'submitted_by' =>
+                                        auth()->id(),
+                                ]
+                            );
+
+                            $imported++;
+
+                        } catch (\Throwable $e) {
+
+                            $failed++;
+
+                            $errors[] =
+                                'Baris ' .
+                                $excelRow .
+                                ': ' .
+                                $e->getMessage();
+                        }
+                    }
+                }
+            );
+
+            /*
+            |--------------------------------------------------------------------------
+            | IMPORT GAGAL SEMUA
+            |--------------------------------------------------------------------------
+            */
+            if ($imported === 0) {
+
+                return back()->with(
+                    'error',
+                    'Tidak ada data yang berhasil diimport. ' .
+                    implode(
+                        ' | ',
+                        array_slice(
+                            $errors,
+                            0,
+                            5
+                        )
+                    )
+                );
+            }
+
+            /*
+            |--------------------------------------------------------------------------
+            | SUCCESS
+            |--------------------------------------------------------------------------
+            */
+            $message =
+                $imported .
+                ' data software berhasil diimport dan masuk ke tabel software.';
+
+            if ($failed > 0) {
+
+                $message .=
+                    ' ' .
+                    $failed .
+                    ' baris dilewati karena data tidak valid.';
+            }
+
+            return back()
+                ->with(
+                    'success',
+                    $message
+                )
+                ->with(
+                    'import_errors',
+                    $errors
+                );
+
+        } catch (\Throwable $e) {
+
+            return back()->with(
+                'error',
+                'Import gagal: ' .
+                $e->getMessage()
+            );
+        }
+    }
+
+    /*
+    |--------------------------------------------------------------------------
+    | SHOW
+    |--------------------------------------------------------------------------
+    */
+    public function show(
+        SoftwareAsset $software
+    ) {
+        return redirect()->route(
+            'software.index'
+        );
+    }
+
+    /*
+    |--------------------------------------------------------------------------
+    | EDIT
+    |--------------------------------------------------------------------------
+    */
+    public function edit(
+        SoftwareAsset $software
+    ) {
+        $kategoriOptions =
+            SoftwareCategory::where(
+                'status',
+                'Aktif'
+            )
+                ->orderBy('nama')
+                ->get();
+
+        $sslOptions =
+            SoftwareSsl::where(
+                'status',
+                'Aktif'
+            )
+                ->orderBy('nama_ssl')
+                ->get();
+
+        $hostingOptions =
+            SoftwareHosting::where(
+                'status',
+                'Aktif'
+            )
+                ->orderBy('nama')
+                ->get();
+
+        $picOptions =
+            SoftwarePic::where(
+                'status',
+                'Aktif'
+            )
+                ->orderBy('nama')
+                ->get();
+
+        return view(
+            'software.edit',
+            compact(
+                'software',
+                'kategoriOptions',
+                'sslOptions',
+                'hostingOptions',
+                'picOptions'
+            )
+        );
+    }
+
+    /*
+    |--------------------------------------------------------------------------
+    | UPDATE
+    |--------------------------------------------------------------------------
+    */
+    public function update(
+        Request $request,
+        SoftwareAsset $software
+    ) {
+        $validated = $request->validate(
+            $this->softwareRules(),
+            [
+                'nama_aset.required' =>
+                    'Nama aset wajib diisi.',
+
+                'kategori_id.required' =>
+                    'Kategori wajib dipilih.',
+
+                'kategori_id.exists' =>
+                    'Kategori tidak valid atau sudah tidak aktif.',
+
+                'kategori_sistem_elektronik' => [
+                    'nullable',
+                    'string',
+                    'in:Rendah,Tinggi,Strategis',
+                ],
+
+                'ssl_id.exists' =>
+                    'SSL tidak valid atau sudah tidak aktif.',
+
+                'hosting_id.required' =>
+                    'Hosting wajib dipilih.',
+
+                'hosting_id.exists' =>
+                    'Hosting tidak valid atau sudah tidak aktif.',
+
+                'status.required' =>
+                    'Status wajib dipilih.',
+
+                'pic_id.required' =>
+                    'PIC wajib dipilih.',
+
+                'pic_id.exists' =>
+                    'PIC tidak valid atau sudah tidak aktif.',
+
+                'kerahasiaan.required' =>
+                    'Nilai kerahasiaan wajib dipilih.',
+
+                'integritas.required' =>
+                    'Nilai integritas wajib dipilih.',
+
+                'ketersediaan.required' =>
+                    'Nilai ketersediaan wajib dipilih.',
+
+                'ip_public.ip' =>
+                    'IP Public tidak valid.',
+
+                'ip_private.ip' =>
+                    'IP Private tidak valid.',
+            ]
+        );
+
+        /*
+        |--------------------------------------------------------------------------
+        | MASTER
+        |--------------------------------------------------------------------------
+        */
+        $masters =
+            $this->resolveMasterData(
+                $validated
+            );
+
+        $validated =
+            array_merge(
+                $validated,
+                $masters
+            );
+
+        /*
+        |--------------------------------------------------------------------------
+        | CIA
+        |--------------------------------------------------------------------------
+        */
+        $nilai = (
+            $validated['kerahasiaan'] +
+            $validated['integritas'] +
+            $validated['ketersediaan']
+        ) / 3;
+
+        $validated['nilai'] =
+            round(
+                $nilai,
+                2
+            );
+
+        $validated['keterangan'] =
+            $this->ciaKeterangan(
+                $nilai
+            );
+
+        /*
+        |--------------------------------------------------------------------------
+        | LEGACY
+        |--------------------------------------------------------------------------
+        */
+        $validated['jenis'] =
+            $validated['nama_aset'];
+
+        $validated['jumlah_lisensi'] =
+            $validated['jumlah_lisensi']
+            ?? (
+                $software->jumlah_lisensi
+                ?: 1
+            );
+
+        unset(
+            $validated['kategori_name'],
+            $validated['ssl_name'],
+            $validated['hosting_name'],
+            $validated['pic_name']
+        );
+
+        /*
+        |--------------------------------------------------------------------------
+        | TRANSACTION
+        |--------------------------------------------------------------------------
+        */
+        DB::transaction(
+            function () use (
+                $validated,
+                $software
+            ) {
+
+                /*
+                |--------------------------------------------------------------------------
+                | KODE TIDAK BERUBAH
+                |--------------------------------------------------------------------------
+                */
+                unset(
+                    $validated['kode']
+                );
+
+                /*
+                |--------------------------------------------------------------------------
+                | VERIFIKASI ULANG
+                |--------------------------------------------------------------------------
+                */
+                $validated['verifikasi'] =
+                    'menunggu';
+
+                $validated['komentar'] =
+                    null;
+
+                /*
+                |--------------------------------------------------------------------------
+                | UPDATE
+                |--------------------------------------------------------------------------
+                */
+                $software->update(
+                    $validated
+                );
+
+                /*
+                |--------------------------------------------------------------------------
+                | VERIFICATION REQUEST
+                |--------------------------------------------------------------------------
+                */
+                VerificationRequest::create(
+                    [
+                        'module' =>
+                            'software',
+
+                        'record_id' =>
+                            $software->id,
+
+                        'action' =>
+                            'update',
+
+                        'data' =>
+                            $software
+                                ->fresh()
+                                ->toArray(),
+
+                        'status' =>
+                            'menunggu',
+
+                        'submitted_by' =>
+                            auth()->id(),
+                    ]
+                );
+            }
+        );
+
+        return redirect()
+            ->route(
+                'software.index'
+            )
+            ->with(
+                'success',
+                'Perubahan software berhasil disimpan dan menunggu verifikasi.'
+            );
+    }
+
+    /*
+    |--------------------------------------------------------------------------
+    | DESTROY
+    |--------------------------------------------------------------------------
+    */
+    public function destroy(
+        SoftwareAsset $software
+    ) {
+        DB::transaction(
+            function () use (
+                $software
+            ) {
+
+                /*
+                |--------------------------------------------------------------------------
+                | TIDAK LANGSUNG HAPUS
+                |--------------------------------------------------------------------------
+                */
+                $software->update(
+                    [
+                        'verifikasi' =>
+                            'menunggu',
+
+                        'komentar' =>
+                            null,
+                    ]
+                );
+
+                /*
+                |--------------------------------------------------------------------------
+                | REQUEST DELETE
+                |--------------------------------------------------------------------------
+                */
+                VerificationRequest::create(
+                    [
+                        'module' =>
+                            'software',
+
+                        'record_id' =>
+                            $software->id,
+
+                        'action' =>
+                            'delete',
+
+                        'data' =>
+                            $software
+                                ->fresh()
+                                ->toArray(),
+
+                        'status' =>
+                            'menunggu',
+
+                        'submitted_by' =>
+                            auth()->id(),
+                    ]
+                );
+            }
+        );
+
+        return redirect()
+            ->route(
+                'software.index'
+            )
+            ->with(
+                'success',
+                'Pengajuan penghapusan software berhasil dikirim dan menunggu verifikasi.'
+            );
+    }
 
     /*
     |--------------------------------------------------------------------------
     | VALIDATION RULES
     |--------------------------------------------------------------------------
     */
-
     private function softwareRules(): array
     {
         return [
 
+            /*
+            |--------------------------------------------------------------------------
+            | NAMA
+            |--------------------------------------------------------------------------
+            */
             'nama_aset' => [
                 'required',
                 'string',
                 'max:255',
             ],
 
+            /*
+            |--------------------------------------------------------------------------
+            | KATEGORI MASTER
+            |--------------------------------------------------------------------------
+            */
             'kategori_id' => [
                 'required',
                 'integer',
-
                 Rule::exists(
                     'software_categories',
                     'id'
@@ -1791,10 +1697,14 @@ class SoftwareController extends Controller
                 ),
             ],
 
+            /*
+            |--------------------------------------------------------------------------
+            | SSL MASTER
+            |--------------------------------------------------------------------------
+            */
             'ssl_id' => [
                 'nullable',
                 'integer',
-
                 Rule::exists(
                     'software_ssls',
                     'id'
@@ -1807,12 +1717,22 @@ class SoftwareController extends Controller
                 ),
             ],
 
+            /*
+            |--------------------------------------------------------------------------
+            | URL
+            |--------------------------------------------------------------------------
+            */
             'url_homepage' => [
                 'nullable',
                 'string',
                 'max:500',
             ],
 
+            /*
+            |--------------------------------------------------------------------------
+            | IP
+            |--------------------------------------------------------------------------
+            */
             'ip_public' => [
                 'nullable',
                 'ip',
@@ -1823,10 +1743,14 @@ class SoftwareController extends Controller
                 'ip',
             ],
 
+            /*
+            |--------------------------------------------------------------------------
+            | HOSTING MASTER
+            |--------------------------------------------------------------------------
+            */
             'hosting_id' => [
                 'required',
                 'integer',
-
                 Rule::exists(
                     'software_hostings',
                     'id'
@@ -1839,19 +1763,29 @@ class SoftwareController extends Controller
                 ),
             ],
 
+            /*
+            |--------------------------------------------------------------------------
+            | STATUS
+            |--------------------------------------------------------------------------
+            */
             'status' => [
                 'required',
-
-                Rule::in([
-                    'Aktif',
-                    'Tidak Aktif',
-                ]),
+                Rule::in(
+                    [
+                        'Aktif',
+                        'Tidak Aktif',
+                    ]
+                ),
             ],
 
+            /*
+            |--------------------------------------------------------------------------
+            | PIC MASTER
+            |--------------------------------------------------------------------------
+            */
             'pic_id' => [
                 'required',
                 'integer',
-
                 Rule::exists(
                     'software_pics',
                     'id'
@@ -1864,44 +1798,44 @@ class SoftwareController extends Controller
                 ),
             ],
 
+            /*
+            |--------------------------------------------------------------------------
+            | CIA
+            |--------------------------------------------------------------------------
+            */
             'kerahasiaan' => [
                 'required',
                 'integer',
-
-                Rule::in([
-                    1,
-                    2,
-                    3,
-                ]),
+                Rule::in([1, 2, 3]),
             ],
 
             'integritas' => [
                 'required',
                 'integer',
-
-                Rule::in([
-                    1,
-                    2,
-                    3,
-                ]),
+                Rule::in([1, 2, 3]),
             ],
 
             'ketersediaan' => [
                 'required',
                 'integer',
-
-                Rule::in([
-                    1,
-                    2,
-                    3,
-                ]),
+                Rule::in([1, 2, 3]),
             ],
 
+            /*
+            |--------------------------------------------------------------------------
+            | DESKRIPSI
+            |--------------------------------------------------------------------------
+            */
             'deskripsi_aplikasi' => [
                 'nullable',
                 'string',
             ],
 
+            /*
+            |--------------------------------------------------------------------------
+            | FIELD LEGACY
+            |--------------------------------------------------------------------------
+            */
             'spesifikasi' => [
                 'nullable',
                 'string',
@@ -1916,11 +1850,12 @@ class SoftwareController extends Controller
 
             'pengadaan' => [
                 'nullable',
-
-                Rule::in([
-                    'Sewa',
-                    'Beli',
-                ]),
+                Rule::in(
+                    [
+                        'Sewa',
+                        'Beli',
+                    ]
+                ),
             ],
 
             'periode_sewa' => [
@@ -1948,63 +1883,75 @@ class SoftwareController extends Controller
         ];
     }
 
-
     /*
     |--------------------------------------------------------------------------
     | RESOLVE MASTER DATA
     |--------------------------------------------------------------------------
     */
-
     private function resolveMasterData(
         array $validated
     ): array {
-
+        /*
+        |--------------------------------------------------------------------------
+        | KATEGORI
+        |--------------------------------------------------------------------------
+        */
         $category =
             SoftwareCategory::where(
                 'status',
                 'Aktif'
-            )
-            ->findOrFail(
+            )->findOrFail(
                 $validated['kategori_id']
             );
 
-
+        /*
+        |--------------------------------------------------------------------------
+        | HOSTING
+        |--------------------------------------------------------------------------
+        */
         $hosting =
             SoftwareHosting::where(
                 'status',
                 'Aktif'
-            )
-            ->findOrFail(
+            )->findOrFail(
                 $validated['hosting_id']
             );
 
-
+        /*
+        |--------------------------------------------------------------------------
+        | PIC
+        |--------------------------------------------------------------------------
+        */
         $pic =
             SoftwarePic::where(
                 'status',
                 'Aktif'
-            )
-            ->findOrFail(
+            )->findOrFail(
                 $validated['pic_id']
             );
 
-
+        /*
+        |--------------------------------------------------------------------------
+        | SSL
+        |--------------------------------------------------------------------------
+        */
         $ssl =
             !empty(
                 $validated['ssl_id']
             )
-            ? SoftwareSsl::where(
-                'status',
-                'Aktif'
-            )
-            ->findOrFail(
-                $validated['ssl_id']
-            )
-            : null;
-
+                ? SoftwareSsl::where(
+                    'status',
+                    'Aktif'
+                )->findOrFail(
+                    $validated['ssl_id']
+                )
+                : null;
 
         return [
 
+            /*
+            | Legacy string
+            */
             'kategori' =>
                 $category->nama,
 
@@ -2019,52 +1966,46 @@ class SoftwareController extends Controller
         ];
     }
 
-
     /*
     |--------------------------------------------------------------------------
     | GENERATE SOFTWARE CODE
     |--------------------------------------------------------------------------
     */
-
     private function generateCode(): string
     {
         $year =
             now()->year;
-
 
         $counter =
             SoftwareCounter::where(
                 'year',
                 $year
             )
-            ->lockForUpdate()
-            ->first();
-
+                ->lockForUpdate()
+                ->first();
 
         if (!$counter) {
 
             $counter =
-                SoftwareCounter::create([
-                    'year' =>
-                        $year,
+                SoftwareCounter::create(
+                    [
+                        'year' =>
+                            $year,
 
-                    'last_number' =>
-                        0,
-                ]);
-
+                        'last_number' =>
+                            0,
+                    ]
+                );
         }
-
 
         $counter->increment(
             'last_number'
         );
 
-
         $number =
             $counter
                 ->fresh()
                 ->last_number;
-
 
         return sprintf(
             'SW-%02d%04d',
@@ -2073,17 +2014,14 @@ class SoftwareController extends Controller
         );
     }
 
-
     /*
     |--------------------------------------------------------------------------
     | CIA KETERANGAN
     |--------------------------------------------------------------------------
     */
-
     private function ciaKeterangan(
         float $nilai
     ): string {
-
         if ($nilai <= 1) {
             return 'Rendah';
         }
@@ -2095,22 +2033,18 @@ class SoftwareController extends Controller
         return 'Tinggi';
     }
 
-
     /*
     |--------------------------------------------------------------------------
     | IMPORT HEADER NORMALIZATION
     |--------------------------------------------------------------------------
     */
-
     private function normalizeImportHeader(
         $header
     ): string {
-
         $header =
             trim(
                 (string) $header
             );
-
 
         $header =
             preg_replace(
@@ -2119,12 +2053,10 @@ class SoftwareController extends Controller
                 $header
             );
 
-
         $header =
             strtolower(
                 $header
             );
-
 
         $header =
             str_replace(
@@ -2137,7 +2069,6 @@ class SoftwareController extends Controller
                 $header
             );
 
-
         $header =
             preg_replace(
                 '/[^a-z0-9_ ]/',
@@ -2145,14 +2076,12 @@ class SoftwareController extends Controller
                 $header
             );
 
-
         $header =
             str_replace(
                 ' ',
                 '_',
                 $header
             );
-
 
         $aliases = [
 
@@ -2181,53 +2110,42 @@ class SoftwareController extends Controller
                 'ketersediaan',
         ];
 
-
         return
             $aliases[$header]
             ?? $header;
     }
-
 
     /*
     |--------------------------------------------------------------------------
     | GET IMPORT ROW DATA
     |--------------------------------------------------------------------------
     */
-
     private function getImportRowData(
         array $row,
         array $headerMap
     ): array {
-
         $data = [];
-
 
         foreach (
             $headerMap
             as $header => $index
         ) {
-
             $data[$header] =
                 $row[$index]
                 ?? null;
-
         }
-
 
         return $data;
     }
-
 
     /*
     |--------------------------------------------------------------------------
     | CHECK EMPTY IMPORT ROW
     |--------------------------------------------------------------------------
     */
-
     private function isImportRowEmpty(
         array $row
     ): bool {
-
         foreach ($row as $value) {
 
             if (
@@ -2236,33 +2154,25 @@ class SoftwareController extends Controller
                     (string) $value
                 ) !== ''
             ) {
-
                 return false;
-
             }
-
         }
-
 
         return true;
     }
-
 
     /*
     |--------------------------------------------------------------------------
     | NULLABLE IMPORT STRING
     |--------------------------------------------------------------------------
     */
-
     private function nullableImportString(
         $value
     ): ?string {
-
         $value =
             trim(
                 (string) $value
             );
-
 
         return
             $value === ''
@@ -2270,96 +2180,78 @@ class SoftwareController extends Controller
             : $value;
     }
 
-
     /*
     |--------------------------------------------------------------------------
     | RESOLVE SSL IMPORT
     |--------------------------------------------------------------------------
     */
-
     private function resolveImportSsl(
         ?string $value
     ): ?SoftwareSsl {
 
         /*
         |--------------------------------------------------------------------------
-        | KOSONG
+        | KOSONG = TIDAK MENGGUNAKAN SSL
         |--------------------------------------------------------------------------
         */
-
         if (
             $value === null ||
             $value === ''
         ) {
-
             return SoftwareSsl::where(
                 'status',
                 'Aktif'
             )
-            ->where(
-                'nama_ssl',
-                'Tidak Menggunakan SSL'
-            )
-            ->first();
-
+                ->where(
+                    'nama_ssl',
+                    'Tidak Menggunakan SSL'
+                )
+                ->first();
         }
-
 
         /*
         |--------------------------------------------------------------------------
-        | CARI NAMA SSL
+        | CARI BERDASARKAN NAMA SSL
         |--------------------------------------------------------------------------
         */
-
         $byName =
             SoftwareSsl::where(
                 'status',
                 'Aktif'
             )
-            ->where(
-                'nama_ssl',
-                $value
-            )
-            ->first();
-
+                ->where(
+                    'nama_ssl',
+                    $value
+                )
+                ->first();
 
         if ($byName) {
             return $byName;
         }
 
-
         /*
         |--------------------------------------------------------------------------
-        | CARI BERDASARKAN TANGGAL EXPIRE
+        | KOMPATIBILITAS:
+        | BILA EXCEL MASIH BERISI TANGGAL EXPIRE
         |--------------------------------------------------------------------------
         */
-
         $date =
             $this->normalizeImportDate(
                 $value
             );
 
-
         if ($date) {
 
-            $ssl =
-                SoftwareSsl::where(
-                    'status',
-                    'Aktif'
-                )
+            return SoftwareSsl::where(
+                'status',
+                'Aktif'
+            )
                 ->whereDate(
                     'tanggal_expire',
                     $date
                 )
-                ->first();
-
-
-            if ($ssl) {
-                return $ssl;
-            }
-
+                ->firstOrFail();
         }
-
 
         throw new \Exception(
             'SSL tidak ditemukan di Data Master: ' .
@@ -2367,13 +2259,11 @@ class SoftwareController extends Controller
         );
     }
 
-
     /*
     |--------------------------------------------------------------------------
     | NORMALIZE IMPORT DATE
     |--------------------------------------------------------------------------
     */
-
     private function normalizeImportDate(
         $value
     ): ?string {
@@ -2384,18 +2274,14 @@ class SoftwareController extends Controller
                 (string) $value
             ) === ''
         ) {
-
             return null;
-
         }
-
 
         /*
         |--------------------------------------------------------------------------
         | EXCEL SERIAL DATE
         |--------------------------------------------------------------------------
         */
-
         if (is_numeric($value)) {
 
             try {
@@ -2412,24 +2298,19 @@ class SoftwareController extends Controller
             } catch (\Throwable $e) {
 
                 return null;
-
             }
-
         }
-
 
         $value =
             trim(
                 (string) $value
             );
 
-
         /*
         |--------------------------------------------------------------------------
-        | FORMAT TANGGAL
+        | FORMAT DATE
         |--------------------------------------------------------------------------
         */
-
         foreach (
             [
                 'Y-m-d',
@@ -2450,29 +2331,22 @@ class SoftwareController extends Controller
                         $value
                     );
 
-
                 if (
                     $date &&
                     $date->format(
                         $format
                     ) === $value
                 ) {
-
                     return
                         $date->format(
                             'Y-m-d'
                         );
-
                 }
 
             } catch (\Throwable $e) {
-
-                // Lanjut ke format berikutnya.
-
+                // Lanjut format berikutnya.
             }
-
         }
-
 
         return null;
     }

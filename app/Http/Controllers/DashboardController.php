@@ -9,11 +9,6 @@ use Illuminate\Support\Facades\Schema;
 
 class DashboardController extends Controller
 {
-    /**
-     * ============================================================
-     * DASHBOARD
-     * ============================================================
-     */
     public function index(Request $request)
     {
         $user = auth()->user();
@@ -40,12 +35,6 @@ class DashboardController extends Controller
             $tahun = (int) $tahun;
         }
 
-        /*
-        |--------------------------------------------------------------------------
-        | DAFTAR TAHUN
-        |--------------------------------------------------------------------------
-        */
-
         $tahunList = $this->getTahunList();
 
         /*
@@ -54,14 +43,14 @@ class DashboardController extends Controller
         |--------------------------------------------------------------------------
         */
 
-        $hardwareDashboard =
-            $this->getHardwareDashboard($tahun);
+        $hardwareDashboard = $this->getHardwareDashboard($tahun);
 
-        $hardwareCount =
-            $this->getAssetCount(
-                'hardwares',
-                $tahun
-            );
+        $hardwareCount = $this->getAssetCount(
+            'hardwares',
+            $tahun
+        );
+
+        $hardwarePriceTotal = $this->getHardwarePriceTotal($tahun);
 
         /*
         |--------------------------------------------------------------------------
@@ -69,14 +58,12 @@ class DashboardController extends Controller
         |--------------------------------------------------------------------------
         */
 
-        $softwareDashboard =
-            $this->getSoftwareDashboard($tahun);
+        $softwareDashboard = $this->getSoftwareDashboard($tahun);
 
-        $softwareCount =
-            $this->getAssetCount(
-                'softwares',
-                $tahun
-            );
+        $softwareCount = $this->getAssetCount(
+            'softwares',
+            $tahun
+        );
 
         /*
         |--------------------------------------------------------------------------
@@ -84,54 +71,47 @@ class DashboardController extends Controller
         |--------------------------------------------------------------------------
         */
 
-        $infrastrukturDashboard =
-            $this->getInfrastrukturDashboard($tahun);
+        $infrastrukturDashboard = $this->getInfrastrukturDashboard($tahun);
 
-        $jaringanCount =
-            $this->getAssetCount(
-                'jaringans',
-                $tahun
-            );
+        $jaringanCount = $this->getAssetCount(
+            'jaringans',
+            $tahun
+        );
 
-        $dataCenterCount =
-            $this->getAssetCount(
-                'data_centers',
-                $tahun
-            );
+        $dataCenterCount = $this->getAssetCount(
+            'data_centers',
+            $tahun
+        );
 
-        $splpCount =
-            $this->getAssetCount(
-                'splps',
-                $tahun
-            );
+        $splpCount = $this->getAssetCount(
+            'splps',
+            $tahun
+        );
 
+        /*
+         * SPLP tidak dimasukkan ke total infrastruktur
+         * karena dashboard saat ini menghitung:
+         * Jaringan + Data Center.
+         */
         $infrastrukturCount =
             $jaringanCount +
             $dataCenterCount;
 
         /*
         |--------------------------------------------------------------------------
-        | SDM
+        | SDM & DATA
         |--------------------------------------------------------------------------
         */
 
-        $sdmCount =
-            $this->getAssetCount(
-                'sdms',
-                $tahun
-            );
+        $sdmCount = $this->getAssetCount(
+            'sdms',
+            $tahun
+        );
 
-        /*
-        |--------------------------------------------------------------------------
-        | DATA
-        |--------------------------------------------------------------------------
-        */
-
-        $dataCount =
-            $this->getAssetCount(
-                'data',
-                $tahun
-            );
+        $dataCount = $this->getAssetCount(
+            'data',
+            $tahun
+        );
 
         /*
         |--------------------------------------------------------------------------
@@ -148,12 +128,11 @@ class DashboardController extends Controller
 
         /*
         |--------------------------------------------------------------------------
-        | STATUS ASET
+        | STATUS
         |--------------------------------------------------------------------------
         */
 
-        $statusData =
-            $this->getStatusData($tahun);
+        $statusData = $this->getStatusData($tahun);
 
         /*
         |--------------------------------------------------------------------------
@@ -224,8 +203,7 @@ class DashboardController extends Controller
         |--------------------------------------------------------------------------
         */
 
-        $activities =
-            $this->getActivities($tahun);
+        $activities = $this->getActivities($tahun);
 
         /*
         |--------------------------------------------------------------------------
@@ -233,96 +211,83 @@ class DashboardController extends Controller
         |--------------------------------------------------------------------------
         */
 
-        $verificationData =
-            $this->getVerificationData($tahun);
+        $verificationData = $this->getVerificationData($tahun);
 
         /*
         |--------------------------------------------------------------------------
-        | DATA VIEW
+        | VIEW DATA
         |--------------------------------------------------------------------------
+        |
+        | Dikirim dua nama variable untuk total harga hardware:
+        |
+        | $hardwarePriceTotal
+        | $totalHargaHardware
+        |
+        | Jadi Blade lama maupun Blade baru tetap bisa menggunakannya.
+        |
         */
 
         $viewData = [
             'tahun' => $tahun,
             'tahunList' => $tahunList,
 
+            /*
+             * TOTAL
+             */
             'totalAset' => $totalAset,
 
+            /*
+             * HARDWARE
+             */
             'hardwareCount' => $hardwareCount,
-            'softwareCount' => $softwareCount,
-
-            'infrastrukturCount' =>
-                $infrastrukturCount,
-
-            'jaringanCount' =>
-                $jaringanCount,
-
-            'dataCenterCount' =>
-                $dataCenterCount,
-
-            'splpCount' =>
-                $splpCount,
-
-            'sdmCount' =>
-                $sdmCount,
-
-            'dataCount' =>
-                $dataCount,
-
-            'hardwareDashboard' =>
-                $hardwareDashboard,
-
-            'softwareDashboard' =>
-                $softwareDashboard,
+            'hardwarePriceTotal' => $hardwarePriceTotal,
+            'totalHargaHardware' => $hardwarePriceTotal,
+            'hardwareDashboard' => $hardwareDashboard,
 
             /*
-            |--------------------------------------------------------------------------
-            | DATA INFRASTRUKTUR UNTUK DASHBOARD
-            |--------------------------------------------------------------------------
-            |
-            | Struktur:
-            |
-            | jenis
-            | - Jaringan
-            | - Data Center
-            |
-            | tenant
-            | - Tenant A
-            | - Tenant B
-            | - dst.
-            |
-            */
+             * SOFTWARE
+             */
+            'softwareCount' => $softwareCount,
+            'softwareDashboard' => $softwareDashboard,
 
-            'infrastrukturDashboard' =>
-                $infrastrukturDashboard,
+            /*
+             * INFRASTRUKTUR
+             */
+            'infrastrukturCount' => $infrastrukturCount,
+            'infrastrukturDashboard' => $infrastrukturDashboard,
 
-            'statusData' =>
-                $statusData,
+            'jaringanCount' => $jaringanCount,
+            'dataCenterCount' => $dataCenterCount,
+            'splpCount' => $splpCount,
 
-            'kategoriData' =>
-                $kategoriData,
+            /*
+             * SDM & DATA
+             */
+            'sdmCount' => $sdmCount,
+            'dataCount' => $dataCount,
 
-            'infrastrukturDetail' =>
-                $infrastrukturDetail,
+            /*
+             * DASHBOARD TAMBAHAN
+             */
+            'statusData' => $statusData,
+            'kategoriData' => $kategoriData,
+            'infrastrukturDetail' => $infrastrukturDetail,
+            'activities' => $activities,
+            'verificationData' => $verificationData,
 
-            'activities' =>
-                $activities,
-
-            'verificationData' =>
-                $verificationData,
-
-            'role' =>
-                $role,
+            /*
+             * ROLE
+             */
+            'role' => $role,
         ];
 
         /*
         |--------------------------------------------------------------------------
-        | VIEW BERDASARKAN ROLE
+        | DASHBOARD BERDASARKAN ROLE
         |--------------------------------------------------------------------------
         */
 
         switch ($role) {
-
             case 'operator':
 
                 return view(
@@ -364,16 +329,43 @@ class DashboardController extends Controller
         }
     }
 
+    /*
+    |--------------------------------------------------------------------------
+    | TOTAL HARGA HARDWARE
+    |--------------------------------------------------------------------------
+    */
 
-    /**
-     * ============================================================
-     * RESOLVE TABLE NAME
-     * ============================================================
-     */
-    private function resolveTableName(
-        string $table
-    ): ?string {
+    private function getHardwarePriceTotal($tahun = null): float
+    {
+        $table = $this->resolveTableName('hardwares');
 
+        if (!$table) {
+            return 0;
+        }
+
+        if (!Schema::hasColumn($table, 'harga')) {
+            return 0;
+        }
+
+        $query = DB::table($table);
+
+        $this->applyYearFilter(
+            $query,
+            $table,
+            $tahun
+        );
+
+        return (float) $query->sum('harga');
+    }
+
+    /*
+    |--------------------------------------------------------------------------
+    | RESOLVE TABLE NAME
+    |--------------------------------------------------------------------------
+    */
+
+    private function resolveTableName(string $table): ?string
+    {
         $candidates = [
             $table,
         ];
@@ -404,10 +396,7 @@ class DashboardController extends Controller
         }
 
         foreach ($candidates as $candidate) {
-
-            if (
-                Schema::hasTable($candidate)
-            ) {
+            if (Schema::hasTable($candidate)) {
                 return $candidate;
             }
         }
@@ -415,231 +404,24 @@ class DashboardController extends Controller
         return null;
     }
 
-
-    /**
- * ============================================================
- * HARDWARE DASHBOARD
- * ============================================================
- */
-private function getHardwareDashboard($tahun = null): array
-{
-    $result = [
-        'status' => [
-            'Baik' => 0,
-            'Perbaikan' => 0,
-            'Rusak' => 0,
-        ],
-
-        // Jenis hardware dibuat DINAMIS
-        'jenis' => [],
-    ];
-
-    $table = $this->resolveTableName('hardwares');
-
-    if (!$table) {
-        return $result;
-    }
-
-    $query = DB::table($table);
-
-    // Filter tahun tetap berlaku
-    $this->applyYearFilter(
-        $query,
-        $table,
-        $tahun
-    );
-
-    $rows = $query->get();
-
-    $conditionColumn = $this->firstExistingColumn(
-        $table,
-        [
-            'kondisi',
-            'status',
-            'status_aset',
-            'status_barang',
-        ]
-    );
-
-    $jenisColumn = $this->firstExistingColumn(
-        $table,
-        [
-            'jenis_barang',
-            'jenis',
-            'kategori',
-            'tipe',
-        ]
-    );
-
-    foreach ($rows as $row) {
-
-        /*
-        |--------------------------------------------------------------------------
-        | STATUS HARDWARE
-        |--------------------------------------------------------------------------
-        */
-
-        $condition = $conditionColumn
-            ? trim(
-                (string) (
-                    $row->{$conditionColumn} ?? ''
-                )
-            )
-            : '';
-
-        $conditionLower = strtolower($condition);
-
-        if (
-            in_array(
-                $conditionLower,
-                [
-                    'baik',
-                    'tersedia',
-                    'bagus',
-                    'aktif',
-                ],
-                true
-            )
-        ) {
-
-            $result['status']['Baik']++;
-
-        } elseif (
-            in_array(
-                $conditionLower,
-                [
-                    'perlu perbaikan',
-                    'perbaikan',
-                    'diperbaiki',
-                    'repair',
-                ],
-                true
-            )
-        ) {
-
-            $result['status']['Perbaikan']++;
-
-        } elseif (
-            in_array(
-                $conditionLower,
-                [
-                    'rusak',
-                    'damage',
-                    'damaged',
-                ],
-                true
-            )
-        ) {
-
-            $result['status']['Rusak']++;
-
-        } else {
-
-            // Nilai kosong / tidak dikenali
-            // tetap dimasukkan ke Baik seperti logic lama
-            $result['status']['Baik']++;
-        }
-
-
-        /*
-        |--------------------------------------------------------------------------
-        | JENIS HARDWARE - DINAMIS
-        |--------------------------------------------------------------------------
-        */
-
-        $jenis = $jenisColumn
-            ? trim(
-                (string) (
-                    $row->{$jenisColumn} ?? ''
-                )
-            )
-            : '';
-
-        // Kalau jenis kosong, jangan dibuat kategori kosong
-        if ($jenis === '') {
-            continue;
-        }
-
-        /*
-        |--------------------------------------------------------------------------
-        | NORMALISASI HURUF
-        |--------------------------------------------------------------------------
-        |
-        | Contoh:
-        | Laptop
-        | laptop
-        | LAPTOP
-        |
-        | akan dianggap sebagai jenis yang sama.
-        |
-        */
-
-        $jenisKey = strtolower($jenis);
-
-        $existingJenis = null;
-
-        foreach (array_keys($result['jenis']) as $key) {
-
-            if (strtolower($key) === $jenisKey) {
-
-                $existingJenis = $key;
-
-                break;
-            }
-        }
-
-        /*
-        |--------------------------------------------------------------------------
-        | HITUNG JENIS
-        |--------------------------------------------------------------------------
-        */
-
-        if ($existingJenis !== null) {
-
-            $result['jenis'][$existingJenis]++;
-
-        } else {
-
-            $result['jenis'][$jenis] = 1;
-        }
-    }
-
     /*
     |--------------------------------------------------------------------------
-    | URUTKAN DARI JUMLAH TERBANYAK
+    | HARDWARE DASHBOARD
     |--------------------------------------------------------------------------
     */
 
-    arsort($result['jenis']);
-
-    return $result;
-}
-
-
-    /**
-     * ============================================================
-     * SOFTWARE DASHBOARD
-     * ============================================================
-     */
-    private function getSoftwareDashboard(
-        $tahun = null
-    ): array {
-
+    private function getHardwareDashboard($tahun = null): array
+    {
         $result = [
-            'pengadaan' => [
-                'Beli' => 0,
-                'Sewa' => 0,
-            ],
-
             'status' => [
-                'Tersedia' => 0,
-                'Akan Habis' => 0,
-                'Expired' => 0,
+                'Baik' => 0,
+                'Perbaikan' => 0,
+                'Rusak' => 0,
             ],
+            'jenis' => [],
         ];
 
-        $table =
-            $this->resolveTableName('softwares');
+        $table = $this->resolveTableName('hardwares');
 
         if (!$table) {
             return $result;
@@ -655,115 +437,270 @@ private function getHardwareDashboard($tahun = null): array
 
         $rows = $query->get();
 
-        $today = Carbon::today();
+        $conditionColumn = $this->firstExistingColumn(
+            $table,
+            [
+                'kondisi',
+                'status',
+                'status_aset',
+                'status_barang',
+            ]
+        );
 
-        $thirtyDaysLater =
-            Carbon::today()->addDays(30);
-
-        $pengadaanColumn =
-            $this->firstExistingColumn(
-                $table,
-                [
-                    'pengadaan',
-                    'jenis_pengadaan',
-                    'tipe_pengadaan',
-                ]
-            );
-
-        $tanggalBerakhirColumn =
-            $this->firstExistingColumn(
-                $table,
-                [
-                    'tanggal_berakhir',
-                    'tgl_berakhir',
-                    'tanggal_expired',
-                    'masa_berlaku_sampai',
-                    'berakhir',
-                ]
-            );
-
-        $statusColumn =
-            $this->firstExistingColumn(
-                $table,
-                [
-                    'status',
-                    'status_software',
-                    'status_aset',
-                ]
-            );
+        $jenisColumn = $this->firstExistingColumn(
+            $table,
+            [
+                'jenis_barang',
+                'jenis',
+                'kategori',
+                'tipe',
+            ]
+        );
 
         foreach ($rows as $row) {
+            /*
+             * STATUS HARDWARE
+             */
+            $condition = $conditionColumn
+                ? trim(
+                    (string) (
+                        $row->{$conditionColumn} ?? ''
+                    )
+                )
+                : '';
 
-            $pengadaan = '';
+            $conditionLower = strtolower($condition);
 
-            if ($pengadaanColumn) {
+            if (
+                in_array(
+                    $conditionLower,
+                    [
+                        'baik',
+                        'tersedia',
+                        'bagus',
+                        'aktif',
+                    ],
+                    true
+                )
+            ) {
+                $result['status']['Baik']++;
 
-                $pengadaan =
-                    strtolower(
-                        trim(
-                            (string) (
-                                $row->{$pengadaanColumn}
-                                ?? ''
-                            )
-                        )
-                    );
+            } elseif (
+                in_array(
+                    $conditionLower,
+                    [
+                        'perlu perbaikan',
+                        'perbaikan',
+                        'diperbaiki',
+                        'repair',
+                    ],
+                    true
+                )
+            ) {
+                $result['status']['Perbaikan']++;
+
+            } elseif (
+                in_array(
+                    $conditionLower,
+                    [
+                        'rusak',
+                        'damage',
+                        'damaged',
+                    ],
+                    true
+                )
+            ) {
+                $result['status']['Rusak']++;
+
+            } else {
+                $result['status']['Baik']++;
             }
 
-            if ($pengadaan === 'beli') {
-                $result['pengadaan']['Beli']++;
-            } elseif ($pengadaan === 'sewa') {
-                $result['pengadaan']['Sewa']++;
+            /*
+             * JENIS HARDWARE
+             */
+            $jenis = $jenisColumn
+                ? trim(
+                    (string) (
+                        $row->{$jenisColumn} ?? ''
+                    )
+                )
+                : '';
+
+            if ($jenis === '') {
+                continue;
             }
 
-            $tanggalBerakhir = null;
+            $jenisKey = strtolower($jenis);
 
-            if ($tanggalBerakhirColumn) {
-                $tanggalBerakhir =
-                    $row->{$tanggalBerakhirColumn}
-                    ?? null;
-            }
+            $existingJenis = null;
 
-            if ($tanggalBerakhir) {
-
-                try {
-
-                    $endDate =
-                        Carbon::parse(
-                            $tanggalBerakhir
-                        );
-
-                    if (
-                        $endDate->lt($today)
-                    ) {
-
-                        $result['status']['Expired']++;
-
-                        continue;
-                    }
-
-                    if (
-                        $endDate->gte($today) &&
-                        $endDate->lte($thirtyDaysLater)
-                    ) {
-
-                        $result['status']['Akan Habis']++;
-
-                        continue;
-                    }
-
-                    $result['status']['Tersedia']++;
-
-                    continue;
-
-                } catch (\Throwable $e) {
-                    // fallback
+            foreach (array_keys($result['jenis']) as $key) {
+                if (strtolower($key) === $jenisKey) {
+                    $existingJenis = $key;
+                    break;
                 }
             }
 
-            if ($statusColumn) {
+            if ($existingJenis !== null) {
+                $result['jenis'][$existingJenis]++;
+            } else {
+                $result['jenis'][$jenis] = 1;
+            }
+        }
 
-                $status =
-                    strtolower(
+        arsort($result['jenis']);
+
+        return $result;
+    }
+
+    /*
+    |--------------------------------------------------------------------------
+    | SOFTWARE DASHBOARD
+    |--------------------------------------------------------------------------
+    */
+
+    private function getSoftwareDashboard($tahun = null): array
+    {
+        $result = [
+            'ssl' => [],
+
+            'website' => [
+                'Aktif' => 0,
+                'Nonaktif' => 0,
+            ],
+        ];
+
+        $table = $this->resolveTableName('softwares');
+
+        if (!$table) {
+            return $result;
+        }
+
+        /*
+        |--------------------------------------------------------------------------
+        | SSL
+        |--------------------------------------------------------------------------
+        */
+
+        if (
+            Schema::hasTable('software_ssls') &&
+            Schema::hasColumn($table, 'ssl_id')
+        ) {
+            $softwareQuery = DB::table($table)
+                ->whereNotNull('ssl_id');
+
+            $this->applyYearFilter(
+                $softwareQuery,
+                $table,
+                $tahun
+            );
+
+            $sslUsage = $softwareQuery
+                ->select(
+                    'ssl_id',
+                    DB::raw('COUNT(*) as total')
+                )
+                ->groupBy('ssl_id')
+                ->get();
+
+            if ($sslUsage->isNotEmpty()) {
+                $sslIds = $sslUsage
+                    ->pluck('ssl_id')
+                    ->filter()
+                    ->unique()
+                    ->values();
+
+                $sslMasters = DB::table('software_ssls')
+                    ->whereIn('id', $sslIds)
+                    ->get([
+                        'id',
+                        'nama_ssl',
+                    ])
+                    ->keyBy('id');
+
+                foreach ($sslUsage as $usage) {
+                    $ssl = $sslMasters->get(
+                        $usage->ssl_id
+                    );
+
+                    if (!$ssl) {
+                        continue;
+                    }
+
+                    $namaSsl = trim(
+                        (string) (
+                            $ssl->nama_ssl ?? ''
+                        )
+                    );
+
+                    if ($namaSsl === '') {
+                        $namaSsl = 'SSL Tanpa Nama';
+                    }
+
+                    if (
+                        isset(
+                            $result['ssl'][$namaSsl]
+                        )
+                    ) {
+                        $result['ssl'][$namaSsl] +=
+                            (int) $usage->total;
+                    } else {
+                        $result['ssl'][$namaSsl] =
+                            (int) $usage->total;
+                    }
+                }
+            }
+        }
+
+        /*
+        |--------------------------------------------------------------------------
+        | WEBSITE AKTIF / NONAKTIF
+        |--------------------------------------------------------------------------
+        */
+
+        $websiteQuery = DB::table($table);
+
+        $this->applyYearFilter(
+            $websiteQuery,
+            $table,
+            $tahun
+        );
+
+        $urlColumn = $this->firstExistingColumn(
+            $table,
+            [
+                'url_homepage',
+                'url_website',
+                'website',
+                'url',
+            ]
+        );
+
+        $statusColumn = $this->firstExistingColumn(
+            $table,
+            [
+                'status',
+                'status_software',
+                'status_aset',
+            ]
+        );
+
+        if ($urlColumn) {
+            $rows = $websiteQuery
+                ->whereNotNull($urlColumn)
+                ->where(
+                    $urlColumn,
+                    '!=',
+                    ''
+                )
+                ->get();
+
+            foreach ($rows as $row) {
+                $status = '';
+
+                if ($statusColumn) {
+                    $status = strtolower(
                         trim(
                             (string) (
                                 $row->{$statusColumn}
@@ -771,79 +708,45 @@ private function getHardwareDashboard($tahun = null): array
                             )
                         )
                     );
+                }
 
                 if (
                     in_array(
                         $status,
                         [
-                            'expired',
-                            'kadaluarsa',
-                            'kedaluwarsa',
+                            'aktif',
+                            'active',
+                            'tersedia',
+                            'digunakan',
                         ],
                         true
                     )
                 ) {
-
-                    $result['status']['Expired']++;
-
-                } elseif (
-                    in_array(
-                        $status,
-                        [
-                            'akan habis',
-                            'segera habis',
-                        ],
-                        true
-                    )
-                ) {
-
-                    $result['status']['Akan Habis']++;
-
+                    $result['website']['Aktif']++;
                 } else {
-
-                    $result['status']['Tersedia']++;
+                    $result['website']['Nonaktif']++;
                 }
-
-            } else {
-
-                $result['status']['Tersedia']++;
             }
         }
+
+        arsort($result['ssl']);
 
         return $result;
     }
 
+    /*
+    |--------------------------------------------------------------------------
+    | INFRASTRUKTUR DASHBOARD
+    |--------------------------------------------------------------------------
+    */
 
-    /**
-     * ============================================================
-     * INFRASTRUKTUR DASHBOARD
-     * ============================================================
-     *
-     * DONUT :
-     * - Jaringan
-     * - Data Center
-     * - SPLP
-     *
-     * BAR :
-     * - Tenant
-     *
-     * TIDAK menggunakan:
-     * - Beli / Sewa
-     * - Tersedia / Akan Habis / Expired
-     * - Baik / Perbaikan / Rusak
-     *
-     * ============================================================
-     */
-    private function getInfrastrukturDashboard(
-        $tahun = null
-    ): array {
-
+    private function getInfrastrukturDashboard($tahun = null): array
+    {
         $result = [
             'jenis' => [
                 'Jaringan' => 0,
                 'Data Center' => 0,
             ],
-
             'tenant' => [],
         ];
 
@@ -857,7 +760,6 @@ private function getHardwareDashboard($tahun = null): array
             $this->resolveTableName('jaringans');
 
         if ($jaringanTable) {
-
             $query = DB::table($jaringanTable);
 
             $this->applyYearFilter(
@@ -874,18 +776,12 @@ private function getHardwareDashboard($tahun = null): array
         |--------------------------------------------------------------------------
         | DATA CENTER
         |--------------------------------------------------------------------------
-        |
-        | Data Center dihitung untuk donut.
-        | Tenant hanya diambil dari tabel Data Center.
-        | SPLP tidak digunakan untuk chart Infrastruktur.
-        |
         */
 
         $dataCenterTable =
             $this->resolveTableName('data_centers');
 
         if ($dataCenterTable) {
-
             $query = DB::table($dataCenterTable);
 
             $this->applyYearFilter(
@@ -897,6 +793,9 @@ private function getHardwareDashboard($tahun = null): array
             $result['jenis']['Data Center'] =
                 $query->count();
 
+            /*
+             * TENANT DATA CENTER
+             */
             $tenantColumn =
                 $this->firstExistingColumn(
                     $dataCenterTable,
@@ -909,46 +808,47 @@ private function getHardwareDashboard($tahun = null): array
                 );
 
             if ($tenantColumn) {
-
-                $rows =
-                    $query
-                        ->select($tenantColumn)
-                        ->get();
+                $rows = $query
+                    ->select($tenantColumn)
+                    ->get();
 
                 foreach ($rows as $row) {
-
-                    $tenant =
-                        trim(
-                            (string) (
-                                $row->{$tenantColumn}
-                                ?? ''
-                            )
-                        );
+                    $tenant = trim(
+                        (string) (
+                            $row->{$tenantColumn}
+                            ?? ''
+                        )
+                    );
 
                     if ($tenant === '') {
                         continue;
                     }
 
-                    /*
-                    |--------------------------------------------------------------
-                    | Normalisasi tenant agar perbedaan huruf besar/kecil tidak
-                    | membuat tenant yang sama menjadi dua kategori.
-                    |--------------------------------------------------------------
-                    */
-
                     $tenantKey = strtolower($tenant);
+
                     $existingTenant = null;
 
-                    foreach (array_keys($result['tenant']) as $existingKey) {
+                    foreach (
+                        array_keys(
+                            $result['tenant']
+                        ) as $existingKey
+                    ) {
+                        if (
+                            strtolower(
+                                $existingKey
+                            ) === $tenantKey
+                        ) {
+                            $existingTenant =
+                                $existingKey;
 
-                        if (strtolower($existingKey) === $tenantKey) {
-                            $existingTenant = $existingKey;
                             break;
                         }
                     }
 
                     if ($existingTenant !== null) {
-                        $result['tenant'][$existingTenant]++;
+                        $result['tenant'][
+                            $existingTenant
+                        ]++;
                     } else {
                         $result['tenant'][$tenant] = 1;
                     }
@@ -956,53 +856,38 @@ private function getHardwareDashboard($tahun = null): array
             }
         }
 
-        /*
-        |--------------------------------------------------------------------------
-        | URUTKAN TENANT DARI JUMLAH TERBANYAK
-        |--------------------------------------------------------------------------
-        */
-
         arsort($result['tenant']);
 
         return $result;
     }
 
-    /**
-     * ============================================================
-     * STATUS INFRASTRUKTUR
-     * ============================================================
-     *
-     * Fungsi ini TETAP dipakai oleh getStatusData().
-     * Bukan untuk chart Infrastruktur.
-     *
-     * ============================================================
-     */
-    private function getInfrastructureStatus(
-        $row
-    ): string {
+    /*
+    |--------------------------------------------------------------------------
+    | STATUS INFRASTRUKTUR
+    |--------------------------------------------------------------------------
+    */
 
-        $pengadaan =
-            strtolower(
-                trim(
-                    (string) (
-                        $row->pengadaan
-                        ?? ''
-                    )
+    private function getInfrastructureStatus($row): string
+    {
+        $pengadaan = strtolower(
+            trim(
+                (string) (
+                    $row->pengadaan ?? ''
+                )
+            )
+        );
+
+        /*
+         * BELI
+         */
+        if ($pengadaan === 'beli') {
+            $status = trim(
+                (string) (
+                    $row->status ?? ''
                 )
             );
 
-        if ($pengadaan === 'beli') {
-
-            $status =
-                trim(
-                    (string) (
-                        $row->status
-                        ?? ''
-                    )
-                );
-
             if ($status !== '') {
-
                 return strtolower($status) === 'digunakan'
                     ? 'Tersedia'
                     : $status;
@@ -1011,25 +896,23 @@ private function getHardwareDashboard($tahun = null): array
             return 'Tersedia';
         }
 
+        /*
+         * SEWA
+         */
         $tanggalBerakhir =
-            $row->tanggal_berakhir
-            ?? null;
+            $row->tanggal_berakhir ?? null;
 
         if ($tanggalBerakhir) {
-
             try {
-
-                $endDate =
-                    Carbon::parse(
-                        $tanggalBerakhir
-                    );
+                $endDate = Carbon::parse(
+                    $tanggalBerakhir
+                );
 
                 if (
                     $endDate->lt(
                         Carbon::today()
                     )
                 ) {
-
                     return 'Expired';
                 }
 
@@ -1038,29 +921,25 @@ private function getHardwareDashboard($tahun = null): array
                         Carbon::today()->addDays(30)
                     )
                 ) {
-
                     return 'Akan Habis';
                 }
 
                 return 'Tersedia';
 
             } catch (\Throwable $e) {
-                // fallback
+                // fallback ke status
             }
         }
 
-        $status =
-            trim(
-                (string) (
-                    $row->status
-                    ?? ''
-                )
-            );
+        $status = trim(
+            (string) (
+                $row->status ?? ''
+            )
+        );
 
         if (
             strtolower($status) === 'digunakan'
         ) {
-
             return 'Tersedia';
         }
 
@@ -1069,21 +948,19 @@ private function getHardwareDashboard($tahun = null): array
             : 'Tersedia';
     }
 
+    /*
+    |--------------------------------------------------------------------------
+    | COUNT ASSET
+    |--------------------------------------------------------------------------
+    */
 
-    /**
-     * ============================================================
-     * JUMLAH ASET
-     * ============================================================
-     */
     private function getAssetCount(
         string $requestedTable,
         $tahun = null
     ): int {
-
-        $table =
-            $this->resolveTableName(
-                $requestedTable
-            );
+        $table = $this->resolveTableName(
+            $requestedTable
+        );
 
         if (!$table) {
             return 0;
@@ -1100,12 +977,12 @@ private function getHardwareDashboard($tahun = null): array
         return $query->count();
     }
 
+    /*
+    |--------------------------------------------------------------------------
+    | LIST TAHUN
+    |--------------------------------------------------------------------------
+    */
 
-    /**
-     * ============================================================
-     * DAFTAR TAHUN
-     * ============================================================
-     */
     private function getTahunList()
     {
         $tahunList = collect();
@@ -1121,11 +998,9 @@ private function getHardwareDashboard($tahun = null): array
         ];
 
         foreach ($tables as $requestedTable) {
-
-            $table =
-                $this->resolveTableName(
-                    $requestedTable
-                );
+            $table = $this->resolveTableName(
+                $requestedTable
+            );
 
             if (!$table) {
                 continue;
@@ -1140,7 +1015,6 @@ private function getHardwareDashboard($tahun = null): array
             $foundYearColumn = false;
 
             foreach ($yearColumns as $yearColumn) {
-
                 if (
                     !Schema::hasColumn(
                         $table,
@@ -1150,11 +1024,14 @@ private function getHardwareDashboard($tahun = null): array
                     continue;
                 }
 
-                $years =
-                    DB::table($table)
-                        ->whereNotNull($yearColumn)
-                        ->where($yearColumn, '!=', '')
-                        ->pluck($yearColumn);
+                $years = DB::table($table)
+                    ->whereNotNull($yearColumn)
+                    ->where(
+                        $yearColumn,
+                        '!=',
+                        ''
+                    )
+                    ->pluck($yearColumn);
 
                 $tahunList =
                     $tahunList->merge($years);
@@ -1177,7 +1054,6 @@ private function getHardwareDashboard($tahun = null): array
             ];
 
             foreach ($dateColumns as $dateColumn) {
-
                 if (
                     !Schema::hasColumn(
                         $table,
@@ -1187,14 +1063,13 @@ private function getHardwareDashboard($tahun = null): array
                     continue;
                 }
 
-                $years =
-                    DB::table($table)
-                        ->whereNotNull($dateColumn)
-                        ->selectRaw(
-                            "YEAR(`{$dateColumn}`) as tahun"
-                        )
-                        ->distinct()
-                        ->pluck('tahun');
+                $years = DB::table($table)
+                    ->whereNotNull($dateColumn)
+                    ->selectRaw(
+                        "YEAR(`{$dateColumn}`) as tahun"
+                    )
+                    ->distinct()
+                    ->pluck('tahun');
 
                 $tahunList =
                     $tahunList->merge($years);
@@ -1205,13 +1080,11 @@ private function getHardwareDashboard($tahun = null): array
 
         return $tahunList
             ->filter(function ($year) {
-
                 return is_numeric($year) &&
                     (int) $year >= 1900 &&
                     (int) $year <= 2100;
             })
             ->map(function ($year) {
-
                 return (int) $year;
             })
             ->unique()
@@ -1219,18 +1092,17 @@ private function getHardwareDashboard($tahun = null): array
             ->values();
     }
 
+    /*
+    |--------------------------------------------------------------------------
+    | FILTER TAHUN
+    |--------------------------------------------------------------------------
+    */
 
-    /**
-     * ============================================================
-     * FILTER TAHUN
-     * ============================================================
-     */
     private function applyYearFilter(
         $query,
         string $table,
         $tahun
     ) {
-
         if (
             $tahun === null ||
             $tahun === '' ||
@@ -1248,7 +1120,6 @@ private function getHardwareDashboard($tahun = null): array
         ];
 
         foreach ($yearColumns as $yearColumn) {
-
             if (
                 !Schema::hasColumn(
                     $table,
@@ -1273,14 +1144,12 @@ private function getHardwareDashboard($tahun = null): array
         ];
 
         foreach ($dateColumns as $dateColumn) {
-
             if (
                 Schema::hasColumn(
                     $table,
                     $dateColumn
                 )
             ) {
-
                 return $query->whereYear(
                     $dateColumn,
                     $tahun
@@ -1291,16 +1160,14 @@ private function getHardwareDashboard($tahun = null): array
         return $query;
     }
 
+    /*
+    |--------------------------------------------------------------------------
+    | STATUS DATA
+    |--------------------------------------------------------------------------
+    */
 
-    /**
-     * ============================================================
-     * STATUS ASET
-     * ============================================================
-     */
-    private function getStatusData(
-        $tahun = null
-    ): array {
-
+    private function getStatusData($tahun = null): array
+    {
         $statuses = [
             'Aktif' => 0,
             'Pending' => 0,
@@ -1319,11 +1186,9 @@ private function getHardwareDashboard($tahun = null): array
         ];
 
         foreach ($tables as $requestedTable) {
-
-            $table =
-                $this->resolveTableName(
-                    $requestedTable
-                );
+            $table = $this->resolveTableName(
+                $requestedTable
+            );
 
             if (!$table) {
                 continue;
@@ -1337,10 +1202,13 @@ private function getHardwareDashboard($tahun = null): array
                 $tahun
             );
 
-            if (
-                $requestedTable === 'hardwares'
-            ) {
+            /*
+            |--------------------------------------------------------------------------
+            | HARDWARE
+            |--------------------------------------------------------------------------
+            */
 
+            if ($requestedTable === 'hardwares') {
                 $column =
                     $this->firstExistingColumn(
                         $table,
@@ -1356,25 +1224,21 @@ private function getHardwareDashboard($tahun = null): array
                     continue;
                 }
 
-                $rows =
-                    $query
-                        ->select($column)
-                        ->get();
+                $rows = $query
+                    ->select($column)
+                    ->get();
 
                 foreach ($rows as $row) {
-
-                    $value =
-                        strtolower(
-                            trim(
-                                (string) (
-                                    $row->{$column}
-                                    ?? ''
-                                )
+                    $value = strtolower(
+                        trim(
+                            (string) (
+                                $row->{$column}
+                                ?? ''
                             )
-                        );
+                        )
+                    );
 
                     if ($value === 'rusak') {
-
                         $statuses['Rusak']++;
 
                     } elseif (
@@ -1390,7 +1254,6 @@ private function getHardwareDashboard($tahun = null): array
                             true
                         )
                     ) {
-
                         $statuses['Tidak Digunakan']++;
 
                     } elseif (
@@ -1406,11 +1269,9 @@ private function getHardwareDashboard($tahun = null): array
                             true
                         )
                     ) {
-
                         $statuses['Pending']++;
 
                     } else {
-
                         $statuses['Aktif']++;
                     }
                 }
@@ -1418,22 +1279,22 @@ private function getHardwareDashboard($tahun = null): array
                 continue;
             }
 
-            if (
-                $requestedTable === 'softwares'
-            ) {
+            /*
+            |--------------------------------------------------------------------------
+            | SOFTWARE
+            |--------------------------------------------------------------------------
+            */
 
+            if ($requestedTable === 'softwares') {
                 $rows = $query->get();
 
                 foreach ($rows as $row) {
-
                     $end =
                         $row->tanggal_berakhir
                         ?? null;
 
                     if ($end) {
-
                         try {
-
                             $endDate =
                                 Carbon::parse($end);
 
@@ -1442,14 +1303,12 @@ private function getHardwareDashboard($tahun = null): array
                                     Carbon::today()
                                 )
                             ) {
-
                                 $statuses[
                                     'Tidak Digunakan'
                                 ]++;
 
                                 continue;
                             }
-
                         } catch (\Throwable $e) {
                             // lanjut
                         }
@@ -1460,6 +1319,12 @@ private function getHardwareDashboard($tahun = null): array
 
                 continue;
             }
+
+            /*
+            |--------------------------------------------------------------------------
+            | INFRASTRUKTUR
+            |--------------------------------------------------------------------------
+            */
 
             if (
                 in_array(
@@ -1472,20 +1337,15 @@ private function getHardwareDashboard($tahun = null): array
                     true
                 )
             ) {
-
                 $rows = $query->get();
 
                 foreach ($rows as $row) {
-
                     $status =
                         $this->getInfrastructureStatus(
                             $row
                         );
 
-                    if (
-                        $status === 'Expired'
-                    ) {
-
+                    if ($status === 'Expired') {
                         $statuses[
                             'Tidak Digunakan'
                         ]++;
@@ -1493,17 +1353,21 @@ private function getHardwareDashboard($tahun = null): array
                     } elseif (
                         $status === 'Akan Habis'
                     ) {
-
                         $statuses['Pending']++;
 
                     } else {
-
                         $statuses['Aktif']++;
                     }
                 }
 
                 continue;
             }
+
+            /*
+            |--------------------------------------------------------------------------
+            | SDM / DATA
+            |--------------------------------------------------------------------------
+            */
 
             $column =
                 $this->firstExistingColumn(
@@ -1519,22 +1383,19 @@ private function getHardwareDashboard($tahun = null): array
                 continue;
             }
 
-            $rows =
-                $query
-                    ->select($column)
-                    ->get();
+            $rows = $query
+                ->select($column)
+                ->get();
 
             foreach ($rows as $row) {
-
-                $value =
-                    strtolower(
-                        trim(
-                            (string) (
-                                $row->{$column}
-                                ?? ''
-                            )
+                $value = strtolower(
+                    trim(
+                        (string) (
+                            $row->{$column}
+                            ?? ''
                         )
-                    );
+                    )
+                );
 
                 if (
                     in_array(
@@ -1547,7 +1408,6 @@ private function getHardwareDashboard($tahun = null): array
                         true
                     )
                 ) {
-
                     $statuses['Rusak']++;
 
                 } elseif (
@@ -1563,7 +1423,6 @@ private function getHardwareDashboard($tahun = null): array
                         true
                     )
                 ) {
-
                     $statuses['Pending']++;
 
                 } elseif (
@@ -1579,13 +1438,9 @@ private function getHardwareDashboard($tahun = null): array
                         true
                     )
                 ) {
-
-                    $statuses[
-                        'Tidak Digunakan'
-                    ]++;
+                    $statuses['Tidak Digunakan']++;
 
                 } else {
-
                     $statuses['Aktif']++;
                 }
             }
@@ -1594,12 +1449,12 @@ private function getHardwareDashboard($tahun = null): array
         return $statuses;
     }
 
+    /*
+    |--------------------------------------------------------------------------
+    | AKTIVITAS
+    |--------------------------------------------------------------------------
+    */
 
-    /**
-     * ============================================================
-     * AKTIVITAS TERBARU
-     * ============================================================
-     */
     private function getActivities($tahun = null)
     {
         $activities = collect();
@@ -1610,37 +1465,31 @@ private function getHardwareDashboard($tahun = null): array
                 'label' => 'Hardware',
                 'icon' => 'bi-pc-display',
             ],
-
             [
                 'table' => 'softwares',
                 'label' => 'Software',
                 'icon' => 'bi-laptop',
             ],
-
             [
                 'table' => 'jaringans',
                 'label' => 'Jaringan',
                 'icon' => 'bi-diagram-3',
             ],
-
             [
                 'table' => 'data_centers',
                 'label' => 'Data Center',
                 'icon' => 'bi-server',
             ],
-
             [
                 'table' => 'splps',
                 'label' => 'SPLP',
                 'icon' => 'bi-hdd-network',
             ],
-
             [
                 'table' => 'sdms',
                 'label' => 'SDM',
                 'icon' => 'bi-people',
             ],
-
             [
                 'table' => 'data',
                 'label' => 'Data',
@@ -1649,30 +1498,25 @@ private function getHardwareDashboard($tahun = null): array
         ];
 
         foreach ($tables as $item) {
+            $requestedTable = $item['table'];
 
-            $requestedTable =
-                $item['table'];
-
-            $table =
-                $this->resolveTableName(
-                    $requestedTable
-                );
+            $table = $this->resolveTableName(
+                $requestedTable
+            );
 
             if (!$table) {
                 continue;
             }
 
-            $hasCreatedAt =
-                Schema::hasColumn(
-                    $table,
-                    'created_at'
-                );
+            $hasCreatedAt = Schema::hasColumn(
+                $table,
+                'created_at'
+            );
 
-            $hasUpdatedAt =
-                Schema::hasColumn(
-                    $table,
-                    'updated_at'
-                );
+            $hasUpdatedAt = Schema::hasColumn(
+                $table,
+                'updated_at'
+            );
 
             $fallbackDateColumn =
                 $this->getActivityFallbackDateColumn(
@@ -1687,8 +1531,7 @@ private function getHardwareDashboard($tahun = null): array
                 continue;
             }
 
-            $query =
-                DB::table($table);
+            $query = DB::table($table);
 
             $this->applyYearFilter(
                 $query,
@@ -1699,9 +1542,7 @@ private function getHardwareDashboard($tahun = null): array
             $rows = $query->get();
 
             foreach ($rows as $row) {
-
                 $activityDate = null;
-
                 $activityType = 'created';
 
                 $createdRaw =
@@ -1725,9 +1566,7 @@ private function getHardwareDashboard($tahun = null): array
                     );
 
                 if ($createdDate) {
-
-                    $activityDate =
-                        $createdDate;
+                    $activityDate = $createdDate;
                 }
 
                 if (
@@ -1739,19 +1578,14 @@ private function getHardwareDashboard($tahun = null): array
                         )
                     )
                 ) {
-
-                    $activityDate =
-                        $updatedDate;
-
-                    $activityType =
-                        'updated';
+                    $activityDate = $updatedDate;
+                    $activityType = 'updated';
                 }
 
                 if (
                     !$activityDate &&
                     $fallbackDateColumn
                 ) {
-
                     $fallbackRaw =
                         $row->{$fallbackDateColumn}
                         ?? null;
@@ -1766,60 +1600,53 @@ private function getHardwareDashboard($tahun = null): array
                     continue;
                 }
 
+                /*
+                |--------------------------------------------------------------------------
+                | USER / OPERATOR
+                |--------------------------------------------------------------------------
+                */
+
                 $userId = null;
 
-                if ($activityType === 'updated') {
-
+                if (
+                    $activityType === 'updated'
+                ) {
                     if (
                         isset($row->updated_by) &&
                         $row->updated_by
                     ) {
-
-                        $userId =
-                            $row->updated_by;
+                        $userId = $row->updated_by;
 
                     } elseif (
                         isset($row->user_id) &&
                         $row->user_id
                     ) {
-
-                        $userId =
-                            $row->user_id;
+                        $userId = $row->user_id;
 
                     } elseif (
                         isset($row->created_by) &&
                         $row->created_by
                     ) {
-
-                        $userId =
-                            $row->created_by;
+                        $userId = $row->created_by;
                     }
-
                 } else {
-
                     if (
                         isset($row->created_by) &&
                         $row->created_by
                     ) {
-
-                        $userId =
-                            $row->created_by;
+                        $userId = $row->created_by;
 
                     } elseif (
                         isset($row->user_id) &&
                         $row->user_id
                     ) {
-
-                        $userId =
-                            $row->user_id;
+                        $userId = $row->user_id;
 
                     } elseif (
                         isset($row->updated_by) &&
                         $row->updated_by
                     ) {
-
-                        $userId =
-                            $row->updated_by;
+                        $userId = $row->updated_by;
                     }
                 }
 
@@ -1828,27 +1655,28 @@ private function getHardwareDashboard($tahun = null): array
                         $userId
                     );
 
+                /*
+                |--------------------------------------------------------------------------
+                | TEXT AKTIVITAS
+                |--------------------------------------------------------------------------
+                */
+
                 if (
                     $activityType === 'updated'
                 ) {
-
                     $text =
                         'Data ' .
                         $item['label'] .
                         ' diperbarui';
 
-                    $icon =
-                        'bi-pencil';
-
+                    $icon = 'bi-pencil';
                 } else {
-
                     $text =
                         'Data ' .
                         $item['label'] .
                         ' baru ditambahkan';
 
-                    $icon =
-                        $item['icon'];
+                    $icon = $item['icon'];
                 }
 
                 $activityDate =
@@ -1866,60 +1694,38 @@ private function getHardwareDashboard($tahun = null): array
                         );
 
                 $time =
-                    $activityDate
-                        ->format('H:i');
+                    $activityDate->format('H:i');
 
                 $activities->push([
-                    'date' =>
-                        $activityDate,
-
-                    'tanggal' =>
-                        $tanggal,
-
-                    'time' =>
-                        $time,
-
-                    'operator' =>
-                        $operator,
-
-                    'feature' =>
-                        $item['label'],
-
-                    'text' =>
-                        $text,
-
-                    'type' =>
-                        $activityType,
-
-                    'icon' =>
-                        $icon,
-
-                    'table' =>
-                        $table,
+                    'date' => $activityDate,
+                    'tanggal' => $tanggal,
+                    'time' => $time,
+                    'operator' => $operator,
+                    'feature' => $item['label'],
+                    'text' => $text,
+                    'type' => $activityType,
+                    'icon' => $icon,
+                    'table' => $table,
                 ]);
             }
         }
 
         return $activities
             ->sortByDesc(function ($activity) {
-
                 return $activity['date']->timestamp;
-
             })
             ->take(10)
             ->values();
     }
 
+    /*
+    |--------------------------------------------------------------------------
+    | NAMA USER AKTIVITAS
+    |--------------------------------------------------------------------------
+    */
 
-    /**
-     * ============================================================
-     * NAMA USER AKTIVITAS
-     * ============================================================
-     */
-    private function getActivityUserName(
-        $userId
-    ): string {
-
+    private function getActivityUserName($userId): string
+    {
         if (
             !$userId ||
             !Schema::hasTable('users')
@@ -1927,10 +1733,9 @@ private function getHardwareDashboard($tahun = null): array
             return 'Operator';
         }
 
-        $user =
-            DB::table('users')
-                ->where('id', $userId)
-                ->first();
+        $user = DB::table('users')
+            ->where('id', $userId)
+            ->first();
 
         if (!$user) {
             return 'Operator';
@@ -1940,7 +1745,6 @@ private function getHardwareDashboard($tahun = null): array
             isset($user->username) &&
             !empty($user->username)
         ) {
-
             return $user->username;
         }
 
@@ -1948,23 +1752,21 @@ private function getHardwareDashboard($tahun = null): array
             isset($user->name) &&
             !empty($user->name)
         ) {
-
             return $user->name;
         }
 
         return 'Operator';
     }
 
+    /*
+    |--------------------------------------------------------------------------
+    | PARSE TANGGAL AKTIVITAS
+    |--------------------------------------------------------------------------
+    */
 
-    /**
-     * ============================================================
-     * PARSE TANGGAL AKTIVITAS
-     * ============================================================
-     */
     private function parseActivityDate(
         $value
     ): ?Carbon {
-
         if (
             $value === null ||
             $value === ''
@@ -1973,11 +1775,7 @@ private function getHardwareDashboard($tahun = null): array
         }
 
         try {
-
-            if (
-                $value instanceof Carbon
-            ) {
-
+            if ($value instanceof Carbon) {
                 return $value
                     ->copy()
                     ->setTimezone(
@@ -1990,33 +1788,27 @@ private function getHardwareDashboard($tahun = null): array
                 (string) $value,
                 'Asia/Jakarta'
             );
-
         } catch (\Throwable $e) {
-
             try {
-
                 return Carbon::parse(
                     (string) $value,
                     'Asia/Jakarta'
                 );
-
             } catch (\Throwable $e) {
-
                 return null;
             }
         }
     }
 
+    /*
+    |--------------------------------------------------------------------------
+    | FALLBACK TANGGAL AKTIVITAS
+    |--------------------------------------------------------------------------
+    */
 
-    /**
-     * ============================================================
-     * CARI KOLOM TANGGAL FALLBACK AKTIVITAS
-     * ============================================================
-     */
     private function getActivityFallbackDateColumn(
         string $table
     ) {
-
         $candidates = [
             'tanggal_pengadaan',
             'tanggal_pembelian',
@@ -2026,14 +1818,12 @@ private function getHardwareDashboard($tahun = null): array
         ];
 
         foreach ($candidates as $column) {
-
             if (
                 Schema::hasColumn(
                     $table,
                     $column
                 )
             ) {
-
                 return $column;
             }
         }
@@ -2041,16 +1831,15 @@ private function getHardwareDashboard($tahun = null): array
         return null;
     }
 
+    /*
+    |--------------------------------------------------------------------------
+    | VERIFICATION
+    |--------------------------------------------------------------------------
+    */
 
-    /**
-     * ============================================================
-     * VERIFIKASI
-     * ============================================================
-     */
     private function getVerificationData(
         $tahun = null
     ): array {
-
         $result = [
             'Menunggu' => 0,
             'Disetujui' => 0,
@@ -2068,11 +1857,9 @@ private function getHardwareDashboard($tahun = null): array
         ];
 
         foreach ($tables as $requestedTable) {
-
-            $table =
-                $this->resolveTableName(
-                    $requestedTable
-                );
+            $table = $this->resolveTableName(
+                $requestedTable
+            );
 
             if (!$table) {
                 continue;
@@ -2092,8 +1879,7 @@ private function getHardwareDashboard($tahun = null): array
                 continue;
             }
 
-            $query =
-                DB::table($table);
+            $query = DB::table($table);
 
             $this->applyYearFilter(
                 $query,
@@ -2101,24 +1887,19 @@ private function getHardwareDashboard($tahun = null): array
                 $tahun
             );
 
-            $rows =
-                $query
-                    ->select(
-                        $verificationColumn
-                    )
-                    ->get();
+            $rows = $query
+                ->select($verificationColumn)
+                ->get();
 
             foreach ($rows as $row) {
-
-                $value =
-                    strtolower(
-                        trim(
-                            (string) (
-                                $row->{$verificationColumn}
-                                ?? ''
-                            )
+                $value = strtolower(
+                    trim(
+                        (string) (
+                            $row->{$verificationColumn}
+                            ?? ''
                         )
-                    );
+                    )
+                );
 
                 if (
                     in_array(
@@ -2134,7 +1915,6 @@ private function getHardwareDashboard($tahun = null): array
                         true
                     )
                 ) {
-
                     $result['Menunggu']++;
 
                 } elseif (
@@ -2150,7 +1930,6 @@ private function getHardwareDashboard($tahun = null): array
                         true
                     )
                 ) {
-
                     $result['Disetujui']++;
 
                 } elseif (
@@ -2164,7 +1943,6 @@ private function getHardwareDashboard($tahun = null): array
                         true
                     )
                 ) {
-
                     $result['Ditolak']++;
                 }
             }
@@ -2173,26 +1951,23 @@ private function getHardwareDashboard($tahun = null): array
         return $result;
     }
 
+    /*
+    |--------------------------------------------------------------------------
+    | FIRST EXISTING COLUMN
+    |--------------------------------------------------------------------------
+    */
 
-    /**
-     * ============================================================
-     * CARI KOLOM PERTAMA YANG ADA
-     * ============================================================
-     */
     private function firstExistingColumn(
         string $table,
         array $columns
     ) {
-
         foreach ($columns as $column) {
-
             if (
                 Schema::hasColumn(
                     $table,
                     $column
                 )
             ) {
-
                 return $column;
             }
         }

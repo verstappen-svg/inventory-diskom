@@ -59,6 +59,27 @@
 }
 
 /* =========================================================
+   ERROR ALERT
+========================================================= */
+
+.alert-error {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    background: #fef2f2;
+    border: 1px solid #fecaca;
+    color: #b91c1c;
+    padding: 12px 15px;
+    border-radius: 9px;
+    margin-bottom: 20px;
+    font-size: 13px;
+}
+
+.alert-error i {
+    font-size: 17px;
+}
+
+/* =========================================================
    STATISTIC SECTION TITLE
 ========================================================= */
 
@@ -767,6 +788,10 @@
     gap: 6px;
 }
 
+.action-buttons form {
+    margin: 0;
+}
+
 .action-button {
     width: 30px;
     height: 30px;
@@ -1217,6 +1242,163 @@ body.software-modal-open {
     }
 }
 
+/* =========================================================
+   PAGINATION (Bootstrap 5 markup, custom styling)
+========================================================= */
+
+.pagination {
+    display: flex;
+    justify-content: center;
+    list-style: none;
+    padding: 0;
+    margin: 10px 0 0;
+    gap: 4px;
+    flex-wrap: wrap;
+}
+
+.page-item .page-link {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    min-width: 26px;
+    height: 26px;
+    padding: 0 6px;
+    border: 1px solid #d1d5db;
+    border-radius: 6px;
+    background: white;
+    color: #374151;
+    font-size: 10px;
+    font-weight: 600;
+    text-decoration: none;
+    transition: all 0.2s ease;
+}
+
+.page-item .page-link:hover {
+    background: #f3f4f6;
+    color: #075985;
+}
+
+.page-item.active .page-link {
+    background: #071b88;
+    border-color: #071b88;
+    color: white;
+}
+
+.page-item.disabled .page-link {
+    color: #9ca3af;
+    background: #f9fafb;
+    cursor: not-allowed;
+}
+
+/* =========================================================
+   PAGINATION INFO TEXT (Showing X to Y of Z results)
+========================================================= */
+
+.software-table-card nav .d-flex > div:first-child {
+    font-size: 10px;
+    color: #9ca3af;
+}
+
+
+/* =========================================================
+   CUSTOM SOFTWARE PAGINATION
+========================================================= */
+.software-pagination {
+    width: calc(100% - 32px);
+    margin: 16px auto 8px auto;
+
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 12px;
+
+    padding: 8px 0;
+}
+
+.pagination-info {
+    color: #64748b;
+    font-size: 12px;
+    font-weight: 400;
+    line-height: 1.4;
+}
+
+.pagination-links {
+    display: flex;
+    align-items: center;
+    gap: 4px;
+}
+
+.page-btn {
+    box-sizing: border-box;
+    width: 28px;
+    min-width: 28px;
+    height: 28px;
+    padding: 0;
+    margin: 0;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    border: 1px solid #e2e8f0;
+    border-radius: 6px;
+    background: #ffffff;
+    color: #475569;
+    text-decoration: none;
+    font-family: inherit;
+    font-size: 11px;
+    font-weight: 600;
+    line-height: 1;
+    cursor: pointer;
+    transition: background-color .15s ease, border-color .15s ease, color .15s ease;
+}
+
+.page-btn:hover {
+    background: #f8fafc;
+    border-color: #cbd5e1;
+    color: #1e293b;
+    text-decoration: none;
+}
+
+.page-btn.active {
+    background: #2563eb;
+    border-color: #2563eb;
+    color: #ffffff;
+}
+
+.page-btn.active:hover {
+    background: #1d4ed8;
+    border-color: #1d4ed8;
+    color: #ffffff;
+}
+
+.page-btn.disabled {
+    background: #f8fafc;
+    border-color: #e2e8f0;
+    color: #cbd5e1;
+    cursor: default;
+    pointer-events: none;
+}
+
+.pagination-links .page-btn:first-child,
+.pagination-links .page-btn:last-child {
+    width: 26px;
+    min-width: 26px;
+    height: 26px;
+    font-size: 14px;
+    font-weight: 400;
+}
+
+@media (max-width: 768px) {
+    .software-pagination {
+        flex-direction: column;
+        align-items: flex-start;
+    }
+
+    .pagination-links {
+        width: 100%;
+        justify-content: flex-start;
+    }
+}
+
 </style>
 
 
@@ -1263,6 +1445,52 @@ body.software-modal-open {
 
 
     {{-- =====================================================
+         ERROR MESSAGE
+    ====================================================== --}}
+
+    @if(session('error'))
+
+        <div class="alert-error">
+
+            <i class="bi bi-exclamation-circle-fill"></i>
+
+            <span>
+                {{ session('error') }}
+            </span>
+
+        </div>
+
+    @endif
+
+
+    {{-- =====================================================
+         VALIDATION ERROR
+    ====================================================== --}}
+
+    @if($errors->any() && !request()->isMethod('GET'))
+
+        <div class="alert-error">
+
+            <i class="bi bi-exclamation-circle-fill"></i>
+
+            <div>
+
+                @foreach($errors->all() as $error)
+
+                    <div>
+                        {{ $error }}
+                    </div>
+
+                @endforeach
+
+            </div>
+
+        </div>
+
+    @endif
+
+
+    {{-- =====================================================
          STATISTIK PERANGKAT LUNAK
     ====================================================== --}}
 
@@ -1275,6 +1503,8 @@ body.software-modal-open {
 
 
     <div class="stats-grid">
+
+        {{-- TOTAL ASET --}}
 
         <div class="stat-card">
 
@@ -1301,6 +1531,8 @@ body.software-modal-open {
         </div>
 
 
+        {{-- TOTAL WEBSITE --}}
+
         <div class="stat-card">
 
             <div class="stat-icon purple">
@@ -1310,7 +1542,7 @@ body.software-modal-open {
             <div class="stat-content">
 
                 <span class="stat-label">
-                    Total Website Bekasi Kota
+                    Total Website
                 </span>
 
                 <span class="stat-value">
@@ -1318,13 +1550,15 @@ body.software-modal-open {
                 </span>
 
                 <span class="stat-description">
-                    Kategori Website
+                    Aset dengan kategori Website
                 </span>
 
             </div>
 
         </div>
 
+
+        {{-- TOTAL MONITORING --}}
 
         <div class="stat-card">
 
@@ -1367,6 +1601,8 @@ body.software-modal-open {
 
     <div class="stats-grid">
 
+        {{-- WEBSITE AKTIF --}}
+
         <div class="stat-card">
 
             <div class="stat-icon green">
@@ -1391,6 +1627,8 @@ body.software-modal-open {
 
         </div>
 
+
+        {{-- WEBSITE TIDAK AKTIF --}}
 
         <div class="stat-card">
 
@@ -1433,6 +1671,8 @@ body.software-modal-open {
 
     <div class="stats-grid">
 
+        {{-- SSL BEKASI KOTA --}}
+
         <div class="stat-card">
 
             <div class="stat-icon green">
@@ -1442,7 +1682,7 @@ body.software-modal-open {
             <div class="stat-content">
 
                 <span class="stat-label">
-                    Website SSL berlisensi.go.id
+                    SSL Bekasi Kota
                 </span>
 
                 <span class="stat-value">
@@ -1450,7 +1690,7 @@ body.software-modal-open {
                 </span>
 
                 <span class="stat-description">
-                    SSL berlisensi.go.id
+                    Menggunakan SSL yang dikelola Bekasi Kota
                 </span>
 
             </div>
@@ -1458,16 +1698,18 @@ body.software-modal-open {
         </div>
 
 
+        {{-- SSL NON BEKASI KOTA --}}
+
         <div class="stat-card">
 
             <div class="stat-icon orange">
-                <i class="bi bi-shield"></i>
+                <i class="bi bi-shield-lock"></i>
             </div>
 
             <div class="stat-content">
 
                 <span class="stat-label">
-                    Website SSL Non berlisensi.go.id
+                    SSL Non Bekasi Kota
                 </span>
 
                 <span class="stat-value">
@@ -1475,13 +1717,15 @@ body.software-modal-open {
                 </span>
 
                 <span class="stat-description">
-                    SSL non berlisensi.go.id
+                    Menggunakan SSL dari vendor atau pihak lain
                 </span>
 
             </div>
 
         </div>
 
+
+        {{-- TANPA SSL --}}
 
         <div class="stat-card">
 
@@ -1492,7 +1736,7 @@ body.software-modal-open {
             <div class="stat-content">
 
                 <span class="stat-label">
-                    Website Tidak Menerapkan SSL
+                    Tidak Menggunakan SSL
                 </span>
 
                 <span class="stat-value">
@@ -1500,7 +1744,7 @@ body.software-modal-open {
                 </span>
 
                 <span class="stat-description">
-                    Tidak menerapkan SSL
+                    Website tidak menggunakan SSL
                 </span>
 
             </div>
@@ -1555,6 +1799,8 @@ body.software-modal-open {
 
         <div class="software-master-grid">
 
+            {{-- KATEGORI --}}
+
             <div class="software-master-item">
 
                 <div class="software-master-item-icon">
@@ -1579,6 +1825,8 @@ body.software-modal-open {
 
             </div>
 
+
+            {{-- SSL --}}
 
             <div class="software-master-item">
 
@@ -1605,6 +1853,8 @@ body.software-modal-open {
             </div>
 
 
+            {{-- HOSTING --}}
+
             <div class="software-master-item">
 
                 <div class="software-master-item-icon">
@@ -1629,6 +1879,8 @@ body.software-modal-open {
 
             </div>
 
+
+            {{-- PIC --}}
 
             <div class="software-master-item">
 
@@ -1665,6 +1917,10 @@ body.software-modal-open {
 
     <div class="software-table-card">
 
+        {{-- =================================================
+             TABLE HEADER
+        ================================================== --}}
+
         <div class="table-header">
 
             <div class="table-header-left">
@@ -1699,6 +1955,7 @@ body.software-modal-open {
                         placeholder="Cari nama aset, kode, URL..."
                     >
 
+
                     @if(request('kategori'))
 
                         <input
@@ -1708,6 +1965,7 @@ body.software-modal-open {
                         >
 
                     @endif
+
 
                     @if(request('hosting'))
 
@@ -1719,6 +1977,7 @@ body.software-modal-open {
 
                     @endif
 
+
                     @if(request('status'))
 
                         <input
@@ -1728,6 +1987,7 @@ body.software-modal-open {
                         >
 
                     @endif
+
 
                     @if(request('pic'))
 
@@ -1794,7 +2054,9 @@ body.software-modal-open {
                 </button>
 
 
-                {{-- FILTER DROPDOWN --}}
+                {{-- =================================================
+                     FILTER DROPDOWN
+                ================================================== --}}
 
                 <div
                     id="filter-dropdown"
@@ -1817,6 +2079,8 @@ body.software-modal-open {
                             value="{{ request('search') }}"
                         >
 
+
+                        {{-- KATEGORI --}}
 
                         <label for="filter-kategori">
                             Kategori
@@ -1845,6 +2109,8 @@ body.software-modal-open {
                         </select>
 
 
+                        {{-- HOSTING --}}
+
                         <label for="filter-hosting">
                             Hosting
                         </label>
@@ -1871,6 +2137,8 @@ body.software-modal-open {
 
                         </select>
 
+
+                        {{-- STATUS --}}
 
                         <label for="filter-status">
                             Status
@@ -1902,6 +2170,8 @@ body.software-modal-open {
                         </select>
 
 
+                        {{-- PIC --}}
+
                         <label for="filter-pic">
                             PIC
                         </label>
@@ -1928,6 +2198,8 @@ body.software-modal-open {
 
                         </select>
 
+
+                        {{-- FILTER BUTTONS --}}
 
                         <div class="filter-buttons">
 
@@ -1974,6 +2246,7 @@ body.software-modal-open {
                             <th>Kode</th>
                             <th>Nama Aset</th>
                             <th>Kategori</th>
+                            <th>Kategori Sistem Elektronik</th>
                             <th>SSL</th>
                             <th>URL Homepage</th>
                             <th>IP Public</th>
@@ -2006,27 +2279,39 @@ body.software-modal-open {
                                     ?: $software->jenis
                                     ?: '-';
 
+
                                 $kategori =
                                     $software->category?->nama
                                     ?: $software->kategori
                                     ?: '-';
 
+
+                                $kategoriSistemElektronik =
+                                    $software->kategori_sistem_elektronik
+                                    ?: '-';
+
+
                                 $ssl =
                                     $software->sslMaster?->nama_ssl
                                     ?: $software->ssl
-                                    ?: '-';
+                                    ?: 'Tidak Menggunakan SSL';
+
 
                                 $hosting =
                                     $software->hostingMaster?->nama
                                     ?: $software->hosting
                                     ?: '-';
 
+
                                 $pic =
                                     $software->picMaster?->nama
                                     ?: $software->pic
                                     ?: '-';
 
-                                $statusClass = match($software->status) {
+
+                                $statusClass = match(
+                                    $software->status
+                                ) {
 
                                     'Aktif'
                                         => 'status-active',
@@ -2039,7 +2324,10 @@ body.software-modal-open {
 
                                 };
 
-                                $kategoriClass = match($kategori) {
+
+                                $kategoriClass = match(
+                                    $kategori
+                                ) {
 
                                     'Website'
                                         => 'badge-blue',
@@ -2055,79 +2343,140 @@ body.software-modal-open {
 
                                 };
 
-                                $sslClass = match($ssl) {
 
-                                    'Berlisensi.go.id'
-                                        => 'badge-green',
+                                /*
+                                 * SSL sekarang mengikuti
+                                 * Data Master SSL.
+                                 *
+                                 * SSL Bekasi Kota
+                                 * SSL Vendor
+                                 * Tidak Menggunakan SSL
+                                 */
 
-                                    'Non berlisensi.go.id'
-                                        => 'badge-orange',
+                                $sslLower =
+                                    strtolower(
+                                        trim($ssl)
+                                    );
 
-                                    'Tidak Menerapkan SSL'
-                                        => 'badge-red',
 
-                                    'Tidak Menggunakan SSL'
-                                        => 'badge-red',
+                                if (
+                                    str_contains(
+                                        $sslLower,
+                                        'bekasi kota'
+                                    )
+                                ) {
 
-                                    default
-                                        => 'badge-gray',
+                                    $sslClass =
+                                        'badge-green';
 
-                                };
+                                } elseif (
+                                    str_contains(
+                                        $sslLower,
+                                        'vendor'
+                                    )
+                                ) {
+
+                                    $sslClass =
+                                        'badge-orange';
+
+                                } elseif (
+                                    in_array(
+                                        $ssl,
+                                        [
+                                            'Tidak Menggunakan SSL',
+                                            'Tidak Menerapkan SSL',
+                                            '-',
+                                        ],
+                                        true
+                                    )
+                                ) {
+
+                                    $sslClass =
+                                        'badge-red';
+
+                                } else {
+
+                                    $sslClass =
+                                        'badge-gray';
+
+                                }
+
 
                                 $verifikasi =
                                     $software->verifikasi
                                     ?? 'menunggu';
 
-                                $verifikasiClass = match(
-                                    strtolower($verifikasi)
-                                ) {
 
-                                    'disetujui'
-                                        => 'verification-approved',
+                                $verifikasiClass =
+                                    match(
+                                        strtolower(
+                                            $verifikasi
+                                        )
+                                    ) {
 
-                                    'ditolak'
-                                        => 'verification-rejected',
+                                        'disetujui'
+                                            => 'verification-approved',
 
-                                    default
-                                        => 'verification-pending',
+                                        'ditolak'
+                                            => 'verification-rejected',
 
-                                };
+                                        default
+                                            => 'verification-pending',
+
+                                    };
 
                             @endphp
 
 
                             <tr>
 
+                                {{-- NO --}}
+
                                 <td>
+
                                     {{ $softwares->firstItem() + $loop->index }}
+
                                 </td>
 
+
+                                {{-- KODE --}}
 
                                 <td>
 
                                     <span class="software-code">
+
                                         {{ $software->kode ?: '-' }}
+
                                     </span>
 
                                 </td>
 
 
+                                {{-- NAMA --}}
+
                                 <td>
 
                                     <div class="software-name">
+
                                         {{ $namaAset }}
+
                                     </div>
+
 
                                     @if($software->deskripsi_aplikasi)
 
                                         <div class="software-spec">
+
                                             {{ $software->deskripsi_aplikasi }}
+
                                         </div>
 
                                     @elseif($software->spesifikasi)
 
                                         <div class="software-spec">
+
                                             {{ $software->spesifikasi }}
+
                                         </div>
 
                                     @endif
@@ -2135,20 +2484,53 @@ body.software-modal-open {
                                 </td>
 
 
+                                {{-- KATEGORI --}}
+
                                 <td>
 
-                                    <span class="badge {{ $kategoriClass }}">
+                                    <span
+                                        class="badge {{ $kategoriClass }}"
+                                    >
+
                                         {{ $kategori }}
+
                                     </span>
 
                                 </td>
 
 
+                                {{-- KATEGORI SISTEM ELEKTRONIK --}}
+
                                 <td>
 
-                                    <span class="badge {{ $sslClass }}">
-                                        {{ $ssl }}
+                                    @php
+                                        $kseClass = match ($kategoriSistemElektronik) {
+                                            'Rendah' => 'badge-green',
+                                            'Tinggi' => 'badge-orange',
+                                            'Strategis' => 'badge-red',
+                                            default => 'badge-gray',
+                                        };
+                                    @endphp
+
+                                    <span class="badge {{ $kseClass }}">
+                                        {{ $kategoriSistemElektronik }}
                                     </span>
+
+                                </td>
+
+
+                                {{-- SSL --}}
+
+                                <td>
+
+                                    <span
+                                        class="badge {{ $sslClass }}"
+                                    >
+
+                                        {{ $ssl }}
+
+                                    </span>
+
 
                                     @if($software->sslMaster?->tanggal_expire)
 
@@ -2160,14 +2542,24 @@ body.software-modal-open {
                                                 white-space:nowrap;
                                             "
                                         >
+
                                             Exp:
-                                            {{ $software->sslMaster->tanggal_expire->format('d-m-Y') }}
+
+                                            {{
+                                                $software
+                                                    ->sslMaster
+                                                    ->tanggal_expire
+                                                    ->format('d-m-Y')
+                                            }}
+
                                         </div>
 
                                     @endif
 
                                 </td>
 
+
+                                {{-- URL --}}
 
                                 <td>
 
@@ -2188,7 +2580,9 @@ body.software-modal-open {
                                                 text-decoration:none;
                                             "
                                         >
+
                                             {{ $software->url_homepage }}
+
                                         </a>
 
                                     @else
@@ -2200,6 +2594,8 @@ body.software-modal-open {
                                 </td>
 
 
+                                {{-- IP PUBLIC --}}
+
                                 <td>
 
                                     <span
@@ -2208,11 +2604,15 @@ body.software-modal-open {
                                             font-size:10px;
                                         "
                                     >
+
                                         {{ $software->ip_public ?: '-' }}
+
                                     </span>
 
                                 </td>
 
+
+                                {{-- IP PRIVATE --}}
 
                                 <td>
 
@@ -2222,76 +2622,105 @@ body.software-modal-open {
                                             font-size:10px;
                                         "
                                     >
+
                                         {{ $software->ip_private ?: '-' }}
+
                                     </span>
 
                                 </td>
 
+
+                                {{-- HOSTING --}}
 
                                 <td>
 
                                     <span class="badge badge-blue">
+
                                         {{ $hosting }}
+
                                     </span>
 
                                 </td>
 
+
+                                {{-- STATUS --}}
 
                                 <td>
 
                                     <span
                                         class="status-badge {{ $statusClass }}"
                                     >
+
                                         {{ $software->status ?: '-' }}
+
                                     </span>
 
                                 </td>
 
 
+                                {{-- PIC --}}
+
                                 <td>
+
                                     {{ $pic }}
+
                                 </td>
 
+
+                                {{-- KERAHASIAAN --}}
 
                                 <td>
 
                                     <span class="badge">
+
                                         {{ $software->kerahasiaan ?? '-' }}
+
                                     </span>
 
                                 </td>
 
 
+                                {{-- INTEGRITAS --}}
+
                                 <td>
 
                                     <span class="badge">
+
                                         {{ $software->integritas ?? '-' }}
+
                                     </span>
 
                                 </td>
 
+
+                                {{-- KETERSEDIAAN --}}
 
                                 <td>
 
                                     <span class="badge">
+
                                         {{ $software->ketersediaan ?? '-' }}
+
                                     </span>
 
                                 </td>
 
+
+                                {{-- NILAI --}}
 
                                 <td>
 
                                     <strong style="color:#075985;">
 
-                                        {{ $software->nilai !== null
-                                            ? number_format(
-                                                (float) $software->nilai,
-                                                2,
-                                                ',',
-                                                '.'
-                                            )
-                                            : '-'
+                                        {{
+                                            $software->nilai !== null
+                                                ? number_format(
+                                                    (float) $software->nilai,
+                                                    2,
+                                                    ',',
+                                                    '.'
+                                                )
+                                                : '-'
                                         }}
 
                                     </strong>
@@ -2299,12 +2728,16 @@ body.software-modal-open {
                                 </td>
 
 
+                                {{-- KETERANGAN --}}
+
                                 <td>
 
                                     @php
 
                                         $keteranganClass =
-                                            match($software->keterangan) {
+                                            match(
+                                                $software->keterangan
+                                            ) {
 
                                                 'Tinggi'
                                                     => 'status-expired',
@@ -2326,11 +2759,15 @@ body.software-modal-open {
                                     <span
                                         class="status-badge {{ $keteranganClass }}"
                                     >
+
                                         {{ $software->keterangan ?: '-' }}
+
                                     </span>
 
                                 </td>
 
+
+                                {{-- VERIFIKASI --}}
 
                                 <td>
 
@@ -2340,24 +2777,34 @@ body.software-modal-open {
                                             {{ $verifikasiClass }}
                                         "
                                     >
+
                                         {{ ucfirst($verifikasi) }}
+
                                     </span>
 
                                 </td>
 
 
+                                {{-- KOMENTAR --}}
+
                                 <td>
 
                                     <div class="software-comment">
+
                                         {{ $software->komentar ?: '-' }}
+
                                     </div>
 
                                 </td>
 
 
+                                {{-- AKSI --}}
+
                                 <td>
 
                                     <div class="action-buttons">
+
+                                        {{-- EDIT --}}
 
                                         <button
                                             type="button"
@@ -2378,6 +2825,8 @@ body.software-modal-open {
                                         </button>
 
 
+                                        {{-- DELETE --}}
+
                                         <form
                                             action="{{ route('software.destroy', $software) }}"
                                             method="POST"
@@ -2391,6 +2840,7 @@ body.software-modal-open {
                                             @csrf
 
                                             @method('DELETE')
+
 
                                             <button
                                                 type="submit"
@@ -2432,7 +2882,9 @@ body.software-modal-open {
                 <div class="empty-state">
 
                     <div class="empty-state-icon">
+
                         <i class="bi bi-laptop"></i>
+
                     </div>
 
 
@@ -2490,17 +2942,64 @@ body.software-modal-open {
 
         @if($softwares->hasPages())
 
-            <div
-                style="
-                    padding:15px 18px;
-                    display:flex;
-                    justify-content:flex-end;
-                    border-top:1px solid #f1f5f9;
-                "
-            >
+            <div class="software-pagination">
 
-                {{ $softwares->withQueryString()->links() }}
+                <div class="pagination-info">
+                    Menampilkan
+                    {{ $softwares->firstItem() ?? 0 }}
+                    -
+                    {{ $softwares->lastItem() ?? 0 }}
+                    dari
+                    {{ $softwares->total() }}
+                    data
+                </div>
 
+                <div class="pagination-links">
+
+                    {{-- Previous --}}
+                    @if($softwares->onFirstPage())
+                        <span class="page-btn disabled" aria-disabled="true">‹</span>
+                    @else
+                        <a
+                            href="{{ $softwares->previousPageUrl() }}"
+                            class="page-btn"
+                            aria-label="Halaman sebelumnya"
+                        >‹</a>
+                    @endif
+
+                    {{-- Page numbers --}}
+                    @php
+                        $startPage = max(1, $softwares->currentPage() - 2);
+                        $endPage = min(
+                            $softwares->lastPage(),
+                            $softwares->currentPage() + 2
+                        );
+                    @endphp
+
+                    @foreach($softwares->getUrlRange($startPage, $endPage) as $page => $url)
+                        @if($page == $softwares->currentPage())
+                            <span class="page-btn active" aria-current="page">
+                                {{ $page }}
+                            </span>
+                        @else
+                            <a href="{{ $url }}" class="page-btn">
+                                {{ $page }}
+                            </a>
+                        @endif
+                    @endforeach
+
+                    {{-- Next --}}
+                    @if($softwares->hasMorePages())
+                        <a
+                            href="{{ $softwares->nextPageUrl() }}"
+                            class="page-btn"
+                            aria-label="Halaman berikutnya"
+                        >›</a>
+                    @else
+                        <span class="page-btn disabled" aria-disabled="true">›</span>
+                    @endif
+
+                </div>
             </div>
 
         @endif
@@ -2528,12 +3027,16 @@ body.software-modal-open {
 
     <div class="import-software-modal-box">
 
+        {{-- HEADER --}}
+
         <div class="import-software-modal-header">
 
             <div class="import-software-modal-title-wrap">
 
                 <div class="import-software-modal-icon">
+
                     <i class="bi bi-file-earmark-spreadsheet-fill"></i>
+
                 </div>
 
                 <div>
@@ -2565,6 +3068,8 @@ body.software-modal-open {
         </div>
 
 
+        {{-- FORM --}}
+
         <form
             id="software-import-form"
             action="{{ route('software.import') }}"
@@ -2574,7 +3079,10 @@ body.software-modal-open {
 
             @csrf
 
+
             <div class="import-software-modal-body">
+
+                {{-- INFO --}}
 
                 <div class="import-software-info">
 
@@ -2591,6 +3099,8 @@ body.software-modal-open {
 
                 </div>
 
+
+                {{-- DROPZONE --}}
 
                 <label
                     for="software-import-file"
@@ -2626,6 +3136,8 @@ body.software-modal-open {
 
                 </label>
 
+
+                {{-- SELECTED FILE --}}
 
                 <div
                     id="software-import-selected"
@@ -2669,6 +3181,8 @@ body.software-modal-open {
                 </div>
 
 
+                {{-- ERROR --}}
+
                 <div
                     id="software-import-error"
                     class="import-software-error"
@@ -2677,6 +3191,8 @@ body.software-modal-open {
             </div>
 
 
+            {{-- FOOTER --}}
+
             <div class="import-software-modal-footer">
 
                 <button
@@ -2684,7 +3200,9 @@ body.software-modal-open {
                     class="import-software-cancel"
                     onclick="closeImportSoftwareModal()"
                 >
+
                     Batal
+
                 </button>
 
 
@@ -2756,8 +3274,12 @@ document.addEventListener(
         if (
             dropdown &&
             button &&
-            !dropdown.contains(event.target) &&
-            !button.contains(event.target)
+            !dropdown.contains(
+                event.target
+            ) &&
+            !button.contains(
+                event.target
+            )
         ) {
 
             dropdown.classList.remove(
@@ -2771,33 +3293,41 @@ document.addEventListener(
 
 
 /* =========================================================
-   CREATE SOFTWARE MODAL
-   IMPORTANT:
-   ID HARUS softwareCreateModal
+   OPEN CREATE SOFTWARE MODAL
 ========================================================= */
 
 function openSoftwareModal()
 {
     const modal =
         document.getElementById(
-            'softwareCreateModal'
+            'software-modal'
         );
 
 
     if (!modal) {
 
         console.error(
-            'Modal Tambah Software tidak ditemukan: #softwareCreateModal'
+            'Modal Tambah Software tidak ditemukan. Pastikan create.blade.php memiliki id="software-modal".'
         );
 
         return;
-
     }
 
 
-    modal.classList.add(
-        'show'
-    );
+    /*
+     * CREATE MODAL SEKARANG TIDAK MENGGUNAKAN
+     * class "show".
+     *
+     * create.blade.php menggunakan:
+     *
+     * display: none;
+     *
+     * sehingga kita buka menggunakan:
+     *
+     * display: flex;
+     */
+
+    modal.style.display = 'flex';
 
 
     modal.setAttribute(
@@ -2811,26 +3341,22 @@ function openSoftwareModal()
     );
 
 
-    /*
-    |--------------------------------------------------------------------------
-    | Jalankan fungsi dari create.blade.php jika tersedia
-    |--------------------------------------------------------------------------
-    */
-
     if (
-        typeof updateSslExpire === 'function'
+        typeof updatePengadaan ===
+        'function'
     ) {
 
-        updateSslExpire();
+        updatePengadaan();
 
     }
 
 
     if (
-        typeof calculateCIA === 'function'
+        typeof updateSslExpiry ===
+        'function'
     ) {
 
-        calculateCIA();
+        updateSslExpiry();
 
     }
 
@@ -2845,7 +3371,7 @@ function closeSoftwareModal()
 {
     const modal =
         document.getElementById(
-            'softwareCreateModal'
+            'software-modal'
         );
 
 
@@ -2854,9 +3380,11 @@ function closeSoftwareModal()
     }
 
 
-    modal.classList.remove(
-        'show'
-    );
+    /*
+     * Tutup modal menggunakan display none.
+     */
+
+    modal.style.display = 'none';
 
 
     modal.setAttribute(
@@ -2868,18 +3396,6 @@ function closeSoftwareModal()
     document.body.classList.remove(
         'software-modal-open'
     );
-}
-
-
-/*
-|--------------------------------------------------------------------------
-| ALIAS
-|--------------------------------------------------------------------------
-*/
-
-function closeSoftwareCreateModal()
-{
-    closeSoftwareModal();
 }
 
 
@@ -2903,7 +3419,6 @@ function openEditSoftwareModal(id)
         );
 
         return;
-
     }
 
 
@@ -2923,17 +3438,15 @@ function openEditSoftwareModal(id)
     );
 
 
-    const initFunction =
-        window[
-            'initEditSoftwareModal_' + id
-        ];
-
-
     if (
-        typeof initFunction === 'function'
+        typeof window[
+            'initEditSoftwareModal_' + id
+        ] === 'function'
     ) {
 
-        initFunction();
+        window[
+            'initEditSoftwareModal_' + id
+        ]();
 
     }
 
@@ -2983,15 +3496,11 @@ document.addEventListener(
     function(event)
     {
 
-        /*
-        |--------------------------------------------------------------------------
-        | CREATE MODAL
-        |--------------------------------------------------------------------------
-        */
+        /* CREATE */
 
         const createModal =
             document.getElementById(
-                'softwareCreateModal'
+                'software-modal'
             );
 
 
@@ -3003,15 +3512,10 @@ document.addEventListener(
             closeSoftwareModal();
 
             return;
-
         }
 
 
-        /*
-        |--------------------------------------------------------------------------
-        | EDIT MODAL
-        |--------------------------------------------------------------------------
-        */
+        /* EDIT */
 
         if (
             event.target.classList &&
@@ -3021,7 +3525,8 @@ document.addEventListener(
         ) {
 
             const id =
-                event.target.dataset.softwareId;
+                event.target.dataset
+                    .softwareId;
 
 
             if (id) {
@@ -3056,11 +3561,7 @@ document.addEventListener(
         }
 
 
-        /*
-        |--------------------------------------------------------------------------
-        | IMPORT
-        |--------------------------------------------------------------------------
-        */
+        /* IMPORT */
 
         const importModal =
             document.getElementById(
@@ -3078,41 +3579,34 @@ document.addEventListener(
             closeImportSoftwareModal();
 
             return;
-
         }
 
 
-        /*
-        |--------------------------------------------------------------------------
-        | CREATE
-        |--------------------------------------------------------------------------
-        */
+        /* CREATE */
 
         const createModal =
             document.getElementById(
-                'softwareCreateModal'
+                'software-modal'
             );
 
 
+        /*
+         * CREATE MODAL MENGGUNAKAN
+         * style.display, BUKAN class "show".
+         */
+
         if (
             createModal &&
-            createModal.classList.contains(
-                'show'
-            )
+            createModal.style.display === 'flex'
         ) {
 
             closeSoftwareModal();
 
             return;
-
         }
 
 
-        /*
-        |--------------------------------------------------------------------------
-        | EDIT
-        |--------------------------------------------------------------------------
-        */
+        /* EDIT */
 
         const editModals =
             document.querySelectorAll(
@@ -3125,7 +3619,8 @@ document.addEventListener(
             {
 
                 const id =
-                    modal.dataset.softwareId;
+                    modal.dataset
+                        .softwareId;
 
 
                 if (id) {
@@ -3223,7 +3718,9 @@ function closeImportSoftwareModal()
    FORMAT FILE SIZE
 ========================================================= */
 
-function formatImportSoftwareSize(bytes)
+function formatImportSoftwareSize(
+    bytes
+)
 {
     if (!bytes) {
         return '0 B';
@@ -3269,7 +3766,9 @@ function formatImportSoftwareSize(bytes)
    SHOW IMPORT ERROR
 ========================================================= */
 
-function showImportSoftwareError(message)
+function showImportSoftwareError(
+    message
+)
 {
     const error =
         document.getElementById(
@@ -3309,8 +3808,7 @@ function clearImportSoftwareError()
     }
 
 
-    error.textContent =
-        '';
+    error.textContent = '';
 
 
     error.classList.remove(
@@ -3323,7 +3821,9 @@ function clearImportSoftwareError()
    HANDLE IMPORT FILE
 ========================================================= */
 
-function handleImportSoftwareFile(file)
+function handleImportSoftwareFile(
+    file
+)
 {
     clearImportSoftwareError();
 
@@ -3362,7 +3862,6 @@ function handleImportSoftwareFile(file)
 
 
         return;
-
     }
 
 
@@ -3383,7 +3882,6 @@ function handleImportSoftwareFile(file)
 
 
         return;
-
     }
 
 
@@ -3519,8 +4017,7 @@ function removeImportSoftwareFile()
 
     if (input) {
 
-        input.value =
-            '';
+        input.value = '';
 
     }
 
@@ -3577,9 +4074,7 @@ document.addEventListener(
             );
 
 
-        /* =================================================
-           FILE INPUT
-        ================================================== */
+        /* FILE INPUT */
 
         if (input) {
 
@@ -3598,9 +4093,7 @@ document.addEventListener(
         }
 
 
-        /* =================================================
-           DRAG OVER
-        ================================================== */
+        /* DRAG OVER */
 
         if (drop) {
 
@@ -3633,10 +4126,6 @@ document.addEventListener(
             );
 
 
-            /* =================================================
-               DROP
-            ================================================== */
-
             drop.addEventListener(
                 'drop',
                 function(event)
@@ -3651,8 +4140,7 @@ document.addEventListener(
 
 
                     const file =
-                        event
-                            .dataTransfer
+                        event.dataTransfer
                             .files[0];
 
 
@@ -3699,9 +4187,7 @@ document.addEventListener(
         }
 
 
-        /* =================================================
-           IMPORT BACKDROP
-        ================================================== */
+        /* BACKDROP */
 
         if (modal) {
 
@@ -3724,9 +4210,7 @@ document.addEventListener(
         }
 
 
-        /* =================================================
-           IMPORT FORM SUBMIT
-        ================================================== */
+        /* FORM SUBMIT */
 
         if (form) {
 
@@ -3784,8 +4268,7 @@ document.addEventListener(
 
 
 /* =========================================================
-   AUTO OPEN CREATE MODAL
-   HANYA KALAU VALIDASI CREATE GAGAL
+   AUTO OPEN CREATE JIKA VALIDATION ERROR
 ========================================================= */
 
 document.addEventListener(
@@ -3793,10 +4276,7 @@ document.addEventListener(
     function()
     {
 
-        @if(
-            $errors->any() &&
-            old('_form') === 'software_create'
-        )
+        @if($errors->any())
 
             openSoftwareModal();
 

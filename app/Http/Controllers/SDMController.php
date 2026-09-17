@@ -10,12 +10,11 @@ use Illuminate\Support\Facades\DB;
 
 class SDMController extends Controller
 {
-    /*
-    |--------------------------------------------------------------------------
-    | INDEX
-    |--------------------------------------------------------------------------
-    */
-
+    /**
+     * ============================================================
+     * INDEX
+     * ============================================================
+     */
     public function index(Request $request)
     {
         $query = Sdm::query();
@@ -25,19 +24,43 @@ class SDMController extends Controller
         | SEARCH
         |--------------------------------------------------------------------------
         */
-
         if ($request->filled('search')) {
-
-            $search = $request->search;
+            $search = trim($request->search);
 
             $query->where(function ($q) use ($search) {
-
                 $q->where('nip', 'like', "%{$search}%")
                     ->orWhere('nama', 'like', "%{$search}%")
                     ->orWhere('jabatan', 'like', "%{$search}%")
                     ->orWhere('kompetensi', 'like', "%{$search}%");
-
             });
+        }
+
+        /*
+        |--------------------------------------------------------------------------
+        | FILTER JENIS PEGAWAI
+        |
+        | Jenis pegawai ditentukan dari panjang NIP:
+        | 18 digit = PNS
+        | 20 digit = PPPK
+        |--------------------------------------------------------------------------
+        */
+        if ($request->filled('jenis_pegawai')) {
+            $jenisPegawai = strtoupper(
+                trim($request->jenis_pegawai)
+            );
+
+            if ($jenisPegawai === 'PNS') {
+
+                $query->whereRaw(
+                    'CHAR_LENGTH(nip) = 18'
+                );
+
+            } elseif ($jenisPegawai === 'PPPK') {
+
+                $query->whereRaw(
+                    'CHAR_LENGTH(nip) = 20'
+                );
+            }
         }
 
         /*
@@ -45,48 +68,34 @@ class SDMController extends Controller
         | FILTER VERIFIKASI
         |--------------------------------------------------------------------------
         */
-
         if ($request->filled('verifikasi')) {
 
-            $verifikasi = strtolower(
+            $status = strtolower(
                 trim($request->verifikasi)
             );
 
-            $allowed = [
-                'menunggu',
-                'disetujui',
-                'ditolak',
-            ];
+            $query->whereHas(
+                'verificationRequests',
+                function ($q) use ($status) {
 
-            if (in_array($verifikasi, $allowed)) {
+                    $q->whereIn('id', function ($sub) {
 
-                $query->whereHas(
-                    'verificationRequests',
-                    function ($q) use ($verifikasi) {
-
-                        $q->where('status', $verifikasi)
-                            ->whereIn(
-                                'id',
-                                function ($sub) {
-
-                                    $sub->selectRaw('MAX(id)')
-                                        ->from('verification_requests')
-                                        ->whereColumn(
-                                            'verification_requests.record_id',
-                                            'sdms.id'
-                                        )
-                                        ->where(
-                                            'module',
-                                            'sdm'
-                                        )
-                                        ->groupBy('record_id');
-
-                                }
+                        $sub->selectRaw('MAX(id)')
+                            ->from('verification_requests')
+                            ->where(
+                                'module',
+                                'sdm'
+                            )
+                            ->groupBy(
+                                'record_id'
                             );
 
-                    }
-                );
-            }
+                    })->whereRaw(
+                        'LOWER(status) = ?',
+                        [$status]
+                    );
+                }
+            );
         }
 
         /*
@@ -94,55 +103,51 @@ class SDMController extends Controller
         | PAGINATION
         |--------------------------------------------------------------------------
         */
-
-        $show = (int) $request->input(
-            'show',
+        $perPage = (int) $request->get(
+            'per_page',
             10
         );
 
         if (!in_array(
-            $show,
+            $perPage,
             [10, 25, 50, 100]
         )) {
-            $show = 10;
+            $perPage = 10;
         }
 
         $sdm = $query
-            ->latest()
-            ->paginate($show)
+            ->latest('id')
+            ->paginate($perPage)
             ->withQueryString();
 
         /*
         |--------------------------------------------------------------------------
-        | STATISTICS
+        | STATISTIK
         |--------------------------------------------------------------------------
         */
-
         $totalData = Sdm::count();
 
-        $aktif = Sdm::query()
-            ->whereNotNull('masa_berlaku')
-            ->whereDate(
+        $aktif = Sdm::where(function ($q) {
+
+            $q->whereNull(
+                'masa_berlaku'
+            )->orWhere(
                 'masa_berlaku',
                 '>=',
                 now()->toDateString()
-            )
-            ->count();
+            );
 
-        $berakhir = Sdm::query()
-            ->whereNotNull('masa_berlaku')
-            ->whereDate(
+        })->count();
+
+        $berakhir = Sdm::whereNotNull(
+            'masa_berlaku'
+        )
+            ->where(
                 'masa_berlaku',
                 '<',
                 now()->toDateString()
             )
             ->count();
-
-        /*
-        |--------------------------------------------------------------------------
-        | VIEW
-        |--------------------------------------------------------------------------
-        */
 
         return view(
             'sdm.index',
@@ -156,12 +161,11 @@ class SDMController extends Controller
     }
 
 
-    /*
-    |--------------------------------------------------------------------------
-    | STORE - TAMBAH BANYAK DATA
-    |--------------------------------------------------------------------------
-    */
-
+    /**
+     * ============================================================
+     * STORE
+     * ============================================================
+     */
     public function store(Request $request)
     {
         /*
@@ -169,217 +173,335 @@ class SDMController extends Controller
         | VALIDASI
         |--------------------------------------------------------------------------
         */
+        $request->validate(
+            [
+                'nip' => [
+                    'required',
+                    'array',
+                    'min:1'
+                ],
 
-        $request->validate([
+                'nip.*' => [
+                    'required',
+                    'string',
+                    'regex:/^[0-9]+$/'
+                ],
 
-            'nip' => [
-                'required',
-                'array',
-                'min:1',
+                'nama' => [
+                    'required',
+                    'array',
+                    'min:1'
+                ],
+
+                'nama.*' => [
+                    'required',
+                    'string',
+                    'max:255'
+                ],
+
+                'jabatan' => [
+                    'required',
+                    'array',
+                    'min:1'
+                ],
+
+                'jabatan.*' => [
+                    'required',
+                    'string',
+                    'max:255'
+                ],
+
+                'kompetensi' => [
+                    'required',
+                    'array',
+                    'min:1'
+                ],
+
+                'kompetensi.*' => [
+                    'required',
+                    'string'
+                ],
+
+                'masa_berlaku' => [
+                    'required',
+                    'array',
+                    'min:1'
+                ],
+
+                'masa_berlaku.*' => [
+                    'required',
+                    'date'
+                ],
+
+                'dokumen' => [
+                    'required',
+                    'array',
+                    'min:1'
+                ],
+
+                'dokumen.*' => [
+                    'required',
+                    'file',
+                    'mimes:pdf,jpg,jpeg,png',
+                    'max:5120'
+                ],
             ],
+            [
+                'nip.required' =>
+                    'NIP wajib diisi.',
 
-            'nip.*' => [
-                'required',
-                'string',
-                'max:50',
-            ],
+                'nip.*.required' =>
+                    'NIP wajib diisi.',
 
-            'nama' => [
-                'required',
-                'array',
-                'min:1',
-            ],
+                'nip.*.regex' =>
+                    'NIP hanya boleh berisi angka.',
 
-            'nama.*' => [
-                'required',
-                'string',
-                'max:255',
-            ],
+                'nama.required' =>
+                    'Nama wajib diisi.',
 
-            'jabatan' => [
-                'required',
-                'array',
-                'min:1',
-            ],
+                'nama.*.required' =>
+                    'Nama wajib diisi.',
 
-            'jabatan.*' => [
-                'required',
-                'string',
-                'max:255',
-            ],
+                'jabatan.required' =>
+                    'Jabatan wajib diisi.',
 
-            'kompetensi' => [
-                'required',
-                'array',
-                'min:1',
-            ],
+                'jabatan.*.required' =>
+                    'Jabatan wajib diisi.',
 
-            'kompetensi.*' => [
-                'required',
-                'string',
-                'max:255',
-            ],
+                'kompetensi.required' =>
+                    'Kompetensi wajib diisi.',
 
-            'masa_berlaku' => [
-                'required',
-                'array',
-                'min:1',
-            ],
+                'kompetensi.*.required' =>
+                    'Kompetensi wajib diisi.',
 
-            'masa_berlaku.*' => [
-                'required',
-                'date',
-            ],
+                'masa_berlaku.required' =>
+                    'Masa berlaku wajib diisi.',
 
-            'dokumen' => [
-                'required',
-                'array',
-                'min:1',
-            ],
+                'masa_berlaku.*.required' =>
+                    'Masa berlaku wajib diisi.',
 
-            'dokumen.*' => [
-                'required',
-                'file',
-                'mimes:pdf,jpg,jpeg,png',
-                'max:10240',
-            ],
+                'dokumen.required' =>
+                    'Dokumen wajib diunggah.',
 
-        ]);
+                'dokumen.*.required' =>
+                    'Dokumen wajib diunggah.',
 
-        /*
-        |--------------------------------------------------------------------------
-        | AMBIL DATA
-        |--------------------------------------------------------------------------
-        */
+                'dokumen.*.mimes' =>
+                    'Dokumen harus berupa PDF, JPG, JPEG, atau PNG.',
 
-        $nip = $request->input(
-            'nip',
-            []
+                'dokumen.*.max' =>
+                    'Ukuran dokumen maksimal 5 MB.',
+            ]
         );
 
-        $nama = $request->input(
-            'nama',
-            []
-        );
-
-        $jabatan = $request->input(
-            'jabatan',
-            []
-        );
-
-        $kompetensi = $request->input(
-            'kompetensi',
-            []
-        );
-
-        $masaBerlaku = $request->input(
-            'masa_berlaku',
-            []
-        );
-
-        $dokumen = $request->file(
-            'dokumen',
-            []
-        );
-
-        $jumlahData = count($nip);
 
         /*
         |--------------------------------------------------------------------------
         | CEK JUMLAH BARIS
         |--------------------------------------------------------------------------
         */
+        $jumlahNip = count($request->nip);
+        $jumlahNama = count($request->nama);
+        $jumlahJabatan = count($request->jabatan);
+        $jumlahKompetensi = count($request->kompetensi);
+        $jumlahMasaBerlaku = count($request->masa_berlaku);
 
         if (
-            count($nama) !== $jumlahData ||
-            count($jabatan) !== $jumlahData ||
-            count($kompetensi) !== $jumlahData ||
-            count($masaBerlaku) !== $jumlahData ||
-            count($dokumen) !== $jumlahData
+            $jumlahNip !== $jumlahNama ||
+            $jumlahNip !== $jumlahJabatan ||
+            $jumlahNip !== $jumlahKompetensi ||
+            $jumlahNip !== $jumlahMasaBerlaku
         ) {
-
             return back()
                 ->withInput()
                 ->with(
                     'error',
-                    'Data yang dikirim tidak lengkap. Silakan periksa setiap baris.'
+                    'Data SDM tidak lengkap. Silakan periksa kembali setiap baris.'
                 );
         }
 
+
         /*
         |--------------------------------------------------------------------------
-        | TRANSACTION
+        | VALIDASI SETIAP NIP
         |--------------------------------------------------------------------------
         */
-
-        DB::transaction(function () use (
-            $request,
-            $nip,
-            $nama,
-            $jabatan,
-            $kompetensi,
-            $masaBerlaku,
-            $dokumen
+        foreach (
+            $request->nip as $index => $nip
         ) {
 
-            foreach ($nip as $index => $valueNip) {
+            $nip = trim($nip);
+
+            $baris = $index + 1;
+
+
+            /*
+            |--------------------------------------------------------------------------
+            | NIP HANYA ANGKA
+            |--------------------------------------------------------------------------
+            */
+            if (
+                !preg_match(
+                    '/^[0-9]+$/',
+                    $nip
+                )
+            ) {
+
+                return back()
+                    ->withInput()
+                    ->with(
+                        'error',
+                        "NIP pada Data SDM {$baris} hanya boleh berisi angka."
+                    );
+            }
+
+
+            /*
+            |--------------------------------------------------------------------------
+            | NIP HARUS 18 ATAU 20 DIGIT
+            |--------------------------------------------------------------------------
+            */
+            if (
+                strlen($nip) !== 18 &&
+                strlen($nip) !== 20
+            ) {
+
+                return back()
+                    ->withInput()
+                    ->with(
+                        'error',
+                        "NIP pada Data SDM {$baris} harus tepat 18 digit untuk PNS atau 20 digit untuk PPPK."
+                    );
+            }
+
+
+            /*
+            |--------------------------------------------------------------------------
+            | CEK DUPLIKAT DATABASE
+            |--------------------------------------------------------------------------
+            */
+            if (
+                Sdm::where(
+                    'nip',
+                    $nip
+                )->exists()
+            ) {
+
+                return back()
+                    ->withInput()
+                    ->with(
+                        'error',
+                        "NIP {$nip} sudah terdaftar."
+                    );
+            }
+
+
+            /*
+            |--------------------------------------------------------------------------
+            | CEK DUPLIKAT DALAM BATCH
+            |--------------------------------------------------------------------------
+            */
+            $jumlahNipSama = 0;
+
+            foreach (
+                $request->nip as $nipCheck
+            ) {
+
+                if (
+                    trim($nipCheck) === $nip
+                ) {
+                    $jumlahNipSama++;
+                }
+            }
+
+            if ($jumlahNipSama > 1) {
+
+                return back()
+                    ->withInput()
+                    ->with(
+                        'error',
+                        "NIP {$nip} dimasukkan lebih dari satu kali."
+                    );
+            }
+        }
+
+
+        /*
+        |--------------------------------------------------------------------------
+        | SIMPAN
+        |--------------------------------------------------------------------------
+        */
+        DB::beginTransaction();
+
+        try {
+
+            foreach (
+                $request->nip as $index => $nip
+            ) {
+
+                $nip = trim($nip);
+
 
                 /*
                 |--------------------------------------------------------------------------
-                | SIMPAN DOKUMEN
+                | UPLOAD DOKUMEN
                 |--------------------------------------------------------------------------
                 */
-
                 $dokumenPath = null;
 
                 if (
-                    isset($dokumen[$index]) &&
-                    $dokumen[$index] instanceof \Illuminate\Http\UploadedFile
+                    isset(
+                        $request->file(
+                            'dokumen'
+                        )[$index]
+                    )
                 ) {
 
-                    $dokumenPath = $dokumen[$index]
-                        ->store(
-                            'sdm/dokumen',
-                            'public'
-                        );
+                    $dokumenPath =
+                        $request
+                            ->file('dokumen')[$index]
+                            ->store(
+                                'dokumen_sdm',
+                                'public'
+                            );
                 }
+
 
                 /*
                 |--------------------------------------------------------------------------
-                | CREATE DATA SDM
+                | SIMPAN SDM
+                |
+                | TIDAK ADA jenis_pegawai
+                | karena kolom tersebut tidak ada di database.
                 |--------------------------------------------------------------------------
                 */
-
                 $sdm = Sdm::create([
-
                     'nip' =>
-                        $valueNip,
+                        $nip,
 
                     'nama' =>
-                        $nama[$index],
+                        $request->nama[$index],
 
                     'jabatan' =>
-                        $jabatan[$index],
+                        $request->jabatan[$index],
 
                     'kompetensi' =>
-                        $kompetensi[$index],
+                        $request->kompetensi[$index],
 
                     'masa_berlaku' =>
-                        $masaBerlaku[$index],
+                        $request->masa_berlaku[$index],
 
                     'dokumen' =>
                         $dokumenPath,
-
                 ]);
+
 
                 /*
                 |--------------------------------------------------------------------------
                 | VERIFICATION REQUEST
                 |--------------------------------------------------------------------------
                 */
-
                 VerificationRequest::create([
-
                     'module' =>
                         'sdm',
 
@@ -390,177 +512,273 @@ class SDMController extends Controller
                         'create',
 
                     'data' =>
-                        $sdm->toArray(),
+                        json_encode(
+                            $sdm->toArray()
+                        ),
 
                     'status' =>
-                        'menunggu',
+                        'Menunggu',
 
                     'submitted_by' =>
                         auth()->id(),
-
                 ]);
 
-                /*
-                |--------------------------------------------------------------------------
-                | ID TAMPILAN
-                |--------------------------------------------------------------------------
-                */
-
-                $displayId =
-                    'SDM-' .
-                    str_pad(
-                        $sdm->id,
-                        5,
-                        '0',
-                        STR_PAD_LEFT
-                    );
 
                 /*
                 |--------------------------------------------------------------------------
                 | NOTIFICATION
                 |--------------------------------------------------------------------------
                 */
-
                 Notification::create([
-
                     'judul' =>
-                        'Data SDM Baru',
+                        'Pengajuan Data SDM',
 
                     'pesan' =>
-                        auth()->user()->username .
-                        ' menambahkan data SDM "' .
+                        'Data SDM "' .
                         $sdm->nama .
-                        '" dengan ID ' .
-                        $displayId .
-                        ' dan mengajukannya untuk persetujuan.',
+                        '" menunggu verifikasi.',
 
                     'dibaca' =>
                         false,
-
                 ]);
             }
-        });
 
-        /*
-        |--------------------------------------------------------------------------
-        | REDIRECT
-        |--------------------------------------------------------------------------
-        */
 
-        return redirect()
-            ->route('sdm.index')
-            ->with(
-                'success',
-                $jumlahData .
-                ' data SDM berhasil ditambahkan dan menunggu verifikasi.'
-            );
+            DB::commit();
+
+
+            return redirect()
+                ->route('sdm.index')
+                ->with(
+                    'success',
+                    'Data SDM berhasil ditambahkan dan menunggu verifikasi.'
+                );
+
+        } catch (\Throwable $e) {
+
+            DB::rollBack();
+
+            return back()
+                ->withInput()
+                ->with(
+                    'error',
+                    'Data SDM gagal disimpan. ' .
+                    $e->getMessage()
+                );
+        }
     }
 
 
-    /*
-    |--------------------------------------------------------------------------
-    | EDIT / UPDATE
-    |--------------------------------------------------------------------------
-    */
-
+    /**
+     * ============================================================
+     * UPDATE
+     * ============================================================
+     */
     public function update(
         Request $request,
-        Sdm $sdm
+        $id
     ) {
+
+        $sdm = Sdm::findOrFail($id);
+
 
         /*
         |--------------------------------------------------------------------------
         | VALIDASI
         |--------------------------------------------------------------------------
         */
+        $request->validate(
+            [
+                'nip' => [
+                    'required',
+                    'string',
+                    'regex:/^[0-9]+$/'
+                ],
 
-        $validated = $request->validate([
+                'nama' => [
+                    'required',
+                    'string',
+                    'max:255'
+                ],
 
-            'nip' => [
-                'required',
-                'string',
-                'max:50',
+                'jabatan' => [
+                    'required',
+                    'string',
+                    'max:255'
+                ],
+
+                'kompetensi' => [
+                    'required',
+                    'string'
+                ],
+
+                'masa_berlaku' => [
+                    'required',
+                    'date'
+                ],
+
+                'dokumen' => [
+                    'nullable',
+                    'file',
+                    'mimes:pdf,jpg,jpeg,png',
+                    'max:5120'
+                ],
             ],
+            [
+                'nip.required' =>
+                    'NIP wajib diisi.',
 
-            'nama' => [
-                'required',
-                'string',
-                'max:255',
-            ],
+                'nip.regex' =>
+                    'NIP hanya boleh berisi angka.',
 
-            'jabatan' => [
-                'required',
-                'string',
-                'max:255',
-            ],
+                'nama.required' =>
+                    'Nama wajib diisi.',
 
-            'kompetensi' => [
-                'required',
-                'string',
-                'max:255',
-            ],
+                'jabatan.required' =>
+                    'Jabatan wajib diisi.',
 
-            'masa_berlaku' => [
-                'required',
-                'date',
-            ],
+                'kompetensi.required' =>
+                    'Kompetensi wajib diisi.',
 
-            'dokumen' => [
-                'nullable',
-                'file',
-                'mimes:pdf,jpg,jpeg,png',
-                'max:10240',
-            ],
+                'masa_berlaku.required' =>
+                    'Masa berlaku wajib diisi.',
 
-        ]);
+                'dokumen.mimes' =>
+                    'Dokumen harus berupa PDF, JPG, JPEG, atau PNG.',
+
+                'dokumen.max' =>
+                    'Ukuran dokumen maksimal 5 MB.',
+            ]
+        );
+
+
+        $nip = trim(
+            $request->nip
+        );
+
 
         /*
         |--------------------------------------------------------------------------
-        | DOKUMEN BARU
+        | VALIDASI PANJANG NIP
         |--------------------------------------------------------------------------
         */
+        if (
+            strlen($nip) !== 18 &&
+            strlen($nip) !== 20
+        ) {
 
-        if ($request->hasFile('dokumen')) {
+            return back()
+                ->withInput()
+                ->with(
+                    'error',
+                    'NIP harus tepat 18 digit untuk PNS atau 20 digit untuk PPPK.'
+                );
+        }
 
-            $validated['dokumen'] =
+
+        /*
+        |--------------------------------------------------------------------------
+        | CEK DUPLIKAT NIP
+        |--------------------------------------------------------------------------
+        */
+        $nipExists = Sdm::where(
+            'nip',
+            $nip
+        )
+            ->where(
+                'id',
+                '!=',
+                $sdm->id
+            )
+            ->exists();
+
+        if ($nipExists) {
+
+            return back()
+                ->withInput()
+                ->with(
+                    'error',
+                    "NIP {$nip} sudah digunakan oleh data SDM lain."
+                );
+        }
+
+
+        /*
+        |--------------------------------------------------------------------------
+        | DATA LAMA
+        |--------------------------------------------------------------------------
+        */
+        $oldData =
+            $sdm->toArray();
+
+
+        /*
+        |--------------------------------------------------------------------------
+        | DATA BARU
+        |--------------------------------------------------------------------------
+        */
+        $newData = [
+            'nip' =>
+                $nip,
+
+            'nama' =>
+                $request->nama,
+
+            'jabatan' =>
+                $request->jabatan,
+
+            'kompetensi' =>
+                $request->kompetensi,
+
+            'masa_berlaku' =>
+                $request->masa_berlaku,
+        ];
+
+
+        /*
+        |--------------------------------------------------------------------------
+        | UPLOAD DOKUMEN BARU
+        |--------------------------------------------------------------------------
+        */
+        if (
+            $request->hasFile(
+                'dokumen'
+            )
+        ) {
+
+            $dokumenPath =
                 $request
                     ->file('dokumen')
                     ->store(
-                        'sdm/dokumen',
+                        'dokumen_sdm',
                         'public'
                     );
 
-        } else {
-
-            unset(
-                $validated['dokumen']
-            );
-
+            $newData['dokumen'] =
+                $dokumenPath;
         }
 
-        /*
-        |--------------------------------------------------------------------------
-        | SIMPAN PERUBAHAN
-        |--------------------------------------------------------------------------
-        */
 
-        DB::transaction(function () use (
-            $sdm,
-            $validated
-        ) {
+        DB::beginTransaction();
 
+        try {
+
+            /*
+            |--------------------------------------------------------------------------
+            | UPDATE
+            |--------------------------------------------------------------------------
+            */
             $sdm->update(
-                $validated
+                $newData
             );
+
 
             /*
             |--------------------------------------------------------------------------
             | VERIFICATION REQUEST
             |--------------------------------------------------------------------------
             */
-
             VerificationRequest::create([
-
                 'module' =>
                     'sdm',
 
@@ -571,121 +789,89 @@ class SDMController extends Controller
                     'update',
 
                 'data' =>
-                    $sdm
-                        ->fresh()
-                        ->toArray(),
+                    json_encode([
+                        'old' =>
+                            $oldData,
+
+                        'new' =>
+                            $sdm
+                                ->fresh()
+                                ->toArray(),
+                    ]),
 
                 'status' =>
-                    'menunggu',
+                    'Menunggu',
 
                 'submitted_by' =>
                     auth()->id(),
-
             ]);
 
-            /*
-            |--------------------------------------------------------------------------
-            | DISPLAY ID
-            |--------------------------------------------------------------------------
-            */
-
-            $displayId =
-                'SDM-' .
-                str_pad(
-                    $sdm->id,
-                    5,
-                    '0',
-                    STR_PAD_LEFT
-                );
 
             /*
             |--------------------------------------------------------------------------
             | NOTIFICATION
             |--------------------------------------------------------------------------
             */
-
             Notification::create([
-
                 'judul' =>
-                    'Data SDM Diperbarui',
+                    'Perubahan Data SDM',
 
                 'pesan' =>
-                    auth()->user()->username .
-                    ' memperbarui data SDM "' .
+                    'Perubahan data SDM "' .
                     $sdm->nama .
-                    '" dengan ID ' .
-                    $displayId .
-                    ' dan mengajukannya kembali untuk persetujuan.',
+                    '" menunggu verifikasi.',
 
                 'dibaca' =>
                     false,
-
             ]);
-        });
 
-        /*
-        |--------------------------------------------------------------------------
-        | REDIRECT
-        |--------------------------------------------------------------------------
-        */
 
-        return redirect()
-            ->route('sdm.index')
-            ->with(
-                'success',
-                'Perubahan data SDM berhasil disimpan dan menunggu verifikasi.'
-            );
+            DB::commit();
+
+
+            return redirect()
+                ->route('sdm.index')
+                ->with(
+                    'success',
+                    'Data SDM berhasil diperbarui dan menunggu verifikasi.'
+                );
+
+        } catch (\Throwable $e) {
+
+            DB::rollBack();
+
+            return back()
+                ->withInput()
+                ->with(
+                    'error',
+                    'Data SDM gagal diperbarui. ' .
+                    $e->getMessage()
+                );
+        }
     }
 
 
-    /*
-    |--------------------------------------------------------------------------
-    | DELETE
-    |--------------------------------------------------------------------------
-    */
+    /**
+     * ============================================================
+     * DELETE
+     * ============================================================
+     */
+    public function destroy($id)
+    {
+        $sdm =
+            Sdm::findOrFail($id);
 
-    public function destroy(
-        Sdm $sdm
-    ) {
 
-        /*
-        |--------------------------------------------------------------------------
-        | DATA UNTUK NOTIFIKASI
-        |--------------------------------------------------------------------------
-        */
+        DB::beginTransaction();
 
-        $namaSdm =
-            $sdm->nama;
-
-        $displayId =
-            'SDM-' .
-            str_pad(
-                $sdm->id,
-                5,
-                '0',
-                STR_PAD_LEFT
-            );
-
-        /*
-        |--------------------------------------------------------------------------
-        | VERIFICATION REQUEST + NOTIFICATION
-        |--------------------------------------------------------------------------
-        */
-
-        DB::transaction(function () use (
-            $sdm,
-            $namaSdm,
-            $displayId
-        ) {
+        try {
 
             /*
             |--------------------------------------------------------------------------
-            | REQUEST PENGHAPUSAN
+            | AJUKAN PENGHAPUSAN
             |--------------------------------------------------------------------------
             */
-
             VerificationRequest::create([
-
                 'module' =>
                     'sdm',
 
@@ -696,52 +882,57 @@ class SDMController extends Controller
                     'delete',
 
                 'data' =>
-                    $sdm->toArray(),
+                    json_encode(
+                        $sdm->toArray()
+                    ),
 
                 'status' =>
-                    'menunggu',
+                    'Menunggu',
 
                 'submitted_by' =>
                     auth()->id(),
-
             ]);
+
 
             /*
             |--------------------------------------------------------------------------
             | NOTIFICATION
             |--------------------------------------------------------------------------
             */
-
             Notification::create([
-
                 'judul' =>
-                    'Penghapusan Data SDM Diajukan',
+                    'Penghapusan Data SDM',
 
                 'pesan' =>
-                    auth()->user()->username .
-                    ' mengajukan penghapusan data SDM "' .
-                    $namaSdm .
-                    '" dengan ID ' .
-                    $displayId .
-                    ' untuk persetujuan verifikator.',
+                    'Penghapusan data SDM "' .
+                    $sdm->nama .
+                    '" menunggu verifikasi.',
 
                 'dibaca' =>
                     false,
-
             ]);
-        });
 
-        /*
-        |--------------------------------------------------------------------------
-        | REDIRECT
-        |--------------------------------------------------------------------------
-        */
 
-        return redirect()
-            ->route('sdm.index')
-            ->with(
-                'success',
-                'Pengajuan penghapusan SDM berhasil dikirim dan menunggu verifikasi.'
-            );
+            DB::commit();
+
+
+            return redirect()
+                ->route('sdm.index')
+                ->with(
+                    'success',
+                    'Penghapusan data SDM berhasil diajukan dan menunggu verifikasi.'
+                );
+
+        } catch (\Throwable $e) {
+
+            DB::rollBack();
+
+            return back()
+                ->with(
+                    'error',
+                    'Pengajuan penghapusan gagal. ' .
+                    $e->getMessage()
+                );
+        }
     }
 }

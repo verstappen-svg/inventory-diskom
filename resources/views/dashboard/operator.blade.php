@@ -89,12 +89,18 @@ $hardwareJenis =
 
 /*
 |--------------------------------------------------------------------------
+| TOTAL HARGA HARDWARE
+|--------------------------------------------------------------------------
+*/
+
+$totalHargaHardware =
+    (float) ($totalHargaHardware ?? 0);
+
+
+/*
+|--------------------------------------------------------------------------
 | STATUS HARDWARE
 |--------------------------------------------------------------------------
-|
-| Status memang tetap menggunakan 3 kategori:
-| Baik / Perbaikan / Rusak
-|
 */
 
 $hardwareStatus = array_merge([
@@ -110,11 +116,6 @@ $hardwareStatus = array_merge([
 |--------------------------------------------------------------------------
 | JENIS HARDWARE
 |--------------------------------------------------------------------------
-|
-| TIDAK DI-HARDCODE.
-|
-| Data langsung mengikuti isi kolom jenis_barang di database.
-|
 */
 
 $hardwareJenis = array_filter(
@@ -147,56 +148,60 @@ if (!is_array($softwareDashboard)) {
 }
 
 
-$softwarePengadaan =
-    $softwareDashboard['pengadaan'] ?? [];
+/*
+|--------------------------------------------------------------------------
+| SSL SOFTWARE
+|--------------------------------------------------------------------------
+*/
 
-$softwareStatus =
-    $softwareDashboard['status'] ?? [];
-
-
-if ($softwarePengadaan instanceof \Illuminate\Support\Collection) {
-
-    $softwarePengadaan =
-        $softwarePengadaan->toArray();
-
-}
+$softwareSsl =
+    $softwareDashboard['ssl'] ?? [];
 
 
-if ($softwareStatus instanceof \Illuminate\Support\Collection) {
+if ($softwareSsl instanceof \Illuminate\Support\Collection) {
 
-    $softwareStatus =
-        $softwareStatus->toArray();
+    $softwareSsl =
+        $softwareSsl->toArray();
 
 }
 
 
-$softwarePengadaan =
-    is_array($softwarePengadaan)
-        ? $softwarePengadaan
+$softwareSsl =
+    is_array($softwareSsl)
+        ? $softwareSsl
         : [];
 
 
-$softwareStatus =
-    is_array($softwareStatus)
-        ? $softwareStatus
+/*
+|--------------------------------------------------------------------------
+| WEBSITE SOFTWARE
+|--------------------------------------------------------------------------
+*/
+
+$softwareWebsite =
+    $softwareDashboard['website'] ?? [];
+
+
+if ($softwareWebsite instanceof \Illuminate\Support\Collection) {
+
+    $softwareWebsite =
+        $softwareWebsite->toArray();
+
+}
+
+
+$softwareWebsite =
+    is_array($softwareWebsite)
+        ? $softwareWebsite
         : [];
 
 
-$softwarePengadaan = array_merge([
+$softwareWebsite = array_merge([
 
-    'Beli' => 0,
-    'Sewa' => 0,
+    'Aktif' => 0,
+    'Nonaktif' => 0,
 
-], $softwarePengadaan);
-
-
-$softwareStatus = array_merge([
-
-    'Tersedia' => 0,
-    'Akan Habis' => 0,
-    'Expired' => 0,
-
-], $softwareStatus);
+], $softwareWebsite);
 
 
 /*
@@ -327,17 +332,17 @@ foreach ($hardwareJenis as $key => $value) {
 }
 
 
-foreach ($softwarePengadaan as $key => $value) {
+foreach ($softwareSsl as $key => $value) {
 
-    $softwarePengadaan[$key] =
+    $softwareSsl[$key] =
         max(0, (int) $value);
 
 }
 
 
-foreach ($softwareStatus as $key => $value) {
+foreach ($softwareWebsite as $key => $value) {
 
-    $softwareStatus[$key] =
+    $softwareWebsite[$key] =
         max(0, (int) $value);
 
 }
@@ -369,12 +374,22 @@ $hardwareTotal =
     array_sum($hardwareJenis);
 
 
-$softwarePengadaanTotal =
-    array_sum($softwarePengadaan);
+$softwareSslTotal =
+    array_sum($softwareSsl);
 
 
-$infraJenisTotal =
-    array_sum($infraJenis);
+$softwareWebsiteTotal =
+    array_sum($softwareWebsite);
+
+
+/*
+|--------------------------------------------------------------------------
+| TOTAL TENANT DATA CENTER
+|--------------------------------------------------------------------------
+*/
+
+$infraTenantTotal =
+    array_sum($infraTenant);
 
 
 /*
@@ -400,18 +415,18 @@ foreach ($hardwareJenis as $key => $value) {
 
 /*
 |--------------------------------------------------------------------------
-| PERSENTASE SOFTWARE
+| PERSENTASE SSL
 |--------------------------------------------------------------------------
 */
 
-$softwarePersen = [];
+$softwareSslPersen = [];
 
-foreach ($softwarePengadaan as $key => $value) {
+foreach ($softwareSsl as $key => $value) {
 
-    $softwarePersen[$key] =
-        $softwarePengadaanTotal > 0
+    $softwareSslPersen[$key] =
+        $softwareSslTotal > 0
             ? round(
-                ($value / $softwarePengadaanTotal) * 100,
+                ($value / $softwareSslTotal) * 100,
                 1
             )
             : 0;
@@ -421,18 +436,18 @@ foreach ($softwarePengadaan as $key => $value) {
 
 /*
 |--------------------------------------------------------------------------
-| PERSENTASE INFRASTRUKTUR
+| PERSENTASE TENANT DATA CENTER
 |--------------------------------------------------------------------------
 */
 
-$infraPersen = [];
+$infraTenantPersen = [];
 
-foreach ($infraJenis as $key => $value) {
+foreach ($infraTenant as $key => $value) {
 
-    $infraPersen[$key] =
-        $infraJenisTotal > 0
+    $infraTenantPersen[$key] =
+        $infraTenantTotal > 0
             ? round(
-                ($value / $infraJenisTotal) * 100,
+                ($value / $infraTenantTotal) * 100,
                 1
             )
             : 0;
@@ -459,19 +474,8 @@ $hardwareBarMax = max(
 
 $softwareBarMax = max(
 
-    !empty($softwareStatus)
-        ? max($softwareStatus)
-        : 0,
-
-    1
-
-);
-
-
-$infraBarMax = max(
-
-    !empty($infraTenant)
-        ? max($infraTenant)
+    !empty($softwareWebsite)
+        ? max($softwareWebsite)
         : 0,
 
     1
@@ -481,25 +485,28 @@ $infraBarMax = max(
 
 /*
 |--------------------------------------------------------------------------
-| SOFTWARE DONUT DEGREE
+| BAR INFRASTRUKTUR
 |--------------------------------------------------------------------------
 */
 
-$softwareBeliDeg = 0;
+$infraJenisBarMax = max(
 
-if ($softwarePengadaanTotal > 0) {
+    !empty($infraJenis)
+        ? max($infraJenis)
+        : 0,
 
-    $softwareBeliDeg =
-        ($softwarePengadaan['Beli']
-        / $softwarePengadaanTotal)
-        * 360;
+    1
 
-}
+);
 
 @endphp
 
 
 <style>
+
+/* =====================================================
+   DASHBOARD
+===================================================== */
 
 .dashboard {
     width: 100%;
@@ -590,23 +597,37 @@ if ($softwarePengadaanTotal > 0) {
 
 
 /* =====================================================
-   SUMMARY
+   SUMMARY CARD
 ===================================================== */
 
 .stats-grid {
     display: grid;
-    grid-template-columns: repeat(6,minmax(0,1fr));
+    grid-template-columns: repeat(6, minmax(0, 1fr));
     gap: 14px;
     margin-bottom: 22px;
+    align-items: stretch;
 }
+
+
+/*
+|--------------------------------------------------------------------------
+| SEMUA CARD DIJAGA TETAP SAMA TINGGI
+|--------------------------------------------------------------------------
+*/
 
 .stat-card {
     background: #fff;
     border-radius: 14px;
-    padding: 17px;
+    padding: 15px 16px;
     border: 1px solid #eef0f4;
     box-shadow: 0 3px 10px rgba(0,0,0,.05);
+
     min-width: 0;
+    min-height: 92px;
+
+    display: flex;
+    align-items: center;
+
     transition:
         transform .2s ease,
         box-shadow .2s ease;
@@ -617,49 +638,132 @@ if ($softwarePengadaanTotal > 0) {
     box-shadow: 0 6px 16px rgba(0,0,0,.07);
 }
 
+
+/*
+|--------------------------------------------------------------------------
+| CARD CONTENT
+|--------------------------------------------------------------------------
+*/
+
 .stat-card-top {
     display: flex;
     align-items: center;
-    gap: 11px;
+    gap: 9px;
+
+    width: 100%;
     min-width: 0;
 }
 
+
+/*
+|--------------------------------------------------------------------------
+| ICON
+|--------------------------------------------------------------------------
+*/
+
 .stat-icon {
-    width: 42px;
-    height: 42px;
+    width: 40px;
+    height: 40px;
+
     border-radius: 11px;
+
     display: flex;
     align-items: center;
     justify-content: center;
+
     background: #e0f2fe;
     color: #075985;
-    flex-shrink: 0;
+
+    flex: 0 0 40px;
 }
 
 .stat-icon i {
-    font-size: 19px;
+    font-size: 18px;
 }
+
+
+/*
+|--------------------------------------------------------------------------
+| CONTENT
+|--------------------------------------------------------------------------
+*/
 
 .stat-content {
     min-width: 0;
+    flex: 1;
 }
+
+
+/*
+|--------------------------------------------------------------------------
+| LABEL
+|--------------------------------------------------------------------------
+*/
 
 .stat-label {
     display: block;
+
     font-size: 11px;
+    line-height: 1.2;
+
     color: #6b7280;
-    margin-bottom: 4px;
+
+    margin-bottom: 5px;
+
     white-space: nowrap;
     overflow: hidden;
     text-overflow: ellipsis;
 }
 
+
+/*
+|--------------------------------------------------------------------------
+| VALUE
+|--------------------------------------------------------------------------
+*/
+
 .stat-value {
     display: block;
+
     font-size: 23px;
     line-height: 1;
+
     font-weight: 700;
+
     color: #1f2937;
+
+    white-space: nowrap;
+}
+
+
+/*
+|--------------------------------------------------------------------------
+| KHUSUS TOTAL HARGA HARDWARE
+|--------------------------------------------------------------------------
+|
+| Dibuat sedikit lebih kecil supaya:
+|
+| Rp 26.290.000
+|
+| tetap satu baris.
+|
+*/
+
+.stat-price-value {
+    display: block;
+
+    font-size: 16px;
+    line-height: 1.1;
+
+    font-weight: 700;
+
+    color: #1f2937;
+
+    white-space: nowrap;
+    letter-spacing: -0.25px;
+
+    overflow: hidden;
+    text-overflow: ellipsis;
 }
 
 
@@ -749,12 +853,17 @@ if ($softwarePengadaanTotal > 0) {
 .donut::after {
     content: "";
     position: absolute;
+
     width: 66px;
     height: 66px;
+
     border-radius: 50%;
+
     background: #fff;
+
     top: 50%;
     left: 50%;
+
     transform:
         translate(-50%,-50%);
 }
@@ -763,9 +872,11 @@ if ($softwarePengadaanTotal > 0) {
     position: absolute;
     z-index: 2;
     inset: 0;
+
     display: flex;
     align-items: center;
     justify-content: center;
+
     flex-direction: column;
 }
 
@@ -966,13 +1077,18 @@ if ($softwarePengadaanTotal > 0) {
 
 .activity-item {
     position: relative;
+
     display: grid;
+
     grid-template-columns:
         46px minmax(0,1fr) auto;
+
     gap: 14px;
+
     align-items: start;
 
     padding: 15px 14px;
+
     border-radius: 12px;
 
     transition:
@@ -994,10 +1110,14 @@ if ($softwarePengadaanTotal > 0) {
 
 .activity-timeline::after {
     content: "";
+
     position: absolute;
+
     top: 40px;
     bottom: -18px;
+
     width: 2px;
+
     background: #e5e7eb;
 }
 
@@ -1189,7 +1309,39 @@ if ($softwarePengadaanTotal > 0) {
    RESPONSIVE
 ===================================================== */
 
-@media (max-width:1300px) {
+@media (max-width: 1400px) {
+
+    .stat-card {
+        padding-left: 14px;
+        padding-right: 14px;
+    }
+
+    .stat-card-top {
+        gap: 8px;
+    }
+
+    .stat-icon {
+        width: 38px;
+        height: 38px;
+        flex-basis: 38px;
+    }
+
+    .stat-icon i {
+        font-size: 17px;
+    }
+
+    .stat-value {
+        font-size: 21px;
+    }
+
+    .stat-price-value {
+        font-size: 15px;
+    }
+
+}
+
+
+@media (max-width: 1300px) {
 
     .stats-grid {
         grid-template-columns:
@@ -1204,7 +1356,7 @@ if ($softwarePengadaanTotal > 0) {
 }
 
 
-@media (max-width:900px) {
+@media (max-width: 900px) {
 
     .asset-panels {
         grid-template-columns: 1fr;
@@ -1218,7 +1370,7 @@ if ($softwarePengadaanTotal > 0) {
 }
 
 
-@media (max-width:700px) {
+@media (max-width: 700px) {
 
     .welcome-title {
         font-size: 20px;
@@ -1275,7 +1427,7 @@ if ($softwarePengadaanTotal > 0) {
 }
 
 
-@media (max-width:500px) {
+@media (max-width: 500px) {
 
     .stats-grid {
         grid-template-columns: 1fr;
@@ -1435,6 +1587,8 @@ if ($softwarePengadaanTotal > 0) {
 <div class="stats-grid">
 
 
+    {{-- TOTAL ASET --}}
+
     <div class="stat-card">
 
         <div class="stat-card-top">
@@ -1459,6 +1613,8 @@ if ($softwarePengadaanTotal > 0) {
 
     </div>
 
+
+    {{-- HARDWARE --}}
 
     <div class="stat-card">
 
@@ -1485,6 +1641,43 @@ if ($softwarePengadaanTotal > 0) {
     </div>
 
 
+    {{-- TOTAL HARGA HARDWARE --}}
+
+    <div class="stat-card">
+
+        <div class="stat-card-top">
+
+            <div class="stat-icon">
+                <i class="bi bi-cash-stack"></i>
+            </div>
+
+            <div class="stat-content">
+
+                <span class="stat-label">
+                    Total Harga Hardware
+                </span>
+
+                <span
+                    class="stat-price-value"
+                    title="Rp {{ number_format($totalHargaHardware, 0, ',', '.') }}"
+                >
+                    Rp {{ number_format(
+                        $totalHargaHardware,
+                        0,
+                        ',',
+                        '.'
+                    ) }}
+                </span>
+
+            </div>
+
+        </div>
+
+    </div>
+
+
+    {{-- SOFTWARE --}}
+
     <div class="stat-card">
 
         <div class="stat-card-top">
@@ -1509,6 +1702,8 @@ if ($softwarePengadaanTotal > 0) {
 
     </div>
 
+
+    {{-- INFRASTRUKTUR --}}
 
     <div class="stat-card">
 
@@ -1535,6 +1730,8 @@ if ($softwarePengadaanTotal > 0) {
     </div>
 
 
+    {{-- SDM --}}
+
     <div class="stat-card">
 
         <div class="stat-card-top">
@@ -1559,6 +1756,8 @@ if ($softwarePengadaanTotal > 0) {
 
     </div>
 
+
+    {{-- DATA --}}
 
     <div class="stat-card">
 
@@ -1612,8 +1811,6 @@ if ($softwarePengadaanTotal > 0) {
     </div>
 
 
-    {{-- DONUT = JENIS BARANG --}}
-
     <div class="donut-section">
 
         <div
@@ -1628,7 +1825,7 @@ if ($softwarePengadaanTotal > 0) {
                 </span>
 
                 <span class="donut-caption">
-                    Total
+                    Jenis Barang
                 </span>
 
             </div>
@@ -1639,16 +1836,6 @@ if ($softwarePengadaanTotal > 0) {
         <div class="legend">
 
             @php
-
-                /*
-                |--------------------------------------------------------------------------
-                | WARNA HARDWARE
-                |--------------------------------------------------------------------------
-                |
-                | Warna berdasarkan urutan jenis yang berasal dari database.
-                | Tidak bergantung pada nama jenis barang.
-                |
-                */
 
                 $hardwareColors = [
 
@@ -1743,8 +1930,6 @@ if ($softwarePengadaanTotal > 0) {
 
     </div>
 
-
-    {{-- BAR = KONDISI HARDWARE --}}
 
     <div class="bar-section">
 
@@ -1848,26 +2033,21 @@ if ($softwarePengadaanTotal > 0) {
     </div>
 
 
-    {{-- DONUT = PENGADAAN --}}
-
     <div class="donut-section">
 
         <div
             class="donut software-donut"
-            data-beli="{{ $softwareBeliDeg }}"
-            data-total="{{ $softwarePengadaanTotal }}"
+            data-total="{{ $softwareSslTotal }}"
         >
 
             <div class="donut-center">
 
                 <span class="donut-number">
-                    {{ number_format(
-                        $softwarePengadaanTotal
-                    ) }}
+                    {{ number_format($softwareSslTotal) }}
                 </span>
 
                 <span class="donut-caption">
-                    Total
+                    SSL
                 </span>
 
             </div>
@@ -1877,102 +2057,114 @@ if ($softwarePengadaanTotal > 0) {
 
         <div class="legend">
 
-            <div class="legend-item">
+            @php
 
-                <div class="legend-left">
+                $softwareSslColors = [
 
-                    <span
-                        class="legend-dot"
-                        style="
-                            background:#2f80d7;
-                        "
-                    ></span>
+                    '#2f80d7',
+                    '#8b5cf6',
+                    '#16a34a',
+                    '#f59e0b',
+                    '#ef4444',
+                    '#14b8a6',
+                    '#ec4899',
+                    '#6366f1',
+                    '#f97316',
+                    '#06b6d4',
+                    '#84cc16',
+                    '#a855f7',
+                    '#e11d48',
+                    '#0ea5e9',
+                    '#64748b',
+                    '#d946ef',
 
-                    <span class="legend-name">
-                        Beli
+                ];
+
+                $softwareSslColorIndex = 0;
+
+            @endphp
+
+
+            @forelse($softwareSsl as $label => $value)
+
+                @php
+
+                    $sslLegendColor =
+                        $softwareSslColors[
+                            $softwareSslColorIndex
+                            % count($softwareSslColors)
+                        ];
+
+                    $softwareSslColorIndex++;
+
+                @endphp
+
+
+                <div class="legend-item">
+
+                    <div class="legend-left">
+
+                        <span
+                            class="legend-dot"
+                            style="
+                                background:
+                                {{ $sslLegendColor }};
+                            "
+                        ></span>
+
+                        <span
+                            class="legend-name"
+                            title="{{ $label }}"
+                        >
+                            {{ $label }}
+                        </span>
+
+                    </div>
+
+                    <span class="legend-value">
+
+                        {{ number_format($value) }}
+
+                        (
+
+                        {{ number_format(
+                            $softwareSslPersen[$label] ?? 0,
+                            1,
+                            ',',
+                            '.'
+                        ) }}%
+
+                        )
+
                     </span>
 
                 </div>
 
-                <span class="legend-value">
+            @empty
 
-                    {{ number_format(
-                        $softwarePengadaan['Beli']
-                    ) }}
-
-                    (
-
-                    {{ number_format(
-                        $softwarePersen['Beli'],
-                        1,
-                        ',',
-                        '.'
-                    ) }}%
-
-                    )
-
-                </span>
-
-            </div>
-
-
-            <div class="legend-item">
-
-                <div class="legend-left">
-
-                    <span
-                        class="legend-dot"
-                        style="
-                            background:#9ca3af;
-                        "
-                    ></span>
-
-                    <span class="legend-name">
-                        Sewa
-                    </span>
-
+                <div class="chart-empty">
+                    Belum ada data SSL.
                 </div>
 
-                <span class="legend-value">
-
-                    {{ number_format(
-                        $softwarePengadaan['Sewa']
-                    ) }}
-
-                    (
-
-                    {{ number_format(
-                        $softwarePersen['Sewa'],
-                        1,
-                        ',',
-                        '.'
-                    ) }}%
-
-                    )
-
-                </span>
-
-            </div>
+            @endforelse
 
         </div>
 
     </div>
 
 
-    {{-- BAR = STATUS SOFTWARE --}}
-
     <div class="bar-section">
 
         <div class="bar-title">
-            Status
+            Website
         </div>
 
 
-        @if(array_sum($softwareStatus) > 0)
+        @if(array_sum($softwareWebsite) > 0)
 
             <div class="bar-chart">
 
-                @foreach($softwareStatus as $label => $value)
+                @foreach($softwareWebsite as $label => $value)
 
                     @php
 
@@ -1988,32 +2180,13 @@ if ($softwarePengadaanTotal > 0) {
                                 : 0;
 
 
-                        if ($label === 'Tersedia') {
+                        if ($label === 'Aktif') {
 
                             $barColor = '#16a34a';
-
-                        } elseif ($label === 'Akan Habis') {
-
-                            $barColor = '#f59e0b';
 
                         } else {
 
                             $barColor = '#ef4444';
-
-                        }
-
-
-                        if ($label === 'Akan Habis') {
-
-                            $barLabel = 'Akan habis';
-
-                        } elseif ($label === 'Expired') {
-
-                            $barLabel = 'Exp';
-
-                        } else {
-
-                            $barLabel = $label;
 
                         }
 
@@ -2039,7 +2212,7 @@ if ($softwarePengadaanTotal > 0) {
                         ></div>
 
                         <span class="bar-label">
-                            {{ $barLabel }}
+                            {{ $label }}
                         </span>
 
                     </div>
@@ -2051,7 +2224,7 @@ if ($softwarePengadaanTotal > 0) {
         @else
 
             <div class="chart-empty">
-                Belum ada data status software.
+                Belum ada data website.
             </div>
 
         @endif
@@ -2078,25 +2251,21 @@ if ($softwarePengadaanTotal > 0) {
     </div>
 
 
-    {{-- DONUT = JARINGAN + DATA CENTER --}}
-
     <div class="donut-section">
 
         <div
             class="donut infrastructure-donut"
-            data-total="{{ $infraJenisTotal }}"
+            data-total="{{ $infraTenantTotal }}"
         >
 
             <div class="donut-center">
 
                 <span class="donut-number">
-                    {{ number_format(
-                        $infraJenisTotal
-                    ) }}
+                    {{ number_format($infraTenantTotal) }}
                 </span>
 
                 <span class="donut-caption">
-                    Total
+                    Tenant
                 </span>
 
             </div>
@@ -2108,20 +2277,46 @@ if ($softwarePengadaanTotal > 0) {
 
             @php
 
-                $infraColors = [
+                $infraTenantColors = [
 
-                    'Jaringan' =>
-                        '#079bd8',
-
-                    'Data Center' =>
-                        '#8b5cf6',
+                    '#079bd8',
+                    '#8b5cf6',
+                    '#16a34a',
+                    '#f59e0b',
+                    '#ef4444',
+                    '#14b8a6',
+                    '#ec4899',
+                    '#6366f1',
+                    '#f97316',
+                    '#06b6d4',
+                    '#84cc16',
+                    '#a855f7',
+                    '#e11d48',
+                    '#0ea5e9',
+                    '#64748b',
+                    '#d946ef',
 
                 ];
+
+                $infraTenantColorIndex = 0;
 
             @endphp
 
 
-            @foreach($infraJenis as $label => $value)
+            @forelse($infraTenant as $label => $value)
+
+                @php
+
+                    $tenantLegendColor =
+                        $infraTenantColors[
+                            $infraTenantColorIndex
+                            % count($infraTenantColors)
+                        ];
+
+                    $infraTenantColorIndex++;
+
+                @endphp
+
 
                 <div class="legend-item">
 
@@ -2131,12 +2326,14 @@ if ($softwarePengadaanTotal > 0) {
                             class="legend-dot"
                             style="
                                 background:
-                                {{ $infraColors[$label]
-                                    ?? '#9ca3af' }};
+                                {{ $tenantLegendColor }};
                             "
                         ></span>
 
-                        <span class="legend-name">
+                        <span
+                            class="legend-name"
+                            title="{{ $label }}"
+                        >
                             {{ $label }}
                         </span>
 
@@ -2150,7 +2347,7 @@ if ($softwarePengadaanTotal > 0) {
                         (
 
                         {{ number_format(
-                            $infraPersen[$label] ?? 0,
+                            $infraTenantPersen[$label] ?? 0,
                             1,
                             ',',
                             '.'
@@ -2162,27 +2359,31 @@ if ($softwarePengadaanTotal > 0) {
 
                 </div>
 
-            @endforeach
+            @empty
+
+                <div class="chart-empty">
+                    Belum ada data tenant Data Center.
+                </div>
+
+            @endforelse
 
         </div>
 
     </div>
 
 
-    {{-- BAR = TENANT DATA CENTER --}}
-
     <div class="bar-section">
 
         <div class="bar-title">
-            Tenant Data Center
+            Jenis Infrastruktur
         </div>
 
 
-        @if(array_sum($infraTenant) > 0)
+        @if(array_sum($infraJenis) > 0)
 
             <div class="bar-chart">
 
-                @foreach($infraTenant as $label => $value)
+                @foreach($infraJenis as $label => $value)
 
                     @php
 
@@ -2192,13 +2393,25 @@ if ($softwarePengadaanTotal > 0) {
                                     4,
                                     (
                                         $value
-                                        / $infraBarMax
+                                        / $infraJenisBarMax
                                     ) * 55
                                 )
                                 : 0;
 
-                        $barColor =
-                            '#8b5cf6';
+
+                        if ($label === 'Jaringan') {
+
+                            $barColor = '#079bd8';
+
+                        } elseif ($label === 'Data Center') {
+
+                            $barColor = '#8b5cf6';
+
+                        } else {
+
+                            $barColor = '#9ca3af';
+
+                        }
 
                     @endphp
 
@@ -2221,10 +2434,7 @@ if ($softwarePengadaanTotal > 0) {
                             "
                         ></div>
 
-                        <span
-                            class="bar-label"
-                            title="{{ $label }}"
-                        >
+                        <span class="bar-label">
                             {{ $label }}
                         </span>
 
@@ -2237,7 +2447,7 @@ if ($softwarePengadaanTotal > 0) {
         @else
 
             <div class="chart-empty">
-                Belum ada data tenant Data Center.
+                Belum ada data jenis infrastruktur.
             </div>
 
         @endif
@@ -2600,9 +2810,6 @@ document.addEventListener(
         |--------------------------------------------------------------------------
         | HARDWARE DONUT
         |--------------------------------------------------------------------------
-        |
-        | Menggunakan jenis hardware DINAMIS dari database.
-        |
         */
 
         const hardware =
@@ -2622,16 +2829,6 @@ document.addEventListener(
             const jenisData =
                 @json($hardwareJenis);
 
-
-            /*
-            |--------------------------------------------------------------------------
-            | WARNA HARDWARE
-            |--------------------------------------------------------------------------
-            |
-            | Warna berdasarkan urutan data.
-            | Tidak tergantung nama jenis barang.
-            |
-            */
 
             const jenisColors = [
 
@@ -2678,9 +2875,7 @@ document.addEventListener(
 
 
                         if (value <= 0) {
-
                             return;
-
                         }
 
 
@@ -2730,81 +2925,80 @@ document.addEventListener(
                     hardware.style.background =
                         '#e5e7eb';
 
-                    return;
+                } else {
 
-                }
-
-
-                const start =
-                    performance.now();
+                    const start =
+                        performance.now();
 
 
-                function animateHardware(time) {
+                    function animateHardware(time) {
 
-                    const progress =
-                        Math.min(
+                        const progress =
+                            Math.min(
 
-                            (
-                                time - start
-                            ) / duration,
+                                (
+                                    time - start
+                                ) / duration,
 
-                            1
+                                1
 
-                        );
-
-
-                    const ease =
-                        1 -
-                        Math.pow(
-                            1 - progress,
-                            3
-                        );
+                            );
 
 
-                    const gradientParts =
-                        segments.map(
-                            function (segment) {
-
-                                const animatedStart =
-                                    segment.start
-                                    * ease;
-
-
-                                const animatedEnd =
-                                    segment.end
-                                    * ease;
+                        const ease =
+                            1 -
+                            Math.pow(
+                                1 - progress,
+                                3
+                            );
 
 
-                                return `
-                                    ${segment.color}
-                                    ${animatedStart}deg
-                                    ${animatedEnd}deg
-                                `;
+                        const gradientParts =
+                            segments.map(
+                                function (segment) {
 
-                            }
-                        );
-
-
-                    hardware.style.background =
-                        `conic-gradient(
-                            ${gradientParts.join(',')}
-                        )`;
+                                    const animatedStart =
+                                        segment.start
+                                        * ease;
 
 
-                    if (progress < 1) {
+                                    const animatedEnd =
+                                        segment.end
+                                        * ease;
 
-                        requestAnimationFrame(
-                            animateHardware
-                        );
+
+                                    return `
+                                        ${segment.color}
+                                        ${animatedStart}deg
+                                        ${animatedEnd}deg
+                                    `;
+
+                                }
+                            );
+
+
+                        hardware.style.background =
+                            `conic-gradient(
+                                ${gradientParts.join(',')}
+                            )`;
+
+
+                        if (progress < 1) {
+
+                            requestAnimationFrame(
+                                animateHardware
+                            );
+
+                        }
 
                     }
 
+
+                    requestAnimationFrame(
+                        animateHardware
+                    );
+
                 }
-
-
-                requestAnimationFrame(
-                    animateHardware
-                );
 
             }
 
@@ -2813,7 +3007,7 @@ document.addEventListener(
 
         /*
         |--------------------------------------------------------------------------
-        | SOFTWARE DONUT
+        | SOFTWARE SSL DONUT
         |--------------------------------------------------------------------------
         */
 
@@ -2825,130 +3019,41 @@ document.addEventListener(
 
         if (software) {
 
-            const targetBeli =
-                parseFloat(
-                    software.dataset.beli
-                ) || 0;
-
-
             const total =
                 parseFloat(
                     software.dataset.total
                 ) || 0;
 
 
+            const sslData =
+                @json($softwareSsl);
+
+
+            const sslColors = [
+
+                '#2f80d7',
+                '#8b5cf6',
+                '#16a34a',
+                '#f59e0b',
+                '#ef4444',
+                '#14b8a6',
+                '#ec4899',
+                '#6366f1',
+                '#f97316',
+                '#06b6d4',
+                '#84cc16',
+                '#a855f7',
+                '#e11d48',
+                '#0ea5e9',
+                '#64748b',
+                '#d946ef'
+
+            ];
+
+
             if (total <= 0) {
 
                 software.style.background =
-                    '#e5e7eb';
-
-            } else {
-
-                const start =
-                    performance.now();
-
-
-                function animateSoftware(time) {
-
-                    const progress =
-                        Math.min(
-
-                            (
-                                time - start
-                            ) / duration,
-
-                            1
-
-                        );
-
-
-                    const ease =
-                        1 -
-                        Math.pow(
-                            1 - progress,
-                            3
-                        );
-
-
-                    const beli =
-                        targetBeli
-                        * ease;
-
-
-                    software.style.background = `
-                        conic-gradient(
-                            #2f80d7
-                            0deg
-                            ${beli}deg,
-
-                            #9ca3af
-                            ${beli}deg
-                            360deg
-                        )
-                    `;
-
-
-                    if (progress < 1) {
-
-                        requestAnimationFrame(
-                            animateSoftware
-                        );
-
-                    }
-
-                }
-
-
-                requestAnimationFrame(
-                    animateSoftware
-                );
-
-            }
-
-        }
-
-
-        /*
-        |--------------------------------------------------------------------------
-        | INFRASTRUKTUR DONUT
-        |--------------------------------------------------------------------------
-        |
-        | Jaringan / Data Center
-        |
-        */
-
-        const infrastructure =
-            document.querySelector(
-                '.infrastructure-donut'
-            );
-
-
-        if (infrastructure) {
-
-            const total =
-                parseFloat(
-                    infrastructure.dataset.total
-                ) || 0;
-
-
-            const infraData =
-                @json($infraJenis);
-
-
-            const infraColors = {
-
-                'Jaringan':
-                    '#079bd8',
-
-                'Data Center':
-                    '#8b5cf6'
-
-            };
-
-
-            if (total <= 0) {
-
-                infrastructure.style.background =
                     '#e5e7eb';
 
             } else {
@@ -2959,9 +3064,9 @@ document.addEventListener(
 
 
                 Object.entries(
-                    infraData
+                    sslData
                 ).forEach(
-                    function ([label, value]) {
+                    function ([label, value], index) {
 
                         value =
                             parseFloat(value)
@@ -2969,9 +3074,7 @@ document.addEventListener(
 
 
                         if (value <= 0) {
-
                             return;
-
                         }
 
 
@@ -3000,8 +3103,210 @@ document.addEventListener(
                                 end,
 
                             color:
-                                infraColors[label]
-                                || '#9ca3af'
+                                sslColors[
+                                    index
+                                    %
+                                    sslColors.length
+                                ]
+
+                        });
+
+
+                        currentDegree =
+                            end;
+
+                    }
+                );
+
+
+                if (segments.length === 0) {
+
+                    software.style.background =
+                        '#e5e7eb';
+
+                } else {
+
+                    const start =
+                        performance.now();
+
+
+                    function animateSoftware(time) {
+
+                        const progress =
+                            Math.min(
+
+                                (
+                                    time - start
+                                ) / duration,
+
+                                1
+
+                            );
+
+
+                        const ease =
+                            1 -
+                            Math.pow(
+                                1 - progress,
+                                3
+                            );
+
+
+                        const gradientParts =
+                            segments.map(
+                                function (segment) {
+
+                                    const animatedStart =
+                                        segment.start
+                                        * ease;
+
+
+                                    const animatedEnd =
+                                        segment.end
+                                        * ease;
+
+
+                                    return `
+                                        ${segment.color}
+                                        ${animatedStart}deg
+                                        ${animatedEnd}deg
+                                    `;
+
+                                }
+                            );
+
+
+                        software.style.background =
+                            `conic-gradient(
+                                ${gradientParts.join(',')}
+                            )`;
+
+
+                        if (progress < 1) {
+
+                            requestAnimationFrame(
+                                animateSoftware
+                            );
+
+                        }
+
+                    }
+
+
+                    requestAnimationFrame(
+                        animateSoftware
+                    );
+
+                }
+
+            }
+
+        }
+
+
+        /*
+        |--------------------------------------------------------------------------
+        | INFRASTRUKTUR DONUT
+        |--------------------------------------------------------------------------
+        */
+
+        const infrastructure =
+            document.querySelector(
+                '.infrastructure-donut'
+            );
+
+
+        if (infrastructure) {
+
+            const total =
+                parseFloat(
+                    infrastructure.dataset.total
+                ) || 0;
+
+
+            const infraData =
+                @json($infraTenant);
+
+
+            const infraColors = [
+
+                '#079bd8',
+                '#8b5cf6',
+                '#16a34a',
+                '#f59e0b',
+                '#ef4444',
+                '#14b8a6',
+                '#ec4899',
+                '#6366f1',
+                '#f97316',
+                '#06b6d4',
+                '#84cc16',
+                '#a855f7',
+                '#e11d48',
+                '#0ea5e9',
+                '#64748b',
+                '#d946ef'
+
+            ];
+
+
+            if (total <= 0) {
+
+                infrastructure.style.background =
+                    '#e5e7eb';
+
+            } else {
+
+                const segments = [];
+
+                let currentDegree = 0;
+
+
+                Object.entries(
+                    infraData
+                ).forEach(
+                    function ([label, value], index) {
+
+                        value =
+                            parseFloat(value)
+                            || 0;
+
+
+                        if (value <= 0) {
+                            return;
+                        }
+
+
+                        const degree =
+                            (
+                                value
+                                / total
+                            ) * 360;
+
+
+                        const start =
+                            currentDegree;
+
+
+                        const end =
+                            currentDegree
+                            + degree;
+
+
+                        segments.push({
+
+                            start:
+                                start,
+
+                            end:
+                                end,
+
+                            color:
+                                infraColors[
+                                    index
+                                    %
+                                    infraColors.length
+                                ]
 
                         });
 
@@ -3018,81 +3323,80 @@ document.addEventListener(
                     infrastructure.style.background =
                         '#e5e7eb';
 
-                    return;
+                } else {
 
-                }
-
-
-                const start =
-                    performance.now();
+                    const start =
+                        performance.now();
 
 
-                function animateInfrastructure(time) {
+                    function animateInfrastructure(time) {
 
-                    const progress =
-                        Math.min(
+                        const progress =
+                            Math.min(
 
-                            (
-                                time - start
-                            ) / duration,
+                                (
+                                    time - start
+                                ) / duration,
 
-                            1
+                                1
 
-                        );
-
-
-                    const ease =
-                        1 -
-                        Math.pow(
-                            1 - progress,
-                            3
-                        );
+                            );
 
 
-                    const gradientParts =
-                        segments.map(
-                            function (segment) {
-
-                                const animatedStart =
-                                    segment.start
-                                    * ease;
-
-
-                                const animatedEnd =
-                                    segment.end
-                                    * ease;
+                        const ease =
+                            1 -
+                            Math.pow(
+                                1 - progress,
+                                3
+                            );
 
 
-                                return `
-                                    ${segment.color}
-                                    ${animatedStart}deg
-                                    ${animatedEnd}deg
-                                `;
+                        const gradientParts =
+                            segments.map(
+                                function (segment) {
 
-                            }
-                        );
-
-
-                    infrastructure.style.background =
-                        `conic-gradient(
-                            ${gradientParts.join(',')}
-                        )`;
+                                    const animatedStart =
+                                        segment.start
+                                        * ease;
 
 
-                    if (progress < 1) {
+                                    const animatedEnd =
+                                        segment.end
+                                        * ease;
 
-                        requestAnimationFrame(
-                            animateInfrastructure
-                        );
+
+                                    return `
+                                        ${segment.color}
+                                        ${animatedStart}deg
+                                        ${animatedEnd}deg
+                                    `;
+
+                                }
+                            );
+
+
+                        infrastructure.style.background =
+                            `conic-gradient(
+                                ${gradientParts.join(',')}
+                            )`;
+
+
+                        if (progress < 1) {
+
+                            requestAnimationFrame(
+                                animateInfrastructure
+                            );
+
+                        }
 
                     }
 
+
+                    requestAnimationFrame(
+                        animateInfrastructure
+                    );
+
                 }
-
-
-                requestAnimationFrame(
-                    animateInfrastructure
-                );
 
             }
 
