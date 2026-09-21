@@ -44,7 +44,6 @@
 
 @endphp
 
-
 <style>
 
 /* =========================================================
@@ -645,6 +644,7 @@
 
 </style>
 
+<div class="verifikator-dashboard">
 
 <div class="verifikator-dashboard">
 
@@ -766,16 +766,17 @@
 
         </div>
 
+    </div>
 
         {{-- DISETUJUI --}}
 
-        <div class="verifikator-stat">
+    <div class="verifikator-stat">
 
             <div class="verifikator-stat-icon green">
 
-                <i class="bi bi-check-circle"></i>
+            <i class="bi bi-check-circle"></i>
 
-            </div>
+        </div>
 
             <div>
 
@@ -791,16 +792,17 @@
 
         </div>
 
+    </div>
 
         {{-- DITOLAK --}}
 
-        <div class="verifikator-stat">
+    <div class="verifikator-stat">
 
             <div class="verifikator-stat-icon red">
 
-                <i class="bi bi-x-circle"></i>
+            <i class="bi bi-x-circle"></i>
 
-            </div>
+        </div>
 
             <div>
 
@@ -1346,6 +1348,321 @@
 
     </div>
 
+
+</div>
+
+
+{{-- =====================================================
+     MAIN
+====================================================== --}}
+
+<div class="verifikator-main-grid">
+
+
+    {{-- =================================================
+         PENGAJUAN TERBARU
+    ================================================== --}}
+
+    <div class="verifikator-card">
+
+        <div class="verifikator-card-header">
+
+            <h3 class="verifikator-card-title">
+                Pengajuan Terbaru
+            </h3>
+
+            <a
+                href="{{ route('verifikasi.index') }}"
+                class="verifikator-see-all"
+            >
+                Lihat semua
+            </a>
+
+        </div>
+
+
+        <div class="verifikator-table-wrapper">
+
+            @if($pengajuanTerbaru->count())
+
+                <table class="verifikator-table">
+
+                    <thead>
+
+                        <tr>
+
+                            <th>
+                                DATA
+                            </th>
+
+                            <th>
+                                KATEGORI
+                            </th>
+
+                            <th>
+                                JENIS
+                            </th>
+
+                            <th>
+                                DIAJUKAN OLEH
+                            </th>
+
+                            <th>
+                                STATUS
+                            </th>
+
+                        </tr>
+
+                    </thead>
+
+
+                    <tbody>
+
+                        @foreach($pengajuanTerbaru as $item)
+
+                            @php
+
+                                $data = $item->data ?? [];
+
+                                $namaData =
+                                    $data['jenis']
+                                    ?? $data['nama']
+                                    ?? $data['nama_data']
+                                    ?? $data['kode']
+                                    ?? ucfirst($item->module);
+
+                                $kodeData =
+                                    $data['kode']
+                                    ?? null;
+
+                            @endphp
+
+
+                            <tr>
+
+                                <td>
+
+                                    <span class="verifikator-data-name">
+                                        {{ $namaData }}
+                                    </span>
+
+                                    @if($kodeData)
+
+                                        <span class="verifikator-data-code">
+                                            {{ $kodeData }}
+                                        </span>
+
+                                    @endif
+
+                                </td>
+
+
+                                <td>
+
+                                    <span class="verifikator-category">
+
+                                        @if(
+                                            $item->module === 'data-center' ||
+                                            $item->module === 'data_center'
+                                        )
+                                            Data Center
+                                        @else
+                                            {{ ucfirst($item->module ?? 'Data') }}
+                                        @endif
+
+                                    </span>
+
+                                </td>
+
+
+                                <td>
+
+                                    @if($item->action === 'create')
+
+                                        Tambah
+
+                                    @elseif($item->action === 'update')
+
+                                        Perbarui
+
+                                    @elseif($item->action === 'delete')
+
+                                        Hapus
+
+                                    @else
+
+                                        {{ ucfirst($item->action ?? '-') }}
+
+                                    @endif
+
+                                </td>
+
+
+                                <td>
+
+                                    {{ $item->submitter->name ?? '-' }}
+
+                                </td>
+
+
+                                <td>
+
+                                    @if($item->status === 'menunggu')
+
+                                        <span class="verifikator-status pending">
+                                            Menunggu
+                                        </span>
+
+                                    @elseif($item->status === 'disetujui')
+
+                                        <span class="verifikator-status approved">
+                                            Disetujui
+                                        </span>
+
+                                    @elseif($item->status === 'ditolak')
+
+                                        <span class="verifikator-status rejected">
+                                            Ditolak
+                                        </span>
+
+                                    @endif
+
+                                </td>
+
+                            </tr>
+
+                        @endforeach
+
+                    </tbody>
+
+                </table>
+
+            @else
+
+                <div class="verifikator-empty">
+
+                    Belum ada pengajuan.
+
+                </div>
+
+            @endif
+
+        </div>
+
+    </div>
+
+
+    {{-- =================================================
+         NOTIFIKASI
+    ================================================== --}}
+
+    <div class="verifikator-card">
+
+        <div class="verifikator-card-header">
+
+            <h3 class="verifikator-card-title">
+                Notifikasi
+            </h3>
+
+        </div>
+
+
+        <div>
+
+
+            {{-- MENUNGGU --}}
+
+            <div class="verifikator-notification">
+
+                <div class="verifikator-notification-icon orange">
+
+                    <i class="bi bi-clock"></i>
+
+                </div>
+
+                <div>
+
+                    <div class="verifikator-notification-title">
+                        Pengajuan menunggu verifikasi
+                    </div>
+
+                    <div class="verifikator-notification-text">
+
+                        Terdapat
+                        {{ $totalMenunggu }}
+                        pengajuan yang perlu diperiksa.
+
+                    </div>
+
+                </div>
+
+            </div>
+
+
+            {{-- DISETUJUI --}}
+
+            <div class="verifikator-notification">
+
+                <div class="verifikator-notification-icon green">
+
+                    <i class="bi bi-check-circle"></i>
+
+                </div>
+
+                <div>
+
+                    <div class="verifikator-notification-title">
+                        Pengajuan disetujui
+                    </div>
+
+                    <div class="verifikator-notification-text">
+
+                        Total
+                        {{ $totalDisetujui }}
+                        pengajuan telah disetujui.
+
+                    </div>
+
+                </div>
+
+            </div>
+
+
+            {{-- DITOLAK --}}
+
+            <div class="verifikator-notification">
+
+                <div class="verifikator-notification-icon red">
+
+                    <i class="bi bi-x-circle"></i>
+
+                </div>
+
+                <div>
+
+                    <div class="verifikator-notification-title">
+                        Pengajuan ditolak
+                    </div>
+
+                    <div class="verifikator-notification-text">
+
+                        Total
+                        {{ $totalDitolak }}
+                        pengajuan ditolak.
+
+                    </div>
+
+                </div>
+
+            </div>
+
+
+        </div>
+
+    </div>
+
+</div>
+```
 
 </div>
 

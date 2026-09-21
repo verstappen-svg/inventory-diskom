@@ -10,8 +10,10 @@ class Data extends Model
 
     protected $fillable = [
         'nama_dataset',
-        'jenis_data',
+        'topik',
         'tahun',
+        'deskripsi',
+        'metadata',
         'file_data',
         'verifikasi',
         'tanggal_pengajuan',
@@ -19,6 +21,21 @@ class Data extends Model
     ];
 
     protected $casts = [
+        'metadata' => 'array',
         'tanggal_pengajuan' => 'datetime',
     ];
+
+    /**
+     * Relasi ke seluruh baris dataset.
+     *
+     * Satu dataset dapat memiliki banyak baris
+     * pada tabel dataset_rows.
+     */
+    public function datasetRows()
+    {
+        return $this->hasMany(
+            DatasetRow::class,
+            'data_id'
+        );
+    }
 }

@@ -19,11 +19,10 @@ class SDMController extends Controller
     {
         $query = Sdm::query();
 
-        /*
-        |--------------------------------------------------------------------------
-        | SEARCH
-        |--------------------------------------------------------------------------
-        */
+        // =====================================================
+        // SEARCH
+        // =====================================================
+
         if ($request->filled('search')) {
             $search = trim($request->search);
 
@@ -721,14 +720,14 @@ class SDMController extends Controller
             'nip' =>
                 $nip,
 
-            'nama' =>
-                $request->nama,
+                    'data' =>
+                        $sdm->toArray(),
 
-            'jabatan' =>
-                $request->jabatan,
+                    'status' =>
+                        'menunggu',
 
-            'kompetensi' =>
-                $request->kompetensi,
+                    'submitted_by' =>
+                        auth()->id(),
 
             'masa_berlaku' =>
                 $request->masa_berlaku,

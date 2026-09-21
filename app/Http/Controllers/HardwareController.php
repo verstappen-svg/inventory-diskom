@@ -266,10 +266,9 @@ class HardwareController extends Controller
             $hardware = Hardware::create($validated);
 
 
-            /*
-             * Buat request verifikasi.
-             */
-            VerificationRequest::create([
+            // =================================================
+            // TENTUKAN NOMOR BERIKUTNYA
+            // =================================================
 
                 'module' =>
                     'hardware',
@@ -310,6 +309,38 @@ class HardwareController extends Controller
                 'dibaca' =>
                     false,
             ]);
+
+
+            // =================================================
+            // BUAT PENGAJUAN VERIFIKASI
+            // =================================================
+
+            VerifikasiHardware::create([
+                'hardware_id' => $hardware->id,
+                'status' => 'Menunggu Persetujuan',
+            ]);
+
+
+            // =================================================
+            // NOTIFIKASI
+            // =================================================
+
+            Notification::create([
+                'judul' => 'Pengajuan Hardware Baru',
+
+                'pesan' =>
+                    $request->user()->username .
+                    ' menambahkan hardware "' .
+                    $hardware->nama_barang .
+                    '" dengan ID ' .
+                    $hardware->asset_id .
+                    ' dan mengajukannya untuk persetujuan.',
+
+                'dibaca' => false,
+            ]);
+
+
+            return $hardware;
         });
 
 
@@ -366,7 +397,7 @@ class HardwareController extends Controller
             'jenis_barang' => [
                 'required',
                 'string',
-                'max:255',
+                'max:100',
             ],
 
             'lokasi_id' => [
@@ -395,8 +426,7 @@ class HardwareController extends Controller
 
             'kondisi' => [
                 'required',
-                'string',
-                'max:100',
+                'in:Baik,Perlu Perbaikan,Rusak',
             ],
 
         ], [
@@ -466,7 +496,16 @@ class HardwareController extends Controller
              */
             $hardwareRecord->update($validated);
 
-            $hardwareRecord->refresh();
+            'pesan' =>
+                $request->user()->username .
+                ' memperbarui hardware "' .
+                $hardware->nama_barang .
+                '" dengan ID ' .
+                $hardware->asset_id .
+                '.',
+
+            'dibaca' => false,
+        ]);
 
 
             /*

@@ -50,6 +50,7 @@ Route::post(
 
 Route::middleware('auth')->group(function () {
 
+
     /*
     |--------------------------------------------------------------------------
     | DASHBOARD

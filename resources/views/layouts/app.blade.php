@@ -114,6 +114,7 @@
             min-width: 0;
         }
 
+
         .page-title {
             margin: 0;
 
@@ -148,11 +149,13 @@
             padding: 0 15px;
         }
 
+
         .top-header .search-box i {
             font-size: 16px;
             color: #9ca3af;
             margin-right: 9px;
         }
+
 
         .top-header .search-box input {
             width: 100%;
@@ -165,6 +168,7 @@
             font-size: 13px;
             color: #374151;
         }
+
 
         .top-header .search-box input::placeholder {
             color: #9ca3af;
@@ -491,6 +495,7 @@
             border-radius: 50%;
 
             background: #071b88;
+
             color: #ffffff;
 
             display: flex;
@@ -556,6 +561,7 @@
             box-sizing: border-box;
         }
 
+
         .hardware-table-container {
             width: 100% !important;
             max-width: none !important;
@@ -586,6 +592,7 @@
             display: none;
 
             position: fixed;
+
             inset: 0;
 
             background: rgba(0, 0, 0, 0.45);
@@ -600,10 +607,13 @@
             transition: opacity 0.25s ease;
         }
 
+
         .denied-popup-overlay.show {
             display: flex;
+
             opacity: 1;
         }
+
 
         .denied-popup-box {
             background: #ffffff;
@@ -613,6 +623,7 @@
             padding: 32px 28px;
 
             width: 100%;
+
             max-width: 280px;
 
             text-align: center;
@@ -629,10 +640,13 @@
                 opacity 0.25s ease;
         }
 
+
         .denied-popup-overlay.show .denied-popup-box {
             transform: scale(1) translateY(0);
+
             opacity: 1;
         }
+
 
         .denied-popup-icon {
             width: 56px;
@@ -641,9 +655,11 @@
             border-radius: 50%;
 
             border: 3px solid #dc2626;
+
             color: #dc2626;
 
             display: flex;
+
             align-items: center;
             justify-content: center;
 
@@ -660,12 +676,15 @@
                 opacity 0.2s ease 0.15s;
         }
 
+
         .denied-popup-overlay.show .denied-popup-icon {
             transform: scale(1);
+
             opacity: 1;
 
             animation: deniedPulse 0.5s ease 0.15s;
         }
+
 
         @keyframes deniedPulse {
 
@@ -683,8 +702,10 @@
 
         }
 
+
         .denied-popup-text {
             font-size: 14px;
+
             font-weight: 700;
 
             color: #7f1d1d;
@@ -702,10 +723,13 @@
                 opacity 0.3s ease 0.2s;
         }
 
+
         .denied-popup-overlay.show .denied-popup-text {
             opacity: 1;
+
             transform: translateY(0);
         }
+
 
         .denied-popup-ok {
             background: #dc2626;
@@ -718,6 +742,7 @@
             border-radius: 20px;
 
             font-size: 13px;
+
             font-weight: 600;
 
             cursor: pointer;
@@ -732,10 +757,13 @@
                 background 0.2s ease;
         }
 
+
         .denied-popup-overlay.show .denied-popup-ok {
             opacity: 1;
+
             transform: translateY(0);
         }
+
 
         .denied-popup-ok:hover {
             background: #b91c1c;
@@ -937,6 +965,7 @@
 
                         @endphp
 
+                        @yield('dashboard-search')
 
                         <div class="notification-wrapper">
 

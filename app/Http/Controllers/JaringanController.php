@@ -49,6 +49,7 @@ class JaringanController extends Controller
         // ========================================================
 
         if ($request->filled('verifikasi')) {
+
             $query->where(
                 'verifikasi',
                 $request->verifikasi
@@ -176,6 +177,7 @@ class JaringanController extends Controller
                 'integer',
                 'min:1',
             ],
+
         ]);
 
         // ========================================================
@@ -307,12 +309,36 @@ class JaringanController extends Controller
             // ----------------------------------------------------
 
             VerificationRequest::create([
+
                 'module' => 'jaringan',
                 'record_id' => $jaringan->id,
                 'action' => 'create',
                 'data' => $jaringan->toArray(),
                 'status' => 'menunggu',
                 'submitted_by' => auth()->id(),
+
+            ]);
+
+
+            // =================================================
+            // NOTIFIKASI
+            // =================================================
+
+            Notification::create([
+
+                'judul' =>
+                    'Pengajuan Jaringan Baru',
+
+                'pesan' =>
+                    $request->user()->username .
+                    ' menambahkan jaringan "' .
+                    $jaringan->nama_infrastruktur .
+                    '" dengan ID ' .
+                    $jaringan->id .
+                    ' dan mengajukannya untuk persetujuan.',
+
+                'dibaca' => false,
+
             ]);
 
             // ----------------------------------------------------
@@ -411,6 +437,7 @@ class JaringanController extends Controller
                 'integer',
                 'min:1',
             ],
+
         ]);
 
         // ========================================================
@@ -475,7 +502,8 @@ class JaringanController extends Controller
 
         DB::transaction(function () use (
             $jaringan,
-            $validated
+            $validated,
+            $request
         ) {
 
             // ----------------------------------------------------
@@ -498,12 +526,36 @@ class JaringanController extends Controller
             // ----------------------------------------------------
 
             VerificationRequest::create([
+
                 'module' => 'jaringan',
                 'record_id' => $jaringan->id,
                 'action' => 'update',
                 'data' => $jaringan->fresh()->toArray(),
                 'status' => 'menunggu',
                 'submitted_by' => auth()->id(),
+
+            ]);
+
+
+            // =================================================
+            // NOTIFIKASI UPDATE
+            // =================================================
+
+            Notification::create([
+
+                'judul' =>
+                    'Perubahan Jaringan Diajukan',
+
+                'pesan' =>
+                    $request->user()->username .
+                    ' memperbarui jaringan "' .
+                    $jaringan->nama_infrastruktur .
+                    '" dengan ID ' .
+                    $jaringan->id .
+                    ' dan mengajukannya kembali untuk persetujuan.',
+
+                'dibaca' => false,
+
             ]);
 
             // ----------------------------------------------------
@@ -613,6 +665,11 @@ class JaringanController extends Controller
         // ========================================================
         // REDIRECT
         // ========================================================
+
+
+        // =====================================================
+        // REDIRECT
+        // =====================================================
 
         return redirect()
             ->route('jaringan.index')

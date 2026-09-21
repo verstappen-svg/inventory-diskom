@@ -280,7 +280,8 @@ class SoftwareController extends Controller
             'jumlah_lisensi'
         );
 
-        $today = now()->startOfDay();
+        $totalLisensi =
+            $allSoftwares->sum('jumlah_lisensi');
 
         $thirtyDaysLater = now()
             ->copy()
@@ -327,14 +328,21 @@ class SoftwareController extends Controller
         */
         $allSoftwares = SoftwareAsset::all();
 
-        $totalPengeluaranPertahun = $allSoftwares->sum(
-            function ($software) {
+                    if (!$software->tanggal_berakhir) {
+                        return true;
+                    }
 
-                $harga = (float) $software->harga;
+                    return $software->tanggal_berakhir
+                        ->greaterThan(
+                            $thirtyDaysLater
+                        );
+                })
+                ->count();
 
                 if ($software->pengadaan === 'Beli') {
                     return $harga;
                 }
+            );
 
                 if (
                     !$software->tanggal_pengadaan ||
