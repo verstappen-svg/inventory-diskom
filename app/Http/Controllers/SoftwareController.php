@@ -276,12 +276,13 @@ class SoftwareController extends Controller
         | DATA LEGACY
         |--------------------------------------------------------------------------
         */
-        $totalLisensi = SoftwareAsset::sum(
+        $allSoftwares = SoftwareAsset::all();
+
+        $totalLisensi = $allSoftwares->sum(
             'jumlah_lisensi'
         );
 
-        $totalLisensi =
-            $allSoftwares->sum('jumlah_lisensi');
+        $today = now()->startOfDay();
 
         $thirtyDaysLater = now()
             ->copy()
@@ -326,23 +327,17 @@ class SoftwareController extends Controller
         | TOTAL PENGELUARAN PER TAHUN
         |--------------------------------------------------------------------------
         */
-        $allSoftwares = SoftwareAsset::all();
+        $totalPengeluaranPertahun = $allSoftwares->sum(
+            function ($software) {
+                $harga = (float) ($software->harga ?? 0);
 
-                    if (!$software->tanggal_berakhir) {
-                        return true;
-                    }
-
-                    return $software->tanggal_berakhir
-                        ->greaterThan(
-                            $thirtyDaysLater
-                        );
-                })
-                ->count();
+                if ($harga <= 0) {
+                    return 0;
+                }
 
                 if ($software->pengadaan === 'Beli') {
                     return $harga;
                 }
-            );
 
                 if (
                     !$software->tanggal_pengadaan ||
@@ -353,11 +348,8 @@ class SoftwareController extends Controller
 
                 $jumlahBulan = max(
                     1,
-                    $software
-                        ->tanggal_pengadaan
-                        ->diffInMonths(
-                            $software->tanggal_berakhir
-                        )
+                    $software->tanggal_pengadaan
+                        ->diffInMonths($software->tanggal_berakhir)
                 );
 
                 return (

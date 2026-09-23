@@ -24,11 +24,9 @@ class HardwareController extends Controller
         $query = Hardware::with('lokasi');
 
         if ($request->filled('search')) {
-
             $search = $request->search;
 
             $query->where(function ($q) use ($search) {
-
                 $q->where('asset_id', 'like', "%{$search}%")
                     ->orWhere('nama_barang', 'like', "%{$search}%")
                     ->orWhere('spesifikasi', 'like', "%{$search}%")
@@ -65,17 +63,14 @@ class HardwareController extends Controller
         );
     }
 
-
     /*
     |--------------------------------------------------------------------------
     | GENERATE ASSET ID
     |--------------------------------------------------------------------------
     |
-    | Format:
-    |
-    | ED-26-0001  -> End Device
-    | SD-26-0001  -> Security Device
-    | PD-26-0001  -> Peripheral / Supporting Device
+    | ED-26-0001 -> End Device
+    | SD-26-0001 -> Security Device
+    | PD-26-0001 -> Peripheral / Supporting Device
     |
     */
 
@@ -98,15 +93,10 @@ class HardwareController extends Controller
         ];
 
         if (in_array($jenisBarang, $endDevices)) {
-
             $prefix = 'ED-' . $year . '-';
-
         } elseif (in_array($jenisBarang, $securityDevices)) {
-
             $prefix = 'SD-' . $year . '-';
-
         } else {
-
             $prefix = 'PD-' . $year . '-';
         }
 
@@ -121,11 +111,8 @@ class HardwareController extends Controller
             ->first();
 
         if (!$lastHardware) {
-
             $number = 1;
-
         } else {
-
             $lastNumber = (int) substr(
                 $lastHardware->asset_id,
                 strlen($prefix)
@@ -142,7 +129,6 @@ class HardwareController extends Controller
         );
     }
 
-
     /*
     |--------------------------------------------------------------------------
     | STORE
@@ -152,7 +138,6 @@ class HardwareController extends Controller
     public function store(Request $request)
     {
         $validated = $request->validate([
-
             'nama_barang' => [
                 'required',
                 'string',
@@ -199,9 +184,7 @@ class HardwareController extends Controller
                 'string',
                 'max:100',
             ],
-
         ], [
-
             'nama_barang.required' =>
                 'Nama barang wajib diisi.',
 
@@ -233,7 +216,6 @@ class HardwareController extends Controller
                 'Kondisi wajib dipilih.',
         ]);
 
-
         /*
         |--------------------------------------------------------------------------
         | DEFAULT SISTEM OPERASI
@@ -242,7 +224,6 @@ class HardwareController extends Controller
 
         $validated['sistem_operasi'] =
             trim($validated['sistem_operasi'] ?? '') ?: 'N/A';
-
 
         /*
         |--------------------------------------------------------------------------
@@ -259,17 +240,15 @@ class HardwareController extends Controller
                 $validated['jenis_barang']
             );
 
-
             /*
              * Simpan hardware.
              */
             $hardware = Hardware::create($validated);
 
-
-            // =================================================
-            // TENTUKAN NOMOR BERIKUTNYA
-            // =================================================
-
+            /*
+             * Buat request verifikasi.
+             */
+            VerificationRequest::create([
                 'module' =>
                     'hardware',
 
@@ -289,12 +268,10 @@ class HardwareController extends Controller
                     auth()->id(),
             ]);
 
-
             /*
              * Buat notifikasi.
              */
             Notification::create([
-
                 'judul' =>
                     'Pengajuan Hardware Baru',
 
@@ -309,40 +286,7 @@ class HardwareController extends Controller
                 'dibaca' =>
                     false,
             ]);
-
-
-            // =================================================
-            // BUAT PENGAJUAN VERIFIKASI
-            // =================================================
-
-            VerifikasiHardware::create([
-                'hardware_id' => $hardware->id,
-                'status' => 'Menunggu Persetujuan',
-            ]);
-
-
-            // =================================================
-            // NOTIFIKASI
-            // =================================================
-
-            Notification::create([
-                'judul' => 'Pengajuan Hardware Baru',
-
-                'pesan' =>
-                    $request->user()->username .
-                    ' menambahkan hardware "' .
-                    $hardware->nama_barang .
-                    '" dengan ID ' .
-                    $hardware->asset_id .
-                    ' dan mengajukannya untuk persetujuan.',
-
-                'dibaca' => false,
-            ]);
-
-
-            return $hardware;
         });
-
 
         return redirect()
             ->route('hardware.index')
@@ -351,7 +295,6 @@ class HardwareController extends Controller
                 'Data hardware berhasil ditambahkan dan menunggu verifikasi.'
             );
     }
-
 
     /*
     |--------------------------------------------------------------------------
@@ -363,15 +306,12 @@ class HardwareController extends Controller
         Request $request,
         string $hardware
     ) {
-
         $hardwareRecord = Hardware::where(
             'asset_id',
             $hardware
         )->first();
 
-
         if (!$hardwareRecord) {
-
             return redirect()
                 ->route('hardware.index')
                 ->with(
@@ -380,9 +320,7 @@ class HardwareController extends Controller
                 );
         }
 
-
         $validated = $request->validate([
-
             'nama_barang' => [
                 'required',
                 'string',
@@ -428,9 +366,7 @@ class HardwareController extends Controller
                 'required',
                 'in:Baik,Perlu Perbaikan,Rusak',
             ],
-
         ], [
-
             'nama_barang.required' =>
                 'Nama barang wajib diisi.',
 
@@ -459,7 +395,6 @@ class HardwareController extends Controller
                 'Kondisi wajib dipilih.',
         ]);
 
-
         /*
         |--------------------------------------------------------------------------
         | DEFAULT SISTEM OPERASI
@@ -469,7 +404,6 @@ class HardwareController extends Controller
         $validated['sistem_operasi'] =
             trim($validated['sistem_operasi'] ?? '') ?: 'N/A';
 
-
         /*
         |--------------------------------------------------------------------------
         | DATA LAMA
@@ -477,7 +411,6 @@ class HardwareController extends Controller
         */
 
         $dataLama = $hardwareRecord->toArray();
-
 
         /*
         |--------------------------------------------------------------------------
@@ -490,29 +423,15 @@ class HardwareController extends Controller
             $validated,
             $dataLama
         ) {
-
             /*
              * Asset ID tetap.
              */
             $hardwareRecord->update($validated);
 
-            'pesan' =>
-                $request->user()->username .
-                ' memperbarui hardware "' .
-                $hardware->nama_barang .
-                '" dengan ID ' .
-                $hardware->asset_id .
-                '.',
-
-            'dibaca' => false,
-        ]);
-
-
             /*
              * Buat request verifikasi update.
              */
             VerificationRequest::create([
-
                 'module' =>
                     'hardware',
 
@@ -523,13 +442,11 @@ class HardwareController extends Controller
                     'update',
 
                 'data' => [
-
                     'data_lama' =>
                         $dataLama,
 
                     'data_baru' =>
-                        $hardwareRecord->toArray(),
-
+                        $hardwareRecord->fresh()->toArray(),
                 ],
 
                 'status' =>
@@ -539,12 +456,10 @@ class HardwareController extends Controller
                     auth()->id(),
             ]);
 
-
             /*
-             * Buat notifikasi.
+             * Buat notifikasi perubahan.
              */
             Notification::create([
-
                 'judul' =>
                     'Perubahan Hardware Diajukan',
 
@@ -561,7 +476,6 @@ class HardwareController extends Controller
             ]);
         });
 
-
         return redirect()
             ->route('hardware.index')
             ->with(
@@ -569,7 +483,6 @@ class HardwareController extends Controller
                 'Data hardware berhasil diperbarui dan menunggu verifikasi.'
             );
     }
-
 
     /*
     |--------------------------------------------------------------------------
@@ -580,16 +493,13 @@ class HardwareController extends Controller
     public function import(Request $request)
     {
         $request->validate([
-
             'file' => [
                 'required',
                 'file',
                 'mimes:xlsx,csv',
                 'max:10240',
             ],
-
         ], [
-
             'file.required' =>
                 'File import wajib dipilih.',
 
@@ -603,12 +513,8 @@ class HardwareController extends Controller
                 'Ukuran file maksimal 10 MB.',
         ]);
 
-
         try {
-
-            DB::transaction(function () use (
-                $request
-            ) {
+            DB::transaction(function () use ($request) {
 
                 /*
                 |--------------------------------------------------------------------------
@@ -621,20 +527,16 @@ class HardwareController extends Controller
                     $request->file('file')
                 );
 
-
                 /*
                 |--------------------------------------------------------------------------
                 | NOTIFIKASI IMPORT
                 |--------------------------------------------------------------------------
                 |
                 | Hanya 1 notifikasi untuk 1 proses import.
-                | Jadi kalau Excel berisi 600 data,
-                | tidak dibuat 600 notification.
                 |
                 */
 
                 Notification::create([
-
                     'judul' =>
                         'Import Hardware Baru',
 
@@ -646,7 +548,6 @@ class HardwareController extends Controller
                         false,
                 ]);
             });
-
 
             return redirect()
                 ->route('hardware.index')
@@ -667,7 +568,6 @@ class HardwareController extends Controller
         }
     }
 
-
     /*
     |--------------------------------------------------------------------------
     | DESTROY
@@ -681,9 +581,7 @@ class HardwareController extends Controller
             $hardware
         )->first();
 
-
         if (!$hardwareRecord) {
-
             return redirect()
                 ->route('hardware.index')
                 ->with(
@@ -692,22 +590,18 @@ class HardwareController extends Controller
                 );
         }
 
-
         /*
         |--------------------------------------------------------------------------
         | PENGAJUAN HAPUS + NOTIFIKASI
         |--------------------------------------------------------------------------
         */
 
-        DB::transaction(function () use (
-            $hardwareRecord
-        ) {
+        DB::transaction(function () use ($hardwareRecord) {
 
             /*
              * Buat request verifikasi penghapusan.
              */
             VerificationRequest::create([
-
                 'module' =>
                     'hardware',
 
@@ -727,12 +621,10 @@ class HardwareController extends Controller
                     auth()->id(),
             ]);
 
-
             /*
              * Buat notifikasi.
              */
             Notification::create([
-
                 'judul' =>
                     'Pengajuan Penghapusan Hardware',
 
@@ -748,7 +640,6 @@ class HardwareController extends Controller
                     false,
             ]);
         });
-
 
         return redirect()
             ->route('hardware.index')
