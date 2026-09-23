@@ -1,5 +1,3 @@
-index.blade
-
 @extends('layouts.app')
 
 @section('title', 'Data')
@@ -8,11 +6,19 @@ index.blade
 @section('content')
 
 <style>
+/* =========================================================
+   DATA PAGE
+========================================================= */
+
 .data-page {
     width: 100%;
     padding-bottom: 30px;
     font-family: Arial, sans-serif;
 }
+
+/* =========================================================
+   HEADER
+========================================================= */
 
 .data-header {
     display: flex;
@@ -65,7 +71,7 @@ index.blade
 }
 
 /* =========================================================
-   SUMMARY CARD
+   SUMMARY
 ========================================================= */
 
 .data-stats {
@@ -168,12 +174,11 @@ index.blade
     display: flex;
     align-items: center;
     gap: 10px;
-    flex: 1;
 }
 
 .data-toolbar-title {
     color: #1f2937;
-    font-size: 13px;
+    font-size: 14px;
     font-weight: 700;
 }
 
@@ -181,7 +186,8 @@ index.blade
     display: flex;
     align-items: center;
     justify-content: flex-end;
-    gap: 9px;
+    gap: 8px;
+    flex-wrap: wrap;
 }
 
 /* =========================================================
@@ -190,7 +196,7 @@ index.blade
 
 .data-search {
     position: relative;
-    width: 270px;
+    width: 235px;
 }
 
 .data-search i {
@@ -236,7 +242,8 @@ index.blade
     font-size: 11px;
     font-weight: 600;
     cursor: pointer;
-    transition: 0.2s ease;
+    text-decoration: none;
+    box-sizing: border-box;
     white-space: nowrap;
 }
 
@@ -266,26 +273,6 @@ index.blade
 
 .data-filter-wrap {
     position: relative;
-}
-
-.data-filter-button {
-    height: 37px;
-    padding: 0 12px;
-    border: 1px solid #d1d5db;
-    border-radius: 9px;
-    background: #ffffff;
-    color: #4b5563;
-    display: inline-flex;
-    align-items: center;
-    gap: 7px;
-    font-size: 11px;
-    font-weight: 600;
-    cursor: pointer;
-    white-space: nowrap;
-}
-
-.data-filter-button:hover {
-    background: #f8fafc;
 }
 
 .data-filter-dropdown {
@@ -337,7 +324,7 @@ index.blade
 .data-filter-actions {
     display: flex;
     justify-content: flex-end;
-    align-items: center;
+    gap: 8px;
     margin-top: 13px;
 }
 
@@ -362,7 +349,7 @@ index.blade
 
 .data-table {
     width: 100%;
-    min-width: 1350px;
+    min-width: 1100px;
     border-collapse: collapse;
 }
 
@@ -408,23 +395,6 @@ index.blade
     font-weight: 700;
     white-space: nowrap;
 }
-
-/* =========================================================
-   ID
-========================================================= */
-
-.data-id {
-    display: inline-flex;
-    align-items: center;
-    padding: 5px 9px;
-    border-radius: 7px;
-    background: #eef2ff;
-    color: #3730a3;
-    font-size: 10px;
-    font-weight: 700;
-    white-space: nowrap;
-}
-
 
 /* =========================================================
    NAME
@@ -531,43 +501,6 @@ index.blade
     color: #991b1b;
 }
 
-
-/* =========================================================
-   COMMENT
-========================================================= */
-
-.data-comment {
-    display: block;
-    width: 220px;
-    max-width: 220px;
-    line-height: 1.4;
-    color: #64748b;
-    font-size: 10px;
-}
-
-.data-comment-text {
-    display: -webkit-box;
-    -webkit-line-clamp: 2;
-    -webkit-box-orient: vertical;
-    overflow: hidden;
-    word-break: break-word;
-}
-
-.data-comment-empty {
-    color: #9ca3af;
-}
-
-
-/* =========================================================
-   DATE
-========================================================= */
-
-.data-date {
-    color: #4b5563;
-    white-space: nowrap;
-}
-
-
 /* =========================================================
    ACTION
 ========================================================= */
@@ -618,19 +551,6 @@ index.blade
 
 .data-delete-button:hover {
     background: #fecaca;
-}
-
-.data-comment-button {
-    display: inline-flex;
-    align-items: center;
-    justify-content: center;
-    width: 29px;
-    height: 29px;
-    border: none;
-    border-radius: 7px;
-    background: #fef3c7;
-    color: #92400e;
-    cursor: pointer;
 }
 
 /* =========================================================
@@ -724,7 +644,7 @@ index.blade
 }
 
 /* =========================================================
-   MODAL
+   MODAL OVERLAY
 ========================================================= */
 
 .data-modal-overlay {
@@ -747,9 +667,14 @@ body.data-modal-open {
     overflow: hidden;
 }
 
+/* =========================================================
+   MODAL
+========================================================= */
+
 .data-modal {
-    width: min(1100px, 100%);
-    max-height: 90vh;
+    width: min(1000px, 100%);
+    height: 92vh;
+    max-height: 92vh;
     background: #ffffff;
     border-radius: 15px;
     box-shadow: 0 25px 70px rgba(0, 0, 0, 0.25);
@@ -761,10 +686,12 @@ body.data-modal-open {
 
 .data-modal-small {
     width: min(700px, 100%);
+    height: auto;
+    max-height: 92vh;
 }
 
 .data-modal-header {
-    flex-shrink: 0;
+    flex: 0 0 auto;
     padding: 19px 21px;
     border-bottom: 1px solid #edf0f3;
     display: flex;
@@ -777,7 +704,6 @@ body.data-modal-open {
     display: flex;
     align-items: center;
     gap: 12px;
-    min-width: 0;
 }
 
 .data-modal-icon {
@@ -817,7 +743,6 @@ body.data-modal-open {
     display: flex;
     align-items: center;
     justify-content: center;
-    flex-shrink: 0;
 }
 
 .data-modal-close:hover {
@@ -826,7 +751,7 @@ body.data-modal-open {
 }
 
 /* =========================================================
-   FORM DALAM MODAL
+   MODAL FORM
 ========================================================= */
 
 .data-modal > form {
@@ -837,10 +762,6 @@ body.data-modal-open {
     overflow: hidden;
 }
 
-/* =========================================================
-   MODAL BODY - BISA SCROLL
-========================================================= */
-
 .data-modal-body {
     flex: 1 1 auto;
     min-height: 0;
@@ -848,6 +769,8 @@ body.data-modal-open {
     overflow-y: auto;
     overflow-x: hidden;
     box-sizing: border-box;
+    scrollbar-width: thin;
+    scrollbar-color: #cbd5e1 #f8fafc;
 }
 
 .data-modal-body::-webkit-scrollbar {
@@ -855,7 +778,7 @@ body.data-modal-open {
 }
 
 .data-modal-body::-webkit-scrollbar-track {
-    background: transparent;
+    background: #f8fafc;
 }
 
 .data-modal-body::-webkit-scrollbar-thumb {
@@ -863,139 +786,39 @@ body.data-modal-open {
     border-radius: 10px;
 }
 
+.data-modal-body::-webkit-scrollbar-thumb:hover {
+    background: #94a3b8;
+}
 
 /* =========================================================
-   BATCH TABLE
+   SECTION
 ========================================================= */
 
-.batch-info {
-    padding: 11px 13px;
-    margin-bottom: 14px;
-    border-radius: 9px;
-    background: #eff6ff;
-    border: 1px solid #dbeafe;
-    color: #1e40af;
-    font-size: 10px;
-    line-height: 1.5;
-}
-
-.batch-table-wrapper {
-    width: 100%;
-    overflow-x: auto;
-    border: 1px solid #e5e7eb;
-    border-radius: 10px;
-}
-
-.batch-table {
-    width: 100%;
-    min-width: 900px;
-    border-collapse: collapse;
-}
-
-.batch-table th {
-    padding: 10px 9px;
-    background: #f8fafc;
-    border-bottom: 1px solid #e5e7eb;
-    color: #475569;
-    font-size: 10px;
-    font-weight: 700;
-    text-align: left;
-    white-space: nowrap;
-}
-
-.batch-table td {
-    padding: 8px;
-    border-bottom: 1px solid #f1f5f9;
-    vertical-align: middle;
-}
-
-.batch-table tr:last-child td {
-    border-bottom: none;
-}
-
-.batch-row-number {
-    width: 35px;
-    text-align: center;
-    color: #64748b;
-    font-size: 10px;
+.data-section-title {
+    margin: 4px 0 14px;
+    padding-bottom: 8px;
+    border-bottom: 1px solid #edf0f3;
+    color: #1f2937;
+    font-size: 12px;
     font-weight: 700;
 }
-
-.batch-input {
-    width: 100%;
-    height: 36px;
-    padding: 0 9px;
-    border: 1px solid #d1d5db;
-    border-radius: 7px;
-    outline: none;
-    background: #ffffff;
-    color: #374151;
-    font-family: inherit;
-    font-size: 10px;
-    box-sizing: border-box;
-}
-
-.batch-input:focus {
-    border-color: #079bd8;
-    box-shadow: 0 0 0 3px rgba(7, 155, 216, 0.08);
-}
-
-.batch-file {
-    padding: 6px;
-}
-
-.batch-delete {
-    width: 30px;
-    height: 30px;
-    border: none;
-    border-radius: 7px;
-    background: #fee2e2;
-    color: #dc2626;
-    cursor: pointer;
-    display: inline-flex;
-    align-items: center;
-    justify-content: center;
-}
-
-.batch-delete:hover {
-    background: #fecaca;
-}
-
-.batch-add-row {
-    margin-top: 12px;
-    height: 36px;
-    padding: 0 13px;
-    border: 1px dashed #93c5fd;
-    border-radius: 8px;
-    background: #eff6ff;
-    color: #075985;
-    font-size: 10px;
-    font-weight: 700;
-    cursor: pointer;
-}
-
-.batch-add-row:hover {
-    background: #dbeafe;
-}
-
 
 /* =========================================================
-   EDIT FORM
+   FORM
 ========================================================= */
 
-.edit-form-grid {
+.data-form-grid {
     display: grid;
     grid-template-columns: repeat(2, 1fr);
     gap: 14px 16px;
 }
 
-.edit-form-group {
+.data-form-group {
     display: flex;
     flex-direction: column;
-    min-width: 0;
 }
 
-.edit-form-group.full {
+.data-form-group.full {
     grid-column: 1 / -1;
 }
 
@@ -1029,15 +852,9 @@ body.data-modal-open {
     box-shadow: 0 0 0 3px rgba(7, 155, 216, 0.08);
 }
 
-.data-file-input {
-    padding: 7px 9px;
-}
-
-.data-form-help {
-    margin-top: 5px;
-    color: #9ca3af;
-    font-size: 9px;
-    line-height: 1.5;
+textarea.data-form-control {
+    min-height: 85px;
+    resize: vertical;
 }
 
 .metadata-note {
@@ -1051,14 +868,21 @@ body.data-modal-open {
     line-height: 1.5;
 }
 
+.data-form-help {
+    margin-top: 5px;
+    color: #9ca3af;
+    font-size: 9px;
+    line-height: 1.5;
+}
+
 .data-current-file {
-    display: none;
     margin-top: 8px;
     padding: 8px 10px;
     background: #f8fafc;
     border-radius: 7px;
     color: #64748b;
     font-size: 10px;
+    display: none;
 }
 
 .data-current-file a {
@@ -1072,7 +896,7 @@ body.data-modal-open {
 ========================================================= */
 
 .data-modal-footer {
-    flex-shrink: 0;
+    flex: 0 0 auto;
     padding: 13px 21px;
     border-top: 1px solid #edf0f3;
     background: #ffffff;
@@ -1080,8 +904,6 @@ body.data-modal-open {
     align-items: center;
     justify-content: flex-end;
     gap: 8px;
-    position: relative;
-    z-index: 2;
 }
 
 .data-modal-cancel {
@@ -1116,117 +938,81 @@ body.data-modal-open {
     background: #050f63;
 }
 
-.data-modal-save:disabled {
-    opacity: 0.7;
-    cursor: not-allowed;
-}
-
-
-/* =========================================================
-   COMMENT MODAL
-========================================================= */
-
-.data-comment-modal {
-    width: min(500px, 100%);
-}
-
-.data-comment-box {
-    padding: 20px 21px;
-    color: #475569;
-    font-size: 12px;
-    line-height: 1.6;
-    word-break: break-word;
-}
-
-.data-comment-box i {
-    color: #075985;
-    margin-right: 6px;
-}
-
-
 /* =========================================================
    RESPONSIVE
 ========================================================= */
 
-@media (max-width: 1200px) {
-
-    .data-toolbar {
-        flex-wrap: wrap;
-    }
-
-    .data-toolbar-left {
-        width: 100%;
-        flex-basis: 100%;
-    }
-
-    .data-toolbar-right {
-        width: 100%;
-        justify-content: flex-end;
-    }
-}
-
-@media (max-width: 800px) {
+@media (max-width: 1000px) {
 
     .data-stats {
         grid-template-columns: repeat(2, 1fr);
     }
 
+    .data-toolbar {
+        flex-direction: column;
+        align-items: stretch;
+    }
+
     .data-toolbar-right {
         justify-content: flex-start;
-        flex-wrap: wrap;
     }
 }
 
-@media (max-width: 600px) {
+@media (max-width: 700px) {
 
     .data-stats {
         grid-template-columns: 1fr;
     }
 
-    .edit-form-grid {
+    .data-search {
+        width: 100%;
+    }
+
+    .data-toolbar-right {
+        flex-direction: column;
+        align-items: stretch;
+    }
+
+    .data-button {
+        width: 100%;
+    }
+
+    .data-form-grid {
         grid-template-columns: 1fr;
     }
 
-    .edit-form-group.full {
+    .data-form-group.full {
         grid-column: auto;
     }
 
     .data-modal-overlay {
         padding: 10px;
-        align-items: center;
     }
 
     .data-modal {
         width: 100%;
         height: 95vh;
         max-height: 95vh;
-        border-radius: 12px;
     }
 
-    .data-modal-header {
-        padding: 15px;
-    }
-
-    .data-modal-body {
-        padding: 16px;
-    }
-
-    .data-modal-footer {
-        padding: 12px 16px;
+    .data-modal-small {
+        height: auto;
+        max-height: 95vh;
     }
 
     .data-table-footer {
         flex-direction: column;
         align-items: flex-start;
     }
-
 }
 </style>
 
 
 <div class="data-page">
 
-    {{-- HEADER --}}
+    {{-- =====================================================
+         HEADER
+    ====================================================== --}}
 
     <div class="data-header">
 
@@ -1287,25 +1073,21 @@ body.data-modal-open {
 
         <div class="data-alert data-alert-error">
 
-            <div>
+            <strong>
+                Data gagal disimpan.
+            </strong>
 
-                <strong>
-                    Data gagal disimpan.
-                </strong>
+            <ul>
 
-                <ul>
+                @foreach($errors->all() as $error)
 
-                    @foreach($errors->all() as $error)
+                    <li>
+                        {{ $error }}
+                    </li>
 
-                        <li>
-                            {{ $error }}
-                        </li>
+                @endforeach
 
-                    @endforeach
-
-                </ul>
-
-            </div>
+            </ul>
 
         </div>
 
@@ -1313,7 +1095,7 @@ body.data-modal-open {
 
 
     {{-- =====================================================
-         STATISTICS
+         SUMMARY CARD
     ====================================================== --}}
 
     <div class="data-stats">
@@ -1331,7 +1113,7 @@ body.data-modal-open {
                 </span>
 
                 <span class="data-stat-value">
-                    {{ $totalData ?? 0 }}
+                    {{ $totalDataset ?? 0 }}
                 </span>
 
                 <span class="data-stat-description">
@@ -1381,7 +1163,7 @@ body.data-modal-open {
                 </span>
 
                 <span class="data-stat-value">
-                    {{ $totalPending ?? 0 }}
+                    {{ $totalMenunggu ?? 0 }}
                 </span>
 
                 <span class="data-stat-description">
@@ -1393,6 +1175,8 @@ body.data-modal-open {
         </div>
 
     </div>
+
+
     {{-- =====================================================
          MAIN CARD
     ====================================================== --}}
@@ -1424,31 +1208,13 @@ body.data-modal-open {
                     class="data-search"
                 >
 
-                    <input
-                        type="hidden"
-                        name="jenis_data"
-                        value="{{ request('jenis_data') }}"
-                    >
-
-                    <input
-                        type="hidden"
-                        name="tahun"
-                        value="{{ request('tahun') }}"
-                    >
-
-                    <input
-                        type="hidden"
-                        name="verifikasi"
-                        value="{{ request('verifikasi') }}"
-                    >
-
                     <i class="bi bi-search"></i>
 
                     <input
                         type="text"
                         name="search"
                         value="{{ request('search') }}"
-                        placeholder="Cari data..."
+                        placeholder="Cari dataset..."
                         autocomplete="off"
                     >
 
@@ -1489,6 +1255,8 @@ body.data-modal-open {
                             >
 
 
+                            {{-- TOPIK --}}
+
                             <div class="data-filter-group">
 
                                 <label class="data-filter-label">
@@ -1501,7 +1269,7 @@ body.data-modal-open {
                                         Semua Topik
                                     </option>
 
-                                    @foreach(($topikData ?? collect()) as $topik)
+                                    @foreach($topikData as $topik)
 
                                         <option
                                             value="{{ $topik }}"
@@ -1517,6 +1285,8 @@ body.data-modal-open {
                             </div>
 
 
+                            {{-- TAHUN --}}
+
                             <div class="data-filter-group">
 
                                 <label class="data-filter-label">
@@ -1529,7 +1299,7 @@ body.data-modal-open {
                                         Semua Tahun
                                     </option>
 
-                                    @foreach(($tahunData ?? []) as $tahun)
+                                    @foreach($tahunData as $tahun)
 
                                         <option
                                             value="{{ $tahun }}"
@@ -1545,6 +1315,8 @@ body.data-modal-open {
                             </div>
 
 
+                            {{-- VERIFIKASI --}}
+
                             <div class="data-filter-group">
 
                                 <label class="data-filter-label">
@@ -1558,32 +1330,51 @@ body.data-modal-open {
                                     </option>
 
                                     <option
-                                        value="menunggu"
-                                        {{ strtolower(request('verifikasi')) == 'menunggu' ? 'selected' : '' }}
+                                        value="Menunggu Disetujui"
+                                        {{ request('verifikasi') === 'Menunggu Disetujui' ? 'selected' : '' }}
                                     >
                                         Menunggu Disetujui
                                     </option>
 
                                     <option
-                                        value="menunggu disetujui"
-                                        {{ strtolower(request('verifikasi')) == 'menunggu disetujui' ? 'selected' : '' }}
-                                    >
-                                        Menunggu Disetujui
-                                    </option>
-
-                                    <option
-                                        value="disetujui"
-                                        {{ strtolower(request('verifikasi')) == 'disetujui' ? 'selected' : '' }}
+                                        value="Disetujui"
+                                        {{ request('verifikasi') === 'Disetujui' ? 'selected' : '' }}
                                     >
                                         Disetujui
                                     </option>
 
                                     <option
-                                        value="ditolak"
-                                        {{ strtolower(request('verifikasi')) == 'ditolak' ? 'selected' : '' }}
+                                        value="Ditolak"
+                                        {{ request('verifikasi') === 'Ditolak' ? 'selected' : '' }}
                                     >
                                         Ditolak
                                     </option>
+
+                                </select>
+
+                            </div>
+
+
+                            {{-- JUMLAH DATA --}}
+
+                            <div class="data-filter-group">
+
+                                <label class="data-filter-label">
+                                    Tampilkan
+                                </label>
+
+                                <select name="show">
+
+                                    @foreach([10, 25, 50, 100] as $jumlah)
+
+                                        <option
+                                            value="{{ $jumlah }}"
+                                            {{ (int) request('show', 10) === $jumlah ? 'selected' : '' }}
+                                        >
+                                            {{ $jumlah }} data
+                                        </option>
+
+                                    @endforeach
 
                                 </select>
 
@@ -1616,19 +1407,36 @@ body.data-modal-open {
                 </div>
 
 
-                {{-- TAMBAH DATA --}}
+                {{-- TEMPLATE --}}
+
+                <a
+                    href="{{ route('data.template.download') }}"
+                    class="data-button data-button-secondary"
+                >
+
+                    <i class="bi bi-download"></i>
+
+                    Template
+
+                </a>
+
+
+                {{-- IMPORT --}}
 
                 <button
                     type="button"
                     class="data-button data-button-secondary"
                     onclick="openImportModal()"
                 >
+
                     <i class="bi bi-file-earmark-excel"></i>
+
                     Import Excel
+
                 </button>
 
 
-                {{-- TAMBAH MANUAL --}}
+                {{-- TAMBAH --}}
 
                 <button
                     type="button"
@@ -1647,9 +1455,9 @@ body.data-modal-open {
         </div>
 
 
-        {{-- =====================================================
+        {{-- =================================================
              TABLE
-        ====================================================== --}}
+        ================================================== --}}
 
         <div class="data-table-wrapper">
 
@@ -1660,16 +1468,25 @@ body.data-modal-open {
                     <thead>
 
                         <tr>
+
                             <th>No</th>
-                            <th>ID</th>
+
+                            <th>ID Dataset</th>
+
                             <th>Nama Dataset</th>
+
                             <th>Topik</th>
+
                             <th>Tahun</th>
+
                             <th>File</th>
+
                             <th>Tanggal Pengajuan</th>
+
                             <th>Verifikasi</th>
-                            <th>Komentar</th>
+
                             <th>Aksi</th>
+
                         </tr>
 
                     </thead>
@@ -1681,128 +1498,114 @@ body.data-modal-open {
 
                             @php
 
-                                $verifikasi = strtolower(
-                                    trim($row->verifikasi ?? 'menunggu')
+                                $status = trim(
+                                    $row->verifikasi ?? ''
                                 );
 
-                                $verificationClass = match($verifikasi) {
+                                $statusClass = match ($status) {
 
-                                    'disetujui' =>
-                                        'approved',
+                                    'Disetujui' => 'approved',
 
-                                    'ditolak' =>
-                                        'rejected',
+                                    'Ditolak' => 'rejected',
 
-                                    'menunggu',
-                                    'menunggu disetujui' =>
-                                        'pending',
-
-                                    default =>
-                                        'pending',
+                                    default => 'pending',
 
                                 };
 
-                                $verificationLabel = match($verifikasi) {
-
-                                    'disetujui' => 'Disetujui',
-
-                                    'ditolak' => 'Ditolak',
-
-                                    'menunggu disetujui' =>
-                                        'Menunggu Disetujui',
-
-                                    default => 'Menunggu',
-
-                                };
+                                $datasetId =
+                                    'DS-' .
+                                    str_pad(
+                                        $row->id,
+                                        4,
+                                        '0',
+                                        STR_PAD_LEFT
+                                    );
 
                             @endphp
 
 
                             <tr>
 
+                                {{-- NO --}}
+
                                 <td>
                                     {{ $data->firstItem() + $loop->index }}
                                 </td>
 
 
+                                {{-- ID --}}
+
                                 <td>
 
                                     <span class="data-id">
-
-                                        DS-{{
-                                            str_pad(
-                                                $row->id,
-                                                5,
-                                                '0',
-                                                STR_PAD_LEFT
-                                            )
-                                        }}
-
+                                        {{ $datasetId }}
                                     </span>
 
                                 </td>
 
+
+                                {{-- NAMA --}}
 
                                 <td>
 
                                     <span class="data-name">
-
                                         {{ $row->nama_dataset }}
-
                                     </span>
 
                                 </td>
 
+
+                                {{-- TOPIK --}}
 
                                 <td>
 
-                                    <span class="data-category-badge">
-
-                                        {{ $row->jenis_data ?: '-' }}
-
+                                    <span class="data-topic">
+                                        {{ $row->topik }}
                                     </span>
 
                                 </td>
 
+
+                                {{-- TAHUN --}}
 
                                 <td>
 
                                     <span class="data-year">
-
-                                        {{ $row->tahun ?: '-' }}
-
+                                        {{ $row->tahun }}
                                     </span>
 
                                 </td>
 
+
+                                {{-- FILE --}}
 
                                 <td>
 
                                     @if($row->file_data)
 
                                         <a
-                                            href="{{ asset('storage/' . $row->file_data) }}"
-                                            target="_blank"
-                                            rel="noopener noreferrer"
+                                            href="{{ route('data.download', ['id' => $row->id]) }}"
                                             class="data-file"
                                         >
 
-                                            <i class="bi bi-file-earmark-text-fill"></i>
+                                            <i class="bi bi-file-earmark-excel-fill"></i>
 
-                                            {{ basename($row->file_data) }}
+                                            File Excel
 
                                         </a>
 
                                     @else
 
                                         <span class="data-no-file">
-                                            Manual
+                                            File tidak tersedia
                                         </span>
 
                                     @endif
 
                                 </td>
 
+
+                                {{-- TANGGAL --}}
 
                                 <td>
 
@@ -1810,14 +1613,12 @@ body.data-modal-open {
 
                                         @if($row->tanggal_pengajuan)
 
-                                            {{
-                                                \Carbon\Carbon::parse(
-                                                    $row->tanggal_pengajuan
-                                                )->format('d/m/Y H:i')
-                                            }}
+                                            {{ $row->tanggal_pengajuan->copy()->timezone('Asia/Jakarta')->format('d/m/Y H:i') }}
 
                                         @else
+
                                             -
+
                                         @endif
 
                                     </span>
@@ -1825,52 +1626,37 @@ body.data-modal-open {
                                 </td>
 
 
+                                {{-- VERIFIKASI --}}
+
                                 <td>
 
                                     <span
-                                        class="data-verification {{ $verificationClass }}"
+                                        class="data-verification {{ $statusClass }}"
                                     >
-
-                                        {{ $verificationLabel }}
-
+                                        {{ $status ?: 'Menunggu Disetujui' }}
                                     </span>
 
                                 </td>
 
 
-                                <td>
-
-                                    @if(!empty($row->komentar_verifikasi))
-
-                                        <div
-                                            class="data-comment"
-                                            title="{{ $row->komentar_verifikasi }}"
-                                        >
-
-                                            <span class="data-comment-text">
-
-                                                {{
-                                                    $row->komentar_verifikasi
-                                                }}
-
-                                            </span>
-
-                                        </div>
-
-                                    @else
-
-                                        <span class="data-comment-empty">
-                                            -
-                                        </span>
-
-                                    @endif
-
-                                </td>
-
+                                {{-- AKSI --}}
 
                                 <td>
 
                                     <div class="data-action-buttons">
+
+                                        {{-- DETAIL --}}
+
+                                        <a
+                                            href="{{ route('data.show', ['id' => $row->id]) }}"
+                                            class="data-action-button data-detail-button"
+                                            title="Detail"
+                                        >
+
+                                            <i class="bi bi-eye-fill"></i>
+
+                                        </a>
+
 
                                         {{-- EDIT --}}
 
@@ -1889,7 +1675,7 @@ body.data-modal-open {
                                         {{-- DELETE --}}
 
                                         <form
-                                            action="{{ route('data.destroy', $row->id) }}"
+                                            action="{{ route('data.destroy', ['id' => $row->id]) }}"
                                             method="POST"
                                             onsubmit="return confirm('Yakin ingin mengajukan penghapusan dataset ini?');"
                                         >
@@ -1932,20 +1718,21 @@ body.data-modal-open {
 
                     </div>
 
+
                     <h3>
 
                         @if(
-                            request('search')
-                            || request('jenis_data')
-                            || request('tahun')
-                            || request('verifikasi')
+                            request('search') ||
+                            request('topik') ||
+                            request('tahun') ||
+                            request('verifikasi')
                         )
 
                             Data tidak ditemukan
 
                         @else
 
-                            Belum ada data
+                            Belum ada dataset
 
                         @endif
 
@@ -1955,17 +1742,17 @@ body.data-modal-open {
                     <p>
 
                         @if(
-                            request('search')
-                            || request('jenis_data')
-                            || request('tahun')
-                            || request('verifikasi')
+                            request('search') ||
+                            request('topik') ||
+                            request('tahun') ||
+                            request('verifikasi')
                         )
 
                             Coba ubah kata pencarian atau filter.
 
                         @else
 
-                            Belum ada dataset yang tersimpan.
+                            Dataset yang ditambahkan akan tampil di sini.
 
                         @endif
 
@@ -1978,9 +1765,9 @@ body.data-modal-open {
         </div>
 
 
-        {{-- =====================================================
-             FOOTER
-        ====================================================== --}}
+        {{-- =================================================
+             PAGINATION
+        ================================================== --}}
 
         @if($data->total() > 0)
 
@@ -2001,6 +1788,8 @@ body.data-modal-open {
 
                 <div class="data-pagination">
 
+                    {{-- PREVIOUS --}}
+
                     @if($data->onFirstPage())
 
                         <span class="data-page-link disabled">
@@ -2012,7 +1801,7 @@ body.data-modal-open {
                     @else
 
                         <a
-                            href="{{ $data->appends(request()->query())->previousPageUrl() }}"
+                            href="{{ $data->previousPageUrl() }}"
                             class="data-page-link"
                         >
 
@@ -2022,6 +1811,8 @@ body.data-modal-open {
 
                     @endif
 
+
+                    {{-- PAGES --}}
 
                     @foreach(
                         $data->getUrlRange(
@@ -2035,18 +1826,18 @@ body.data-modal-open {
                             href="{{ $url }}"
                             class="data-page-link {{ $page == $data->currentPage() ? 'active' : '' }}"
                         >
-
                             {{ $page }}
-
                         </a>
 
                     @endforeach
 
 
+                    {{-- NEXT --}}
+
                     @if($data->hasMorePages())
 
                         <a
-                            href="{{ $data->appends(request()->query())->nextPageUrl() }}"
+                            href="{{ $data->nextPageUrl() }}"
                             class="data-page-link"
                         >
 
@@ -2076,16 +1867,18 @@ body.data-modal-open {
 
 
 {{-- =========================================================
-     MODAL TAMBAH / EDIT
+     MODAL TAMBAH DATA
 ========================================================= --}}
 
 <div
-    id="dataModal"
+    id="addModal"
     class="data-modal-overlay"
     aria-hidden="true"
 >
 
     <div class="data-modal">
+
+        {{-- HEADER --}}
 
         <div class="data-modal-header">
 
@@ -2093,24 +1886,18 @@ body.data-modal-open {
 
                 <div class="data-modal-icon">
 
-                    <i
-                        id="dataModalIcon"
-                        class="bi bi-database-fill"
-                    ></i>
+                    <i class="bi bi-database-fill-add"></i>
 
                 </div>
 
                 <div>
 
-                    <h2 id="dataModalTitle" class="data-modal-title">
+                    <h2 class="data-modal-title">
                         Tambah Data
                     </h2>
 
-                    <p
-                        id="dataModalSubtitle"
-                        class="data-modal-subtitle"
-                    >
-                        Tambahkan beberapa dataset sekaligus ke dalam sistem.
+                    <p class="data-modal-subtitle">
+                        Isi informasi, metadata, dan upload file dataset.
                     </p>
 
                 </div>
@@ -2121,7 +1908,7 @@ body.data-modal-open {
             <button
                 type="button"
                 class="data-modal-close"
-                onclick="closeModal('dataModal')"
+                onclick="closeModal('addModal')"
             >
 
                 <i class="bi bi-x-lg"></i>
@@ -2131,12 +1918,9 @@ body.data-modal-open {
         </div>
 
 
-        {{-- =================================================
-             FORM
-        ================================================== --}}
+        {{-- FORM --}}
 
         <form
-            id="dataForm"
             action="{{ route('data.store') }}"
             method="POST"
             enctype="multipart/form-data"
@@ -2144,218 +1928,414 @@ body.data-modal-open {
 
             @csrf
 
-            <input
-                type="hidden"
-                name="_method"
-                id="dataMethod"
-                value="POST"
-            >
-
 
             <div class="data-modal-body">
 
-                {{-- =================================================
-                     TAMBAH BATCH
-                ================================================== --}}
+                {{-- INFORMASI DATASET --}}
 
-                <div id="batchFormContainer">
-
-                    <div class="batch-info">
-
-                        <i class="bi bi-info-circle-fill"></i>
-
-                        Kamu dapat menambahkan beberapa dataset sekaligus.
-                        Setiap baris merupakan satu dataset dan setiap dataset
-                        akan mendapatkan ID serta proses verifikasi masing-masing.
-
-                    </div>
+                <div class="data-section-title">
+                    Informasi Dataset
+                </div>
 
 
-                    <div class="batch-table-wrapper">
+                <div class="data-form-grid">
 
-                        <table class="batch-table">
+                    {{-- NAMA --}}
 
-                            <thead>
+                    <div class="data-form-group full">
 
-                                <tr>
+                        <label class="data-form-label">
 
-                                    <th style="width:40px;">
-                                        No
-                                    </th>
+                            Nama Dataset
 
-                                    <th style="width:27%;">
-                                        Nama Dataset
-                                    </th>
+                            <span>*</span>
 
-                                    <th style="width:20%;">
-                                        Jenis Data
-                                    </th>
+                        </label>
 
-                                    <th style="width:100px;">
-                                        Tahun
-                                    </th>
-
-                                    <th style="width:30%;">
-                                        File Data
-                                    </th>
-
-                                    <th style="width:45px;">
-                                        Aksi
-                                    </th>
-
-                                </tr>
-
-                            </thead>
-
-
-                            <tbody id="batchRows">
-
-                            </tbody>
-
-                        </table>
+                        <input
+                            type="text"
+                            name="nama_dataset"
+                            class="data-form-control"
+                            placeholder="Contoh: Data Penduduk Kota Bekasi"
+                            value="{{ old('nama_dataset') }}"
+                            required
+                        >
 
                     </div>
 
 
-                    <button
-                        type="button"
-                        class="batch-add-row"
-                        onclick="addBatchRow()"
-                    >
+                    {{-- TOPIK --}}
 
-                        <i class="bi bi-plus-lg"></i>
+                    <div class="data-form-group">
 
-                        Tambah Baris
+                        <label class="data-form-label">
 
-                    </button>
+                            Topik
+
+                            <span>*</span>
+
+                        </label>
+
+                        <select
+                            name="topik"
+                            class="data-form-control"
+                            required
+                        >
+
+                            <option value="">
+                                Pilih Topik
+                            </option>
+
+                            @foreach($topikData as $topik)
+
+                                <option
+                                    value="{{ $topik }}"
+                                    {{ old('topik') === $topik ? 'selected' : '' }}
+                                >
+                                    {{ $topik }}
+                                </option>
+
+                            @endforeach
+
+                        </select>
+
+                    </div>
+
+
+                    {{-- TAHUN --}}
+
+                    <div class="data-form-group">
+
+                        <label class="data-form-label">
+
+                            Tahun
+
+                            <span>*</span>
+
+                        </label>
+
+                        <input
+                            type="number"
+                            name="tahun"
+                            class="data-form-control"
+                            min="1900"
+                            max="2200"
+                            placeholder="Contoh: 2026"
+                            value="{{ old('tahun') }}"
+                            required
+                        >
+
+                    </div>
+
+
+                    {{-- DESKRIPSI --}}
+
+                    <div class="data-form-group full">
+
+                        <label class="data-form-label">
+                            Deskripsi Dataset
+                        </label>
+
+                        <textarea
+                            name="deskripsi"
+                            class="data-form-control"
+                            placeholder="Deskripsi singkat dataset..."
+                        >{{ old('deskripsi') }}</textarea>
+
+                    </div>
+
+
+                    {{-- FILE --}}
+
+                    <div class="data-form-group full">
+
+                        <label class="data-form-label">
+
+                            Upload Dataset
+
+                            <span>*</span>
+
+                        </label>
+
+                        <input
+                            type="file"
+                            name="file_data"
+                            class="data-form-control"
+                            accept=".xlsx,.xls"
+                            required
+                        >
+
+                        <small class="data-form-help">
+                            File dataset wajib diupload.
+                            Format XLS atau XLSX. Maksimal 10 MB.
+                        </small>
+
+                    </div>
 
                 </div>
 
 
-                {{-- =================================================
-                     EDIT FORM
-                ================================================== --}}
+                {{-- METADATA --}}
 
                 <div
-                    id="editFormContainer"
-                    style="display:none;"
+                    class="data-section-title"
+                    style="margin-top:25px;"
                 >
-
-                    <div class="edit-form-grid">
-
-                        {{-- NAMA DATASET --}}
-
-                        <div class="edit-form-group full">
-
-                            <label class="data-form-label">
-
-                                Nama Dataset
-
-                                <span>*</span>
-
-                            </label>
-
-                            <input
-                                type="text"
-                                id="edit_nama_dataset"
-                                class="data-form-control"
-                                placeholder="Contoh: Data Penduduk"
-                            >
-
-                        </div>
+                    Metadata Dataset
+                </div>
 
 
-                        {{-- JENIS DATA --}}
+                <div class="metadata-note">
 
-                        <div class="edit-form-group">
+                    Isi metadata secara manual pada form berikut.
 
-                            <label class="data-form-label">
+                    Untuk Import Excel, metadata akan diambil otomatis
+                    dari Sheet <strong>Metadata</strong>.
 
-                                Jenis Data
-
-                                <span>*</span>
-
-                            </label>
-
-                            <input
-                                type="text"
-                                id="edit_jenis_data"
-                                class="data-form-control"
-                                placeholder="Contoh: Kependudukan"
-                            >
-
-                        </div>
+                </div>
 
 
-                        {{-- TAHUN --}}
+                <div class="data-form-grid">
 
-                        <div class="edit-form-group">
+                    {{-- DATASET DIBUAT --}}
 
-                            <label class="data-form-label">
+                    <div class="data-form-group">
 
-                                Tahun
+                        <label class="data-form-label">
+                            Dataset Dibuat
+                        </label>
 
-                                <span>*</span>
+                        <input
+                            type="date"
+                            name="dataset_dibuat"
+                            class="data-form-control"
+                            value="{{ old('dataset_dibuat') }}"
+                        >
 
-                            </label>
-
-                            <input
-                                type="number"
-                                id="edit_tahun"
-                                class="data-form-control"
-                                min="1900"
-                                max="2100"
-                                placeholder="Contoh: 2026"
-                            >
-
-                        </div>
+                    </div>
 
 
-                        {{-- FILE --}}
+                    {{-- DATASET DIPERBARUI --}}
 
-                        <div class="edit-form-group full">
+                    <div class="data-form-group">
 
-                            <label class="data-form-label">
+                        <label class="data-form-label">
+                            Dataset Diperbarui
+                        </label>
 
-                                File Data
+                        <input
+                            type="date"
+                            name="dataset_diperbarui"
+                            class="data-form-control"
+                            value="{{ old('dataset_diperbarui') }}"
+                        >
 
-                            </label>
-
-                            <input
-                                type="file"
-                                id="edit_file_data"
-                                class="data-form-control data-file-input"
-                                accept=".csv,.xls,.xlsx,.pdf,.zip"
-                            >
-
-                            <small class="data-form-help">
-
-                                Kosongkan jika tidak ingin mengganti file.
-
-                            </small>
+                    </div>
 
 
-                            <div
-                                id="dataCurrentFile"
-                                class="data-current-file"
-                            >
+                    {{-- PENGUKURAN --}}
 
-                                <i class="bi bi-file-earmark"></i>
+                    <div class="data-form-group">
 
-                                File saat ini:
+                        <label class="data-form-label">
+                            Pengukuran Dataset
+                        </label>
 
-                                <a
-                                    id="dataCurrentFileLink"
-                                    href="#"
-                                    target="_blank"
-                                    rel="noopener noreferrer"
-                                >
-                                    Lihat File
-                                </a>
+                        <input
+                            type="text"
+                            name="pengukuran_dataset"
+                            class="data-form-control"
+                            placeholder="Contoh: Jumlah Penduduk"
+                            value="{{ old('pengukuran_dataset') }}"
+                        >
 
-                            </div>
+                    </div>
 
-                        </div>
+
+                    {{-- TINGKAT PENYAJIAN --}}
+
+                    <div class="data-form-group">
+
+                        <label class="data-form-label">
+                            Tingkat Penyajian Dataset
+                        </label>
+
+                        <input
+                            type="text"
+                            name="tingkat_penyajian_dataset"
+                            class="data-form-control"
+                            placeholder="Contoh: Kota Bekasi"
+                            value="{{ old('tingkat_penyajian_dataset') }}"
+                        >
+
+                    </div>
+
+
+                    {{-- CAKUPAN --}}
+
+                    <div class="data-form-group">
+
+                        <label class="data-form-label">
+                            Cakupan Dataset
+                        </label>
+
+                        <input
+                            type="text"
+                            name="cakupan_dataset"
+                            class="data-form-control"
+                            placeholder="Contoh: Seluruh kecamatan"
+                            value="{{ old('cakupan_dataset') }}"
+                        >
+
+                    </div>
+
+
+                    {{-- PRODUSEN --}}
+
+                    <div class="data-form-group">
+
+                        <label class="data-form-label">
+                            Produsen
+                        </label>
+
+                        <input
+                            type="text"
+                            name="produsen"
+                            class="data-form-control"
+                            placeholder="Contoh: Diskominfostandi Kota Bekasi"
+                            value="{{ old('produsen') }}"
+                        >
+
+                    </div>
+
+
+                    {{-- KONTAK --}}
+
+                    <div class="data-form-group">
+
+                        <label class="data-form-label">
+                            Kontak Produsen
+                        </label>
+
+                        <input
+                            type="text"
+                            name="kontak_produsen"
+                            class="data-form-control"
+                            placeholder="Contoh: diskominfo@bekasikota.go.id"
+                            value="{{ old('kontak_produsen') }}"
+                        >
+
+                    </div>
+
+
+                    {{-- KODE INDIKATOR --}}
+
+                    <div class="data-form-group">
+
+                        <label class="data-form-label">
+                            Kode Indikator
+                        </label>
+
+                        <input
+                            type="text"
+                            name="kode_indikator"
+                            class="data-form-control"
+                            placeholder="Contoh: PEND-001"
+                            value="{{ old('kode_indikator') }}"
+                        >
+
+                    </div>
+
+
+                    {{-- SATUAN --}}
+
+                    <div class="data-form-group">
+
+                        <label class="data-form-label">
+                            Satuan Dataset
+                        </label>
+
+                        <input
+                            type="text"
+                            name="satuan_dataset"
+                            class="data-form-control"
+                            placeholder="Contoh: Jiwa"
+                            value="{{ old('satuan_dataset') }}"
+                        >
+
+                    </div>
+
+
+                    {{-- FREKUENSI --}}
+
+                    <div class="data-form-group">
+
+                        <label class="data-form-label">
+                            Frekuensi Dataset
+                        </label>
+
+                        <input
+                            type="text"
+                            name="frekuensi_dataset"
+                            class="data-form-control"
+                            placeholder="Contoh: Tahunan"
+                            value="{{ old('frekuensi_dataset') }}"
+                        >
+
+                    </div>
+
+
+                    {{-- SUMBER EKSTERNAL --}}
+
+                    <div class="data-form-group">
+
+                        <label class="data-form-label">
+                            Sumber Eksternal
+                        </label>
+
+                        <input
+                            type="text"
+                            name="sumber_eksternal"
+                            class="data-form-control"
+                            placeholder="Contoh: BPS / -"
+                            value="{{ old('sumber_eksternal') }}"
+                        >
+
+                    </div>
+
+
+                    {{-- DIMENSI --}}
+
+                    <div class="data-form-group">
+
+                        <label class="data-form-label">
+                            Dimensi Dataset
+                        </label>
+
+                        <input
+                            type="text"
+                            name="dimensi_dataset"
+                            class="data-form-control"
+                            placeholder="Contoh: Kecamatan dan Tahun"
+                            value="{{ old('dimensi_dataset') }}"
+                        >
+
+                    </div>
+
+
+                    {{-- DESKRIPSI METADATA --}}
+
+                    <div class="data-form-group full">
+
+                        <label class="data-form-label">
+                            Deskripsi Metadata
+                        </label>
+
+                        <textarea
+                            name="deskripsi_metadata"
+                            class="data-form-control"
+                            placeholder="Deskripsi metadata dataset..."
+                        >{{ old('deskripsi_metadata') }}</textarea>
 
                     </div>
 
@@ -2364,27 +2344,26 @@ body.data-modal-open {
             </div>
 
 
+            {{-- FOOTER --}}
+
             <div class="data-modal-footer">
 
                 <button
                     type="button"
                     class="data-modal-cancel"
-                    onclick="closeModal('dataModal')"
+                    onclick="closeModal('addModal')"
                 >
-
                     Batal
-
                 </button>
 
                 <button
                     type="submit"
-                    id="dataSaveButton"
                     class="data-modal-save"
                 >
 
                     <i class="bi bi-check-lg"></i>
 
-                    Simpan Semua Data
+                    Simpan Data
 
                 </button>
 
@@ -2402,15 +2381,14 @@ body.data-modal-open {
 ========================================================= --}}
 
 <div
-    id="commentModal"
+    id="importModal"
     class="data-modal-overlay"
     aria-hidden="true"
 >
 
-    <div
-        class="data-modal data-comment-modal"
-        onclick="event.stopPropagation()"
-    >
+    <div class="data-modal data-modal-small">
+
+        {{-- HEADER --}}
 
         <div class="data-modal-header">
 
@@ -2418,18 +2396,18 @@ body.data-modal-open {
 
                 <div class="data-modal-icon">
 
-                    <i class="bi bi-chat-left-text"></i>
+                    <i class="bi bi-file-earmark-excel-fill"></i>
 
                 </div>
 
                 <div>
 
                     <h2 class="data-modal-title">
-                        Komentar Verifikator
+                        Import Excel
                     </h2>
 
                     <p class="data-modal-subtitle">
-                        Catatan dari proses verifikasi data.
+                        Import metadata dan isi dataset dari Excel.
                     </p>
 
                 </div>
@@ -2440,7 +2418,7 @@ body.data-modal-open {
             <button
                 type="button"
                 class="data-modal-close"
-                onclick="closeCommentModal()"
+                onclick="closeModal('importModal')"
             >
 
                 <i class="bi bi-x-lg"></i>
@@ -2450,17 +2428,26 @@ body.data-modal-open {
         </div>
 
 
-        <div class="data-comment-box">
+        {{-- FORM --}}
 
-            <i class="bi bi-chat-left-text-fill"></i>
+        <form
+            action="{{ route('data.import') }}"
+            method="POST"
+            enctype="multipart/form-data"
+        >
 
-            <span id="commentText"></span>
+            @csrf
+
+
+            <div class="data-modal-body">
 
                 <div class="metadata-note">
 
                     Gunakan template Excel.
+
                     Sheet pertama bernama
                     <strong>Metadata</strong>
+
                     dan sheet kedua bernama
                     <strong>Dataset</strong>.
 
@@ -2469,16 +2456,18 @@ body.data-modal-open {
                 </div>
 
 
-        <div class="data-modal-footer">
+                <div class="data-form-grid">
 
-            <button
-                type="button"
-                class="data-modal-cancel"
-                onclick="closeCommentModal()"
-            >
+                    {{-- NAMA --}}
+
+                    <div class="data-form-group full">
 
                         <label class="data-form-label">
-                            Nama Dataset <span>*</span>
+
+                            Nama Dataset
+
+                            <span>*</span>
+
                         </label>
 
                         <input
@@ -2491,15 +2480,647 @@ body.data-modal-open {
 
                     </div>
 
+
+                    {{-- TOPIK --}}
+
+                    <div class="data-form-group">
+
+                        <label class="data-form-label">
+
+                            Topik
+
+                            <span>*</span>
+
+                        </label>
+
+                        <select
+                            name="topik"
+                            class="data-form-control"
+                            required
+                        >
+
+                            <option value="">
+                                Pilih Topik
+                            </option>
+
+                            @foreach($topikData as $topik)
+
+                                <option value="{{ $topik }}">
+                                    {{ $topik }}
+                                </option>
+
+                            @endforeach
+
+                        </select>
+
+                    </div>
+
+
+                    {{-- TAHUN --}}
+
+                    <div class="data-form-group">
+
+                        <label class="data-form-label">
+
+                            Tahun
+
+                            <span>*</span>
+
+                        </label>
+
+                        <input
+                            type="number"
+                            name="tahun"
+                            class="data-form-control"
+                            min="1900"
+                            max="2200"
+                            placeholder="Contoh: 2026"
+                            required
+                        >
+
+                    </div>
+
+
+                    {{-- DESKRIPSI --}}
+
+                    <div class="data-form-group full">
+
+                        <label class="data-form-label">
+                            Deskripsi Dataset
+                        </label>
+
+                        <textarea
+                            name="deskripsi"
+                            class="data-form-control"
+                            placeholder="Boleh dikosongkan. Deskripsi dari metadata akan digunakan."
+                        ></textarea>
+
+                    </div>
+
+
+                    {{-- FILE --}}
+
+                    <div class="data-form-group full">
+
+                        <label class="data-form-label">
+
+                            File Excel
+
+                            <span>*</span>
+
+                        </label>
+
+                        <input
+                            type="file"
+                            name="file_data"
+                            class="data-form-control"
+                            accept=".xlsx,.xls"
+                            required
+                        >
+
+                        <small class="data-form-help">
+                            Format XLS/XLSX. Maksimal 10 MB.
+                        </small>
+
+                    </div>
+
+                </div>
+
+            </div>
+
+
+            {{-- FOOTER --}}
+
+            <div class="data-modal-footer">
+
+                <button
+                    type="button"
+                    class="data-modal-cancel"
+                    onclick="closeModal('importModal')"
+                >
+                    Batal
+                </button>
+
+                <button
+                    type="submit"
+                    class="data-modal-save"
+                >
+
+                    <i class="bi bi-upload"></i>
+
+                    Import Dataset
+
+                </button>
+
+            </div>
+
+        </form>
+
+    </div>
+
+</div>
+
+
+{{-- =========================================================
+     MODAL EDIT
+========================================================= --}}
+
+<div
+    id="editModal"
+    class="data-modal-overlay"
+    aria-hidden="true"
+>
+
+    <div class="data-modal">
+
+        {{-- HEADER --}}
+
+        <div class="data-modal-header">
+
+            <div class="data-modal-header-left">
+
+                <div class="data-modal-icon">
+
+                    <i class="bi bi-pencil-square"></i>
+
+                </div>
+
+                <div>
+
+                    <h2 class="data-modal-title">
+                        Edit Dataset
+                    </h2>
+
+                    <p class="data-modal-subtitle">
+                        Perbarui informasi dan metadata dataset.
+                    </p>
+
+                </div>
+
+            </div>
+
+
+            <button
+                type="button"
+                class="data-modal-close"
+                onclick="closeModal('editModal')"
+            >
+
+                <i class="bi bi-x-lg"></i>
+
+            </button>
+
+        </div>
+
+
+        {{-- FORM EDIT --}}
+
+        <form
+            id="editForm"
+            method="POST"
+            enctype="multipart/form-data"
+        >
+
+            @csrf
+
+            @method('PUT')
+
+
+            <div class="data-modal-body">
+
+                {{-- INFORMASI --}}
+
+                <div class="data-section-title">
+                    Informasi Dataset
+                </div>
+
+
+                <div class="data-form-grid">
+
+                    {{-- NAMA --}}
+
+                    <div class="data-form-group full">
+
+                        <label class="data-form-label">
+
+                            Nama Dataset
+
+                            <span>*</span>
+
+                        </label>
+
+                        <input
+                            type="text"
+                            id="edit_nama_dataset"
+                            name="nama_dataset"
+                            class="data-form-control"
+                            required
+                        >
+
+                    </div>
+
+
+                    {{-- TOPIK --}}
+
+                    <div class="data-form-group">
+
+                        <label class="data-form-label">
+
+                            Topik
+
+                            <span>*</span>
+
+                        </label>
+
+                        <select
+                            id="edit_topik"
+                            name="topik"
+                            class="data-form-control"
+                            required
+                        >
+
+                            @foreach($topikData as $topik)
+
+                                <option value="{{ $topik }}">
+                                    {{ $topik }}
+                                </option>
+
+                            @endforeach
+
+                        </select>
+
+                    </div>
+
+
+                    {{-- TAHUN --}}
+
+                    <div class="data-form-group">
+
+                        <label class="data-form-label">
+
+                            Tahun
+
+                            <span>*</span>
+
+                        </label>
+
+                        <input
+                            type="number"
+                            id="edit_tahun"
+                            name="tahun"
+                            class="data-form-control"
+                            min="1900"
+                            max="2200"
+                            required
+                        >
+
+                    </div>
+
+
+                    {{-- DESKRIPSI --}}
+
+                    <div class="data-form-group full">
+
+                        <label class="data-form-label">
+                            Deskripsi Dataset
+                        </label>
+
+                        <textarea
+                            id="edit_deskripsi"
+                            name="deskripsi"
+                            class="data-form-control"
+                        ></textarea>
+
+                    </div>
+
+                </div>
+
+
+                {{-- METADATA --}}
+
+                <div
+                    class="data-section-title"
+                    style="margin-top:25px;"
+                >
+                    Metadata Dataset
+                </div>
+
+
+                <div class="data-form-grid">
+
+                    {{-- DATASET DIBUAT --}}
+
+                    <div class="data-form-group">
+
+                        <label class="data-form-label">
+                            Dataset Dibuat
+                        </label>
+
+                        <input
+                            type="date"
+                            id="edit_dataset_dibuat"
+                            name="dataset_dibuat"
+                            class="data-form-control"
+                        >
+
+                    </div>
+
+
+                    {{-- DATASET DIPERBARUI --}}
+
+                    <div class="data-form-group">
+
+                        <label class="data-form-label">
+                            Dataset Diperbarui
+                        </label>
+
+                        <input
+                            type="text"
+                            id="edit_dataset_diperbarui"
+                            name="dataset_diperbarui"
+                            class="data-form-control"
+                        >
+
+                    </div>
+
+
+                    {{-- PENGUKURAN --}}
+
+                    <div class="data-form-group">
+
+                        <label class="data-form-label">
+                            Pengukuran Dataset
+                        </label>
+
+                        <input
+                            type="text"
+                            id="edit_pengukuran_dataset"
+                            name="pengukuran_dataset"
+                            class="data-form-control"
+                        >
+
+                    </div>
+
+
+                    {{-- TINGKAT PENYAJIAN --}}
+
+                    <div class="data-form-group">
+
+                        <label class="data-form-label">
+                            Tingkat Penyajian Dataset
+                        </label>
+
+                        <input
+                            type="text"
+                            id="edit_tingkat_penyajian_dataset"
+                            name="tingkat_penyajian_dataset"
+                            class="data-form-control"
+                        >
+
+                    </div>
+
+
+                    {{-- CAKUPAN --}}
+
+                    <div class="data-form-group">
+
+                        <label class="data-form-label">
+                            Cakupan Dataset
+                        </label>
+
+                        <input
+                            type="text"
+                            id="edit_cakupan_dataset"
+                            name="cakupan_dataset"
+                            class="data-form-control"
+                        >
+
+                    </div>
+
+
+                    {{-- PRODUSEN --}}
+
+                    <div class="data-form-group">
+
+                        <label class="data-form-label">
+                            Produsen
+                        </label>
+
+                        <input
+                            type="text"
+                            id="edit_produsen"
+                            name="produsen"
+                            class="data-form-control"
+                        >
+
+                    </div>
+
+
+                    {{-- KONTAK --}}
+
+                    <div class="data-form-group">
+
+                        <label class="data-form-label">
+                            Kontak Produsen
+                        </label>
+
+                        <input
+                            type="text"
+                            id="edit_kontak_produsen"
+                            name="kontak_produsen"
+                            class="data-form-control"
+                        >
+
+                    </div>
+
+
+                    {{-- KODE --}}
+
+                    <div class="data-form-group">
+
+                        <label class="data-form-label">
+                            Kode Indikator
+                        </label>
+
+                        <input
+                            type="text"
+                            id="edit_kode_indikator"
+                            name="kode_indikator"
+                            class="data-form-control"
+                        >
+
+                    </div>
+
+
+                    {{-- SATUAN --}}
+
+                    <div class="data-form-group">
+
+                        <label class="data-form-label">
+                            Satuan Dataset
+                        </label>
+
+                        <input
+                            type="text"
+                            id="edit_satuan_dataset"
+                            name="satuan_dataset"
+                            class="data-form-control"
+                        >
+
+                    </div>
+
+
+                    {{-- FREKUENSI --}}
+
+                    <div class="data-form-group">
+
+                        <label class="data-form-label">
+                            Frekuensi Dataset
+                        </label>
+
+                        <input
+                            type="text"
+                            id="edit_frekuensi_dataset"
+                            name="frekuensi_dataset"
+                            class="data-form-control"
+                        >
+
+                    </div>
+
+
+                    {{-- SUMBER --}}
+
+                    <div class="data-form-group">
+
+                        <label class="data-form-label">
+                            Sumber Eksternal
+                        </label>
+
+                        <input
+                            type="text"
+                            id="edit_sumber_eksternal"
+                            name="sumber_eksternal"
+                            class="data-form-control"
+                        >
+
+                    </div>
+
+
+                    {{-- DIMENSI --}}
+
+                    <div class="data-form-group">
+
+                        <label class="data-form-label">
+                            Dimensi Dataset
+                        </label>
+
+                        <input
+                            type="text"
+                            id="edit_dimensi_dataset"
+                            name="dimensi_dataset"
+                            class="data-form-control"
+                        >
+
+                    </div>
+
+
+                    {{-- DESKRIPSI METADATA --}}
+
+                    <div class="data-form-group full">
+
+                        <label class="data-form-label">
+                            Deskripsi Metadata
+                        </label>
+
+                        <textarea
+                            id="edit_deskripsi_metadata"
+                            name="deskripsi_metadata"
+                            class="data-form-control"
+                        ></textarea>
+
+                    </div>
+
+
+                    {{-- GANTI FILE --}}
+
+                    <div class="data-form-group full">
+
+                        <label class="data-form-label">
+                            Ganti File Excel
+                        </label>
+
+                        <input
+                            type="file"
+                            name="file_data"
+                            class="data-form-control"
+                            accept=".xlsx,.xls"
+                        >
+
+                        <small class="data-form-help">
+                            Kosongkan jika tidak ingin mengganti file Excel.
+                        </small>
+
+
+                        <div
+                            id="editCurrentFile"
+                            class="data-current-file"
+                        >
+
+                            File saat ini:
+
+                            <a
+                                id="editCurrentFileLink"
+                                href="#"
+                                target="_blank"
+                                rel="noopener noreferrer"
+                            >
+                                Lihat File
+                            </a>
+
+                        </div>
+
+                    </div>
+
+                </div>
+
+            </div>
+
+
+            {{-- FOOTER --}}
+
+            <div class="data-modal-footer">
+
+                <button
+                    type="button"
+                    class="data-modal-cancel"
+                    onclick="closeModal('editModal')"
+                >
+                    Batal
+                </button>
+
+                <button
+                    type="submit"
+                    class="data-modal-save"
+                >
+
+                    <i class="bi bi-check-lg"></i>
+
+                    Simpan Perubahan
+
+                </button>
+
+            </div>
+
+        </form>
+
     </div>
 
 </div>
 
 
 <script>
-
 /* =========================================================
-   DATA RECORDS
+   DATA DARI LARAVEL
 ========================================================= */
 
 const dataRecords = @json($data->items());
@@ -2515,641 +3136,29 @@ function toggleDataFilter(event)
         event.stopPropagation();
     }
 
-    const dropdown =
-        document.getElementById(
-            'dataFilterDropdown'
-        );
+    const dropdown = document.getElementById(
+        'dataFilterDropdown'
+    );
 
     if (!dropdown) {
         return;
     }
 
-    dropdown.classList.toggle(
-        'show'
-    );
+    dropdown.classList.toggle('show');
 }
 
 
 function resetDataFilter()
 {
-    window.location.href =
-        "{{ route('data.index') }}";
-}
-
-
-document.addEventListener('click', function(event)
-{
-    const wrap =
-        document.querySelector('.data-filter-wrap');
-
-    const dropdown =
-        document.getElementById('dataFilterDropdown');
-
-    if (
-        dropdown &&
-        wrap &&
-        !wrap.contains(event.target)
-    ) {
-
-        dropdown.classList.remove('show');
-
-    }
-});
-
-
-/* =========================================================
-   BATCH ROW
-========================================================= */
-
-let batchRowNumber = 0;
-
-
-function addBatchRow(
-    nama = '',
-    jenis = '',
-    tahun = ''
-)
-{
-    batchRowNumber++;
-
-    const tbody =
-        document.getElementById('batchRows');
-
-    if (!tbody) {
-        return;
-    }
-
-    const row =
-        document.createElement('tr');
-
-    row.className =
-        'batch-data-row';
-
-
-    row.innerHTML = `
-
-        <td class="batch-row-number">
-            ${batchRowNumber}
-        </td>
-
-        <td>
-
-            <input
-                type="text"
-                name="nama_dataset[]"
-                class="batch-input"
-                placeholder="Nama dataset"
-                value="${escapeHtml(nama)}"
-                required
-            >
-
-        </td>
-
-        <td>
-
-            <input
-                type="text"
-                name="jenis_data[]"
-                class="batch-input"
-                placeholder="Jenis data"
-                value="${escapeHtml(jenis)}"
-                required
-            >
-
-        </td>
-
-        <td>
-
-            <input
-                type="number"
-                name="tahun[]"
-                class="batch-input"
-                min="1900"
-                max="2100"
-                placeholder="2026"
-                value="${escapeHtml(tahun)}"
-                required
-            >
-
-        </td>
-
-        <td>
-
-            <input
-                type="file"
-                name="file_data[]"
-                class="batch-input batch-file"
-                accept=".csv,.xls,.xlsx,.pdf,.zip"
-                required
-            >
-
-            <div
-                style="
-                    margin-top:4px;
-                    color:#9ca3af;
-                    font-size:8px;
-                "
-            >
-                CSV, XLS, XLSX, PDF, ZIP. Maks. 10 MB.
-            </div>
-
-        </td>
-
-        <td style="text-align:center;">
-
-            <button
-                type="button"
-                class="batch-delete"
-                title="Hapus baris"
-                onclick="removeBatchRow(this)"
-            >
-
-                <i class="bi bi-trash-fill"></i>
-
-            </button>
-
-        </td>
-
-    `;
-
-
-    tbody.appendChild(row);
-
-    updateBatchNumbers();
-}
-
-
-function removeBatchRow(button)
-{
-    const row =
-        button.closest('.batch-data-row');
-
-    if (!row) {
-        return;
-    }
-
-    const tbody =
-        document.getElementById('batchRows');
-
-
-    if (
-        tbody &&
-        tbody.querySelectorAll('.batch-data-row').length <= 1
-    ) {
-
-        alert(
-            'Minimal harus ada satu dataset.'
-        );
-
-        return;
-    }
-
-
-    row.remove();
-
-    updateBatchNumbers();
-}
-
-
-function updateBatchNumbers()
-{
-    const rows =
-        document.querySelectorAll(
-            '#batchRows .batch-data-row'
-        );
-
-
-    rows.forEach(function(row, index)
-    {
-
-        const number =
-            row.querySelector(
-                '.batch-row-number'
-            );
-
-        if (number) {
-
-            number.textContent =
-                index + 1;
-
-        }
-
-    });
-}
-
-
-function escapeHtml(value)
-{
-    if (value === null || value === undefined) {
-        return '';
-    }
-
-    return String(value)
-        .replace(/&/g, '&amp;')
-        .replace(/</g, '&lt;')
-        .replace(/>/g, '&gt;')
-        .replace(/"/g, '&quot;')
-        .replace(/'/g, '&#039;');
+    window.location.href = "{{ route('data.index') }}";
 }
 
 
 /* =========================================================
-   REMOVE EDIT NAME
-   MODE TAMBAH
+   MODAL
 ========================================================= */
 
-function disableEditFields()
-{
-    const nama =
-        document.getElementById('edit_nama_dataset');
-
-    const jenis =
-        document.getElementById('edit_jenis_data');
-
-    const tahun =
-        document.getElementById('edit_tahun');
-
-    const file =
-        document.getElementById('edit_file_data');
-
-
-    if (nama) {
-        nama.removeAttribute('name');
-        nama.disabled = true;
-    }
-
-    if (jenis) {
-        jenis.removeAttribute('name');
-        jenis.disabled = true;
-    }
-
-    if (tahun) {
-        tahun.removeAttribute('name');
-        tahun.disabled = true;
-    }
-
-    if (file) {
-        file.removeAttribute('name');
-        file.disabled = true;
-    }
-}
-
-
-/* =========================================================
-   ENABLE EDIT FIELDS
-   MODE EDIT
-========================================================= */
-
-function enableEditFields()
-{
-    const nama =
-        document.getElementById('edit_nama_dataset');
-
-    const jenis =
-        document.getElementById('edit_jenis_data');
-
-    const tahun =
-        document.getElementById('edit_tahun');
-
-    const file =
-        document.getElementById('edit_file_data');
-
-
-    if (nama) {
-        nama.setAttribute(
-            'name',
-            'nama_dataset'
-        );
-
-        nama.disabled = false;
-    }
-
-    if (jenis) {
-        jenis.setAttribute(
-            'name',
-            'jenis_data'
-        );
-
-        jenis.disabled = false;
-    }
-
-    if (tahun) {
-        tahun.setAttribute(
-            'name',
-            'tahun'
-        );
-
-        tahun.disabled = false;
-    }
-
-    if (file) {
-        file.setAttribute(
-            'name',
-            'file_data'
-        );
-
-        file.disabled = false;
-    }
-}
-
-
-/* =========================================================
-   OPEN ADD
-========================================================= */
-
-function openAddModal()
-{
-    const modal = document.getElementById('dataModal');
-    const form = document.getElementById('dataForm');
-
-    if (!modal || !form) {
-        console.error('Modal/form Data tidak ditemukan.');
-        return;
-    }
-
-    form.reset();
-
-    form.action = "{{ route('data.store') }}";
-    document.getElementById('dataMethod').value = 'POST';
-
-    const title = document.getElementById('dataModalTitle');
-    const subtitle = document.getElementById('dataModalSubtitle');
-    const saveButton = document.getElementById('dataSaveButton');
-
-    if (title) {
-        title.textContent = 'Tambah Data';
-    }
-
-    if (subtitle) {
-        subtitle.textContent =
-            'Tambahkan beberapa dataset sekaligus ke dalam sistem.';
-    }
-
-    if (saveButton) {
-        saveButton.innerHTML =
-            '<i class="bi bi-check-lg"></i> Simpan Semua Data';
-        saveButton.disabled = false;
-    }
-
-    document.getElementById('batchFormContainer').style.display = 'block';
-    document.getElementById('editFormContainer').style.display = 'none';
-
-    const tbody = document.getElementById('batchRows');
-
-    if (tbody) {
-        tbody.innerHTML = '';
-    }
-
-    batchRowNumber = 0;
-    addBatchRow();
-
-    disableEditFields();
-
-    modal.classList.add('show');
-    modal.setAttribute('aria-hidden', 'false');
-    document.body.classList.add('data-modal-open');
-}
-
-/*
-|--------------------------------------------------------------------------
-| BACKWARD COMPATIBILITY
-|--------------------------------------------------------------------------
-| Kalau ada bagian lain yang masih memanggil openModal(), arahkan ke
-| fungsi yang sesuai.
-*/
 function openModal(id)
-{
-    if (id === 'addModal' || id === 'dataModal') {
-        openAddModal();
-        return;
-    }
-
-    if (id === 'editModal') {
-        return;
-    }
-
-    const modal = document.getElementById(id);
-
-    if (modal) {
-        modal.classList.add('show');
-        modal.setAttribute('aria-hidden', 'false');
-        document.body.classList.add('data-modal-open');
-    }
-}
-
-
-/* =========================================================
-   OPEN EDIT
-========================================================= */
-
-
-function openEditDataModal(id)
-{
-    const data =
-        dataRecords.find(function(item)
-        {
-            return String(item.id) === String(id);
-        });
-
-
-    if (!data) {
-
-        alert(
-            'Data tidak ditemukan pada halaman ini.'
-        );
-
-        return;
-    }
-
-
-    const modal =
-        document.getElementById('dataModal');
-
-    const form =
-        document.getElementById('dataForm');
-
-    if (!modal || !form) {
-        return;
-    }
-
-
-    /*
-    |----------------------------------------------------------------------
-    | MODE EDIT
-    |----------------------------------------------------------------------
-    */
-
-    enableEditFields();
-
-
-    /*
-    |----------------------------------------------------------------------
-    | ACTION
-    |----------------------------------------------------------------------
-    */
-
-    form.action =
-        "{{ url('/data') }}/" + id;
-
-
-    document.getElementById(
-        'dataMethod'
-    ).value =
-        'PUT';
-
-
-    /*
-    |----------------------------------------------------------------------
-    | TITLE
-    |----------------------------------------------------------------------
-    */
-
-    document.getElementById(
-        'dataModalTitle'
-    ).textContent =
-        'Edit Data';
-
-
-    document.getElementById(
-        'dataModalSubtitle'
-    ).textContent =
-        'Perbarui dataset yang dipilih.';
-
-
-    document.getElementById(
-        'dataSaveButton'
-    ).innerHTML =
-        '<i class="bi bi-check-lg"></i> Simpan Perubahan';
-
-
-    /*
-    |----------------------------------------------------------------------
-    | HIDE BATCH
-    |----------------------------------------------------------------------
-    */
-
-    document.getElementById(
-        'batchFormContainer'
-    ).style.display =
-        'none';
-
-
-    /*
-    |----------------------------------------------------------------------
-    | SHOW EDIT
-    |----------------------------------------------------------------------
-    */
-
-    document.getElementById(
-        'editFormContainer'
-    ).style.display =
-        'block';
-
-
-    /*
-    |----------------------------------------------------------------------
-    | DATA
-    |----------------------------------------------------------------------
-    */
-
-    document.getElementById(
-        'edit_nama_dataset'
-    ).value =
-        data.nama_dataset ?? '';
-
-
-    document.getElementById(
-        'edit_jenis_data'
-    ).value =
-        data.jenis_data ?? '';
-
-
-    document.getElementById(
-        'edit_tahun'
-    ).value =
-        data.tahun ?? '';
-
-
-    /*
-    |----------------------------------------------------------------------
-    | FILE
-    |----------------------------------------------------------------------
-    */
-
-    const fileInput =
-        document.getElementById(
-            'edit_file_data'
-        );
-
-    if (fileInput) {
-
-        fileInput.value = '';
-
-    }
-
-
-    const currentFile =
-        document.getElementById(
-            'dataCurrentFile'
-        );
-
-    const currentFileLink =
-        document.getElementById(
-            'dataCurrentFileLink'
-        );
-
-
-    if (
-        currentFile &&
-        currentFileLink &&
-        data.file_data
-    ) {
-
-        currentFileLink.href =
-            "{{ asset('storage') }}/" +
-            data.file_data;
-
-        currentFile.style.display =
-            'block';
-
-    } else if (currentFile) {
-
-        currentFile.style.display =
-            'none';
-
-    }
-
-
-    /*
-    |----------------------------------------------------------------------
-    | SHOW MODAL
-    |----------------------------------------------------------------------
-    */
-
-    modal.classList.add('show');
-
-    modal.setAttribute(
-        'aria-hidden',
-        'false'
-    );
-
-    document.body.classList.add(
-        'data-modal-open'
-    );
-}
-
-
-/* =========================================================
-   CLOSE DATA MODAL
-========================================================= */
-
-function closeDataModal()
-{
-    closeModal('dataModal');
-}
-
-
-function closeModal(id)
 {
     const modal = document.getElementById(id);
 
@@ -3157,38 +3166,6 @@ function closeModal(id)
         return;
     }
 
-    modal.classList.remove('show');
-    modal.setAttribute('aria-hidden', 'true');
-
-    const anotherOpenModal = document.querySelector(
-        '.data-modal-overlay.show'
-    );
-
-    if (!anotherOpenModal) {
-        document.body.classList.remove('data-modal-open');
-    }
-}
-
-
-/* =========================================================
-   COMMENT
-========================================================= */
-
-function showComment(comment)
-{
-    const modal =
-        document.getElementById('commentModal');
-
-    const text =
-        document.getElementById('commentText');
-
-    if (!modal || !text) {
-        return;
-    }
-
-    text.textContent =
-        comment || 'Tidak ada komentar.';
-
     modal.classList.add('show');
 
     modal.setAttribute(
@@ -3202,10 +3179,9 @@ function showComment(comment)
 }
 
 
-function closeCommentModal()
+function closeModal(id)
 {
-    const modal =
-        document.getElementById('commentModal');
+    const modal = document.getElementById(id);
 
     if (!modal) {
         return;
@@ -3225,100 +3201,674 @@ function closeCommentModal()
 
 
 /* =========================================================
-   BACKDROP
+   TAMBAH DATA
 ========================================================= */
 
-document
-    .getElementById('dataModal')
-    ?.addEventListener(
-        'click',
-        function(event)
-        {
-            if (event.target === this) {
-
-                closeDataModal();
-
-            }
-        }
-    );
-
-
-document
-    .getElementById('commentModal')
-    ?.addEventListener(
-        'click',
-        function(event)
-        {
-            if (event.target === this) {
-
-                closeCommentModal();
-
-            }
-        }
-    );
-
-
-/* =========================================================
-   IMPORT
-========================================================= */
-
-function openImportModal()
+function openAddModal()
 {
-    alert('Form Import Excel belum tersedia pada view Data ini.');
+    openModal('addModal');
 }
 
 
 /* =========================================================
-   EDIT
+   IMPORT EXCEL
+========================================================= */
+
+function openImportModal()
+{
+    openModal('importModal');
+}
+
+
+/* =========================================================
+   HELPER
+========================================================= */
+
+function safeValue(value)
+{
+    if (value === null || value === undefined) {
+        return '';
+    }
+
+    return String(value);
+}
+
+
+/*
+|--------------------------------------------------------------------------
+| DATE UNTUK INPUT TYPE DATE
+|--------------------------------------------------------------------------
+*/
+
+function normalizeDateForInput(value)
+{
+    if (!value) {
+        return '';
+    }
+
+    const stringValue = String(value).trim();
+
+    /*
+    | Kalau sudah YYYY-MM-DD
+    */
+    if (/^\d{4}-\d{2}-\d{2}$/.test(stringValue)) {
+        return stringValue;
+    }
+
+    /*
+    | Kalau format YYYY-MM-DD HH:mm:ss
+    */
+    if (/^\d{4}-\d{2}-\d{2}\s/.test(stringValue)) {
+        return stringValue.substring(0, 10);
+    }
+
+    /*
+    | Kalau format DD/MM/YYYY
+    */
+    const slashMatch = stringValue.match(
+        /^(\d{2})\/(\d{2})\/(\d{4})$/
+    );
+
+    if (slashMatch) {
+
+        return (
+            slashMatch[3] +
+            '-' +
+            slashMatch[2] +
+            '-' +
+            slashMatch[1]
+        );
+    }
+
+    /*
+    | Kalau format DD-MM-YYYY
+    */
+    const dashMatch = stringValue.match(
+        /^(\d{2})-(\d{2})-(\d{4})$/
+    );
+
+    if (dashMatch) {
+
+        return (
+            dashMatch[3] +
+            '-' +
+            dashMatch[2] +
+            '-' +
+            dashMatch[1]
+        );
+    }
+
+    /*
+    | Coba Date JS
+    */
+    const parsed = new Date(stringValue);
+
+    if (!Number.isNaN(parsed.getTime())) {
+
+        const year =
+            parsed.getFullYear();
+
+        const month =
+            String(
+                parsed.getMonth() + 1
+            ).padStart(2, '0');
+
+        const day =
+            String(
+                parsed.getDate()
+            ).padStart(2, '0');
+
+        return (
+            year +
+            '-' +
+            month +
+            '-' +
+            day
+        );
+    }
+
+    return '';
+}
+
+
+/* =========================================================
+   EDIT DATA
 ========================================================= */
 
 function openEditModal(id)
 {
-    openEditDataModal(id);
+    const data = dataRecords.find(
+        function(item)
+        {
+            return String(item.id) === String(id);
+        }
+    );
+
+    if (!data) {
+
+        alert(
+            'Dataset tidak ditemukan.'
+        );
+
+        return;
+    }
+
+
+    const form =
+        document.getElementById(
+            'editForm'
+        );
+
+    if (!form) {
+        return;
+    }
+
+
+    /*
+    |--------------------------------------------------------------------------
+    | ACTION FORM
+    |--------------------------------------------------------------------------
+    */
+
+    form.action =
+        "{{ url('/data') }}/" + id;
+
+
+    /*
+    |--------------------------------------------------------------------------
+    | INFORMASI DATASET
+    |--------------------------------------------------------------------------
+    */
+
+    const namaDataset =
+        document.getElementById(
+            'edit_nama_dataset'
+        );
+
+    if (namaDataset) {
+
+        namaDataset.value =
+            safeValue(
+                data.nama_dataset
+            );
+    }
+
+
+    const topik =
+        document.getElementById(
+            'edit_topik'
+        );
+
+    if (topik) {
+
+        topik.value =
+            safeValue(
+                data.topik
+            );
+    }
+
+
+    const tahun =
+        document.getElementById(
+            'edit_tahun'
+        );
+
+    if (tahun) {
+
+        tahun.value =
+            safeValue(
+                data.tahun
+            );
+    }
+
+
+    const deskripsi =
+        document.getElementById(
+            'edit_deskripsi'
+        );
+
+    if (deskripsi) {
+
+        deskripsi.value =
+            safeValue(
+                data.deskripsi
+            );
+    }
+
+
+    /*
+    |--------------------------------------------------------------------------
+    | METADATA
+    |--------------------------------------------------------------------------
+    */
+
+    let metadata =
+        data.metadata || {};
+
+
+    /*
+    | Kalau metadata ternyata masih berupa string JSON,
+    | parse terlebih dahulu.
+    */
+
+    if (typeof metadata === 'string') {
+
+        try {
+
+            metadata =
+                JSON.parse(
+                    metadata
+                );
+
+        } catch (error) {
+
+            metadata = {};
+        }
+    }
+
+
+    /*
+    |--------------------------------------------------------------------------
+    | DATASET DIBUAT
+    |--------------------------------------------------------------------------
+    */
+
+    const datasetDibuat =
+        document.getElementById(
+            'edit_dataset_dibuat'
+        );
+
+    if (datasetDibuat) {
+
+        datasetDibuat.value =
+            normalizeDateForInput(
+                metadata['Dataset Dibuat']
+            );
+    }
+
+
+    /*
+    |--------------------------------------------------------------------------
+    | DATASET DIPERBARUI
+    |--------------------------------------------------------------------------
+    */
+
+    const datasetDiperbarui =
+        document.getElementById(
+            'edit_dataset_diperbarui'
+        );
+
+    if (datasetDiperbarui) {
+
+        datasetDiperbarui.value =
+            safeValue(
+                metadata['Dataset Diperbarui']
+            );
+    }
+
+
+    /*
+    |--------------------------------------------------------------------------
+    | PENGUKURAN
+    |--------------------------------------------------------------------------
+    */
+
+    const pengukuran =
+        document.getElementById(
+            'edit_pengukuran_dataset'
+        );
+
+    if (pengukuran) {
+
+        pengukuran.value =
+            safeValue(
+                metadata['Pengukuran Dataset']
+            );
+    }
+
+
+    /*
+    |--------------------------------------------------------------------------
+    | TINGKAT PENYAJIAN
+    |--------------------------------------------------------------------------
+    */
+
+    const tingkatPenyajian =
+        document.getElementById(
+            'edit_tingkat_penyajian_dataset'
+        );
+
+    if (tingkatPenyajian) {
+
+        tingkatPenyajian.value =
+            safeValue(
+                metadata['Tingkat Penyajian Dataset']
+            );
+    }
+
+
+    /*
+    |--------------------------------------------------------------------------
+    | CAKUPAN
+    |--------------------------------------------------------------------------
+    */
+
+    const cakupan =
+        document.getElementById(
+            'edit_cakupan_dataset'
+        );
+
+    if (cakupan) {
+
+        cakupan.value =
+            safeValue(
+                metadata['Cakupan Dataset']
+            );
+    }
+
+
+    /*
+    |--------------------------------------------------------------------------
+    | PRODUSEN
+    |--------------------------------------------------------------------------
+    */
+
+    const produsen =
+        document.getElementById(
+            'edit_produsen'
+        );
+
+    if (produsen) {
+
+        produsen.value =
+            safeValue(
+                metadata['Produsen']
+            );
+    }
+
+
+    /*
+    |--------------------------------------------------------------------------
+    | KONTAK PRODUSEN
+    |--------------------------------------------------------------------------
+    */
+
+    const kontakProdusen =
+        document.getElementById(
+            'edit_kontak_produsen'
+        );
+
+    if (kontakProdusen) {
+
+        kontakProdusen.value =
+            safeValue(
+                metadata['Kontak Produsen']
+            );
+    }
+
+
+    /*
+    |--------------------------------------------------------------------------
+    | KODE INDIKATOR
+    |--------------------------------------------------------------------------
+    */
+
+    const kodeIndikator =
+        document.getElementById(
+            'edit_kode_indikator'
+        );
+
+    if (kodeIndikator) {
+
+        kodeIndikator.value =
+            safeValue(
+                metadata['Kode Indikator']
+            );
+    }
+
+
+    /*
+    |--------------------------------------------------------------------------
+    | SATUAN
+    |--------------------------------------------------------------------------
+    */
+
+    const satuan =
+        document.getElementById(
+            'edit_satuan_dataset'
+        );
+
+    if (satuan) {
+
+        satuan.value =
+            safeValue(
+                metadata['Satuan Dataset']
+            );
+    }
+
+
+    /*
+    |--------------------------------------------------------------------------
+    | FREKUENSI
+    |--------------------------------------------------------------------------
+    */
+
+    const frekuensi =
+        document.getElementById(
+            'edit_frekuensi_dataset'
+        );
+
+    if (frekuensi) {
+
+        frekuensi.value =
+            safeValue(
+                metadata['Frekuensi Dataset']
+            );
+    }
+
+
+    /*
+    |--------------------------------------------------------------------------
+    | SUMBER EKSTERNAL
+    |--------------------------------------------------------------------------
+    */
+
+    const sumberEksternal =
+        document.getElementById(
+            'edit_sumber_eksternal'
+        );
+
+    if (sumberEksternal) {
+
+        sumberEksternal.value =
+            safeValue(
+                metadata['Sumber Eksternal']
+            );
+    }
+
+
+    /*
+    |--------------------------------------------------------------------------
+    | DIMENSI
+    |--------------------------------------------------------------------------
+    */
+
+    const dimensi =
+        document.getElementById(
+            'edit_dimensi_dataset'
+        );
+
+    if (dimensi) {
+
+        dimensi.value =
+            safeValue(
+                metadata['Dimensi Dataset']
+            );
+    }
+
+
+    /*
+    |--------------------------------------------------------------------------
+    | DESKRIPSI METADATA
+    |--------------------------------------------------------------------------
+    */
+
+    const deskripsiMetadata =
+        document.getElementById(
+            'edit_deskripsi_metadata'
+        );
+
+    if (deskripsiMetadata) {
+
+        deskripsiMetadata.value =
+            safeValue(
+                metadata['Deskripsi']
+            );
+    }
+
+
+    /*
+    |--------------------------------------------------------------------------
+    | FILE SAAT INI
+    |--------------------------------------------------------------------------
+    */
+
+    const currentFile =
+        document.getElementById(
+            'editCurrentFile'
+        );
+
+    const currentFileLink =
+        document.getElementById(
+            'editCurrentFileLink'
+        );
+
+
+    if (
+        data.file_data &&
+        currentFile &&
+        currentFileLink
+    ) {
+
+        currentFileLink.href =
+            "{{ asset('storage') }}/" +
+            data.file_data;
+
+        currentFile.style.display =
+            'block';
+
+    } else if (currentFile) {
+
+        currentFile.style.display =
+            'none';
+
+        if (currentFileLink) {
+
+            currentFileLink.href =
+                '#';
+        }
+    }
+
+
+    /*
+    |--------------------------------------------------------------------------
+    | BUKA MODAL
+    |--------------------------------------------------------------------------
+    */
+
+    openModal(
+        'editModal'
+    );
 }
 
 
 /* =========================================================
    CLICK OUTSIDE FILTER
-=========================================================
+========================================================= */
+
+document.addEventListener(
+    'click',
+    function(event)
+    {
+        const wrap =
+            document.querySelector(
+                '.data-filter-wrap'
+            );
+
+        const dropdown =
+            document.getElementById(
+                'dataFilterDropdown'
+            );
+
+        if (
+            dropdown &&
+            wrap &&
+            !wrap.contains(
+                event.target
+            )
+        ) {
+
+            dropdown.classList.remove(
+                'show'
+            );
+        }
+    }
+);
 
 
+/* =========================================================
+   CLICK OUTSIDE MODAL
+========================================================= */
+
+document.querySelectorAll(
+    '.data-modal-overlay'
+).forEach(
+    function(modal)
+    {
+        modal.addEventListener(
+            'click',
+            function(event)
+            {
+                if (
+                    event.target === modal
+                ) {
+
+                    closeModal(
+                        modal.id
+                    );
+                }
+            }
+        );
+    }
+);
+
+
+/* =========================================================
+   ESCAPE
 ========================================================= */
 
 document.addEventListener(
     'keydown',
     function(event)
     {
-        if (event.key !== 'Escape') {
+        if (
+            event.key !== 'Escape'
+        ) {
             return;
         }
 
-
-        const dataModal =
-            document.getElementById('dataModal');
-
-        const commentModal =
-            document.getElementById('commentModal');
-
-
-        if (
-            dataModal &&
-            dataModal.classList.contains('show')
-        ) {
-
-            closeDataModal();
-
-        }
-
-
-        if (
-            commentModal &&
-            commentModal.classList.contains('show')
-        ) {
-
-            closeCommentModal();
-
-        }
+        document
+            .querySelectorAll(
+                '.data-modal-overlay.show'
+            )
+            .forEach(
+                function(modal)
+                {
+                    closeModal(
+                        modal.id
+                    );
+                }
+            );
     }
 );
 
@@ -3333,14 +3883,7 @@ document.addEventListener(
     'DOMContentLoaded',
     function()
     {
-        /*
-        |--------------------------------------------------------------
-        | BUKA MODAL DALAM MODE TAMBAH
-        |--------------------------------------------------------------
-        */
-
         openAddModal();
-
     }
 );
 
@@ -3348,31 +3891,23 @@ document.addEventListener(
 
 
 /* =========================================================
-   PREVENT DOUBLE SUBMIT
+   SESSION ERROR
 ========================================================= */
 
-document
-    .getElementById('dataForm')
-    ?.addEventListener(
-        'submit',
-        function()
-        {
-            const button =
-                document.getElementById(
-                    'dataSaveButton'
-                );
+@if(session('error'))
 
-            if (!button) {
-                return;
-            }
+document.addEventListener(
+    'DOMContentLoaded',
+    function()
+    {
+        /*
+        | Tidak otomatis membuka modal.
+        | Error server tetap ditampilkan di halaman.
+        */
+    }
+);
 
-
-            button.disabled = true;
-
-            button.innerHTML =
-                '<i class="bi bi-hourglass-split"></i> Menyimpan...';
-        }
-    );
+@endif
 
 </script>
 

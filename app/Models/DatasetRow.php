@@ -17,10 +17,6 @@ class DatasetRow extends Model
         'row_data' => 'array',
     ];
 
-    /**
-     * Setiap baris dataset
-     * dimiliki oleh satu dataset.
-     */
     public function data()
     {
         return $this->belongsTo(

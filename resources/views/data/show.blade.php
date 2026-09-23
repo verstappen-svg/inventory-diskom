@@ -238,6 +238,10 @@
     color: #991b1b;
 }
 
+.dataset-pagination {
+    margin-top: 15px;
+}
+
 @media(max-width:800px) {
     .detail-top {
         flex-direction: column;
@@ -284,16 +288,20 @@
 
     $metadata = $data->metadata ?? [];
 
-    $rows = $data->datasetRows ?? collect();
+    if (is_string($metadata)) {
+        $metadata = json_decode($metadata, true) ?? [];
+    }
+
+    $rows = $datasetRows ?? collect();
 
     $headers = [];
 
     if ($rows->count() > 0) {
         $firstRow = $rows->first();
 
-        $headers = array_keys(
-            $firstRow->row_data ?? []
-        );
+        if ($firstRow && is_array($firstRow->row_data)) {
+            $headers = array_keys($firstRow->row_data);
+        }
     }
 @endphp
 
@@ -401,7 +409,9 @@
                 </span>
 
                 <span class="detail-info-value">
-                    {{ $rows->count() }}
+                    {{ method_exists($rows, 'total')
+                        ? $rows->total()
+                        : $rows->count() }}
                 </span>
             </div>
 
@@ -411,7 +421,9 @@
                 </span>
 
                 <span class="detail-info-value">
-                    {{ $data->file_data ? basename($data->file_data) : '-' }}
+                    {{ $data->file_data
+                        ? basename($data->file_data)
+                        : '-' }}
                 </span>
             </div>
 
@@ -464,9 +476,22 @@
                             </span>
 
                             <div class="metadata-value">
-                                {{ $value !== null && $value !== ''
-                                    ? $value
-                                    : '-' }}
+
+                                @if(is_array($value))
+
+                                    {{ json_encode(
+                                        $value,
+                                        JSON_UNESCAPED_UNICODE
+                                    ) }}
+
+                                @else
+
+                                    {{ $value !== null && $value !== ''
+                                        ? $value
+                                        : '-' }}
+
+                                @endif
+
                             </div>
 
                         </div>
@@ -510,9 +535,11 @@
                                 <th>No</th>
 
                                 @foreach($headers as $header)
+
                                     <th>
                                         {{ $header }}
                                     </th>
+
                                 @endforeach
 
                             </tr>
@@ -526,13 +553,23 @@
                                 <tr>
 
                                     <td>
-                                        {{ $loop->iteration }}
+                                        {{ method_exists($rows, 'firstItem')
+                                            ? (($rows->firstItem() ?? 1) + $loop->index)
+                                            : $loop->iteration }}
                                     </td>
 
                                     @foreach($headers as $header)
 
                                         <td>
-                                            {{ $row->row_data[$header] ?? '' }}
+                                            @php
+                                                $value = $row->row_data[$header] ?? '';
+                                            @endphp
+
+                                            @if(is_array($value))
+                                                {{ json_encode($value, JSON_UNESCAPED_UNICODE) }}
+                                            @else
+                                                {{ $value }}
+                                            @endif
                                         </td>
 
                                     @endforeach
@@ -546,6 +583,12 @@
                     </table>
 
                 </div>
+
+                @if(method_exists($rows, 'links'))
+                    <div class="dataset-pagination">
+                        {{ $rows->links() }}
+                    </div>
+                @endif
 
             @else
 

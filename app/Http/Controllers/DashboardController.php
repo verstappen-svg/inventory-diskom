@@ -39,6 +39,52 @@ class DashboardController extends Controller
 
         /*
         |--------------------------------------------------------------------------
+        | STATISTIK USER
+        |--------------------------------------------------------------------------
+        |
+        | Statistik ini digunakan oleh Dashboard Super Admin.
+        | Tetap dikirim melalui $viewData agar Blade role lain tidak error
+        | apabila membutuhkan variable yang sama.
+        |
+        */
+
+        $totalUser = 0;
+        $totalOperator = 0;
+        $totalVerifikator = 0;
+        $totalPimpinan = 0;
+
+        if (Schema::hasTable('users')) {
+            $totalUser = DB::table('users')->count();
+
+            if (Schema::hasColumn('users', 'role')) {
+                $totalOperator = DB::table('users')
+                    ->whereRaw(
+                        'LOWER(TRIM(role)) = ?',
+                        ['operator']
+                    )
+                    ->count();
+
+                $totalVerifikator = DB::table('users')
+                    ->whereRaw(
+                        'LOWER(TRIM(role)) IN (?, ?)',
+                        [
+                            'verifikator',
+                            'verifier',
+                        ]
+                    )
+                    ->count();
+
+                $totalPimpinan = DB::table('users')
+                    ->whereRaw(
+                        'LOWER(TRIM(role)) = ?',
+                        ['pimpinan']
+                    )
+                    ->count();
+            }
+        }
+
+        /*
+        |--------------------------------------------------------------------------
         | HARDWARE
         |--------------------------------------------------------------------------
         */
@@ -218,21 +264,27 @@ class DashboardController extends Controller
         | VIEW DATA
         |--------------------------------------------------------------------------
         |
-        | Dikirim dua nama variable untuk total harga hardware:
-        |
-        | $hardwarePriceTotal
-        | $totalHargaHardware
-        |
-        | Jadi Blade lama maupun Blade baru tetap bisa menggunakannya.
+        | Semua variable dashboard dikirim melalui satu array.
         |
         */
 
         $viewData = [
+            /*
+             * FILTER
+             */
             'tahun' => $tahun,
             'tahunList' => $tahunList,
 
             /*
-             * TOTAL
+             * STATISTIK USER
+             */
+            'totalUser' => $totalUser,
+            'totalOperator' => $totalOperator,
+            'totalVerifikator' => $totalVerifikator,
+            'totalPimpinan' => $totalPimpinan,
+
+            /*
+             * TOTAL ASET
              */
             'totalAset' => $totalAset,
 
@@ -458,6 +510,7 @@ class DashboardController extends Controller
         );
 
         foreach ($rows as $row) {
+
             /*
              * STATUS HARDWARE
              */
@@ -605,6 +658,7 @@ class DashboardController extends Controller
                 ->get();
 
             if ($sslUsage->isNotEmpty()) {
+
                 $sslIds = $sslUsage
                     ->pluck('ssl_id')
                     ->filter()
@@ -620,6 +674,7 @@ class DashboardController extends Controller
                     ->keyBy('id');
 
                 foreach ($sslUsage as $usage) {
+
                     $ssl = $sslMasters->get(
                         $usage->ssl_id
                     );
@@ -687,6 +742,7 @@ class DashboardController extends Controller
         );
 
         if ($urlColumn) {
+
             $rows = $websiteQuery
                 ->whereNotNull($urlColumn)
                 ->where(
@@ -697,6 +753,7 @@ class DashboardController extends Controller
                 ->get();
 
             foreach ($rows as $row) {
+
                 $status = '';
 
                 if ($statusColumn) {
@@ -760,6 +817,7 @@ class DashboardController extends Controller
             $this->resolveTableName('jaringans');
 
         if ($jaringanTable) {
+
             $query = DB::table($jaringanTable);
 
             $this->applyYearFilter(
@@ -782,6 +840,7 @@ class DashboardController extends Controller
             $this->resolveTableName('data_centers');
 
         if ($dataCenterTable) {
+
             $query = DB::table($dataCenterTable);
 
             $this->applyYearFilter(
@@ -808,11 +867,13 @@ class DashboardController extends Controller
                 );
 
             if ($tenantColumn) {
+
                 $rows = $query
                     ->select($tenantColumn)
                     ->get();
 
                 foreach ($rows as $row) {
+
                     $tenant = trim(
                         (string) (
                             $row->{$tenantColumn}
@@ -881,6 +942,7 @@ class DashboardController extends Controller
          * BELI
          */
         if ($pengadaan === 'beli') {
+
             $status = trim(
                 (string) (
                     $row->status ?? ''
@@ -903,7 +965,9 @@ class DashboardController extends Controller
             $row->tanggal_berakhir ?? null;
 
         if ($tanggalBerakhir) {
+
             try {
+
                 $endDate = Carbon::parse(
                     $tanggalBerakhir
                 );
@@ -998,6 +1062,7 @@ class DashboardController extends Controller
         ];
 
         foreach ($tables as $requestedTable) {
+
             $table = $this->resolveTableName(
                 $requestedTable
             );
@@ -1015,6 +1080,7 @@ class DashboardController extends Controller
             $foundYearColumn = false;
 
             foreach ($yearColumns as $yearColumn) {
+
                 if (
                     !Schema::hasColumn(
                         $table,
@@ -1054,6 +1120,7 @@ class DashboardController extends Controller
             ];
 
             foreach ($dateColumns as $dateColumn) {
+
                 if (
                     !Schema::hasColumn(
                         $table,
@@ -1120,6 +1187,7 @@ class DashboardController extends Controller
         ];
 
         foreach ($yearColumns as $yearColumn) {
+
             if (
                 !Schema::hasColumn(
                     $table,
@@ -1144,6 +1212,7 @@ class DashboardController extends Controller
         ];
 
         foreach ($dateColumns as $dateColumn) {
+
             if (
                 Schema::hasColumn(
                     $table,
@@ -1186,6 +1255,7 @@ class DashboardController extends Controller
         ];
 
         foreach ($tables as $requestedTable) {
+
             $table = $this->resolveTableName(
                 $requestedTable
             );
@@ -1209,6 +1279,7 @@ class DashboardController extends Controller
             */
 
             if ($requestedTable === 'hardwares') {
+
                 $column =
                     $this->firstExistingColumn(
                         $table,
@@ -1229,6 +1300,7 @@ class DashboardController extends Controller
                     ->get();
 
                 foreach ($rows as $row) {
+
                     $value = strtolower(
                         trim(
                             (string) (
@@ -1239,6 +1311,7 @@ class DashboardController extends Controller
                     );
 
                     if ($value === 'rusak') {
+
                         $statuses['Rusak']++;
 
                     } elseif (
@@ -1254,6 +1327,7 @@ class DashboardController extends Controller
                             true
                         )
                     ) {
+
                         $statuses['Tidak Digunakan']++;
 
                     } elseif (
@@ -1269,9 +1343,11 @@ class DashboardController extends Controller
                             true
                         )
                     ) {
+
                         $statuses['Pending']++;
 
                     } else {
+
                         $statuses['Aktif']++;
                     }
                 }
@@ -1286,15 +1362,19 @@ class DashboardController extends Controller
             */
 
             if ($requestedTable === 'softwares') {
+
                 $rows = $query->get();
 
                 foreach ($rows as $row) {
+
                     $end =
                         $row->tanggal_berakhir
                         ?? null;
 
                     if ($end) {
+
                         try {
+
                             $endDate =
                                 Carbon::parse($end);
 
@@ -1309,6 +1389,7 @@ class DashboardController extends Controller
 
                                 continue;
                             }
+
                         } catch (\Throwable $e) {
                             // lanjut
                         }
@@ -1337,15 +1418,18 @@ class DashboardController extends Controller
                     true
                 )
             ) {
+
                 $rows = $query->get();
 
                 foreach ($rows as $row) {
+
                     $status =
                         $this->getInfrastructureStatus(
                             $row
                         );
 
                     if ($status === 'Expired') {
+
                         $statuses[
                             'Tidak Digunakan'
                         ]++;
@@ -1353,9 +1437,11 @@ class DashboardController extends Controller
                     } elseif (
                         $status === 'Akan Habis'
                     ) {
+
                         $statuses['Pending']++;
 
                     } else {
+
                         $statuses['Aktif']++;
                     }
                 }
@@ -1388,6 +1474,7 @@ class DashboardController extends Controller
                 ->get();
 
             foreach ($rows as $row) {
+
                 $value = strtolower(
                     trim(
                         (string) (
@@ -1408,6 +1495,7 @@ class DashboardController extends Controller
                         true
                     )
                 ) {
+
                     $statuses['Rusak']++;
 
                 } elseif (
@@ -1423,6 +1511,7 @@ class DashboardController extends Controller
                         true
                     )
                 ) {
+
                     $statuses['Pending']++;
 
                 } elseif (
@@ -1438,9 +1527,11 @@ class DashboardController extends Controller
                         true
                     )
                 ) {
+
                     $statuses['Tidak Digunakan']++;
 
                 } else {
+
                     $statuses['Aktif']++;
                 }
             }
@@ -1498,6 +1589,7 @@ class DashboardController extends Controller
         ];
 
         foreach ($tables as $item) {
+
             $requestedTable = $item['table'];
 
             $table = $this->resolveTableName(
@@ -1542,6 +1634,7 @@ class DashboardController extends Controller
             $rows = $query->get();
 
             foreach ($rows as $row) {
+
                 $activityDate = null;
                 $activityType = 'created';
 
@@ -1586,6 +1679,7 @@ class DashboardController extends Controller
                     !$activityDate &&
                     $fallbackDateColumn
                 ) {
+
                     $fallbackRaw =
                         $row->{$fallbackDateColumn}
                         ?? null;
@@ -1611,41 +1705,50 @@ class DashboardController extends Controller
                 if (
                     $activityType === 'updated'
                 ) {
+
                     if (
                         isset($row->updated_by) &&
                         $row->updated_by
                     ) {
+
                         $userId = $row->updated_by;
 
                     } elseif (
                         isset($row->user_id) &&
                         $row->user_id
                     ) {
+
                         $userId = $row->user_id;
 
                     } elseif (
                         isset($row->created_by) &&
                         $row->created_by
                     ) {
+
                         $userId = $row->created_by;
                     }
+
                 } else {
+
                     if (
                         isset($row->created_by) &&
                         $row->created_by
                     ) {
+
                         $userId = $row->created_by;
 
                     } elseif (
                         isset($row->user_id) &&
                         $row->user_id
                     ) {
+
                         $userId = $row->user_id;
 
                     } elseif (
                         isset($row->updated_by) &&
                         $row->updated_by
                     ) {
+
                         $userId = $row->updated_by;
                     }
                 }
@@ -1664,13 +1767,16 @@ class DashboardController extends Controller
                 if (
                     $activityType === 'updated'
                 ) {
+
                     $text =
                         'Data ' .
                         $item['label'] .
                         ' diperbarui';
 
                     $icon = 'bi-pencil';
+
                 } else {
+
                     $text =
                         'Data ' .
                         $item['label'] .
@@ -1775,6 +1881,7 @@ class DashboardController extends Controller
         }
 
         try {
+
             if ($value instanceof Carbon) {
                 return $value
                     ->copy()
@@ -1788,13 +1895,18 @@ class DashboardController extends Controller
                 (string) $value,
                 'Asia/Jakarta'
             );
+
         } catch (\Throwable $e) {
+
             try {
+
                 return Carbon::parse(
                     (string) $value,
                     'Asia/Jakarta'
                 );
+
             } catch (\Throwable $e) {
+
                 return null;
             }
         }
@@ -1818,6 +1930,7 @@ class DashboardController extends Controller
         ];
 
         foreach ($candidates as $column) {
+
             if (
                 Schema::hasColumn(
                     $table,
@@ -1857,6 +1970,7 @@ class DashboardController extends Controller
         ];
 
         foreach ($tables as $requestedTable) {
+
             $table = $this->resolveTableName(
                 $requestedTable
             );
@@ -1892,6 +2006,7 @@ class DashboardController extends Controller
                 ->get();
 
             foreach ($rows as $row) {
+
                 $value = strtolower(
                     trim(
                         (string) (
@@ -1915,6 +2030,7 @@ class DashboardController extends Controller
                         true
                     )
                 ) {
+
                     $result['Menunggu']++;
 
                 } elseif (
@@ -1930,6 +2046,7 @@ class DashboardController extends Controller
                         true
                     )
                 ) {
+
                     $result['Disetujui']++;
 
                 } elseif (
@@ -1943,6 +2060,7 @@ class DashboardController extends Controller
                         true
                     )
                 ) {
+
                     $result['Ditolak']++;
                 }
             }
@@ -1962,6 +2080,7 @@ class DashboardController extends Controller
         array $columns
     ) {
         foreach ($columns as $column) {
+
             if (
                 Schema::hasColumn(
                     $table,

@@ -16,6 +16,7 @@ use App\Http\Controllers\SplpController;
 use App\Http\Controllers\SoftwareController;
 use App\Http\Controllers\SoftwareMasterController;
 use App\Http\Controllers\DataController;
+use App\Http\Controllers\LaporanController;
 use App\Http\Controllers\VerificationController;
 use App\Http\Controllers\NotificationController;
 
@@ -49,7 +50,6 @@ Route::post(
 */
 
 Route::middleware('auth')->group(function () {
-
 
     /*
     |--------------------------------------------------------------------------
@@ -109,6 +109,12 @@ Route::middleware('auth')->group(function () {
     |--------------------------------------------------------------------------
     | SUPER ADMIN — MANAJEMEN PENGGUNA
     |--------------------------------------------------------------------------
+    |
+    | Route ini TIDAK perlu diarahkan langsung ke Blade.
+    | UserController@index yang menentukan view:
+    |
+    | resources/views/super-admin/pengguna.blade.php
+    |
     */
 
     Route::resource(
@@ -162,9 +168,7 @@ Route::middleware('auth')->group(function () {
     |--------------------------------------------------------------------------
     */
 
-    Route::middleware(
-        'menu.permission:hardware'
-    )->group(function () {
+    Route::middleware('menu.permission:hardware')->group(function () {
 
         Route::get(
             '/hardware',
@@ -199,14 +203,12 @@ Route::middleware('auth')->group(function () {
     |--------------------------------------------------------------------------
     */
 
-    Route::middleware(
-        'menu.permission:software'
-    )->group(function () {
+    Route::middleware('menu.permission:software')->group(function () {
 
         /*
-        |--------------------------------------------------------------------------
+        |----------------------------------------------------------------------
         | DATA MASTER SOFTWARE
-        |--------------------------------------------------------------------------
+        |----------------------------------------------------------------------
         */
 
         Route::get(
@@ -236,9 +238,9 @@ Route::middleware('auth')->group(function () {
 
 
         /*
-        |--------------------------------------------------------------------------
+        |----------------------------------------------------------------------
         | DATA SOFTWARE
-        |--------------------------------------------------------------------------
+        |----------------------------------------------------------------------
         */
 
         Route::resource(
@@ -248,9 +250,9 @@ Route::middleware('auth')->group(function () {
 
 
         /*
-        |--------------------------------------------------------------------------
+        |----------------------------------------------------------------------
         | IMPORT EXCEL SOFTWARE
-        |--------------------------------------------------------------------------
+        |----------------------------------------------------------------------
         */
 
         Route::post(
@@ -269,16 +271,17 @@ Route::middleware('auth')->group(function () {
     Route::resource(
         'infrastruktur/jaringan',
         JaringanController::class
-    )->names([
+    )
+    ->names([
         'index'   => 'jaringan.index',
         'create'  => 'jaringan.create',
         'store'   => 'jaringan.store',
-        'show'    => 'jaringan.show',
         'edit'    => 'jaringan.edit',
         'update'  => 'jaringan.update',
         'destroy' => 'jaringan.destroy',
-    ])->except(['show'])
-      ->middleware('menu.permission:infrastruktur.jaringan');
+    ])
+    ->except(['show'])
+    ->middleware('menu.permission:infrastruktur.jaringan');
 
 
     /*
@@ -290,16 +293,17 @@ Route::middleware('auth')->group(function () {
     Route::resource(
         'infrastruktur/data-center',
         DataCenterController::class
-    )->names([
+    )
+    ->names([
         'index'   => 'data-center.index',
         'create'  => 'data-center.create',
         'store'   => 'data-center.store',
-        'show'    => 'data-center.show',
         'edit'    => 'data-center.edit',
         'update'  => 'data-center.update',
         'destroy' => 'data-center.destroy',
-    ])->except(['show'])
-      ->middleware('menu.permission:infrastruktur.data-center');
+    ])
+    ->except(['show'])
+    ->middleware('menu.permission:infrastruktur.data-center');
 
 
     /*
@@ -311,32 +315,33 @@ Route::middleware('auth')->group(function () {
     Route::get(
         '/infrastruktur/data-center/master',
         [DataCenterMasterController::class, 'index']
-    )->name('data-center.master')
-      ->middleware('menu.permission:infrastruktur.data-center');
+    )
+    ->name('data-center.master')
+    ->middleware('menu.permission:infrastruktur.data-center');
 
     Route::post(
         '/infrastruktur/data-center/master',
         [DataCenterMasterController::class, 'store']
-    )->name('data-center.master.store')
-      ->middleware('menu.permission:infrastruktur.data-center');
+    )
+    ->name('data-center.master.store');
 
     Route::put(
         '/infrastruktur/data-center/master/{id}',
         [DataCenterMasterController::class, 'update']
-    )->name('data-center.master.update')
-      ->middleware('menu.permission:infrastruktur.data-center');
+    )
+    ->name('data-center.master.update');
 
     Route::patch(
         '/infrastruktur/data-center/master/{id}/toggle',
         [DataCenterMasterController::class, 'toggleStatus']
-    )->name('data-center.master.toggle')
-      ->middleware('menu.permission:infrastruktur.data-center');
+    )
+    ->name('data-center.master.toggle');
 
     Route::delete(
         '/infrastruktur/data-center/master/{id}',
         [DataCenterMasterController::class, 'destroy']
-    )->name('data-center.master.destroy')
-      ->middleware('menu.permission:infrastruktur.data-center');
+    )
+    ->name('data-center.master.destroy');
 
 
     /*
@@ -348,8 +353,9 @@ Route::middleware('auth')->group(function () {
     Route::get(
         '/infrastruktur/data-center/template',
         [DataCenterController::class, 'downloadTemplate']
-    )->name('data-center.template')
-      ->middleware('menu.permission:infrastruktur.data-center');
+    )
+    ->name('data-center.template')
+    ->middleware('menu.permission:infrastruktur.data-center');
 
 
     /*
@@ -361,8 +367,9 @@ Route::middleware('auth')->group(function () {
     Route::post(
         '/infrastruktur/data-center/import',
         [DataCenterController::class, 'import']
-    )->name('data-center.import')
-      ->middleware('menu.permission:infrastruktur.data-center');
+    )
+    ->name('data-center.import')
+    ->middleware('menu.permission:infrastruktur.data-center');
 
 
     /*
@@ -374,16 +381,17 @@ Route::middleware('auth')->group(function () {
     Route::resource(
         'infrastruktur/splp',
         SplpController::class
-    )->names([
+    )
+    ->names([
         'index'   => 'splp.index',
         'create'  => 'splp.create',
         'store'   => 'splp.store',
-        'show'    => 'splp.show',
         'edit'    => 'splp.edit',
         'update'  => 'splp.update',
         'destroy' => 'splp.destroy',
-    ])->except(['show'])
-      ->middleware('menu.permission:infrastruktur.splp');
+    ])
+    ->except(['show'])
+    ->middleware('menu.permission:infrastruktur.splp');
 
 
     /*
@@ -392,9 +400,7 @@ Route::middleware('auth')->group(function () {
     |--------------------------------------------------------------------------
     */
 
-    Route::middleware(
-        'menu.permission:data'
-    )->group(function () {
+    Route::middleware('menu.permission:data')->group(function () {
 
         Route::get(
             '/data',
@@ -406,10 +412,25 @@ Route::middleware('auth')->group(function () {
             [DataController::class, 'store']
         )->name('data.store');
 
+        Route::post(
+            '/data/import',
+            [DataController::class, 'importExcel']
+        )->name('data.import');
+
+        Route::get(
+            '/data/template/download',
+            [DataController::class, 'downloadTemplate']
+        )->name('data.template.download');
+
         Route::get(
             '/data/{id}/preview',
             [DataController::class, 'preview']
         )->name('data.preview');
+
+        Route::get(
+            '/data/{id}/download',
+            [DataController::class, 'download']
+        )->name('data.download');
 
         Route::get(
             '/data/{id}/edit',
@@ -425,6 +446,11 @@ Route::middleware('auth')->group(function () {
             '/data/{id}',
             [DataController::class, 'destroy']
         )->name('data.destroy');
+
+        Route::get(
+            '/data/{id}',
+            [DataController::class, 'show']
+        )->name('data.show');
     });
 
 
@@ -434,9 +460,7 @@ Route::middleware('auth')->group(function () {
     |--------------------------------------------------------------------------
     */
 
-    Route::middleware(
-        'menu.permission:sdm'
-    )->group(function () {
+    Route::middleware('menu.permission:sdm')->group(function () {
 
         Route::get(
             '/sdm',
@@ -476,16 +500,21 @@ Route::middleware('auth')->group(function () {
     |--------------------------------------------------------------------------
     */
 
-    Route::middleware(
-        'menu.permission:laporan'
-    )->group(function () {
+    Route::middleware('menu.permission:laporan')->group(function () {
 
         Route::get(
             '/laporan',
-            function () {
-                return view('laporan.index');
-            }
+            [LaporanController::class, 'index']
         )->name('laporan.index');
-    });
 
+        Route::get(
+            '/laporan/preview',
+            [LaporanController::class, 'preview']
+        )->name('laporan.preview');
+
+        Route::get(
+            '/laporan/export/excel',
+            [LaporanController::class, 'exportExcel']
+        )->name('laporan.export.excel');
+    });
 });

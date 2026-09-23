@@ -22,28 +22,44 @@ class UserController extends Controller
 
         $query = User::query();
 
+        // Search nama / username
         if ($search = $request->get('search')) {
             $query->where(function ($q) use ($search) {
                 $q->where('name', 'like', "%{$search}%")
-                  ->orWhere('username', 'like', "%{$search}%");
+                    ->orWhere('username', 'like', "%{$search}%");
             });
         }
 
+        // Filter role
         if ($role = $request->get('role')) {
             $query->where('role', $role);
         }
 
+        // Filter status
         if ($status = $request->get('status')) {
             $query->where('is_active', $status === 'aktif');
         }
 
-        $users = $query->orderBy('created_at', 'desc')->paginate(4)->withQueryString();
+        $users = $query
+            ->orderBy('created_at', 'desc')
+            ->paginate(4)
+            ->withQueryString();
 
-        $totalUser   = User::count();
-        $totalAktif  = User::where('is_active', true)->count();
+        // Statistik pengguna
+        $totalUser = User::count();
+
+        $totalAktif = User::where('is_active', true)->count();
+
         $totalNonAktif = User::where('is_active', false)->count();
 
-        return view('dashboard.pengguna', compact('users', 'totalUser', 'totalAktif', 'totalNonAktif'));
+        // View sekarang berada di:
+        // resources/views/super-admin/pengguna.blade.php
+        return view('super-admin.pengguna', compact(
+            'users',
+            'totalUser',
+            'totalAktif',
+            'totalNonAktif'
+        ));
     }
 
     public function store(Request $request)
@@ -51,24 +67,53 @@ class UserController extends Controller
         $this->ensureSuperAdmin();
 
         $validated = $request->validate([
-            'name'     => ['required', 'string', 'max:255'],
-            'username' => ['required', 'string', 'max:255', 'unique:users,username'],
-            'password' => ['required', 'string', 'min:6'],
-            'role'     => ['required', 'in:super_admin,operator,verifikator,pimpinan'],
+            'name' => [
+                'required',
+                'string',
+                'max:255',
+            ],
+
+            'username' => [
+                'required',
+                'string',
+                'max:255',
+                'unique:users,username',
+            ],
+
+            'password' => [
+                'required',
+                'string',
+                'min:6',
+            ],
+
+            'role' => [
+                'required',
+                'in:super_admin,operator,verifikator,pimpinan',
+            ],
         ]);
 
-        $validated['password'] = Hash::make($validated['password']);
+        $validated['password'] = Hash::make(
+            $validated['password']
+        );
+
         $validated['is_active'] = true;
 
         $user = User::create($validated);
 
         ActivityLog::record(
-            'Menambahkan user baru "' . $user->name . '" (' . $user->role . ')',
+            'Menambahkan user baru "' .
+            $user->name .
+            '" (' .
+            $user->role .
+            ')',
             'create',
             'Manajemen Pengguna'
         );
 
-        return back()->with('success', 'Pengguna baru berhasil ditambahkan.');
+        return back()->with(
+            'success',
+            'Pengguna baru berhasil ditambahkan.'
+        );
     }
 
     public function update(Request $request, User $pengguna)
@@ -76,14 +121,37 @@ class UserController extends Controller
         $this->ensureSuperAdmin();
 
         $validated = $request->validate([
-            'name'     => ['required', 'string', 'max:255'],
-            'username' => ['required', 'string', 'max:255', 'unique:users,username,' . $pengguna->id],
-            'role'     => ['required', 'in:super_admin,operator,verifikator,pimpinan'],
-            'password' => ['nullable', 'string', 'min:6'],
+            'name' => [
+                'required',
+                'string',
+                'max:255',
+            ],
+
+            'username' => [
+                'required',
+                'string',
+                'max:255',
+                'unique:users,username,' . $pengguna->id,
+            ],
+
+            'role' => [
+                'required',
+                'in:super_admin,operator,verifikator,pimpinan',
+            ],
+
+            'password' => [
+                'nullable',
+                'string',
+                'min:6',
+            ],
         ]);
 
+        // Jika password diisi, update password.
+        // Jika kosong, password lama tetap dipakai.
         if (!empty($validated['password'])) {
-            $validated['password'] = Hash::make($validated['password']);
+            $validated['password'] = Hash::make(
+                $validated['password']
+            );
         } else {
             unset($validated['password']);
         }
@@ -91,65 +159,98 @@ class UserController extends Controller
         $pengguna->update($validated);
 
         ActivityLog::record(
-            'Mengubah data user "' . $pengguna->name . '"',
+            'Mengubah data user "' .
+            $pengguna->name .
+            '"',
             'update',
             'Manajemen Pengguna'
         );
 
-        return back()->with('success', 'Data pengguna berhasil diperbarui.');
+        return back()->with(
+            'success',
+            'Data pengguna berhasil diperbarui.'
+        );
     }
 
     public function destroy(User $pengguna)
     {
         $this->ensureSuperAdmin();
 
+        // Tidak boleh menghapus akun sendiri
         if ($pengguna->id === auth()->id()) {
-            return back()->with('error', 'Tidak bisa menghapus akun sendiri.');
+            return back()->with(
+                'error',
+                'Tidak bisa menghapus akun sendiri.'
+            );
         }
 
         $name = $pengguna->name;
+
         $pengguna->delete();
 
         ActivityLog::record(
-            'Menghapus user "' . $name . '"',
+            'Menghapus user "' .
+            $name .
+            '"',
             'delete',
             'Manajemen Pengguna'
         );
 
-        return back()->with('success', 'Pengguna berhasil dihapus.');
+        return back()->with(
+            'success',
+            'Pengguna berhasil dihapus.'
+        );
     }
 
     public function activate(User $pengguna)
     {
         $this->ensureSuperAdmin();
 
-        $pengguna->update(['is_active' => true]);
+        $pengguna->update([
+            'is_active' => true,
+        ]);
 
         ActivityLog::record(
-            'Mengaktifkan user "' . $pengguna->name . '"',
+            'Mengaktifkan user "' .
+            $pengguna->name .
+            '"',
             'update',
             'Manajemen Pengguna'
         );
 
-        return back()->with('success', 'Pengguna diaktifkan.');
+        return back()->with(
+            'success',
+            'Pengguna diaktifkan.'
+        );
     }
 
     public function deactivate(User $pengguna)
     {
         $this->ensureSuperAdmin();
 
+        // Tidak boleh menonaktifkan akun sendiri
         if ($pengguna->id === auth()->id()) {
-            return back()->with('error', 'Tidak bisa menonaktifkan akun sendiri.');
+            return back()->with(
+                'error',
+                'Tidak bisa menonaktifkan akun sendiri.'
+            );
         }
 
-        $pengguna->update(['is_active' => false]);
+        $pengguna->update([
+            'is_active' => false,
+        ]);
 
         ActivityLog::record(
-            'Menonaktifkan user "' . $pengguna->name . '"',
+            'Menonaktifkan user "' .
+            $pengguna->name .
+            '"',
             'update',
             'Manajemen Pengguna'
         );
 
-        return back()->with('success', 'Pengguna dinonaktifkan.');
+        return back()->with(
+            'success',
+            'Pengguna dinonaktifkan.'
+        );
     }
 }

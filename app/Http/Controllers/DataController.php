@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Exports\DataTemplateExport;
 use App\Imports\DataImport;
 use App\Models\Data;
 use App\Models\DatasetRow;
@@ -29,150 +30,50 @@ class DataController extends Controller
         'Sosial',
     ];
 
-    /**
-     * =========================================================
-     * INDEX
-     * =========================================================
-     */
+    /*
+    |--------------------------------------------------------------------------
+    | INDEX
+    |--------------------------------------------------------------------------
+    */
+
     public function index(Request $request)
     {
         $query = Data::query();
-
-        /*
-        |--------------------------------------------------------------------------
-        | SEARCH
-        |--------------------------------------------------------------------------
-        */
 
         if ($request->filled('search')) {
             $search = $request->search;
 
             $query->where(function ($q) use ($search) {
                 $q->where('nama_dataset', 'like', "%{$search}%")
-                    ->orWhere('jenis_data', 'like', "%{$search}%")
-                    ->orWhere('tahun', 'like', "%{$search}%")
-                    ->orWhere('topik', 'like', "%{$search}%");
+                    ->orWhere('topik', 'like', "%{$search}%")
+                    ->orWhere('tahun', 'like', "%{$search}%");
             });
         }
 
-        /*
-        |--------------------------------------------------------------------------
-        | FILTER JENIS DATA
-        |--------------------------------------------------------------------------
-        */
-
-        if ($request->filled('jenis_data')) {
-            $query->where(
-                'jenis_data',
-                $request->jenis_data
-            );
+        if ($request->filled('topik')) {
+            $query->where('topik', $request->topik);
         }
-
-        /*
-        |--------------------------------------------------------------------------
-        | FILTER TAHUN
-        |--------------------------------------------------------------------------
-        */
 
         if ($request->filled('tahun')) {
-            $query->where(
-                'tahun',
-                $request->tahun
-            );
+            $query->where('tahun', $request->tahun);
         }
-
-        /*
-        |--------------------------------------------------------------------------
-        | FILTER VERIFIKASI
-        |--------------------------------------------------------------------------
-        */
 
         if ($request->filled('verifikasi')) {
-
-            $verifikasi = strtolower(
-                trim($request->verifikasi)
-            );
-
-            if ($verifikasi === 'menunggu') {
-                $verifikasi = 'Menunggu Disetujui';
-            }
-
-            $allowedStatuses = [
-                'Menunggu Disetujui',
-                'Disetujui',
-                'Ditolak',
-            ];
-
-            if (in_array($verifikasi, $allowedStatuses, true)) {
-                $query->where(
-                    'verifikasi',
-                    $verifikasi
-                );
-            }
-        }
-
-        /*
-        |--------------------------------------------------------------------------
-        | PAGINATION
-        |--------------------------------------------------------------------------
-        */
-
-        $show = (int) $request->input('show', 10);
-
-        if (!in_array($show, [10, 25, 50, 100], true)) {
-            $show = 10;
+            $query->where('verifikasi', $request->verifikasi);
         }
 
         $data = $query
             ->latest('id')
-            ->paginate($show)
+            ->paginate(10)
             ->withQueryString();
-
-        /*
-        |--------------------------------------------------------------------------
-        | DATA JENIS UNTUK FILTER
-        |--------------------------------------------------------------------------
-        */
-
-        $jenisData = Data::query()
-            ->select('jenis_data')
-            ->whereNotNull('jenis_data')
-            ->where('jenis_data', '!=', '')
-            ->distinct()
-            ->orderBy('jenis_data')
-            ->pluck('jenis_data');
-
-        /*
-        |--------------------------------------------------------------------------
-        | DATA TAHUN UNTUK FILTER
-        |--------------------------------------------------------------------------
-        */
 
         $tahunData = Data::query()
             ->select('tahun')
-            ->whereNotNull('tahun')
             ->distinct()
             ->orderByDesc('tahun')
             ->pluck('tahun');
 
-        /*
-        |--------------------------------------------------------------------------
-        | SUMMARY
-        |--------------------------------------------------------------------------
-        */
-
-        $totalData = Data::count();
-
-        $totalJenis = Data::query()
-            ->whereNotNull('jenis_data')
-            ->where('jenis_data', '!=', '')
-            ->distinct('jenis_data')
-            ->count('jenis_data');
-
-        $totalPending = Data::where(
-            'verifikasi',
-            'Menunggu Disetujui'
-        )->count();
+        $totalDataset = Data::count();
 
         $totalDisetujui = Data::where(
             'verifikasi',
@@ -184,54 +85,68 @@ class DataController extends Controller
             'Menunggu Disetujui'
         )->count();
 
-        /*
-        |--------------------------------------------------------------------------
-        | VIEW
-        |--------------------------------------------------------------------------
-        */
-
-        return view(
-            'data.index',
-            compact(
-                'data',
-                'jenisData',
-                'tahunData',
-                'totalData',
-                'totalJenis',
-                'totalPending',
-                'totalDisetujui',
-                'totalMenunggu'
-            )
-        );
+        return view('data.index', [
+            'data' => $data,
+            'topikData' => $this->topikOptions,
+            'tahunData' => $tahunData,
+            'totalDataset' => $totalDataset,
+            'totalDisetujui' => $totalDisetujui,
+            'totalMenunggu' => $totalMenunggu,
+        ]);
     }
 
-    /**
-     * =========================================================
-     * IMPORT EXCEL
-     * =========================================================
-     */
-    public function import(Request $request)
+    /*
+    |--------------------------------------------------------------------------
+    | STORE - TAMBAH DATA MANUAL
+    |--------------------------------------------------------------------------
+    */
+
+    public function store(Request $request)
     {
         $request->validate([
-            'file' => [
-                'required',
-                'file',
-                'mimes:xls,xlsx',
-                'max:10240',
-            ],
+            'nama_dataset' => 'required|string|max:255',
+
+            'topik' => 'required|in:' . implode(',', $this->topikOptions),
+
+            'tahun' => 'required|integer|min:1900|max:2200',
+
+            'deskripsi' => 'nullable|string',
+
+            'file_data' => 'required|file|mimes:xlsx,xls|max:10240',
+
+            'dataset_dibuat' => 'nullable|string|max:255',
+            'dataset_diperbarui' => 'nullable|string|max:255',
+            'pengukuran_dataset' => 'nullable|string|max:255',
+            'tingkat_penyajian_dataset' => 'nullable|string|max:255',
+            'cakupan_dataset' => 'nullable|string|max:255',
+            'produsen' => 'nullable|string|max:255',
+            'kontak_produsen' => 'nullable|string|max:255',
+            'kode_indikator' => 'nullable|string|max:255',
+            'satuan_dataset' => 'nullable|string|max:255',
+            'frekuensi_dataset' => 'nullable|string|max:255',
+            'sumber_eksternal' => 'nullable|string|max:255',
+            'dimensi_dataset' => 'nullable|string|max:255',
+            'deskripsi_metadata' => 'nullable|string',
+        ], [
+            'nama_dataset.required' => 'Nama dataset wajib diisi.',
+            'topik.required' => 'Topik wajib dipilih.',
+            'topik.in' => 'Topik yang dipilih tidak valid.',
+            'tahun.required' => 'Tahun wajib diisi.',
+            'tahun.integer' => 'Tahun harus berupa angka.',
+            'file_data.required' => 'File Excel wajib diupload.',
+            'file_data.file' => 'File yang dipilih tidak valid.',
+            'file_data.mimes' => 'File harus berformat XLS atau XLSX.',
+            'file_data.max' => 'Ukuran file maksimal 10 MB.',
         ]);
 
         DB::beginTransaction();
 
+        $path = null;
+
         try {
+            $this->checkExcelSupport();
 
-            if (!class_exists('ZipArchive')) {
-                throw new \Exception(
-                    'Extension ZIP/ZipArchive belum tersedia pada PHP yang menjalankan Laravel.'
-                );
-            }
-
-            $file = $request->file('file');
+            $file = $request->file('file_data');
 
             if (!$file || !$file->isValid()) {
                 throw new \Exception(
@@ -239,13 +154,17 @@ class DataController extends Controller
                 );
             }
 
+            /*
+             * Untuk Tambah Data Manual,
+             * hanya sheet Dataset yang dibaca.
+             */
+
             $import = new DataImport();
 
-            $import->import(
+            $import->importDatasetOnly(
                 $file->getRealPath()
             );
 
-            $metadata = $import->getMetadata();
             $headers = $import->getHeaders();
             $rows = $import->getRows();
 
@@ -261,91 +180,29 @@ class DataController extends Controller
                 );
             }
 
-            /*
-            |--------------------------------------------------------------------------
-            | SIMPAN FILE EXCEL
-            |--------------------------------------------------------------------------
-            */
-
             $path = $file->store(
-                'data',
+                'datasets',
                 'public'
             );
 
-            if (!$path) {
-                throw new \Exception(
-                    'File Excel gagal disimpan.'
-                );
-            }
-
-            /*
-            |--------------------------------------------------------------------------
-            | BUAT DATA DATASET
-            |--------------------------------------------------------------------------
-            */
-
-            $firstRow = $rows[0] ?? [];
-
-            $namaDataset = $firstRow['nama_dataset']
-                ?? $firstRow['Nama Dataset']
-                ?? $firstRow['nama']
-                ?? 'Dataset Import Excel';
-
-            $jenisData = $firstRow['jenis_data']
-                ?? $firstRow['Jenis Data']
-                ?? $firstRow['jenis']
-                ?? null;
-
-            $tahun = $firstRow['tahun']
-                ?? $firstRow['Tahun']
-                ?? null;
+            $metadata = $this->buildManualMetadata($request);
 
             $data = Data::create([
-                'nama_dataset' => $namaDataset,
-                'jenis_data' => $jenisData,
-                'tahun' => $tahun,
-                'deskripsi' => $metadata['Deskripsi'] ?? null,
+                'nama_dataset' => $request->nama_dataset,
+                'topik' => $request->topik,
+                'tahun' => $request->tahun,
+                'deskripsi' => $request->deskripsi,
                 'metadata' => $metadata,
                 'file_data' => $path,
                 'verifikasi' => 'Menunggu Disetujui',
                 'tanggal_pengajuan' => now(),
             ]);
 
-            /*
-            |--------------------------------------------------------------------------
-            | SIMPAN BARIS DATASET
-            |--------------------------------------------------------------------------
-            */
-
-            $datasetRows = [];
-
-            foreach ($rows as $row) {
-
-                $datasetRows[] = [
-                    'data_id' => $data->id,
-                    'row_data' => json_encode(
-                        $row,
-                        JSON_UNESCAPED_UNICODE
-                    ),
-                    'created_at' => now(),
-                    'updated_at' => now(),
-                ];
-
-                if (count($datasetRows) >= 500) {
-                    DatasetRow::insert($datasetRows);
-                    $datasetRows = [];
-                }
-            }
-
-            if (!empty($datasetRows)) {
-                DatasetRow::insert($datasetRows);
-            }
-
-            /*
-            |--------------------------------------------------------------------------
-            | VERIFICATION
-            |--------------------------------------------------------------------------
-            */
+            $this->saveDatasetRows(
+                $data->id,
+                $headers,
+                $rows
+            );
 
             $this->createVerificationAndNotification(
                 $data,
@@ -358,91 +215,250 @@ class DataController extends Controller
                 ->route('data.index')
                 ->with(
                     'success',
-                    'Dataset berhasil diimport dan menunggu verifikasi.'
+                    'Data berhasil ditambahkan dan menunggu verifikasi.'
                 );
 
         } catch (Throwable $e) {
-
             DB::rollBack();
 
-            return redirect()
-                ->route('data.index')
+            if ($path) {
+                Storage::disk('public')->delete($path);
+            }
+
+            return back()
+                ->withInput()
                 ->with(
                     'error',
-                    'File Excel gagal dibaca: ' . $e->getMessage()
+                    'Data gagal ditambahkan: ' . $e->getMessage()
                 );
         }
     }
 
-    /**
-     * =========================================================
-     * CREATE VERIFICATION + NOTIFICATION
-     * =========================================================
-     */
+    /*
+    |--------------------------------------------------------------------------
+    | IMPORT EXCEL
+    |--------------------------------------------------------------------------
+    |
+    | Format file:
+    |
+    | Sheet Metadata
+    | Sheet Dataset
+    |
+    */
+
+    public function importExcel(Request $request)
+    {
+        $request->validate([
+            'nama_dataset' => 'required|string|max:255',
+
+            'topik' => 'required|in:' . implode(',', $this->topikOptions),
+
+            'tahun' => 'required|integer|min:1900|max:2200',
+
+            'file_data' => 'required|file|mimes:xlsx,xls|max:10240',
+        ], [
+            'nama_dataset.required' => 'Nama dataset wajib diisi.',
+            'topik.required' => 'Topik wajib dipilih.',
+            'topik.in' => 'Topik yang dipilih tidak valid.',
+            'tahun.required' => 'Tahun wajib diisi.',
+            'tahun.integer' => 'Tahun harus berupa angka.',
+            'file_data.required' => 'File Excel wajib diupload.',
+            'file_data.file' => 'File Excel tidak valid.',
+            'file_data.mimes' => 'File harus berformat XLS atau XLSX.',
+            'file_data.max' => 'Ukuran file maksimal 10 MB.',
+        ]);
+
+        DB::beginTransaction();
+
+        $path = null;
+
+        try {
+            $this->checkExcelSupport();
+
+            $file = $request->file('file_data');
+
+            if (!$file || !$file->isValid()) {
+                throw new \Exception(
+                    'File Excel tidak valid atau gagal diupload.'
+                );
+            }
+
+            /*
+             * Baca Metadata + Dataset.
+             */
+
+            $import = new DataImport();
+
+            $import->import(
+                $file->getRealPath()
+            );
+
+            $excelMetadata = $import->getMetadata();
+
+            $headers = $import->getHeaders();
+
+            $rows = $import->getRows();
+
+            if (empty($headers)) {
+                throw new \Exception(
+                    'Sheet Dataset tidak memiliki header.'
+                );
+            }
+
+            if (empty($rows)) {
+                throw new \Exception(
+                    'Sheet Dataset tidak memiliki data.'
+                );
+            }
+
+            /*
+             * Simpan file asli.
+             */
+
+            $path = $file->store(
+                'datasets',
+                'public'
+            );
+
+            /*
+             * Bersihkan metadata dari Excel.
+             */
+
+            $metadata = $this->cleanMetadata(
+                $excelMetadata
+            );
+
+            /*
+             * Simpan data utama.
+             */
+
+            $data = Data::create([
+                'nama_dataset' => $request->nama_dataset,
+                'topik' => $request->topik,
+                'tahun' => $request->tahun,
+                'deskripsi' => $request->input('deskripsi'),
+                'metadata' => $metadata,
+                'file_data' => $path,
+                'verifikasi' => 'Menunggu Disetujui',
+                'tanggal_pengajuan' => now(),
+            ]);
+
+            /*
+             * Simpan seluruh baris Dataset.
+             */
+
+            $this->saveDatasetRows(
+                $data->id,
+                $headers,
+                $rows
+            );
+
+            /*
+             * Buat pengajuan verifikasi.
+             */
+
+            $this->createVerificationAndNotification(
+                $data,
+                'create'
+            );
+
+            DB::commit();
+
+            return redirect()
+                ->route('data.index')
+                ->with(
+                    'success',
+                    'Excel berhasil diimport dan menunggu verifikasi.'
+                );
+
+        } catch (Throwable $e) {
+            DB::rollBack();
+
+            if ($path) {
+                Storage::disk('public')->delete($path);
+            }
+
+            return back()
+                ->withInput()
+                ->with(
+                    'error',
+                    'Import Excel gagal: ' . $e->getMessage()
+                );
+        }
+    }
+
+    /*
+    |--------------------------------------------------------------------------
+    | SIMPAN DATASET ROW
+    |--------------------------------------------------------------------------
+    */
+
+   private function saveDatasetRows(
+    int $dataId,
+    array $headers,
+    array $rows
+): void {
+    $insertData = [];
+
+    foreach ($rows as $row) {
+        $rowData = [];
+
+        foreach ($headers as $header) {
+            $rowData[$header] = $row[$header] ?? null;
+        }
+
+        $insertData[] = [
+            'data_id' => $dataId,
+            'row_data' => json_encode(
+                $rowData,
+                JSON_UNESCAPED_UNICODE
+            ),
+            'created_at' => now(),
+            'updated_at' => now(),
+        ];
+
+        if (count($insertData) >= 500) {
+            DatasetRow::insert($insertData);
+            $insertData = [];
+        }
+    }
+
+    if (!empty($insertData)) {
+        DatasetRow::insert($insertData);
+    }
+}
+    /*
+    |--------------------------------------------------------------------------
+    | VERIFIKASI + NOTIFIKASI
+    |--------------------------------------------------------------------------
+    */
+
     private function createVerificationAndNotification(
         Data $data,
         string $action = 'create'
     ): void {
-
         VerificationRequest::create([
             'module' => 'data',
             'record_id' => $data->id,
             'action' => $action,
-            'data' => $data->toArray(),
+            'data' => [
+                'nama_dataset' => $data->nama_dataset,
+                'topik' => $data->topik,
+                'tahun' => $data->tahun,
+            ],
             'status' => 'menunggu',
             'submitted_by' => auth()->id(),
         ]);
 
-        $datasetId =
-            'DS-' .
-            str_pad(
-                $data->id,
-                5,
-                '0',
-                STR_PAD_LEFT
-            );
+        $judul = $action === 'update'
+            ? 'Dataset Diperbarui'
+            : 'Pengajuan Dataset Baru';
 
-        $username = auth()->user()?->username
-            ?? 'Pengguna';
-
-        $judul = match ($action) {
-            'create' => 'Pengajuan Dataset Baru',
-            'update' => 'Perubahan Dataset Diajukan',
-            'delete' => 'Penghapusan Dataset Diajukan',
-            default => 'Pengajuan Dataset',
-        };
-
-        $pesan = match ($action) {
-            'create' =>
-                $username .
-                ' menambahkan dataset "' .
-                $data->nama_dataset .
-                '" dengan ID ' .
-                $datasetId .
-                ' dan mengajukannya untuk persetujuan.',
-
-            'update' =>
-                $username .
-                ' memperbarui dataset "' .
-                $data->nama_dataset .
-                '" dengan ID ' .
-                $datasetId .
-                ' dan mengajukannya kembali untuk persetujuan.',
-
-            'delete' =>
-                $username .
-                ' mengajukan penghapusan dataset "' .
-                $data->nama_dataset .
-                '" dengan ID ' .
-                $datasetId .
-                ' untuk persetujuan verifikator.',
-
-            default =>
-                $username .
-                ' mengajukan dataset "' .
-                $data->nama_dataset .
-                '" untuk persetujuan.',
-        };
+        $pesan = $action === 'update'
+            ? 'Dataset "' . $data->nama_dataset .
+              '" diperbarui dan menunggu verifikasi.'
+            : 'Dataset "' . $data->nama_dataset .
+              '" menunggu verifikasi.';
 
         Notification::create([
             'judul' => $judul,
@@ -451,27 +467,229 @@ class DataController extends Controller
         ]);
     }
 
-    /**
-     * =========================================================
-     * DOWNLOAD TEMPLATE
-     * =========================================================
-     */
+    /*
+    |--------------------------------------------------------------------------
+    | BUILD METADATA MANUAL
+    |--------------------------------------------------------------------------
+    */
+
+    private function buildManualMetadata(
+        Request $request
+    ): array {
+        $metadata = [
+            'Dataset Dibuat' =>
+                $request->input('dataset_dibuat'),
+
+            'Dataset Diperbarui' =>
+                $request->input('dataset_diperbarui'),
+
+            'Pengukuran Dataset' =>
+                $request->input('pengukuran_dataset'),
+
+            'Tingkat Penyajian Dataset' =>
+                $request->input('tingkat_penyajian_dataset'),
+
+            'Cakupan Dataset' =>
+                $request->input('cakupan_dataset'),
+
+            'Produsen' =>
+                $request->input('produsen'),
+
+            'Kontak Produsen' =>
+                $request->input('kontak_produsen'),
+
+            'Kode Indikator' =>
+                $request->input('kode_indikator'),
+
+            'Satuan Dataset' =>
+                $request->input('satuan_dataset'),
+
+            'Frekuensi Dataset' =>
+                $request->input('frekuensi_dataset'),
+
+            'Sumber Eksternal' =>
+                $request->input('sumber_eksternal'),
+
+            'Dimensi Dataset' =>
+                $request->input('dimensi_dataset'),
+
+            'Deskripsi Metadata' =>
+                $request->input('deskripsi_metadata'),
+        ];
+
+        return $this->cleanMetadata($metadata);
+    }
+
+    /*
+    |--------------------------------------------------------------------------
+    | CLEAN METADATA
+    |--------------------------------------------------------------------------
+    */
+
+    private function cleanMetadata(
+        $metadata
+    ): array {
+        if (!is_array($metadata)) {
+            return [];
+        }
+
+        $result = [];
+
+        foreach ($metadata as $key => $value) {
+            if (is_array($value)) {
+                $value = json_encode(
+                    $value,
+                    JSON_UNESCAPED_UNICODE
+                );
+            }
+
+            if (
+                $value !== null &&
+                trim((string) $value) !== ''
+            ) {
+                $result[$key] = $value;
+            }
+        }
+
+        return $result;
+    }
+
+    /*
+    |--------------------------------------------------------------------------
+    | CEK ZIP / PHP EXCEL
+    |--------------------------------------------------------------------------
+    */
+
+    private function checkExcelSupport(): void
+    {
+        if (!class_exists('ZipArchive')) {
+            throw new \Exception(
+                'Extension ZIP/ZipArchive belum tersedia pada PHP yang menjalankan Laravel.'
+            );
+        }
+    }
+
+    /*
+    |--------------------------------------------------------------------------
+    | SHOW
+    |--------------------------------------------------------------------------
+    */
+
+    public function show($id)
+    {
+        $data = Data::findOrFail($id);
+
+        $datasetRows = DatasetRow::where(
+            'data_id',
+            $data->id
+        )
+            ->latest('id')
+            ->paginate(25);
+
+        return view('data.show', [
+            'data' => $data,
+            'datasetRows' => $datasetRows,
+        ]);
+    }
+
+    /*
+    |--------------------------------------------------------------------------
+    | EDIT
+    |--------------------------------------------------------------------------
+    */
+
+    public function edit($id)
+    {
+        $data = Data::findOrFail($id);
+
+        return view('data.edit', [
+            'data' => $data,
+            'topikData' => $this->topikOptions,
+        ]);
+    }
+
+    /*
+    |--------------------------------------------------------------------------
+    | PREVIEW
+    |--------------------------------------------------------------------------
+    */
+
+    public function preview($id)
+    {
+        $data = Data::findOrFail($id);
+
+        $datasetRows = DatasetRow::where(
+            'data_id',
+            $data->id
+        )
+            ->latest('id')
+            ->paginate(50);
+
+        return view('data.preview', [
+            'data' => $data,
+            'datasetRows' => $datasetRows,
+        ]);
+    }
+
+    /*
+    |--------------------------------------------------------------------------
+    | DOWNLOAD FILE
+    |--------------------------------------------------------------------------
+    */
+
+    public function download($id)
+    {
+        $data = Data::findOrFail($id);
+
+        if (!$data->file_data) {
+            return back()->with(
+                'error',
+                'File dataset tidak tersedia.'
+            );
+        }
+
+        if (!Storage::disk('public')->exists($data->file_data)) {
+            return back()->with(
+                'error',
+                'File dataset tidak ditemukan di storage.'
+            );
+        }
+
+        return Storage::disk('public')->download(
+            $data->file_data
+        );
+    }
+
+    /*
+    |--------------------------------------------------------------------------
+    | DOWNLOAD TEMPLATE
+    |--------------------------------------------------------------------------
+    */
+
     public function downloadTemplate()
     {
         $spreadsheet = new Spreadsheet();
 
         /*
-        |--------------------------------------------------------------------------
-        | SHEET METADATA
-        |--------------------------------------------------------------------------
-        */
+         * Sheet Metadata
+         */
 
         $metadataSheet = $spreadsheet->getActiveSheet();
 
         $metadataSheet->setTitle('Metadata');
 
+        $metadataHeaders = [
+            'Nama Metadata',
+            'Nilai',
+        ];
+
+        $metadataSheet->fromArray(
+            $metadataHeaders,
+            null,
+            'A1'
+        );
+
         $metadataRows = [
-            ['Metadata', 'Nilai'],
             ['Dataset Dibuat', ''],
             ['Dataset Diperbarui', ''],
             ['Pengukuran Dataset', ''],
@@ -484,649 +702,517 @@ class DataController extends Controller
             ['Frekuensi Dataset', ''],
             ['Sumber Eksternal', ''],
             ['Dimensi Dataset', ''],
-            ['Deskripsi', ''],
+            ['Deskripsi Metadata', ''],
         ];
 
-        foreach ($metadataRows as $rowIndex => $row) {
-            $metadataSheet->fromArray(
-                $row,
-                null,
-                'A' . ($rowIndex + 1)
-            );
-        }
+        $metadataSheet->fromArray(
+            $metadataRows,
+            null,
+            'A2'
+        );
+
+        $metadataSheet->getColumnDimension('A')
+            ->setWidth(35);
+
+        $metadataSheet->getColumnDimension('B')
+            ->setWidth(60);
 
         /*
-        |--------------------------------------------------------------------------
-        | SHEET DATASET
-        |--------------------------------------------------------------------------
-        */
+         * Sheet Dataset
+         */
 
         $datasetSheet = $spreadsheet->createSheet();
 
         $datasetSheet->setTitle('Dataset');
 
-        $datasetSheet->fromArray(
-            [
-                'Kolom 1',
-                'Kolom 2',
-                'Kolom 3',
-                'Kolom 4',
-                'Kolom 5',
-            ],
-            null,
-            'A1'
+        $datasetSheet->setCellValue(
+            'A1',
+            'Contoh Kolom Dataset'
         );
+
+        $datasetSheet->setCellValue(
+            'B1',
+            'Contoh Data'
+        );
+
+        $datasetSheet->getColumnDimension('A')
+            ->setWidth(35);
+
+        $datasetSheet->getColumnDimension('B')
+            ->setWidth(35);
 
         /*
-        |--------------------------------------------------------------------------
-        | SAVE
-        |--------------------------------------------------------------------------
-        */
-
-        $filename = 'template_dataset.xlsx';
-
-        $tempPath = storage_path(
-            'app/' . $filename
-        );
+         * Download langsung.
+         */
 
         $writer = new Xlsx($spreadsheet);
 
-        $writer->save($tempPath);
+        $filename = 'template-data-dataset.xlsx';
 
-        return response()
-            ->download(
-                $tempPath,
-                $filename
-            )
-            ->deleteFileAfterSend(true);
-    }
-
-    /**
-     * =========================================================
-     * SHOW
-     * =========================================================
-     */
-    public function show($id)
-    {
-        $data = Data::with([
-            'datasetRows',
-        ])->findOrFail($id);
-
-        return view(
-            'data.show',
-            compact('data')
-        );
-    }
-
-    /**
-     * =========================================================
-     * STORE - TAMBAH BANYAK DATA SEKALIGUS
-     * =========================================================
-     */
-    public function store(Request $request)
-    {
-        $request->validate([
-
-            'nama_dataset' => [
-                'required',
-                'array',
-                'min:1',
-            ],
-
-            'nama_dataset.*' => [
-                'required',
-                'string',
-                'max:255',
-            ],
-
-            'jenis_data' => [
-                'required',
-                'array',
-                'min:1',
-            ],
-
-            'jenis_data.*' => [
-                'required',
-                'string',
-                'max:255',
-            ],
-
-            'tahun' => [
-                'required',
-                'array',
-                'min:1',
-            ],
-
-            'tahun.*' => [
-                'required',
-                'integer',
-                'min:1900',
-                'max:2100',
-            ],
-
-            'file_data' => [
-                'required',
-                'array',
-                'min:1',
-            ],
-
-            'file_data.*' => [
-                'required',
-                'file',
-                'mimes:csv,xls,xlsx,pdf,zip',
-                'max:10240',
-            ],
-        ]);
-
-        $namaDataset = $request->input(
-            'nama_dataset',
-            []
-        );
-
-        $jenisData = $request->input(
-            'jenis_data',
-            []
-        );
-
-        $tahun = $request->input(
-            'tahun',
-            []
-        );
-
-        $files = $request->file(
-            'file_data',
-            []
-        );
-
-        $jumlahData = count($namaDataset);
-
-        /*
-        |--------------------------------------------------------------------------
-        | CEK JUMLAH BARIS
-        |--------------------------------------------------------------------------
-        */
-
-        if (
-            count($jenisData) !== $jumlahData ||
-            count($tahun) !== $jumlahData ||
-            count($files) !== $jumlahData
-        ) {
-            return back()
-                ->withInput()
-                ->with(
-                    'error',
-                    'Data yang dikirim tidak lengkap. Silakan periksa kembali setiap baris.'
-                );
-        }
-
-        /*
-        |--------------------------------------------------------------------------
-        | SIMPAN
-        |--------------------------------------------------------------------------
-        */
-
-        DB::transaction(function () use (
-            $request,
-            $namaDataset,
-            $jenisData,
-            $tahun,
-            $files
-        ) {
-
-            foreach ($namaDataset as $index => $nama) {
-
-                /*
-                |--------------------------------------------------------------------------
-                | UPLOAD FILE
-                |--------------------------------------------------------------------------
-                */
-
-                $filePath = null;
-
-                if (
-                    isset($files[$index]) &&
-                    $files[$index] instanceof \Illuminate\Http\UploadedFile
-                ) {
-                    $filePath = $files[$index]->store(
-                        'data',
-                        'public'
-                    );
-                }
-
-                /*
-                |--------------------------------------------------------------------------
-                | CREATE DATA
-                |--------------------------------------------------------------------------
-                */
-
-                $data = Data::create([
-
-                    'nama_dataset' =>
-                        $nama,
-
-                    'jenis_data' =>
-                        $jenisData[$index],
-
-                    'tahun' =>
-                        $tahun[$index],
-
-                    'file_data' =>
-                        $filePath,
-
-                    'verifikasi' =>
-                        'Menunggu Disetujui',
-
-                    'tanggal_pengajuan' =>
-                        now(),
-
-                    'komentar_verifikasi' =>
-                        null,
-                ]);
-
-                /*
-                |--------------------------------------------------------------------------
-                | VERIFICATION + NOTIFICATION
-                |--------------------------------------------------------------------------
-                */
-
-                $this->createVerificationAndNotification(
-                    $data,
-                    'create'
-                );
-            }
-        });
-
-        return redirect()
-            ->route('data.index')
-            ->with(
-                'success',
-                $jumlahData .
-                ' dataset berhasil ditambahkan dan menunggu verifikasi.'
-            );
-    }
-
-    /**
-     * =========================================================
-     * EDIT
-     * =========================================================
-     */
-    public function edit($id)
-    {
-        $data = Data::findOrFail($id);
-
-        return view(
-            'data.edit',
+        return response()->streamDownload(
+            function () use ($writer) {
+                $writer->save('php://output');
+            },
+            $filename,
             [
-                'data' => $data,
-                'topikData' => $this->topikOptions,
+                'Content-Type' =>
+                    'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet',
             ]
         );
     }
 
-    /**
-     * =========================================================
-     * UPDATE
-     * =========================================================
-     */
+    /*
+    |--------------------------------------------------------------------------
+    | UPDATE
+    |--------------------------------------------------------------------------
+    */
+
     public function update(
         Request $request,
         $id
     ) {
         $data = Data::findOrFail($id);
 
-        /*
-        |--------------------------------------------------------------------------
-        | VALIDATION
-        |--------------------------------------------------------------------------
-        */
-
         $request->validate([
+            'nama_dataset' =>
+                'required|string|max:255',
 
-            'nama_dataset' => [
-                'required',
-                'string',
-                'max:255',
-            ],
+            'topik' =>
+                'required|in:' .
+                implode(',', $this->topikOptions),
 
-            'jenis_data' => [
-                'required',
-                'string',
-                'max:255',
-            ],
+            'tahun' =>
+                'required|integer|min:1900|max:2200',
 
-            'tahun' => [
-                'required',
-                'integer',
-                'min:1900',
-                'max:2100',
-            ],
+            'deskripsi' =>
+                'nullable|string',
 
-            'file_data' => [
-                'nullable',
-                'file',
-                'mimes:csv,xls,xlsx,pdf,zip',
-                'max:10240',
-            ],
+            'file_data' =>
+                'nullable|file|mimes:xlsx,xls|max:10240',
+
+            'dataset_dibuat' =>
+                'nullable|string|max:255',
+
+            'dataset_diperbarui' =>
+                'nullable|string|max:255',
+
+            'pengukuran_dataset' =>
+                'nullable|string|max:255',
+
+            'tingkat_penyajian_dataset' =>
+                'nullable|string|max:255',
+
+            'cakupan_dataset' =>
+                'nullable|string|max:255',
+
+            'produsen' =>
+                'nullable|string|max:255',
+
+            'kontak_produsen' =>
+                'nullable|string|max:255',
+
+            'kode_indikator' =>
+                'nullable|string|max:255',
+
+            'satuan_dataset' =>
+                'nullable|string|max:255',
+
+            'frekuensi_dataset' =>
+                'nullable|string|max:255',
+
+            'sumber_eksternal' =>
+                'nullable|string|max:255',
+
+            'dimensi_dataset' =>
+                'nullable|string|max:255',
+
+            'deskripsi_metadata' =>
+                'nullable|string',
         ]);
 
-        /*
-        |--------------------------------------------------------------------------
-        | DATA LAMA
-        |--------------------------------------------------------------------------
-        */
+        DB::beginTransaction();
 
-        $dataLama = $data->toArray();
+        $newPath = null;
 
-        /*
-        |--------------------------------------------------------------------------
-        | FILE
-        |--------------------------------------------------------------------------
-        */
+        try {
+            $metadata = $this->buildManualMetadata($request);
 
-        $filePath = $data->file_data;
+            /*
+             * Update informasi utama.
+             */
 
-        if ($request->hasFile('file_data')) {
+            $data->nama_dataset =
+                $request->nama_dataset;
 
-            $file = $request->file('file_data');
+            $data->topik =
+                $request->topik;
 
-            if (!$file || !$file->isValid()) {
-                return back()
-                    ->withInput()
-                    ->with(
-                        'error',
-                        'File tidak valid atau gagal diupload.'
+            $data->tahun =
+                $request->tahun;
+
+            $data->deskripsi =
+                $request->deskripsi;
+
+            $data->metadata =
+                $metadata;
+
+            /*
+             * Jika upload file baru,
+             * baca dan replace DatasetRow.
+             */
+
+            if ($request->hasFile('file_data')) {
+                $this->checkExcelSupport();
+
+                $file = $request->file('file_data');
+
+                if (!$file || !$file->isValid()) {
+                    throw new \Exception(
+                        'File Excel baru tidak valid.'
                     );
+                }
+
+                $import = new DataImport();
+
+                $import->importDatasetOnly(
+                    $file->getRealPath()
+                );
+
+                $headers = $import->getHeaders();
+                $rows = $import->getRows();
+
+                if (empty($headers)) {
+                    throw new \Exception(
+                        'Sheet Dataset tidak memiliki header.'
+                    );
+                }
+
+                if (empty($rows)) {
+                    throw new \Exception(
+                        'Sheet Dataset tidak memiliki data.'
+                    );
+                }
+
+                $newPath = $file->store(
+                    'datasets',
+                    'public'
+                );
+
+                $oldPath = $data->file_data;
+
+                $data->file_data =
+                    $newPath;
+
+                $data->save();
+
+                /*
+                 * Hapus row dataset lama.
+                 */
+
+                DatasetRow::where(
+                    'data_id',
+                    $data->id
+                )->delete();
+
+                /*
+                 * Simpan row dataset baru.
+                 */
+
+                $this->saveDatasetRows(
+                    $data->id,
+                    $headers,
+                    $rows
+                );
+
+                /*
+                 * Hapus file lama setelah data baru
+                 * berhasil diproses.
+                 */
+
+                if (
+                    $oldPath &&
+                    Storage::disk('public')->exists($oldPath)
+                ) {
+                    Storage::disk('public')
+                        ->delete($oldPath);
+                }
+
+                $newPath = null;
+            } else {
+                $data->save();
             }
 
-            $filePath = $file->store(
-                'data',
-                'public'
-            );
+            /*
+             * Reset status verifikasi.
+             */
 
-            if (!$filePath) {
-                return back()
-                    ->withInput()
-                    ->with(
-                        'error',
-                        'File gagal disimpan.'
-                    );
-            }
-        }
+            $data->verifikasi =
+                'Menunggu Disetujui';
 
-        /*
-        |--------------------------------------------------------------------------
-        | FORMAT ID
-        |--------------------------------------------------------------------------
-        */
+            $data->tanggal_pengajuan =
+                now();
 
-        $datasetId =
-            'DS-' .
-            str_pad(
-                $data->id,
-                5,
-                '0',
-                STR_PAD_LEFT
-            );
+            $data->komentar_verifikasi =
+                null;
 
-        /*
-        |--------------------------------------------------------------------------
-        | UPDATE
-        |--------------------------------------------------------------------------
-        */
+            $data->save();
 
-        DB::transaction(function () use (
-            $data,
-            $request,
-            $filePath,
-            $dataLama,
-            $datasetId
-        ) {
+            /*
+             * Cari request verifikasi terakhir.
+             */
 
-            $data->update([
+            $verification = VerificationRequest::where(
+                'module',
+                'data'
+            )
+                ->where(
+                    'record_id',
+                    $data->id
+                )
+                ->latest('id')
+                ->first();
 
+            $verificationData = [
                 'nama_dataset' =>
-                    $request->nama_dataset,
+                    $data->nama_dataset,
 
-                'jenis_data' =>
-                    $request->jenis_data,
+                'topik' =>
+                    $data->topik,
 
                 'tahun' =>
-                    $request->tahun,
+                    $data->tahun,
+            ];
 
-                'file_data' =>
-                    $filePath,
+            if ($verification) {
+                $verification->update([
+                    'status' =>
+                        'menunggu',
 
-                'verifikasi' =>
-                    'Menunggu Disetujui',
+                    'action' =>
+                        'update',
 
-                'komentar_verifikasi' =>
-                    null,
+                    'data' =>
+                        $verificationData,
 
-                'tanggal_pengajuan' =>
-                    now(),
-            ]);
+                    'submitted_by' =>
+                        auth()->id(),
+
+                    'verified_by' =>
+                        null,
+
+                    'verified_at' =>
+                        null,
+
+                    'rejection_reason' =>
+                        null,
+                ]);
+            } else {
+                VerificationRequest::create([
+                    'module' =>
+                        'data',
+
+                    'record_id' =>
+                        $data->id,
+
+                    'action' =>
+                        'update',
+
+                    'data' =>
+                        $verificationData,
+
+                    'status' =>
+                        'menunggu',
+
+                    'submitted_by' =>
+                        auth()->id(),
+                ]);
+            }
 
             /*
-            |--------------------------------------------------------------------------
-            | VERIFICATION REQUEST
-            |--------------------------------------------------------------------------
-            */
-
-            VerificationRequest::create([
-
-                'module' =>
-                    'data',
-
-                'record_id' =>
-                    $data->id,
-
-                'action' =>
-                    'update',
-
-                'data' => [
-
-                    'data_lama' =>
-                        $dataLama,
-
-                    'data_baru' =>
-                        $data->fresh()->toArray(),
-                ],
-
-                'status' =>
-                    'menunggu',
-
-                'submitted_by' =>
-                    auth()->id(),
-            ]);
-
-            /*
-            |--------------------------------------------------------------------------
-            | NOTIFICATION
-            |--------------------------------------------------------------------------
-            */
-
-            $username = auth()->user()?->username
-                ?? 'Pengguna';
+             * Notifikasi.
+             */
 
             Notification::create([
-
                 'judul' =>
-                    'Perubahan Dataset Diajukan',
+                    'Dataset Diperbarui',
 
                 'pesan' =>
-                    $username .
-                    ' memperbarui dataset "' .
+                    'Dataset "' .
                     $data->nama_dataset .
-                    '" dengan ID ' .
-                    $datasetId .
-                    ' dan mengajukannya kembali untuk persetujuan.',
+                    '" diperbarui dan menunggu verifikasi.',
 
                 'dibaca' =>
                     false,
             ]);
-        });
 
-        return redirect()
-            ->route('data.index')
-            ->with(
-                'success',
-                'Perubahan data berhasil disimpan dan menunggu verifikasi.'
-            );
+            DB::commit();
+
+            return redirect()
+                ->route('data.index')
+                ->with(
+                    'success',
+                    'Data berhasil diperbarui dan menunggu verifikasi.'
+                );
+
+        } catch (Throwable $e) {
+            DB::rollBack();
+
+            if ($newPath) {
+                Storage::disk('public')
+                    ->delete($newPath);
+            }
+
+            return back()
+                ->withInput()
+                ->with(
+                    'error',
+                    'Data gagal diperbarui: ' .
+                    $e->getMessage()
+                );
+        }
     }
 
-    /**
-     * =========================================================
-     * PREVIEW
-     * =========================================================
-     */
-    public function preview($id)
+    /*
+    |--------------------------------------------------------------------------
+    | DESTROY
+    |--------------------------------------------------------------------------
+    */
+
+    public function destroy($id)
+    {
+        DB::beginTransaction();
+
+        try {
+            $data = Data::findOrFail($id);
+
+            /*
+             * Hapus dataset rows.
+             */
+
+            DatasetRow::where(
+                'data_id',
+                $data->id
+            )->delete();
+
+            /*
+             * Hapus verification request.
+             */
+
+            VerificationRequest::where(
+                'module',
+                'data'
+            )
+                ->where(
+                    'record_id',
+                    $data->id
+                )
+                ->delete();
+
+            /*
+             * Hapus file.
+             */
+
+            if (
+                $data->file_data &&
+                Storage::disk('public')->exists(
+                    $data->file_data
+                )
+            ) {
+                Storage::disk('public')->delete(
+                    $data->file_data
+                );
+            }
+
+            /*
+             * Hapus data utama.
+             */
+
+            $data->delete();
+
+            DB::commit();
+
+            return redirect()
+                ->route('data.index')
+                ->with(
+                    'success',
+                    'Dataset berhasil dihapus.'
+                );
+
+        } catch (Throwable $e) {
+            DB::rollBack();
+
+            return back()->with(
+                'error',
+                'Dataset gagal dihapus: ' .
+                $e->getMessage()
+            );
+        }
+    }
+
+    /*
+    |--------------------------------------------------------------------------
+    | DATA SNAPSHOT
+    |--------------------------------------------------------------------------
+    */
+
+    public function dataSnapshot($id)
     {
         $data = Data::findOrFail($id);
 
-        if (!$data->file_data) {
-            return redirect()
-                ->route('data.show', $id)
-                ->with(
-                    'error',
-                    'Dataset ini tidak memiliki file.'
+        $rows = DatasetRow::where(
+            'data_id',
+            $data->id
+        )
+            ->latest('id')
+            ->limit(100)
+            ->get();
+
+        $result = [];
+
+        foreach ($rows as $row) {
+            $rowData = $row->row_data;
+
+            if (is_string($rowData)) {
+                $decoded = json_decode(
+                    $rowData,
+                    true
                 );
+
+                $result[] =
+                    is_array($decoded)
+                    ? $decoded
+                    : [];
+            } elseif (is_array($rowData)) {
+                $result[] = $rowData;
+            } else {
+                $result[] = [];
+            }
         }
 
-        $path = storage_path(
-            'app/public/' .
-            $data->file_data
-        );
-
-        if (!file_exists($path)) {
-            return redirect()
-                ->route('data.show', $id)
-                ->with(
-                    'error',
-                    'File dataset tidak ditemukan.'
-                );
-        }
-
-        return response()->file($path);
-    }
-
-    /**
-     * =========================================================
-     * DESTROY
-     * =========================================================
-     */
-    public function destroy(
-        Request $request,
-        $id
-    ) {
-        $data = Data::findOrFail($id);
-
-        /*
-        |--------------------------------------------------------------------------
-        | DATA LAMA
-        |--------------------------------------------------------------------------
-        */
-
-        $dataLama = $data->toArray();
-
-        /*
-        |--------------------------------------------------------------------------
-        | FORMAT ID
-        |--------------------------------------------------------------------------
-        */
-
-        $datasetId =
-            'DS-' .
-            str_pad(
-                $data->id,
-                5,
-                '0',
-                STR_PAD_LEFT
-            );
-
-        /*
-        |--------------------------------------------------------------------------
-        | AJUKAN PENGHAPUSAN
-        |--------------------------------------------------------------------------
-        */
-
-        DB::transaction(function () use (
-            $data,
-            $request,
-            $dataLama,
-            $datasetId
-        ) {
-
-            VerificationRequest::create([
-
-                'module' =>
-                    'data',
-
-                'record_id' =>
+        return response()->json([
+            'success' => true,
+            'data' => [
+                'id' =>
                     $data->id,
 
-                'action' =>
-                    'delete',
+                'nama_dataset' =>
+                    $data->nama_dataset,
 
-                'data' =>
-                    $dataLama,
+                'topik' =>
+                    $data->topik,
 
-                'status' =>
-                    'menunggu',
+                'tahun' =>
+                    $data->tahun,
 
-                'submitted_by' =>
-                    auth()->id(),
-            ]);
+                'deskripsi' =>
+                    $data->deskripsi,
 
-            /*
-            |--------------------------------------------------------------------------
-            | DATA TETAP ADA SAMPAI DISETUJUI
-            |--------------------------------------------------------------------------
-            */
+                'metadata' =>
+                    $data->metadata,
 
-            $data->update([
-
-                'verifikasi' =>
-                    'Menunggu Disetujui',
-
-                'komentar_verifikasi' =>
-                    null,
-
-                'tanggal_pengajuan' =>
-                    now(),
-            ]);
-
-            /*
-            |--------------------------------------------------------------------------
-            | NOTIFICATION
-            |--------------------------------------------------------------------------
-            */
-
-            $username = auth()->user()?->username
-                ?? 'Pengguna';
-
-            Notification::create([
-
-                'judul' =>
-                    'Penghapusan Dataset Diajukan',
-
-                'pesan' =>
-                    $username .
-                    ' mengajukan penghapusan dataset "' .
-                    $data->nama_dataset .
-                    '" dengan ID ' .
-                    $datasetId .
-                    ' untuk persetujuan verifikator.',
-
-                'dibaca' =>
-                    false,
-            ]);
-        });
-
-        return redirect()
-            ->route('data.index')
-            ->with(
-                'success',
-                'Pengajuan penghapusan data berhasil dikirim dan menunggu verifikasi.'
-            );
+                'rows' =>
+                    $result,
+            ],
+        ]);
     }
 }

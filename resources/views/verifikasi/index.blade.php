@@ -37,68 +37,6 @@
     }
 
     /* =========================================================
-       STAT CARDS
-    ========================================================= */
-
-    .verification-stats {
-        display: grid;
-        grid-template-columns: repeat(3, 1fr);
-        gap: 18px;
-        margin-bottom: 24px;
-    }
-
-    .verification-stat-card {
-        background: #ffffff;
-        border: 1px solid #e5e7eb;
-        border-radius: 14px;
-        padding: 20px;
-        display: flex;
-        align-items: center;
-        gap: 15px;
-        box-shadow: 0 2px 8px rgba(15, 23, 42, 0.04);
-    }
-
-    .verification-stat-icon {
-        width: 46px;
-        height: 46px;
-        border-radius: 12px;
-        display: flex;
-        align-items: center;
-        justify-content: center;
-        font-size: 20px;
-        flex-shrink: 0;
-    }
-
-    .verification-stat-icon.orange {
-        background: #fff7ed;
-        color: #f97316;
-    }
-
-    .verification-stat-icon.green {
-        background: #ecfdf5;
-        color: #10b981;
-    }
-
-    .verification-stat-icon.red {
-        background: #fef2f2;
-        color: #ef4444;
-    }
-
-    .verification-stat-label {
-        display: block;
-        font-size: 13px;
-        color: #6b7280;
-        margin-bottom: 3px;
-    }
-
-    .verification-stat-value {
-        display: block;
-        font-size: 24px;
-        font-weight: 700;
-        color: #111827;
-    }
-
-    /* =========================================================
        FILTER
     ========================================================= */
 
@@ -638,6 +576,7 @@
         font-family: inherit;
         font-size: 13px;
         color: #374151;
+        box-sizing: border-box;
     }
 
     .verification-reject-textarea:focus {
@@ -666,6 +605,7 @@
     ========================================================= */
 
     @media (max-width: 1000px) {
+
         .verification-filter-form {
             grid-template-columns: repeat(2, 1fr);
         }
@@ -674,12 +614,10 @@
         .verification-reset-button {
             width: 100%;
         }
+
     }
 
     @media (max-width: 768px) {
-        .verification-stats {
-            grid-template-columns: 1fr;
-        }
 
         .verification-filter-form {
             grid-template-columns: 1fr;
@@ -708,1028 +646,1031 @@
         .verification-modal {
             max-height: 94vh;
         }
+
     }
 </style>
 
-
 <div class="verification-page">
 
-    {{-- =====================================================
-         HEADER
-    ====================================================== --}}
+{{-- =====================================================
+     HEADER
+====================================================== --}}
 
-    <div class="verification-header">
-        <h1 class="verification-title">
-            Verifikasi Pengajuan
-        </h1>
+<div class="verification-header">
 
-        <p class="verification-subtitle">
-            Periksa dan proses pengajuan perubahan data aset.
-        </p>
+    <h1 class="verification-title">
+        Verifikasi Pengajuan
+    </h1>
+
+    <p class="verification-subtitle">
+        Periksa dan proses pengajuan perubahan data aset.
+    </p>
+
+</div>
+
+
+{{-- =====================================================
+     FILTER
+====================================================== --}}
+
+<div class="verification-filter-card">
+
+    <div class="verification-filter-title">
+        Filter Pengajuan
     </div>
 
+    <form
+        action="{{ route('verifikasi.index') }}"
+        method="GET"
+        class="verification-filter-form"
+    >
 
-    {{-- =====================================================
-         STATISTICS
-    ====================================================== --}}
+        {{-- JENIS PENGAJUAN --}}
+        <div class="verification-filter-group">
 
-    <div class="verification-stats">
+            <label for="jenis_pengajuan">
+                Jenis Pengajuan
+            </label>
 
-        {{-- MENUNGGU --}}
-        <div class="verification-stat-card">
+            <select
+                name="jenis_pengajuan"
+                id="jenis_pengajuan"
+            >
 
-            <div class="verification-stat-icon orange">
-                <i class="bi bi-clock-history"></i>
-            </div>
+                <option value="">
+                    Semua Jenis
+                </option>
 
-            <div>
-                <span class="verification-stat-label">
-                    Menunggu Verifikasi
-                </span>
+                <option
+                    value="create"
+                    {{ $jenisPengajuan === 'create' ? 'selected' : '' }}
+                >
+                    Penambahan
+                </option>
 
-                <span class="verification-stat-value">
-                    {{ $menunggu }}
-                </span>
-            </div>
+                <option
+                    value="update"
+                    {{ $jenisPengajuan === 'update' ? 'selected' : '' }}
+                >
+                    Perubahan
+                </option>
+
+                <option
+                    value="delete"
+                    {{ $jenisPengajuan === 'delete' ? 'selected' : '' }}
+                >
+                    Penghapusan
+                </option>
+
+            </select>
 
         </div>
 
 
-        {{-- DISETUJUI --}}
-        <div class="verification-stat-card">
+        {{-- KATEGORI --}}
+        <div class="verification-filter-group">
 
-            <div class="verification-stat-icon green">
-                <i class="bi bi-check-circle"></i>
-            </div>
+            <label for="kategori">
+                Kategori
+            </label>
 
-            <div>
-                <span class="verification-stat-label">
+            <select
+                name="kategori"
+                id="kategori"
+            >
+
+                <option value="">
+                    Semua Kategori
+                </option>
+
+                @foreach($kategoriOptions as $value => $label)
+
+                    <option
+                        value="{{ $value }}"
+                        {{ $kategori === $value ? 'selected' : '' }}
+                    >
+                        {{ $label }}
+                    </option>
+
+                @endforeach
+
+            </select>
+
+        </div>
+
+
+        {{-- STATUS --}}
+        <div class="verification-filter-group">
+
+            <label for="status">
+                Status
+            </label>
+
+            <select
+                name="status"
+                id="status"
+            >
+
+                <option value="">
+                    Semua Status
+                </option>
+
+                <option
+                    value="menunggu"
+                    {{ $status === 'menunggu' ? 'selected' : '' }}
+                >
+                    Menunggu
+                </option>
+
+                <option
+                    value="disetujui"
+                    {{ $status === 'disetujui' ? 'selected' : '' }}
+                >
                     Disetujui
-                </span>
+                </option>
 
-                <span class="verification-stat-value">
-                    {{ $disetujui }}
-                </span>
-            </div>
-
-        </div>
-
-
-        {{-- DITOLAK --}}
-        <div class="verification-stat-card">
-
-            <div class="verification-stat-icon red">
-                <i class="bi bi-x-circle"></i>
-            </div>
-
-            <div>
-                <span class="verification-stat-label">
+                <option
+                    value="ditolak"
+                    {{ $status === 'ditolak' ? 'selected' : '' }}
+                >
                     Ditolak
-                </span>
+                </option>
 
-                <span class="verification-stat-value">
-                    {{ $ditolak }}
-                </span>
-            </div>
+            </select>
 
         </div>
 
-    </div>
 
-
-    {{-- =====================================================
-         FILTER
-    ====================================================== --}}
-
-    <div class="verification-filter-card">
-
-        <div class="verification-filter-title">
-            Filter Pengajuan
-        </div>
-
-        <form
-            action="{{ route('verifikasi.index') }}"
-            method="GET"
-            class="verification-filter-form"
+        {{-- TERAPKAN --}}
+        <button
+            type="submit"
+            class="verification-filter-button"
         >
-
-            {{-- JENIS PENGAJUAN --}}
-            <div class="verification-filter-group">
-
-                <label for="jenis_pengajuan">
-                    Jenis Pengajuan
-                </label>
-
-                <select
-                    name="jenis_pengajuan"
-                    id="jenis_pengajuan"
-                >
-
-                    <option value="">
-                        Semua Jenis
-                    </option>
-
-                    <option
-                        value="create"
-                        {{ $jenisPengajuan === 'create' ? 'selected' : '' }}
-                    >
-                        Penambahan
-                    </option>
-
-                    <option
-                        value="update"
-                        {{ $jenisPengajuan === 'update' ? 'selected' : '' }}
-                    >
-                        Perubahan
-                    </option>
-
-                    <option
-                        value="delete"
-                        {{ $jenisPengajuan === 'delete' ? 'selected' : '' }}
-                    >
-                        Penghapusan
-                    </option>
-
-                </select>
-
-            </div>
+            <i class="bi bi-funnel"></i>
+            Terapkan
+        </button>
 
 
-            {{-- KATEGORI --}}
-            <div class="verification-filter-group">
+        {{-- RESET --}}
+        <a
+            href="{{ route('verifikasi.index') }}"
+            class="verification-reset-button"
+        >
+            Reset
+        </a>
 
-                <label for="kategori">
-                    Kategori
-                </label>
+    </form>
 
-                <select
-                    name="kategori"
-                    id="kategori"
-                >
-
-                    <option value="">
-                        Semua Kategori
-                    </option>
-
-                    @foreach($kategoriOptions as $value => $label)
-
-                        <option
-                            value="{{ $value }}"
-                            {{ $kategori === $value ? 'selected' : '' }}
-                        >
-                            {{ $label }}
-                        </option>
-
-                    @endforeach
-
-                </select>
-
-            </div>
+</div>
 
 
-            {{-- STATUS --}}
-            <div class="verification-filter-group">
+{{-- =====================================================
+     TABLE
+====================================================== --}}
 
-                <label for="status">
-                    Status
-                </label>
+<div class="verification-table-card">
 
-                <select
-                    name="status"
-                    id="status"
-                >
+    <div class="verification-table-header">
 
-                    <option value="">
-                        Semua Status
-                    </option>
-
-                    <option
-                        value="menunggu"
-                        {{ $status === 'menunggu' ? 'selected' : '' }}
-                    >
-                        Menunggu
-                    </option>
-
-                    <option
-                        value="disetujui"
-                        {{ $status === 'disetujui' ? 'selected' : '' }}
-                    >
-                        Disetujui
-                    </option>
-
-                    <option
-                        value="ditolak"
-                        {{ $status === 'ditolak' ? 'selected' : '' }}
-                    >
-                        Ditolak
-                    </option>
-
-                </select>
-
-            </div>
-
-
-            {{-- TERAPKAN --}}
-            <button
-                type="submit"
-                class="verification-filter-button"
-            >
-                <i class="bi bi-funnel"></i>
-                Terapkan
-            </button>
-
-
-            {{-- RESET --}}
-            <a
-                href="{{ route('verifikasi.index') }}"
-                class="verification-reset-button"
-            >
-                Reset
-            </a>
-
-        </form>
+        <h2 class="verification-table-title">
+            Daftar Pengajuan
+        </h2>
 
     </div>
 
 
-    {{-- =====================================================
-         TABLE
-    ====================================================== --}}
+    <div class="verification-table-wrapper">
 
-    <div class="verification-table-card">
+        @if($requests->count() > 0)
 
-        <div class="verification-table-header">
+            <table class="verification-table">
 
-            <h2 class="verification-table-title">
-                Daftar Pengajuan
-            </h2>
+                <thead>
 
-        </div>
+                    <tr>
+
+                        <th>
+                            Nama Data
+                        </th>
+
+                        <th>
+                            Kategori
+                        </th>
+
+                        <th>
+                            Jenis Pengajuan
+                        </th>
+
+                        <th>
+                            Diajukan Oleh
+                        </th>
+
+                        <th>
+                            Status
+                        </th>
+
+                        <th>
+                            Aksi
+                        </th>
+
+                    </tr>
+
+                </thead>
 
 
-        <div class="verification-table-wrapper">
+                <tbody>
 
-            @if($requests->count() > 0)
+                    @foreach($requests as $verificationRequest)
 
-                <table class="verification-table">
+                        @php
 
-                    <thead>
+                            $data = $verificationRequest->data ?? [];
+
+                            $module = $verificationRequest->module ?? '-';
+
+                            $action = $verificationRequest->action ?? '-';
+
+                            $statusRequest = $verificationRequest->status ?? 'menunggu';
+
+                            $moduleLabel = match ($module) {
+
+                                'software' => 'Software',
+
+                                'hardware' => 'Hardware',
+
+                                'jaringan' => 'Jaringan',
+
+                                'data-center',
+                                'data_center' => 'Data Center',
+
+                                'splp' => 'SPLP',
+
+                                'data' => 'Data',
+
+                                'sdm' => 'SDM',
+
+                                default => ucwords(
+                                    str_replace(
+                                        ['-', '_'],
+                                        ' ',
+                                        $module
+                                    )
+                                ),
+
+                            };
+
+
+                            $actionLabel = match ($action) {
+
+                                'create' => 'Penambahan',
+
+                                'update' => 'Perubahan',
+
+                                'delete' => 'Penghapusan',
+
+                                default => ucfirst($action),
+
+                            };
+
+
+                            $statusLabel = match ($statusRequest) {
+
+                                'menunggu' => 'Menunggu',
+
+                                'disetujui' => 'Disetujui',
+
+                                'ditolak' => 'Ditolak',
+
+                                default => ucfirst($statusRequest),
+
+                            };
+
+
+                            $namaData = $data['jenis']
+                                ?? $data['nama']
+                                ?? $data['nama_data']
+                                ?? $data['nama_barang']
+                                ?? $data['kode']
+                                ?? 'Data ' . $verificationRequest->id;
+
+
+                            $kodeData = $data['kode'] ?? null;
+
+                        @endphp
+
 
                         <tr>
 
-                            <th>
-                                Nama Data
-                            </th>
+                            {{-- NAMA DATA --}}
+                            <td>
 
-                            <th>
-                                Kategori
-                            </th>
+                                <span class="verification-data-name">
+                                    {{ $namaData }}
+                                </span>
 
-                            <th>
-                                Jenis Pengajuan
-                            </th>
+                                @if($kodeData)
 
-                            <th>
-                                Diajukan Oleh
-                            </th>
+                                    <span class="verification-data-code">
+                                        {{ $kodeData }}
+                                    </span>
 
-                            <th>
-                                Status
-                            </th>
+                                @endif
 
-                            <th>
-                                Aksi
-                            </th>
+                            </td>
+
+
+                            {{-- KATEGORI --}}
+                            <td>
+                                {{ $moduleLabel }}
+                            </td>
+
+
+                            {{-- JENIS PENGAJUAN --}}
+                            <td>
+
+                                <span
+                                    class="verification-badge {{ $action }}"
+                                >
+                                    {{ $actionLabel }}
+                                </span>
+
+                            </td>
+
+
+                            {{-- DIAJUKAN OLEH --}}
+                            <td>
+
+                                {{ $verificationRequest->submitter->name
+                                    ?? $verificationRequest->submitter->username
+                                    ?? '-' }}
+
+                            </td>
+
+
+                            {{-- STATUS --}}
+                            <td>
+
+                                @if($statusRequest === 'menunggu')
+
+                                    <span class="verification-badge pending">
+                                        {{ $statusLabel }}
+                                    </span>
+
+                                @elseif($statusRequest === 'disetujui')
+
+                                    <span class="verification-badge approved">
+                                        {{ $statusLabel }}
+                                    </span>
+
+                                @else
+
+                                    <span class="verification-badge rejected">
+                                        {{ $statusLabel }}
+                                    </span>
+
+                                @endif
+
+                            </td>
+
+
+                            {{-- AKSI --}}
+                            <td>
+
+                                <div class="verification-actions">
+
+                                    {{-- DETAIL --}}
+                                    <button
+                                        type="button"
+                                        class="verification-action-button verification-detail-button"
+                                        onclick="openVerificationDetail('{{ $verificationRequest->id }}')"
+                                    >
+                                        <i class="bi bi-eye"></i>
+                                        Detail
+                                    </button>
+
+
+                                    {{-- HANYA MENUNGGU YANG BISA DIPROSES --}}
+                                    @if($statusRequest === 'menunggu')
+
+                                        {{-- APPROVE --}}
+                                        <form
+                                            action="{{ route('verifikasi.approve', $verificationRequest) }}"
+                                            method="POST"
+                                            style="display:inline;"
+                                            onsubmit="return confirm('Yakin ingin menyetujui pengajuan ini?');"
+                                        >
+
+                                            @csrf
+
+                                            <button
+                                                type="submit"
+                                                class="verification-action-button verification-approve-button"
+                                            >
+                                                <i class="bi bi-check-lg"></i>
+                                                Setujui
+                                            </button>
+
+                                        </form>
+
+
+                                        {{-- REJECT --}}
+                                        <button
+                                            type="button"
+                                            class="verification-action-button verification-reject-button"
+                                            onclick="openRejectModal('{{ $verificationRequest->id }}')"
+                                        >
+                                            <i class="bi bi-x-lg"></i>
+                                            Tolak
+                                        </button>
+
+                                    @endif
+
+                                </div>
+
+                            </td>
 
                         </tr>
 
-                    </thead>
 
+                        {{-- =================================================
+                             DETAIL MODAL PER REQUEST
+                        ================================================== --}}
 
-                    <tbody>
-
-                        @foreach($requests as $verificationRequest)
-
-                            @php
-
-                                $data = $verificationRequest->data ?? [];
-
-                                $module = $verificationRequest->module ?? '-';
-
-                                $action = $verificationRequest->action ?? '-';
-
-                                $statusRequest = $verificationRequest->status ?? 'menunggu';
-
-                                $moduleLabel = match ($module) {
-                                    'software' => 'Software',
-                                    'hardware' => 'Hardware',
-                                    'jaringan' => 'Jaringan',
-                                    'data-center',
-                                    'data_center' => 'Data Center',
-                                    'splp' => 'SPLP',
-                                    'data' => 'Data',
-                                    'sdm' => 'SDM',
-                                    default => ucwords(str_replace(['-', '_'], ' ', $module)),
-                                };
-
-                                $actionLabel = match ($action) {
-                                    'create' => 'Penambahan',
-                                    'update' => 'Perubahan',
-                                    'delete' => 'Penghapusan',
-                                    default => ucfirst($action),
-                                };
-
-                                $statusLabel = match ($statusRequest) {
-                                    'menunggu' => 'Menunggu',
-                                    'disetujui' => 'Disetujui',
-                                    'ditolak' => 'Ditolak',
-                                    default => ucfirst($statusRequest),
-                                };
-
-                                $namaData = $data['jenis']
-                                    ?? $data['nama']
-                                    ?? $data['nama_data']
-                                    ?? $data['nama_barang']
-                                    ?? $data['kode']
-                                    ?? 'Data ' . $verificationRequest->id;
-
-                                $kodeData = $data['kode'] ?? null;
-
-                            @endphp
-
-
-                            <tr>
-
-                                {{-- NAMA DATA --}}
-                                <td>
-
-                                    <span class="verification-data-name">
-                                        {{ $namaData }}
-                                    </span>
-
-                                    @if($kodeData)
-
-                                        <span class="verification-data-code">
-                                            {{ $kodeData }}
-                                        </span>
-
-                                    @endif
-
-                                </td>
-
-
-                                {{-- KATEGORI --}}
-                                <td>
-                                    {{ $moduleLabel }}
-                                </td>
-
-
-                                {{-- JENIS --}}
-                                <td>
-
-                                    <span
-                                        class="verification-badge {{ $action }}"
-                                    >
-                                        {{ $actionLabel }}
-                                    </span>
-
-                                </td>
-
-
-                                {{-- DIAJUKAN OLEH --}}
-                                <td>
-
-                                    {{ $verificationRequest->submitter->name
-                                        ?? $verificationRequest->submitter->username
-                                        ?? '-' }}
-
-                                </td>
-
-
-                                {{-- STATUS --}}
-                                <td>
-
-                                    @if($statusRequest === 'menunggu')
-
-                                        <span class="verification-badge pending">
-                                            {{ $statusLabel }}
-                                        </span>
-
-                                    @elseif($statusRequest === 'disetujui')
-
-                                        <span class="verification-badge approved">
-                                            {{ $statusLabel }}
-                                        </span>
-
-                                    @else
-
-                                        <span class="verification-badge rejected">
-                                            {{ $statusLabel }}
-                                        </span>
-
-                                    @endif
-
-                                </td>
-
-
-                                {{-- AKSI --}}
-                                <td>
-
-                                    <div class="verification-actions">
-
-                                        {{-- DETAIL --}}
-                                        <button
-                                            type="button"
-                                            class="verification-action-button verification-detail-button"
-                                            onclick="openVerificationDetail('{{ $verificationRequest->id }}')"
-                                        >
-                                            <i class="bi bi-eye"></i>
-                                            Detail
-                                        </button>
-
-
-                                        {{-- HANYA MENUNGGU YANG BISA DIPROSES --}}
-                                        @if($statusRequest === 'menunggu')
-
-                                            {{-- APPROVE --}}
-                                            <form
-                                                action="{{ route('verifikasi.approve', $verificationRequest) }}"
-                                                method="POST"
-                                                style="display:inline;"
-                                                onsubmit="return confirm('Yakin ingin menyetujui pengajuan ini?');"
-                                            >
-
-                                                @csrf
-
-                                                <button
-                                                    type="submit"
-                                                    class="verification-action-button verification-approve-button"
-                                                >
-                                                    <i class="bi bi-check-lg"></i>
-                                                    Setujui
-                                                </button>
-
-                                            </form>
-
-
-                                            {{-- REJECT --}}
-                                            <button
-                                                type="button"
-                                                class="verification-action-button verification-reject-button"
-                                                onclick="openRejectModal('{{ $verificationRequest->id }}')"
-                                            >
-                                                <i class="bi bi-x-lg"></i>
-                                                Tolak
-                                            </button>
-
-                                        @endif
-
-                                    </div>
-
-                                </td>
-
-                            </tr>
-
-
-                            {{-- =================================================
-                                 DETAIL MODAL PER REQUEST
-                            ================================================== --}}
+                        <div
+                            id="verification-detail-{{ $verificationRequest->id }}"
+                            class="verification-modal-overlay"
+                            onclick="closeVerificationDetailOutside(event, '{{ $verificationRequest->id }}')"
+                        >
 
                             <div
-                                id="verification-detail-{{ $verificationRequest->id }}"
-                                class="verification-modal-overlay"
-                                onclick="closeVerificationDetailOutside(event, '{{ $verificationRequest->id }}')"
+                                class="verification-modal"
+                                onclick="event.stopPropagation()"
                             >
 
-                                <div
-                                    class="verification-modal"
-                                    onclick="event.stopPropagation()"
-                                >
+                                <div class="verification-modal-header">
 
-                                    <div class="verification-modal-header">
+                                    <div class="verification-modal-header-left">
 
-                                        <div class="verification-modal-header-left">
+                                        <h3 class="verification-modal-title">
+                                            Detail Pengajuan
+                                        </h3>
 
-                                            <h3 class="verification-modal-title">
-                                                Detail Pengajuan
-                                            </h3>
-
-                                            <p class="verification-modal-subtitle">
-                                                ID Pengajuan #{{ $verificationRequest->id }}
-                                            </p>
-
-                                        </div>
-
-
-                                        <button
-                                            type="button"
-                                            class="verification-modal-close"
-                                            onclick="closeVerificationDetail('{{ $verificationRequest->id }}')"
-                                        >
-                                            <i class="bi bi-x-lg"></i>
-                                        </button>
+                                        <p class="verification-modal-subtitle">
+                                            ID Pengajuan #{{ $verificationRequest->id }}
+                                        </p>
 
                                     </div>
 
 
-                                    <div class="verification-modal-body">
+                                    <button
+                                        type="button"
+                                        class="verification-modal-close"
+                                        onclick="closeVerificationDetail('{{ $verificationRequest->id }}')"
+                                    >
+                                        <i class="bi bi-x-lg"></i>
+                                    </button>
 
-                                        {{-- META PENGAJUAN --}}
-                                        <div class="verification-detail-meta">
-
-                                            <div class="verification-detail-meta-item">
-
-                                                <span class="verification-detail-meta-label">
-                                                    Kategori
-                                                </span>
-
-                                                <span class="verification-detail-meta-value">
-                                                    {{ $moduleLabel }}
-                                                </span>
-
-                                            </div>
+                                </div>
 
 
-                                            <div class="verification-detail-meta-item">
+                                <div class="verification-modal-body">
 
-                                                <span class="verification-detail-meta-label">
-                                                    Jenis Pengajuan
-                                                </span>
+                                    {{-- META PENGAJUAN --}}
+                                    <div class="verification-detail-meta">
 
-                                                <span class="verification-detail-meta-value">
-                                                    {{ $actionLabel }}
-                                                </span>
+                                        <div class="verification-detail-meta-item">
 
-                                            </div>
+                                            <span class="verification-detail-meta-label">
+                                                Kategori
+                                            </span>
 
-
-                                            <div class="verification-detail-meta-item">
-
-                                                <span class="verification-detail-meta-label">
-                                                    Diajukan Oleh
-                                                </span>
-
-                                                <span class="verification-detail-meta-value">
-
-                                                    {{ $verificationRequest->submitter->name
-                                                        ?? $verificationRequest->submitter->username
-                                                        ?? '-' }}
-
-                                                </span>
-
-                                            </div>
-
-
-                                            <div class="verification-detail-meta-item">
-
-                                                <span class="verification-detail-meta-label">
-                                                    Status
-                                                </span>
-
-                                                <span class="verification-detail-meta-value">
-
-                                                    @if($statusRequest === 'menunggu')
-
-                                                        <span class="verification-badge pending">
-                                                            Menunggu
-                                                        </span>
-
-                                                    @elseif($statusRequest === 'disetujui')
-
-                                                        <span class="verification-badge approved">
-                                                            Disetujui
-                                                        </span>
-
-                                                    @else
-
-                                                        <span class="verification-badge rejected">
-                                                            Ditolak
-                                                        </span>
-
-                                                    @endif
-
-                                                </span>
-
-                                            </div>
+                                            <span class="verification-detail-meta-value">
+                                                {{ $moduleLabel }}
+                                            </span>
 
                                         </div>
 
 
-                                        {{-- =================================================
-                                             DETAIL DATA SOFTWARE
-                                        ================================================== --}}
+                                        <div class="verification-detail-meta-item">
 
-                                        @if($module === 'software')
+                                            <span class="verification-detail-meta-label">
+                                                Jenis Pengajuan
+                                            </span>
 
-                                            <div class="verification-detail-section">
+                                            <span class="verification-detail-meta-value">
+                                                {{ $actionLabel }}
+                                            </span>
 
-                                                <div class="verification-detail-section-title">
-                                                    Data Software
+                                        </div>
+
+
+                                        <div class="verification-detail-meta-item">
+
+                                            <span class="verification-detail-meta-label">
+                                                Diajukan Oleh
+                                            </span>
+
+                                            <span class="verification-detail-meta-value">
+
+                                                {{ $verificationRequest->submitter->name
+                                                    ?? $verificationRequest->submitter->username
+                                                    ?? '-' }}
+
+                                            </span>
+
+                                        </div>
+
+
+                                        <div class="verification-detail-meta-item">
+
+                                            <span class="verification-detail-meta-label">
+                                                Status
+                                            </span>
+
+                                            <span class="verification-detail-meta-value">
+
+                                                @if($statusRequest === 'menunggu')
+
+                                                    <span class="verification-badge pending">
+                                                        Menunggu
+                                                    </span>
+
+                                                @elseif($statusRequest === 'disetujui')
+
+                                                    <span class="verification-badge approved">
+                                                        Disetujui
+                                                    </span>
+
+                                                @else
+
+                                                    <span class="verification-badge rejected">
+                                                        Ditolak
+                                                    </span>
+
+                                                @endif
+
+                                            </span>
+
+                                        </div>
+
+                                    </div>
+
+
+                                    {{-- =================================================
+                                         DETAIL DATA SOFTWARE
+                                    ================================================== --}}
+
+                                    @if($module === 'software')
+
+                                        <div class="verification-detail-section">
+
+                                            <div class="verification-detail-section-title">
+                                                Data Software
+                                            </div>
+
+
+                                            <div class="verification-detail-grid">
+
+                                                {{-- KODE --}}
+                                                <div class="verification-detail-item">
+
+                                                    <span class="verification-detail-label">
+                                                        Kode
+                                                    </span>
+
+                                                    <span class="verification-detail-value strong">
+                                                        {{ $data['kode'] ?? '-' }}
+                                                    </span>
+
                                                 </div>
 
 
-                                                <div class="verification-detail-grid">
+                                                {{-- JENIS SOFTWARE --}}
+                                                <div class="verification-detail-item">
 
-                                                    {{-- KODE --}}
-                                                    <div class="verification-detail-item">
+                                                    <span class="verification-detail-label">
+                                                        Jenis Software
+                                                    </span>
 
-                                                        <span class="verification-detail-label">
-                                                            Kode
-                                                        </span>
+                                                    <span class="verification-detail-value strong">
+                                                        {{ $data['jenis'] ?? '-' }}
+                                                    </span>
 
-                                                        <span class="verification-detail-value strong">
-                                                            {{ $data['kode'] ?? '-' }}
-                                                        </span>
-
-                                                    </div>
+                                                </div>
 
 
-                                                    {{-- JENIS SOFTWARE --}}
-                                                    <div class="verification-detail-item">
+                                                {{-- SPESIFIKASI --}}
+                                                <div class="verification-detail-item full">
 
-                                                        <span class="verification-detail-label">
-                                                            Jenis Software
-                                                        </span>
+                                                    <span class="verification-detail-label">
+                                                        Spesifikasi
+                                                    </span>
 
-                                                        <span class="verification-detail-value strong">
-                                                            {{ $data['jenis'] ?? '-' }}
-                                                        </span>
+                                                    <span class="verification-detail-value">
+                                                        {{ $data['spesifikasi'] ?? '-' }}
+                                                    </span>
 
-                                                    </div>
+                                                </div>
 
 
-                                                    {{-- SPESIFIKASI --}}
+                                                {{-- JUMLAH LISENSI --}}
+                                                <div class="verification-detail-item">
+
+                                                    <span class="verification-detail-label">
+                                                        Jumlah Lisensi
+                                                    </span>
+
+                                                    <span class="verification-detail-value">
+                                                        {{ $data['jumlah_lisensi'] ?? '-' }}
+                                                    </span>
+
+                                                </div>
+
+
+                                                {{-- PENGADAAN --}}
+                                                <div class="verification-detail-item">
+
+                                                    <span class="verification-detail-label">
+                                                        Pengadaan
+                                                    </span>
+
+                                                    <span class="verification-detail-value">
+                                                        {{ $data['pengadaan'] ?? '-' }}
+                                                    </span>
+
+                                                </div>
+
+
+                                                {{-- PERIODE SEWA --}}
+                                                <div class="verification-detail-item">
+
+                                                    <span class="verification-detail-label">
+                                                        Periode Sewa
+                                                    </span>
+
+                                                    <span class="verification-detail-value">
+
+                                                        @if(!empty($data['periode_sewa']))
+
+                                                            {{ $data['periode_sewa'] }}
+
+                                                        @else
+
+                                                            -
+
+                                                        @endif
+
+                                                    </span>
+
+                                                </div>
+
+
+                                                {{-- HARGA --}}
+                                                <div class="verification-detail-item">
+
+                                                    <span class="verification-detail-label">
+                                                        Harga
+                                                    </span>
+
+                                                    <span class="verification-detail-value price">
+
+                                                        @if(
+                                                            isset($data['harga'])
+                                                            && $data['harga'] !== ''
+                                                            && $data['harga'] !== null
+                                                        )
+
+                                                            Rp {{ number_format((float) $data['harga'], 0, ',', '.') }}
+
+                                                        @else
+
+                                                            -
+
+                                                        @endif
+
+                                                    </span>
+
+                                                </div>
+
+
+                                                {{-- TANGGAL PENGADAAN --}}
+                                                <div class="verification-detail-item">
+
+                                                    <span class="verification-detail-label">
+                                                        Tanggal Pengadaan
+                                                    </span>
+
+                                                    <span class="verification-detail-value">
+
+                                                        @if(!empty($data['tanggal_pengadaan']))
+
+                                                            @php
+
+                                                                try {
+
+                                                                    $tanggalPengadaan =
+                                                                        \Carbon\Carbon::parse(
+                                                                            $data['tanggal_pengadaan']
+                                                                        )->format('d/m/Y');
+
+                                                                } catch (\Throwable $e) {
+
+                                                                    $tanggalPengadaan =
+                                                                        $data['tanggal_pengadaan'];
+
+                                                                }
+
+                                                            @endphp
+
+                                                            {{ $tanggalPengadaan }}
+
+                                                        @else
+
+                                                            -
+
+                                                        @endif
+
+                                                    </span>
+
+                                                </div>
+
+
+                                                {{-- TANGGAL BERAKHIR --}}
+                                                <div class="verification-detail-item">
+
+                                                    <span class="verification-detail-label">
+                                                        Tanggal Berakhir
+                                                    </span>
+
+                                                    <span class="verification-detail-value">
+
+                                                        @if(!empty($data['tanggal_berakhir']))
+
+                                                            @php
+
+                                                                try {
+
+                                                                    $tanggalBerakhir =
+                                                                        \Carbon\Carbon::parse(
+                                                                            $data['tanggal_berakhir']
+                                                                        )->format('d/m/Y');
+
+                                                                } catch (\Throwable $e) {
+
+                                                                    $tanggalBerakhir =
+                                                                        $data['tanggal_berakhir'];
+
+                                                                }
+
+                                                            @endphp
+
+                                                            {{ $tanggalBerakhir }}
+
+                                                        @else
+
+                                                            @if(($data['pengadaan'] ?? '') === 'Beli')
+
+                                                                Perpetual / Tidak Berakhir
+
+                                                            @else
+
+                                                                -
+
+                                                            @endif
+
+                                                        @endif
+
+                                                    </span>
+
+                                                </div>
+
+
+                                                {{-- VERIFIKASI DATA --}}
+                                                <div class="verification-detail-item">
+
+                                                    <span class="verification-detail-label">
+                                                        Verifikasi Data
+                                                    </span>
+
+                                                    <span class="verification-detail-value">
+                                                        {{ ucfirst($data['verifikasi'] ?? $statusRequest) }}
+                                                    </span>
+
+                                                </div>
+
+
+                                                {{-- KOMENTAR --}}
+                                                @if(!empty($data['komentar']))
+
                                                     <div class="verification-detail-item full">
 
                                                         <span class="verification-detail-label">
-                                                            Spesifikasi
+                                                            Komentar
                                                         </span>
 
                                                         <span class="verification-detail-value">
-                                                            {{ $data['spesifikasi'] ?? '-' }}
+                                                            {{ $data['komentar'] }}
                                                         </span>
 
                                                     </div>
 
+                                                @endif
 
-                                                    {{-- JUMLAH LISENSI --}}
-                                                    <div class="verification-detail-item">
+                                            </div>
 
-                                                        <span class="verification-detail-label">
-                                                            Jumlah Lisensi
-                                                        </span>
+                                        </div>
 
-                                                        <span class="verification-detail-value">
-                                                            {{ $data['jumlah_lisensi'] ?? '-' }}
-                                                        </span>
 
-                                                    </div>
+                                    {{-- =================================================
+                                         MODULE LAIN
+                                    ================================================== --}}
 
+                                    @elseif(!empty($data))
 
-                                                    {{-- PENGADAAN --}}
-                                                    <div class="verification-detail-item">
+                                        <div class="verification-detail-section">
 
-                                                        <span class="verification-detail-label">
-                                                            Pengadaan
-                                                        </span>
+                                            <div class="verification-detail-section-title">
+                                                Data Pengajuan
+                                            </div>
 
-                                                        <span class="verification-detail-value">
-                                                            {{ $data['pengadaan'] ?? '-' }}
-                                                        </span>
 
-                                                    </div>
+                                            <div class="verification-detail-grid">
 
+                                                @foreach($data as $field => $value)
 
-                                                    {{-- PERIODE SEWA --}}
-                                                    <div class="verification-detail-item">
+                                                    @if(!in_array($field, [
+                                                        'created_at',
+                                                        'updated_at'
+                                                    ]))
 
-                                                        <span class="verification-detail-label">
-                                                            Periode Sewa
-                                                        </span>
+                                                        @php
 
-                                                        <span class="verification-detail-value">
+                                                            $label = ucwords(
+                                                                str_replace(
+                                                                    ['_', '-'],
+                                                                    ' ',
+                                                                    $field
+                                                                )
+                                                            );
 
-                                                            @if(!empty($data['periode_sewa']))
 
-                                                                {{ $data['periode_sewa'] }}
+                                                            if (
+                                                                is_array($value)
+                                                                || is_object($value)
+                                                            ) {
 
-                                                            @else
+                                                                $displayValue = json_encode(
+                                                                    $value,
+                                                                    JSON_PRETTY_PRINT
+                                                                    | JSON_UNESCAPED_UNICODE
+                                                                );
 
-                                                                -
+                                                            } else {
 
-                                                            @endif
+                                                                $displayValue = $value;
 
-                                                        </span>
+                                                            }
 
-                                                    </div>
+                                                        @endphp
 
 
-                                                    {{-- HARGA --}}
-                                                    <div class="verification-detail-item">
-
-                                                        <span class="verification-detail-label">
-                                                            Harga
-                                                        </span>
-
-                                                        <span class="verification-detail-value price">
-
-                                                            @if(isset($data['harga']) && $data['harga'] !== '' && $data['harga'] !== null)
-
-                                                                Rp {{ number_format((float) $data['harga'], 0, ',', '.') }}
-
-                                                            @else
-
-                                                                -
-
-                                                            @endif
-
-                                                        </span>
-
-                                                    </div>
-
-
-                                                    {{-- TANGGAL PENGADAAN --}}
-                                                    <div class="verification-detail-item">
-
-                                                        <span class="verification-detail-label">
-                                                            Tanggal Pengadaan
-                                                        </span>
-
-                                                        <span class="verification-detail-value">
-
-                                                            @if(!empty($data['tanggal_pengadaan']))
-
-                                                                @php
-                                                                    try {
-                                                                        $tanggalPengadaan = \Carbon\Carbon::parse($data['tanggal_pengadaan'])->format('d/m/Y');
-                                                                    } catch (\Throwable $e) {
-                                                                        $tanggalPengadaan = $data['tanggal_pengadaan'];
-                                                                    }
-                                                                @endphp
-
-                                                                {{ $tanggalPengadaan }}
-
-                                                            @else
-
-                                                                -
-
-                                                            @endif
-
-                                                        </span>
-
-                                                    </div>
-
-
-                                                    {{-- TANGGAL BERAKHIR --}}
-                                                    <div class="verification-detail-item">
-
-                                                        <span class="verification-detail-label">
-                                                            Tanggal Berakhir
-                                                        </span>
-
-                                                        <span class="verification-detail-value">
-
-                                                            @if(!empty($data['tanggal_berakhir']))
-
-                                                                @php
-                                                                    try {
-                                                                        $tanggalBerakhir = \Carbon\Carbon::parse($data['tanggal_berakhir'])->format('d/m/Y');
-                                                                    } catch (\Throwable $e) {
-                                                                        $tanggalBerakhir = $data['tanggal_berakhir'];
-                                                                    }
-                                                                @endphp
-
-                                                                {{ $tanggalBerakhir }}
-
-                                                            @else
-
-                                                                @if(($data['pengadaan'] ?? '') === 'Beli')
-
-                                                                    Perpetual / Tidak Berakhir
-
-                                                                @else
-
-                                                                    -
-
-                                                                @endif
-
-                                                            @endif
-
-                                                        </span>
-
-                                                    </div>
-
-
-                                                    {{-- VERIFIKASI DATA --}}
-                                                    <div class="verification-detail-item">
-
-                                                        <span class="verification-detail-label">
-                                                            Verifikasi Data
-                                                        </span>
-
-                                                        <span class="verification-detail-value">
-
-                                                            {{ ucfirst($data['verifikasi'] ?? $statusRequest) }}
-
-                                                        </span>
-
-                                                    </div>
-
-
-                                                    {{-- KOMENTAR --}}
-                                                    @if(!empty($data['komentar']))
-
-                                                        <div class="verification-detail-item full">
+                                                        <div class="verification-detail-item">
 
                                                             <span class="verification-detail-label">
-                                                                Komentar
+                                                                {{ $label }}
                                                             </span>
 
                                                             <span class="verification-detail-value">
-                                                                {{ $data['komentar'] }}
+
+                                                                {{
+                                                                    $displayValue !== null
+                                                                    && $displayValue !== ''
+                                                                        ? $displayValue
+                                                                        : '-'
+                                                                }}
+
                                                             </span>
 
                                                         </div>
 
                                                     @endif
 
-                                                </div>
+                                                @endforeach
 
                                             </div>
 
+                                        </div>
 
-                                        {{-- =================================================
-                                             MODULE LAIN
-                                        ================================================== --}}
-
-                                        @elseif(!empty($data))
-
-                                            <div class="verification-detail-section">
-
-                                                <div class="verification-detail-section-title">
-                                                    Data Pengajuan
-                                                </div>
-
-
-                                                <div class="verification-detail-grid">
-
-                                                    @foreach($data as $field => $value)
-
-                                                        @if(!in_array($field, [
-                                                            'created_at',
-                                                            'updated_at'
-                                                        ]))
-
-                                                            @php
-
-                                                                $label = ucwords(
-                                                                    str_replace(
-                                                                        ['_', '-'],
-                                                                        ' ',
-                                                                        $field
-                                                                    )
-                                                                );
-
-                                                                if (
-                                                                    is_array($value) ||
-                                                                    is_object($value)
-                                                                ) {
-                                                                    $displayValue = json_encode(
-                                                                        $value,
-                                                                        JSON_PRETTY_PRINT | JSON_UNESCAPED_UNICODE
-                                                                    );
-                                                                } else {
-                                                                    $displayValue = $value;
-                                                                }
-
-                                                            @endphp
-
-
-                                                            <div class="verification-detail-item">
-
-                                                                <span class="verification-detail-label">
-                                                                    {{ $label }}
-                                                                </span>
-
-                                                                <span class="verification-detail-value">
-
-                                                                    {{ $displayValue !== null && $displayValue !== '' ? $displayValue : '-' }}
-
-                                                                </span>
-
-                                                            </div>
-
-                                                        @endif
-
-                                                    @endforeach
-
-                                                </div>
-
-                                            </div>
-
-                                        @else
-
-                                            <div class="verification-detail-section">
-
-                                                <div class="verification-detail-section-title">
-                                                    Data Pengajuan
-                                                </div>
-
-                                                <div style="padding:20px; color:#94a3b8; font-size:13px;">
-                                                    Tidak ada detail data yang tersimpan.
-                                                </div>
-
-                                            </div>
-
-                                        @endif
-
-
-                                        {{-- =================================================
-                                             ALASAN PENOLAKAN
-                                        ================================================== --}}
-
-                                        @if($verificationRequest->status === 'ditolak' && $verificationRequest->rejection_reason)
-
-                                            <div class="verification-detail-section">
-
-                                                <div class="verification-detail-section-title">
-                                                    Alasan Penolakan
-                                                </div>
-
-                                                <div style="padding:15px;">
-
-                                                    <div class="verification-detail-reason">
-                                                        {{ $verificationRequest->rejection_reason }}
-                                                    </div>
-
-                                                </div>
-
-                                            </div>
-
-                                        @endif
-
-
-                                        {{-- =================================================
-                                             INFORMASI WAKTU
-                                        ================================================== --}}
+                                    @else
 
                                         <div class="verification-detail-section">
 
                                             <div class="verification-detail-section-title">
-                                                Informasi Pengajuan
+                                                Data Pengajuan
                                             </div>
 
-                                            <div class="verification-detail-grid">
+                                            <div style="padding:20px; color:#94a3b8; font-size:13px;">
+                                                Tidak ada detail data yang tersimpan.
+                                            </div>
 
-                                                <div class="verification-detail-item">
+                                        </div>
 
-                                                    <span class="verification-detail-label">
-                                                        Dibuat
-                                                    </span>
+                                    @endif
 
-                                                    <span class="verification-detail-value">
 
-                                                        {{ $verificationRequest->created_at
+                                    {{-- =================================================
+                                         ALASAN PENOLAKAN
+                                    ================================================== --}}
+
+                                    @if(
+                                        $verificationRequest->status === 'ditolak'
+                                        && $verificationRequest->rejection_reason
+                                    )
+
+                                        <div class="verification-detail-section">
+
+                                            <div class="verification-detail-section-title">
+                                                Alasan Penolakan
+                                            </div>
+
+                                            <div style="padding:15px;">
+
+                                                <div class="verification-detail-reason">
+                                                    {{ $verificationRequest->rejection_reason }}
+                                                </div>
+
+                                            </div>
+
+                                        </div>
+
+                                    @endif
+
+
+                                    {{-- =================================================
+                                         INFORMASI WAKTU
+                                    ================================================== --}}
+
+                                    <div class="verification-detail-section">
+
+                                        <div class="verification-detail-section-title">
+                                            Informasi Pengajuan
+                                        </div>
+
+                                        <div class="verification-detail-grid">
+
+                                            <div class="verification-detail-item">
+
+                                                <span class="verification-detail-label">
+                                                    Dibuat
+                                                </span>
+
+                                                <span class="verification-detail-value">
+
+                                                    {{
+                                                        $verificationRequest->created_at
                                                             ? $verificationRequest->created_at->format('d/m/Y H:i')
-                                                            : '-' }}
+                                                            : '-'
+                                                    }}
 
-                                                    </span>
+                                                </span>
 
-                                                </div>
+                                            </div>
 
 
-                                                <div class="verification-detail-item">
+                                            <div class="verification-detail-item">
 
-                                                    <span class="verification-detail-label">
-                                                        Diverifikasi
-                                                    </span>
+                                                <span class="verification-detail-label">
+                                                    Diverifikasi
+                                                </span>
 
-                                                    <span class="verification-detail-value">
+                                                <span class="verification-detail-value">
 
-                                                        {{ $verificationRequest->verified_at
+                                                    {{
+                                                        $verificationRequest->verified_at
                                                             ? $verificationRequest->verified_at->format('d/m/Y H:i')
-                                                            : '-' }}
+                                                            : '-'
+                                                    }}
 
-                                                    </span>
+                                                </span>
 
-                                                </div>
+                                            </div>
 
 
-                                                <div class="verification-detail-item full">
+                                            <div class="verification-detail-item full">
 
-                                                    <span class="verification-detail-label">
-                                                        Diverifikasi Oleh
-                                                    </span>
+                                                <span class="verification-detail-label">
+                                                    Diverifikasi Oleh
+                                                </span>
 
-                                                    <span class="verification-detail-value">
+                                                <span class="verification-detail-value">
 
-                                                        {{ $verificationRequest->verifier->name
+                                                    {{
+                                                        $verificationRequest->verifier->name
                                                             ?? $verificationRequest->verifier->username
-                                                            ?? '-' }}
+                                                            ?? '-'
+                                                    }}
 
-                                                    </span>
-
-                                                </div>
+                                                </span>
 
                                             </div>
 
@@ -1737,77 +1678,79 @@
 
                                     </div>
 
+                                </div>
 
-                                    <div class="verification-modal-footer">
 
-                                        <button
-                                            type="button"
-                                            class="verification-modal-footer-button verification-modal-cancel"
-                                            onclick="closeVerificationDetail('{{ $verificationRequest->id }}')"
+                                <div class="verification-modal-footer">
+
+                                    <button
+                                        type="button"
+                                        class="verification-modal-footer-button verification-modal-cancel"
+                                        onclick="closeVerificationDetail('{{ $verificationRequest->id }}')"
+                                    >
+                                        Tutup
+                                    </button>
+
+
+                                    @if($statusRequest === 'menunggu')
+
+                                        <form
+                                            action="{{ route('verifikasi.approve', $verificationRequest) }}"
+                                            method="POST"
+                                            style="display:inline;"
+                                            onsubmit="return confirm('Yakin ingin menyetujui pengajuan ini?');"
                                         >
-                                            Tutup
-                                        </button>
 
+                                            @csrf
 
-                                        @if($statusRequest === 'menunggu')
-
-                                            <form
-                                                action="{{ route('verifikasi.approve', $verificationRequest) }}"
-                                                method="POST"
-                                                style="display:inline;"
-                                                onsubmit="return confirm('Yakin ingin menyetujui pengajuan ini?');"
+                                            <button
+                                                type="submit"
+                                                class="verification-modal-footer-button verification-modal-approve"
                                             >
+                                                <i class="bi bi-check-lg"></i>
+                                                Setujui Pengajuan
+                                            </button>
 
-                                                @csrf
+                                        </form>
 
-                                                <button
-                                                    type="submit"
-                                                    class="verification-modal-footer-button verification-modal-approve"
-                                                >
-                                                    <i class="bi bi-check-lg"></i>
-                                                    Setujui Pengajuan
-                                                </button>
-
-                                            </form>
-
-                                        @endif
-
-                                    </div>
+                                    @endif
 
                                 </div>
 
                             </div>
 
+                        </div>
 
-                        @endforeach
 
-                    </tbody>
+                    @endforeach
 
-                </table>
+                </tbody>
 
-            @else
+            </table>
 
-                <div class="verification-empty">
+        @else
 
-                    <i class="bi bi-inbox"></i>
+            <div class="verification-empty">
 
-                    <div class="verification-empty-text">
-                        Belum ada pengajuan verifikasi.
-                    </div>
+                <i class="bi bi-inbox"></i>
 
+                <div class="verification-empty-text">
+                    Belum ada pengajuan verifikasi.
                 </div>
 
-            @endif
+            </div>
 
-        </div>
+        @endif
 
     </div>
 
 </div>
 
 
+</div>
+
 {{-- =========================================================
-     REJECT MODAL
+REJECT MODAL
 ========================================================= --}}
 
 <div
@@ -1816,88 +1759,89 @@
     onclick="closeRejectModalOutside(event)"
 >
 
-    <div
-        class="verification-modal"
-        onclick="event.stopPropagation()"
-    >
 
-        <div class="verification-modal-header">
+<div
+    class="verification-modal"
+    onclick="event.stopPropagation()"
+>
 
-            <div class="verification-modal-header-left">
+    <div class="verification-modal-header">
 
-                <h3 class="verification-modal-title">
-                    Tolak Pengajuan
-                </h3>
+        <div class="verification-modal-header-left">
 
-                <p class="verification-modal-subtitle">
-                    Berikan alasan mengapa pengajuan ditolak.
-                </p>
+            <h3 class="verification-modal-title">
+                Tolak Pengajuan
+            </h3>
 
-            </div>
-
-
-            <button
-                type="button"
-                class="verification-modal-close"
-                onclick="closeRejectModal()"
-            >
-                <i class="bi bi-x-lg"></i>
-            </button>
+            <p class="verification-modal-subtitle">
+                Berikan alasan mengapa pengajuan ditolak.
+            </p>
 
         </div>
 
 
-        <form
-            id="verification-reject-form"
-            method="POST"
+        <button
+            type="button"
+            class="verification-modal-close"
+            onclick="closeRejectModal()"
         >
-
-            @csrf
-
-
-            <div class="verification-modal-body">
-
-                <p class="verification-reject-help">
-                    Alasan penolakan wajib diisi agar operator mengetahui apa yang harus diperbaiki.
-                </p>
-
-                <textarea
-                    name="rejection_reason"
-                    class="verification-reject-textarea"
-                    placeholder="Masukkan alasan penolakan..."
-                    required
-                ></textarea>
-
-            </div>
-
-
-            <div class="verification-modal-footer">
-
-                <button
-                    type="button"
-                    class="verification-modal-footer-button verification-modal-cancel"
-                    onclick="closeRejectModal()"
-                >
-                    Batal
-                </button>
-
-
-                <button
-                    type="submit"
-                    class="verification-modal-footer-button verification-modal-reject-submit"
-                >
-                    <i class="bi bi-x-lg"></i>
-                    Tolak Pengajuan
-                </button>
-
-            </div>
-
-        </form>
+            <i class="bi bi-x-lg"></i>
+        </button>
 
     </div>
 
+
+    <form
+        id="verification-reject-form"
+        method="POST"
+    >
+
+        @csrf
+
+
+        <div class="verification-modal-body">
+
+            <p class="verification-reject-help">
+                Alasan penolakan wajib diisi agar operator mengetahui apa yang harus diperbaiki.
+            </p>
+
+            <textarea
+                name="rejection_reason"
+                class="verification-reject-textarea"
+                placeholder="Masukkan alasan penolakan..."
+                required
+            ></textarea>
+
+        </div>
+
+
+        <div class="verification-modal-footer">
+
+            <button
+                type="button"
+                class="verification-modal-footer-button verification-modal-cancel"
+                onclick="closeRejectModal()"
+            >
+                Batal
+            </button>
+
+
+            <button
+                type="submit"
+                class="verification-modal-footer-button verification-modal-reject-submit"
+            >
+                <i class="bi bi-x-lg"></i>
+                Tolak Pengajuan
+            </button>
+
+        </div>
+
+    </form>
+
 </div>
 
+
+</div>
 
 <script>
 
@@ -1968,13 +1912,20 @@
             id +
             "/reject";
 
-        form.querySelector(
+
+        const textarea = form.querySelector(
             'textarea[name="rejection_reason"]'
-        ).value = '';
+        );
+
+        if (textarea) {
+            textarea.value = '';
+        }
+
 
         modal.classList.add('show');
 
         document.body.style.overflow = 'hidden';
+
 
         setTimeout(function () {
 
@@ -1987,6 +1938,7 @@
             }
 
         }, 100);
+
     }
 
 
@@ -2024,19 +1976,47 @@
             return;
         }
 
-        const detailModals = document.querySelectorAll(
-            '.verification-modal-overlay.show'
-        );
+
+        const rejectModal =
+            document.getElementById(
+                'verification-reject-modal'
+            );
+
+
+        if (
+            rejectModal
+            && rejectModal.classList.contains('show')
+        ) {
+
+            closeRejectModal();
+
+            return;
+
+        }
+
+
+        const detailModals =
+            document.querySelectorAll(
+                '.verification-modal-overlay.show'
+            );
+
 
         detailModals.forEach(function(modal) {
 
             if (
-                modal.id === 'verification-reject-modal'
+                modal.id.startsWith(
+                    'verification-detail-'
+                )
             ) {
-                closeRejectModal();
+
+                modal.classList.remove('show');
+
             }
 
         });
+
+
+        document.body.style.overflow = '';
 
     });
 
